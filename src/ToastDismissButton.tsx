@@ -1,13 +1,15 @@
 import { createFocusOutlineStyle, makeResetStyles, ToastTrigger, tokens } from '@fluentui/react-components';
 import { Dismiss20Regular } from '@fluentui/react-icons';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 export const ToastDismissButton: React.FC = () => {
     const dismissButtonStyles = useDismissButtonStyles();
+    const { t } = useTranslation();
 
     return (
         <ToastTrigger>
-            <button type="button" aria-label="close" className={dismissButtonStyles}>
+            <button type="button" aria-label={t('actions.close')} className={dismissButtonStyles}>
                 <Dismiss20Regular />
             </button>
         </ToastTrigger>

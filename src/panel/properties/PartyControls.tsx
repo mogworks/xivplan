@@ -1,5 +1,6 @@
 import { Button, Image, Label, makeStyles, tokens } from '@fluentui/react-components';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { useScene } from '../../SceneProvider';
 import { Job, getJob, getJobIconUrl } from '../../jobs';
 import { PartyObject } from '../../scene';
@@ -18,25 +19,27 @@ const ICON_CHOICES = [
 export const PartyIconControl: React.FC<PropertiesControlProps<PartyObject>> = ({ objects }) => {
     const classes = useStyles();
     const { dispatch } = useScene();
+    const { t } = useTranslation();
 
-    const onClick = (name: string, image: string) =>
-        dispatch({ type: 'update', value: objects.map((obj) => ({ ...obj, name, image })) });
+    const onClick = (defaultNameKey: string, image: string) =>
+        dispatch({ type: 'update', value: objects.map((obj) => ({ ...obj, defaultNameKey, image })) });
 
     return (
         <div>
-            <Label className={classes.label}>Variant</Label>
+            <Label className={classes.label}>{t('properties.variant')}</Label>
             <div className={classes.container}>
                 {ICON_CHOICES.map((row, i) => (
                     <div key={i} className={classes.row}>
                         {row.map((job, j) => {
                             const icon = getJobIconUrl(job.icon);
+                            const name = t(job.defaultNameKey);
                             return (
                                 <Button
                                     key={j}
                                     appearance="transparent"
-                                    title={job.name}
+                                    title={name}
                                     icon={<Image src={icon} width={32} height={32} />}
-                                    onClick={() => onClick(job.name, icon)}
+                                    onClick={() => onClick(job.defaultNameKey, icon)}
                                 />
                             );
                         })}

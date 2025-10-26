@@ -30,7 +30,11 @@ export const HelpDialog: React.FC<HelpDialogProps> = (props) => {
                     <DialogTitle
                         action={
                             <DialogTrigger action="close">
-                                <Button appearance="subtle" aria-label="close" icon={<Dismiss24Regular />} />
+                                <Button
+                                    appearance="subtle"
+                                    aria-label={t('actions.close')}
+                                    icon={<Dismiss24Regular />}
+                                />
                             </DialogTrigger>
                         }
                     >

@@ -1,6 +1,7 @@
 import { Button, Field, makeStyles } from '@fluentui/react-components';
 import { ArrowLeftRegular, ArrowRightRegular, SubtractRegular } from '@fluentui/react-icons';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { useScene } from '../../SceneProvider';
 import { ArrowObject } from '../../scene';
 import { commonValue, setOrOmit } from '../../util';
@@ -9,6 +10,7 @@ import { PropertiesControlProps } from '../PropertiesControl';
 export const ArrowPointersControl: React.FC<PropertiesControlProps<ArrowObject>> = ({ objects }) => {
     const classes = useStyles();
     const { dispatch } = useScene();
+    const { t } = useTranslation();
 
     const arrowBegin = commonValue(objects, (obj) => !!obj.arrowBegin);
     const arrowEnd = commonValue(objects, (obj) => !!obj.arrowEnd);
@@ -23,7 +25,7 @@ export const ArrowPointersControl: React.FC<PropertiesControlProps<ArrowObject>>
     const arrowEndIcon = arrowEnd ? <ArrowRightRegular /> : <SubtractRegular />;
 
     return (
-        <Field label="Pointers">
+        <Field label={t('properties.pointers')}>
             <div className={classes.wrapper}>
                 <Button appearance="subtle" icon={arrowBeginIcon} onClick={onToggleArrowBegin} />
                 <Button appearance="subtle" icon={arrowEndIcon} onClick={onToggleArrowEnd} />

@@ -3,6 +3,7 @@ import { ShapeConfig } from 'konva/lib/Shape';
 import { TextConfig } from 'konva/lib/shapes/Text';
 import * as React from 'react';
 import { RefObject, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Arc, Circle, Path, Text } from 'react-konva';
 import { getDragOffset, registerDropHandler } from '../DropHandler';
 import { DetailsItem } from '../panel/DetailsItem';
@@ -42,15 +43,16 @@ const INNER_STROKE_RATIO = 1 / 64;
 const SHADOW_BLUR_RATIO = 1 / 10;
 const SHADOW_BLUR_MIN = 2;
 
-function makeIcon(name: string, icon: string, radius: number, hasDirection = true) {
+function makeIcon(defaultNameKey: string, icon: string, radius: number, hasDirection = true) {
     const Component: React.FC = () => {
         const [, setDragObject] = usePanelDrag();
         const iconUrl = `/actor/${icon}`;
+        const { t } = useTranslation();
 
         return (
             <PrefabIcon
                 draggable
-                name={name}
+                name={t(defaultNameKey)}
                 icon={iconUrl}
                 onDragStart={(e) => {
                     setDragObject({
@@ -60,6 +62,7 @@ function makeIcon(name: string, icon: string, radius: number, hasDirection = tru
                             radius: radius,
                             rotation: 0,
                             ring: hasDirection ? EnemyRingStyle.Directional : EnemyRingStyle.NoDirection,
+                            defaultNameKey,
                         },
                         offset: getDragOffset(e),
                     });
@@ -67,7 +70,7 @@ function makeIcon(name: string, icon: string, radius: number, hasDirection = tru
             />
         );
     };
-    Component.displayName = makeDisplayName(name);
+    Component.displayName = makeDisplayName(defaultNameKey);
     return Component;
 }
 
@@ -77,7 +80,6 @@ registerDropHandler<EnemyObject>(ObjectType.Enemy, (object, position) => {
         object: {
             type: ObjectType.Enemy,
             icon: '',
-            name: '',
             color: DEFAULT_ENEMY_COLOR,
             opacity: DEFAULT_ENEMY_OPACITY,
             radius: DEFAULT_SIZE,
@@ -315,13 +317,15 @@ const EnemyRenderer: React.FC<EnemyRendererProps> = ({ object, radius, rotation,
     const highlightProps = useHighlightProps(object);
     const theme = useSceneTheme();
     const textConfig = getEnemyTextConfig(theme);
+    // Enemies ring center should only show the user-defined name; ignore nameKey here.
+    const displayName = object.name ?? '';
 
     return (
         <>
             <HideGroup>
                 {isDragging && <Circle radius={CENTER_DOT_RADIUS} fill={object.color} />}
 
-                <EnemyLabel name={object.name} radius={radius} color={object.color} {...textConfig} />
+                <EnemyLabel name={displayName} radius={radius} color={object.color} {...textConfig} />
             </HideGroup>
 
             {renderRing(object, radius, rotation, groupRef, highlightProps)}
@@ -356,13 +360,15 @@ const EnemyContainer: React.FC<RendererProps<EnemyObject>> = ({ object }) => {
 registerRenderer<EnemyObject>(ObjectType.Enemy, LayerName.Ground, EnemyContainer);
 
 const EnemyDetails: React.FC<ListComponentProps<EnemyObject>> = ({ object, ...props }) => {
-    return <DetailsItem icon={object.icon} name={object.name || 'Enemy'} object={object} {...props} />;
+    const { t } = useTranslation();
+    const name = object.name ?? (object.defaultNameKey ? t(object.defaultNameKey) : '');
+    return <DetailsItem icon={object.icon} name={name} object={object} {...props} />;
 };
 
 registerListComponent<EnemyObject>(ObjectType.Enemy, EnemyDetails);
 
-export const EnemyCircle = makeIcon('Enemy circle', 'enemy_circle.png', SIZE_SMALL, false);
-export const EnemySmall = makeIcon('Small enemy', 'enemy_small.png', SIZE_SMALL);
-export const EnemyMedium = makeIcon('Medium enemy', 'enemy_medium.png', SIZE_MEDIUM);
-export const EnemyLarge = makeIcon('Large enemy', 'enemy_large.png', SIZE_LARGE);
-export const EnemyHuge = makeIcon('Huge enemy', 'enemy_huge.png', SIZE_HUGE, false);
+export const EnemyCircle = makeIcon('objects.enemyCircle', 'enemy_circle.png', SIZE_SMALL, false);
+export const EnemySmall = makeIcon('objects.enemySmall', 'enemy_small.png', SIZE_SMALL);
+export const EnemyMedium = makeIcon('objects.enemyMedium', 'enemy_medium.png', SIZE_MEDIUM);
+export const EnemyLarge = makeIcon('objects.enemyLarge', 'enemy_large.png', SIZE_LARGE);
+export const EnemyHuge = makeIcon('objects.enemyHuge', 'enemy_huge.png', SIZE_HUGE, false);

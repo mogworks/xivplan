@@ -16,17 +16,19 @@ import { ResizeableObjectContainer } from '../ResizeableObjectContainer';
 import { useHighlightProps } from '../highlight';
 import { ChevronConfig, ChevronTail } from './shapes';
 import { getArrowStyle, getZoneStyle } from './style';
+import { useTranslation } from 'react-i18next';
 
 const DEFAULT_WIDTH = 80;
 const DEFAULT_HEIGHT = 250;
 
 export const ZoneLineKnockAway: React.FC = () => {
     const [, setDragObject] = usePanelDrag();
+    const { t } = useTranslation();
 
     return (
         <PrefabIcon
             draggable
-            name="Line knock away"
+            name={t('objects.lineKnockAway', { defaultValue: 'Line knock away' })}
             icon={<Icon />}
             onDragStart={(e) => {
                 setDragObject({
@@ -144,10 +146,11 @@ const LineKnockAwayRenderer: React.FC<RendererProps<RectangleZone>> = ({ object 
 registerRenderer<RectangleZone>(ObjectType.LineKnockAway, LayerName.Ground, LineKnockAwayRenderer);
 
 const LineKnockAwayDetails: React.FC<ListComponentProps<RectangleZone>> = ({ object, ...props }) => {
+    const { t } = useTranslation();
     return (
         <DetailsItem
             icon={<Icon width="100%" height="100%" style={{ [panelVars.colorZoneOrange]: object.color }} />}
-            name="Line knock away"
+            name={t('objects.lineKnockAway', { defaultValue: 'Line knock away' })}
             object={object}
             {...props}
         />

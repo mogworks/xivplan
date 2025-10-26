@@ -9,6 +9,7 @@ import {
     tokens,
 } from '@fluentui/react-components';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 export interface OpacitySliderOnChangeData extends SliderOnChangeData {
     transient: boolean;
@@ -32,6 +33,7 @@ export const OpacitySlider: React.FC<OpacitySliderProps> = ({
     ...props
 }) => {
     const classes = useStyles();
+    const { t } = useTranslation();
 
     const valueText = value === undefined ? '' : `${value}%`;
     const ariaValueText = value === undefined ? '' : `${value} percent`;
@@ -54,7 +56,7 @@ export const OpacitySlider: React.FC<OpacitySliderProps> = ({
     };
 
     return (
-        <Field label={label ?? 'Opacity'} className={className}>
+        <Field label={label ?? t('draw.opacity')} className={className}>
             <div className={classes.wrapper}>
                 <Slider
                     value={value ?? 0}

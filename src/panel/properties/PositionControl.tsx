@@ -1,6 +1,7 @@
 import { Field, ToggleButton, Tooltip } from '@fluentui/react-components';
 import { LockClosedRegular, LockMultipleRegular, LockOpenRegular } from '@fluentui/react-icons';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { useScene } from '../../SceneProvider';
 import { SpinButton } from '../../SpinButton';
 import { useSpinChanged } from '../../prefabs/useSpinChanged';
@@ -12,6 +13,7 @@ import { PropertiesControlProps } from '../PropertiesControl';
 export const PositionControl: React.FC<PropertiesControlProps<MoveableObject>> = ({ objects }) => {
     const classes = useControlStyles();
     const { dispatch } = useScene();
+    const { t } = useTranslation();
 
     const x = commonValue(objects, (obj) => obj.x);
     const y = commonValue(objects, (obj) => obj.y);
@@ -28,15 +30,15 @@ export const PositionControl: React.FC<PropertiesControlProps<MoveableObject>> =
     );
 
     const icon = pinned === undefined ? <LockMultipleRegular /> : pinned ? <LockClosedRegular /> : <LockOpenRegular />;
-    const tooltip = pinned ? 'Unlock position' : 'Lock position';
+    const tooltip = pinned ? t('properties.unlockPosition') : t('properties.lockPosition');
 
     return (
         <>
             <div className={classes.row}>
-                <Field label="X">
+                <Field label={t('properties.x')}>
                     <SpinButton value={x} onChange={onXChanged} step={1} />
                 </Field>
-                <Field label="Y">
+                <Field label={t('properties.y')}>
                     <SpinButton value={y} onChange={onYChanged} step={1} />
                 </Field>
                 <Tooltip content={tooltip} relationship="label" withArrow>

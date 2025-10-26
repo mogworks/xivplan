@@ -1,5 +1,6 @@
 import { DrawImageRegular } from '@fluentui/react-icons';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Group, Line } from 'react-konva';
 import { DetailsItem } from '../panel/DetailsItem';
 import { ListComponentProps, registerListComponent } from '../panel/ListComponentRegistry';
@@ -54,7 +55,14 @@ export const DrawObjectRenderer: React.FC<RendererProps<DrawObject>> = ({ object
 registerRenderer<DrawObject>(ObjectType.Draw, LayerName.Default, DrawObjectRenderer);
 
 export const DrawDetails: React.FC<ListComponentProps<DrawObject>> = (props) => {
-    return <DetailsItem icon={<DrawImageRegular color={props.object.color} />} name="Drawing" {...props} />;
+    const { t } = useTranslation();
+    return (
+        <DetailsItem
+            icon={<DrawImageRegular color={props.object.color} />}
+            name={t('objects.drawing', { defaultValue: 'Drawing' })}
+            {...props}
+        />
+    );
 };
 
 registerListComponent<DrawObject>(ObjectType.Draw, DrawDetails);

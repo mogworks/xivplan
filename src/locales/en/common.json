@@ -2,18 +2,10 @@
   "header": {
     "help": "Help",
     "github": "GitHub",
-    "theme_dark": "Dark theme",
-    "theme_light": "Light theme",
     "language": "Language",
     "language_zh": "中文",
-    "language_en": "English"
-  },
-  "fileBrowser": {
-    "file": "File",
-    "lastUpdated": "Last updated"
-  },
-  "fileOpen": {
-    "return": "Return"
+    "language_en": "English",
+    "unsavedChangesTooltip": "{{name}} (unsaved changes)"
   },
   "helpDialog": {
     "title": "Help",
@@ -80,5 +72,402 @@
     "save": "Save",
     "saveAs": "Save as",
     "screenshotCurrentStep": "Screenshot current step"
+  },
+  "about": {
+    "title": "About",
+    "close": "Close",
+    "xivplanCnDescription": {
+      "part1": "This site is a Chinese localized version based on the XIVPlan project, aiming to provide a better user experience for Chinese users.",
+      "part2": "The original project information is as follows:"
+    }
+  },
+  "toolbar": {
+    "open": "Open",
+    "undo": "Undo",
+    "redo": "Redo",
+    "share": "Share",
+    "screenshot": "Screenshot",
+    "save": "Save",
+    "saveAs": "Save as",
+    "download": "Download",
+    "saveAsEllipsis": "Save as..."
+  },
+  "actions": {
+    "apply": "Apply",
+    "cancel": "Cancel",
+    "close": "Close"
+  },
+  "unsavedChanges": {
+    "title": "Unsaved changes",
+    "leaveMessage": "Are you sure you want to leave? Your unsaved changes will be lost.",
+    "leavePage": "Leave page",
+    "stayOnPage": "Stay on page"
+  },
+  "file": {
+    "openDialog": {
+      "title": "Open file"
+    },
+    "saveDialog": {
+      "title": "Save file",
+      "fileNameLabel": "File name",
+      "alreadyExistsError": "A file with this name already exists",
+      "fsSaveDescription": "Click \"Save as\" below to save the plan to your computer."
+    },
+    "tabs": {
+      "localFile": "Local file",
+      "browserStorage": "Browser storage",
+      "import": "Import plan link"
+    },
+    "unsavedChanges": {
+      "openMessage": "Are you sure you want to open a file? Your unsaved changes will be lost.",
+      "openAnyways": "Open anyways"
+    },
+    "dialog": {
+      "buttons": {
+        "open": "Open",
+        "saveAs": "Save as"
+      }
+    },
+    "fsNotSupported": {
+      "message1": "Your browser does not support the experimental File System API. You can download the plan as an <ext>.xivplancn</ext> file, then drag and drop it onto the page to open it again.",
+      "message2": "To save files locally, use a Chromium-based browser such as <edge>Edge</edge> or <chrome>Chrome</chrome>."
+    },
+    "fileBrowser": {
+      "openFile": "Open file",
+      "browseFolder": "Browse folder",
+      "columns": {
+        "file": "File",
+        "lastUpdated": "Last updated"
+      },
+      "selectRowAria": "Select row",
+      "moreItemsAria": "{{count}} more items"
+    },
+    "localStorage": {
+      "columns": {
+        "name": "Name",
+        "lastUpdated": "Last updated",
+        "actions": "Actions"
+      },
+      "deleteTooltip": "Delete {{name}}",
+      "deleteAriaLabel": "Delete",
+      "selectRowAria": "Select row",
+      "downloadAll": "Download all"
+    },
+    "prompts": {
+      "overwriteTitle": "Overwrite {{filename}}",
+      "overwriteMessage": "A file with this name already exists. Overwrite it?",
+      "overwrite": "Overwrite",
+      "deleteTitle": "Delete {{filename}}",
+      "deleteMessage": "Are you sure you want to delete this file?",
+      "delete": "Delete"
+    }
+  },
+  "share": {
+    "title": "Share",
+    "linkLabel": "Link to this plan",
+    "fallbackText": "If your browser won't open the link, paste the text into <importLink>Open > Import Plan Link</importLink> instead, or download the plan and drag and drop the file onto the page to open it.",
+    "copyToClipboard": "Copy to clipboard",
+    "linkCopied": "Link copied",
+    "enterLinkLabel": "Enter plan link",
+    "invalidLink": "Invalid link",
+    "import": "Import"
+  },
+  "statusSearch": {
+    "languageLabel": "Language",
+    "statusNamePlaceholder": "Status name",
+    "noResults": "No results.",
+    "error": "Error"
+  },
+  "steps": {
+    "step": "Step {{n}}",
+    "addNew": "Add new step",
+    "deleteStep": "Delete step {{n}}",
+    "reorder": "Reorder steps",
+    "reorderInstructions": "Drag and drop to reorder steps, then click Apply to save your changes."
+  },
+  "toasts": {
+    "error": "Error",
+    "unsupportedFileTitle": "Unsupported file",
+    "cannotOpenFile": "Cannot open file \"{{name}}\"",
+    "failedToLoadPlan": "Failed to load plan",
+    "screenshotTimeout": "Screenshot timed out",
+    "screenshotCopied": "Screenshot copied to clipboard"
+  },
+  "screenshot": {
+    "scaleHeader": "Screenshot scale",
+    "scale1x": "1X",
+    "scale2x": "2X",
+    "scale4x": "4X"
+  },
+  "draw": {
+    "tool": "Tool",
+    "edit": "Edit",
+    "draw": "Draw",
+    "color": "Color",
+    "brushColor": "Brush color",
+    "opacity": "Opacity",
+    "brushSize": "Brush size"
+  },
+  "panel": {
+    "noSelection": "No objects selected."
+  },
+  "properties": {
+    "color": "Color",
+    "width": "Width",
+    "height": "Height",
+    "rotation": "Rotation",
+    "name": "Name",
+    "x": "X",
+    "y": "Y",
+    "lockPosition": "Lock position",
+    "unlockPosition": "Unlock position",
+    "shape": "Shape",
+    "circle": "Circle",
+    "square": "Square",
+    "style": "Style",
+    "solid": "Solid",
+    "hollow": "Hollow",
+    "length": "Length",
+    "spacing": "Spacing",
+    "radius": "Radius",
+    "radius1": "Radius 1",
+    "radius2": "Radius 2",
+    "angle": "Angle",
+    "spokeWidth": "Spoke width",
+    "spokes": "Spokes",
+    "sides": "Sides",
+    "orientation": "Orientation",
+    "pointUp": "Point up",
+    "sideUp": "Side up",
+    "pointers": "Pointers",
+    "ringStyle": "Ring style",
+    "directional": "Directional",
+    "omnidirectional": "Omnidirectional",
+    "noDirection": "No direction",
+    "imageUrl": "Image URL",
+    "duration": "Duration",
+    "stacks": "Stacks",
+    "playerCount": "Player count",
+    "onePlayer": "One player",
+    "twoPlayers": "Two players",
+    "threePlayers": "Three players",
+    "fourPlayers": "Four players",
+    "lookTowards": "Look towards",
+    "lookAway": "Look away",
+    "variant": "Variant"
+  },
+  "colors": {
+    "invalidColor": "Invalid color",
+    "openColorPicker": "Open color picker",
+    "red": "Red",
+    "orange": "Orange",
+    "yellow": "Yellow",
+    "green": "Green",
+    "cyan": "Cyan",
+    "blue": "Blue",
+    "violet": "Violet",
+    "pink": "Pink",
+    "fuschia": "Fuschia",
+    "blueish-white": "Blueish white",
+    "dark-purple": "Dark purple",
+    "white": "White",
+    "black": "Black",
+    "grid": "Grid",
+    "arena": "Arena",
+    "background": "Background"
+  },
+  "text": {
+    "outline": "Outline",
+    "style": "Style",
+    "shadow": "Shadow",
+    "noOutline": "No outline",
+    "fontSize": "Font size",
+    "align": "Align",
+    "alignLeft": "Align left",
+    "alignCenter": "Align center",
+    "alignRight": "Align right",
+    "text": "Text"
+  },
+  "status": {
+    "markers": "Markers",
+    "effects": "Status effects",
+    "general": "General",
+    "counters": "Counters",
+    "targetIndicators": "Target indicators"
+  },
+  "statusIcons": {
+    "attack1": "Attack 1",
+    "attack2": "Attack 2",
+    "attack3": "Attack 3",
+    "attack4": "Attack 4",
+    "attack5": "Attack 5",
+    "attack6": "Attack 6",
+    "attack7": "Attack 7",
+    "attack8": "Attack 8",
+    "bind1": "Bind 1",
+    "bind2": "Bind 2",
+    "bind3": "Bind 3",
+    "counter1": "Counter 1",
+    "counter2": "Counter 2",
+    "counter3": "Counter 3",
+    "counter4": "Counter 4",
+    "counter5": "Counter 5",
+    "counter6": "Counter 6",
+    "counter7": "Counter 7",
+    "counter8": "Counter 8",
+    "ignore1": "Ignore 1",
+    "ignore2": "Ignore 2",
+    "circle": "Circle",
+    "cross": "Cross",
+    "square": "Square",
+    "triangle": "Triangle",
+    "target": "Target",
+    "accelerationBomb1": "Acceleration Bomb 1",
+    "accelerationBomb2": "Acceleration Bomb 2",
+    "accelerationBomb3": "Acceleration Bomb 3",
+    "edenYellow": "Yellow marker",
+    "edenOrange": "Orange marker",
+    "edenBlue": "Blue marker"
+  },
+  "prefabs": {
+    "zones": "Zones",
+    "waymarks": "Waymarks",
+    "party": "Party",
+    "enemies": "Enemies",
+    "tethers": "Tethers",
+    "tethersHelp": {
+      "part1": "Select a tether type, then click two objects to add a tether. Press",
+      "part2": "or unselect the tether button to cancel. Use",
+      "part3": "+ click to create chains."
+    }
+  },
+  "arena": {
+    "presets": "Arena presets",
+    "showAllPresets": "Show all presets",
+    "selectPreset": "Select preset",
+    "cancel": "Cancel",
+    "clickToShow": "Click to show",
+    "shape": "Arena shape",
+    "padding": "Padding",
+    "gridType": "Grid type",
+    "columns": "Columns",
+    "rows": "Rows",
+    "spokes": "Spokes",
+    "rings": "Rings",
+    "rotation": "Rotation",
+    "rowStops": "Row stops",
+    "columnStops": "Column stops",
+    "rowStopsInfo": "Enter a space-separated list of Y coordinates for grid lines.",
+    "columnStopsInfo": "Enter a space-separated list of X coordinates for grid lines.",
+    "ringStops": "Ring stops",
+    "spokeAngles": "Spoke angles",
+    "ringStopsInfo": "Enter a space-separated list of radii for grid rings.",
+    "spokeAnglesInfo": "Enter a space-separated list of angles in degrees for grid spokes.",
+    "borderTicks": "Border ticks",
+    "majorTicks": "Major ticks",
+    "minorTicks": "Minor ticks",
+    "majorRotation": "Major rotation",
+    "minorRotation": "Minor rotation",
+    "none": "None",
+    "circle": "Circle",
+    "rectangle": "Rectangle",
+    "radial": "Radial",
+    "rectangular": "Rectangular",
+    "customRadial": "Custom radial",
+    "customRectangular": "Custom rectangular",
+    "backgroundImageUrl": "Background image URL",
+    "backgroundImageOpacity": "Background image opacity"
+  },
+  "tethers": {
+    "line": "Tether",
+    "close": "Tether (stay together)",
+    "far": "Tether (stay apart)",
+    "minusMinus": "Tether (−/−)",
+    "plusMinus": "Tether (+/−)",
+    "plusPlus": "Tether (+/+)",
+    "type": "Tether type"
+  },
+  "objects": {
+    "arrow": "Arrow",
+    "drawing": "Drawing",
+    "proximityAoe": "Proximity AoE",
+    "circularKnockback": "Circular knockback",
+    "lineKnockback": "Line knockback",
+    "lineKnockAway": "Line knock away",
+    "movingAoe": "Moving AoE",
+    "stack": "Stack",
+    "arc": "Arc",
+    "circle": "Circle",
+    "donut": "Donut",
+    "rectangle": "Rectangle",
+    "line": "Line",
+    "cone": "Cone",
+    "triangle": "Triangle",
+    "rightTriangle": "Right triangle",
+    "starburst": "Starburst",
+    "regularPolygon": "Regular Polygon",
+    "polygon": "Polygon",
+    "pentagon": "Pentagon",
+    "hexagon": "Hexagon",
+    "septagon": "Septagon",
+    "octagon": "Octagon",
+    "square": "Square",
+    "enemy": "Enemy",
+    "enemyCircle": "Enemy circle",
+    "enemySmall": "Small enemy",
+    "enemyMedium": "Medium enemy",
+    "enemyLarge": "Large enemy",
+    "enemyHuge": "Huge enemy",
+    "waymarkA": "Waymark A",
+    "waymarkB": "Waymark B",
+    "waymarkC": "Waymark C",
+    "waymarkD": "Waymark D",
+    "waymark1": "Waymark 1",
+    "waymark2": "Waymark 2",
+    "waymark3": "Waymark 3",
+    "waymark4": "Waymark 4",
+    "lineStack": "Line stack",
+    "rotatingClockwise": "Rotating clockwise",
+    "rotatingCounterClockwise": "Rotating counter-clockwise",
+    "clockwise": "Clockwise",
+    "counterClockwise": "Counter-clockwise",
+    "meteorTower": "Meteor/tower"
+  },
+  "jobs": {
+    "roleAny": "Any player",
+    "roleTank": "Tank",
+    "roleHealer": "Healer",
+    "roleSupport": "Support",
+    "roleDps": "DPS",
+    "roleMelee": "Melee DPS",
+    "roleRanged": "Ranged DPS",
+    "roleMagicRanged": "Magic Ranged DPS",
+    "rolePhysicalRanged": "Physical Ranged DPS",
+    "paladin": "Paladin",
+    "warrior": "Warrior",
+    "darkKnight": "Dark Knight",
+    "gunbreaker": "Gunbreaker",
+    "whiteMage": "White Mage",
+    "scholar": "Scholar",
+    "astrologian": "Astrologian",
+    "sage": "Sage",
+    "monk": "Monk",
+    "dragoon": "Dragoon",
+    "ninja": "Ninja",
+    "samurai": "Samurai",
+    "reaper": "Reaper",
+    "viper": "Viper",
+    "bard": "Bard",
+    "machinist": "Machinist",
+    "dancer": "Dancer",
+    "blackMage": "Black Mage",
+    "summoner": "Summoner",
+    "redMage": "Red Mage",
+    "pictomancer": "Pictomancer",
+    "blueMage": "Blue Mage"
+  },
+  "spin": {
+    "increment": "Increment value",
+    "decrement": "Decrement value"
   }
 }
