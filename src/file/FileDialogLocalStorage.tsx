@@ -30,6 +30,7 @@ import { useIsDirty, useSetSavedState } from '../useIsDirty';
 import { DownloadLocalStorageButton } from './DownloadLocalStorageButton';
 import { useConfirmDeleteFile, useConfirmOverwriteFile, useConfirmUnsavedChanges } from './confirm';
 import { LocalStorageFileInfo, deleteFileLocalStorage, listLocalStorageFiles } from './localStorage';
+import { useTranslation } from 'react-i18next';
 
 const getCellFocusMode = (columnId: TableColumnId): DataGridCellFocusMode => {
     switch (columnId) {
@@ -51,6 +52,7 @@ export const OpenLocalStorage: React.FC<OpenLocalStorageProps> = ({ actions }) =
     const isDirty = useIsDirty();
     const loadScene = useLoadScene();
     const dismissDialog = useCloseDialog();
+    const { t } = useTranslation();
 
     const [confirmUnsavedChanges, renderModal1] = useConfirmUnsavedChanges();
     const [confirmDeleteFile, renderModal2] = useConfirmDeleteFile();
@@ -93,7 +95,7 @@ export const OpenLocalStorage: React.FC<OpenLocalStorageProps> = ({ actions }) =
         createTableColumn<LocalStorageFileInfo>({
             columnId: 'name',
             compare: (a, b) => a.name.localeCompare(b.name),
-            renderHeaderCell: () => 'Name',
+            renderHeaderCell: () => t('file.localStorage.columns.name'),
             renderCell: (item) => item.name,
         }),
         createTableColumn<LocalStorageFileInfo>({
@@ -103,19 +105,24 @@ export const OpenLocalStorage: React.FC<OpenLocalStorageProps> = ({ actions }) =
                 const time2 = b.lastEdited?.getTime() ?? 0;
                 return time1 - time2;
             },
-            renderHeaderCell: () => 'Last updated',
+            renderHeaderCell: () => t('file.localStorage.columns.lastUpdated'),
             renderCell: (item) => item.lastEdited?.toLocaleString(),
         }),
         createTableColumn<LocalStorageFileInfo>({
             columnId: 'delete',
-            renderHeaderCell: () => 'Actions',
+            renderHeaderCell: () => t('file.localStorage.columns.actions'),
             renderCell: (item) => {
                 return (
                     <>
-                        <Tooltip content={`Delete ${item.name}`} appearance="inverted" relationship="label" withArrow>
+                        <Tooltip
+                            content={t('file.localStorage.deleteTooltip', { name: item.name })}
+                            appearance="inverted"
+                            relationship="label"
+                            withArrow
+                        >
                             <Button
                                 appearance="subtle"
-                                aria-label="Delete"
+                                aria-label={t('file.localStorage.deleteAriaLabel')}
                                 icon={<DeleteIcon />}
                                 onClick={() => deleteFile(item)}
                             />
@@ -150,7 +157,7 @@ export const OpenLocalStorage: React.FC<OpenLocalStorageProps> = ({ actions }) =
                     {({ item, rowId }) => (
                         <DataGridRow<LocalStorageFileInfo>
                             key={rowId}
-                            selectionCell={{ radioIndicator: { 'aria-label': 'Select row' } }}
+                            selectionCell={{ radioIndicator: { 'aria-label': t('file.localStorage.selectRowAria') } }}
                             onDoubleClick={(ev: MouseEvent<HTMLElement>) => loadSceneFromStorage(ev, rowId as string)}
                         >
                             {({ renderCell, columnId }) => (
@@ -168,10 +175,10 @@ export const OpenLocalStorage: React.FC<OpenLocalStorageProps> = ({ actions }) =
                 <DialogActions fluid className={classes.actions}>
                     <DownloadLocalStorageButton />
                     <Button appearance="primary" disabled={selectedRows.size === 0} onClick={openCallback}>
-                        Open
+                        {t('file.dialog.buttons.open')}
                     </Button>
                     <DialogTrigger>
-                        <Button>Cancel</Button>
+                        <Button>{t('actions.cancel')}</Button>
                     </DialogTrigger>
                 </DialogActions>
             </InPortal>
@@ -191,6 +198,7 @@ export const SaveLocalStorage: React.FC<SaveLocalStorageProps> = ({ actions }) =
     const setSavedState = useSetSavedState();
     const dismissDialog = useCloseDialog();
     const files = useAsync(listLocalStorageFiles);
+    const { t } = useTranslation();
 
     const setSource = useSetSource();
     const { canonicalScene, source } = useScene();
@@ -228,9 +236,9 @@ export const SaveLocalStorage: React.FC<SaveLocalStorageProps> = ({ actions }) =
     return (
         <>
             <Field
-                label="File name"
+                label={t('file.saveDialog.fileNameLabel')}
                 validationState={alreadyExists ? 'error' : 'none'}
-                validationMessage={alreadyExists ? 'A file with this name already exists' : undefined}
+                validationMessage={alreadyExists ? t('file.saveDialog.alreadyExistsError') : undefined}
             >
                 <Input
                     type="text"
@@ -246,10 +254,10 @@ export const SaveLocalStorage: React.FC<SaveLocalStorageProps> = ({ actions }) =
             <InPortal node={actions}>
                 <DialogActions>
                     <Button appearance="primary" disabled={!canSave} onClick={save}>
-                        Save as
+                        {t('file.dialog.buttons.saveAs')}
                     </Button>
                     <DialogTrigger>
-                        <Button>Cancel</Button>
+                        <Button>{t('actions.cancel')}</Button>
                     </DialogTrigger>
                 </DialogActions>
             </InPortal>

@@ -1,18 +1,18 @@
 import {
     Button,
     Link,
+    Menu,
+    MenuItem,
+    MenuList,
+    MenuPopover,
+    MenuTrigger,
     Text,
     Tooltip,
-    Menu,
-    MenuTrigger,
-    MenuPopover,
-    MenuList,
-    MenuItem,
     makeStyles,
     mergeClasses,
     tokens,
 } from '@fluentui/react-components';
-import { WeatherMoonFilled, WeatherSunnyFilled, LocalLanguageFilled } from '@fluentui/react-icons';
+import { LocalLanguageFilled, WeatherMoonFilled, WeatherSunnyFilled } from '@fluentui/react-icons';
 import React, { HTMLAttributes, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { OutPortal } from 'react-reverse-portal';
@@ -109,10 +109,10 @@ export const SiteHeader: React.FC<HTMLAttributes<HTMLElement>> = ({ className, .
             </div>
 
             <Link onClick={() => setHelpOpen(true)} className={classes.link}>
-                {t('helpDialog.title')}
+                {t('header.help')}
             </Link>
             <AboutDialog className={classes.link} />
-            <ExternalLink className={classes.link} href="https://github.com/joelspadin/xivplan" noIcon>
+            <ExternalLink className={classes.link} href="https://github.com/mogworks/xivplan" noIcon>
                 {t('header.github')}
             </ExternalLink>
             <div className={classes.buttonGroup}>
@@ -155,8 +155,8 @@ interface SourceIndicatorProps {
 const SourceIndicator: React.FC<SourceIndicatorProps> = ({ source }) => {
     const classes = useStyles();
     const isDirty = useIsDirty();
-
-    const tooltip = isDirty ? `${source.name} (unsaved changes)` : source.name;
+    const { t } = useTranslation();
+    const tooltip = isDirty ? t('header.unsavedChangesTooltip', { name: source.name }) : source.name;
 
     return (
         <Tooltip content={tooltip} relationship="description">

@@ -1,5 +1,6 @@
 import { Field } from '@fluentui/react-components';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { useSpinChanged } from '../../prefabs/useSpinChanged';
 import { IconObject } from '../../scene';
 import { useScene } from '../../SceneProvider';
@@ -12,6 +13,7 @@ import { PropertiesControlProps } from '../PropertiesControl';
 export const IconTimeControl: React.FC<PropertiesControlProps<IconObject>> = ({ objects }) => {
     const classes = useControlStyles();
     const { dispatch } = useScene();
+    const { t } = useTranslation();
 
     const time = commonValue(objects, (obj) => obj.time ?? 0);
 
@@ -20,7 +22,7 @@ export const IconTimeControl: React.FC<PropertiesControlProps<IconObject>> = ({ 
     );
 
     return (
-        <Field label="Duration" className={classes.cell}>
+        <Field label={t('properties.duration')} className={classes.cell}>
             <SpinButtonUnits value={time} min={0} suffix=" s" onChange={onChange} />
         </Field>
     );
@@ -29,6 +31,7 @@ export const IconTimeControl: React.FC<PropertiesControlProps<IconObject>> = ({ 
 export const IconStacksControl: React.FC<PropertiesControlProps<IconObject>> = ({ objects }) => {
     const classes = useControlStyles();
     const { dispatch } = useScene();
+    const { t } = useTranslation();
 
     const stacks = commonValue(objects, getStackCount);
     const maxStacks = Math.min(...objects.map((obj) => obj.maxStacks ?? 0));
@@ -42,7 +45,7 @@ export const IconStacksControl: React.FC<PropertiesControlProps<IconObject>> = (
     }
 
     return (
-        <Field label="Stacks" className={classes.cell}>
+        <Field label={t('properties.stacks')} className={classes.cell}>
             <SpinButton value={stacks} min={1} max={maxStacks} onChange={onChange} />
         </Field>
     );

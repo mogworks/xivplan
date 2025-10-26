@@ -7,6 +7,7 @@ import {
     bundleIcon,
 } from '@fluentui/react-icons';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { useScene } from '../../SceneProvider';
 import { Segment, SegmentedGroup } from '../../Segmented';
 import { ThreeQuarterCircleFilled, ThreeQuarterCircleRegular } from '../../icon/ThreeQuarterCircle';
@@ -27,6 +28,7 @@ const DirectionalIcon: React.FC = () => {
 export const EnemyRingControl: React.FC<PropertiesControlProps<EnemyObject>> = ({ objects }) => {
     const classes = useControlStyles();
     const { dispatch } = useScene();
+    const { t } = useTranslation();
 
     const ring = commonValue(objects, (obj) => obj.ring);
 
@@ -35,19 +37,23 @@ export const EnemyRingControl: React.FC<PropertiesControlProps<EnemyObject>> = (
     };
 
     return (
-        <Field label="Ring style" className={classes.cell}>
+        <Field label={t('properties.ringStyle')} className={classes.cell}>
             <SegmentedGroup
                 name="enemy-ring"
                 value={ring}
                 onChange={(ev, data) => onDirectionalChanged(data.value as EnemyRingStyle)}
             >
-                <Segment value={EnemyRingStyle.Directional} icon={<DirectionalIcon />} title="Directional" />
+                <Segment
+                    value={EnemyRingStyle.Directional}
+                    icon={<DirectionalIcon />}
+                    title={t('properties.directional')}
+                />
                 <Segment
                     value={EnemyRingStyle.Omnidirectional}
                     icon={<ChevronCircleUpIcon />}
-                    title="Omnidirectional"
+                    title={t('properties.omnidirectional')}
                 />
-                <Segment value={EnemyRingStyle.NoDirection} icon={<CircleIcon />} title="No direction" />
+                <Segment value={EnemyRingStyle.NoDirection} icon={<CircleIcon />} title={t('properties.noDirection')} />
             </SegmentedGroup>
         </Field>
     );

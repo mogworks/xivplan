@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Group, Rect } from 'react-konva';
 import { getDragOffset, registerDropHandler } from '../../DropHandler';
 import Icon from '../../assets/zone/square.svg?react';
@@ -15,16 +16,15 @@ import { ResizeableObjectContainer } from '../ResizeableObjectContainer';
 import { useHighlightProps } from '../highlight';
 import { getZoneStyle } from './style';
 
-const NAME = 'Rectangle';
-
 const DEFAULT_SIZE = 150;
 
 export const ZoneSquare: React.FC = () => {
     const [, setDragObject] = usePanelDrag();
+    const { t } = useTranslation();
     return (
         <PrefabIcon
             draggable
-            name={NAME}
+            name={t('objects.rectangle', { defaultValue: 'Rectangle' })}
             icon={<Icon />}
             onDragStart={(e) => {
                 setDragObject({
@@ -90,10 +90,11 @@ const RectangleRenderer: React.FC<RendererProps<RectangleZone>> = ({ object }) =
 registerRenderer<RectangleZone>(ObjectType.Rect, LayerName.Ground, RectangleRenderer);
 
 const RectangleDetails: React.FC<ListComponentProps<RectangleZone>> = ({ object, ...props }) => {
+    const { t } = useTranslation();
     return (
         <DetailsItem
             icon={<Icon width="100%" height="100%" style={{ [panelVars.colorZoneOrange]: object.color }} />}
-            name={NAME}
+            name={t('objects.rectangle', { defaultValue: 'Rectangle' })}
             object={object}
             {...props}
         />

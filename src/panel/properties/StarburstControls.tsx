@@ -1,5 +1,6 @@
 import { Field } from '@fluentui/react-components';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { useScene } from '../../SceneProvider';
 import { SpinButton } from '../../SpinButton';
 import { MIN_STARBURST_SPOKE_WIDTH } from '../../prefabs/bounds';
@@ -15,6 +16,7 @@ const MAX_SPOKE_COUNT = 16;
 export const StarburstSpokeWidthControl: React.FC<PropertiesControlProps<StarburstZone>> = ({ objects }) => {
     const classes = useControlStyles();
     const { dispatch } = useScene();
+    const { t } = useTranslation();
 
     const spokeWidth = commonValue(objects, (obj) => obj.spokeWidth);
 
@@ -23,7 +25,7 @@ export const StarburstSpokeWidthControl: React.FC<PropertiesControlProps<Starbur
     );
 
     return (
-        <Field label="Spoke width" className={classes.cell}>
+        <Field label={t('properties.spokeWidth')} className={classes.cell}>
             <SpinButton value={spokeWidth} onChange={onSpokeWidthChanged} min={MIN_STARBURST_SPOKE_WIDTH} step={5} />
         </Field>
     );
@@ -32,6 +34,7 @@ export const StarburstSpokeWidthControl: React.FC<PropertiesControlProps<Starbur
 export const StarburstSpokeCountControl: React.FC<PropertiesControlProps<StarburstZone>> = ({ objects }) => {
     const classes = useControlStyles();
     const { dispatch } = useScene();
+    const { t } = useTranslation();
 
     const spokes = commonValue(objects, (obj) => obj.spokes);
 
@@ -40,7 +43,7 @@ export const StarburstSpokeCountControl: React.FC<PropertiesControlProps<Starbur
     );
 
     return (
-        <Field label="Spokes" className={classes.cell}>
+        <Field label={t('properties.spokes')} className={classes.cell}>
             <SpinButton
                 value={spokes}
                 onChange={onSpokesChanged}

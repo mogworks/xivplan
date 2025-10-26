@@ -1,6 +1,7 @@
 import { Field, makeStyles } from '@fluentui/react-components';
 import { bundleIcon, SquareFilled, SquareRegular } from '@fluentui/react-icons';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { useScene } from '../../SceneProvider';
 import { Segment, SegmentedGroup } from '../../Segmented';
 import { SpinButton } from '../../SpinButton';
@@ -16,6 +17,7 @@ const Square = bundleIcon(SquareFilled, SquareRegular);
 export const PolygonSidesControl: React.FC<PropertiesControlProps<PolygonZone>> = ({ objects }) => {
     const classes = useControlStyles();
     const { dispatch } = useScene();
+    const { t } = useTranslation();
 
     const spokes = commonValue(objects, (obj) => obj.sides);
 
@@ -24,7 +26,7 @@ export const PolygonSidesControl: React.FC<PropertiesControlProps<PolygonZone>> 
     );
 
     return (
-        <Field label="Sides" className={classes.cell}>
+        <Field label={t('properties.sides')} className={classes.cell}>
             <SpinButton
                 value={spokes}
                 onChange={onSidesChanged}
@@ -40,6 +42,7 @@ export const PolygonOrientationControl: React.FC<PropertiesControlProps<PolygonZ
     const classes = useStyles();
     const controlClasses = useControlStyles();
     const { dispatch } = useScene();
+    const { t } = useTranslation();
 
     const orient = commonValue(objects, (obj) => obj.orient);
 
@@ -47,14 +50,14 @@ export const PolygonOrientationControl: React.FC<PropertiesControlProps<PolygonZ
         dispatch({ type: 'update', value: objects.map((obj) => ({ ...obj, orient })) });
 
     return (
-        <Field label="Orientation" className={controlClasses.cell}>
+        <Field label={t('properties.orientation')} className={controlClasses.cell}>
             <SegmentedGroup
                 name="player-count"
                 value={orient ?? ''}
                 onChange={(ev, data) => handleChanged(data.value as PolygonOrientation)}
             >
-                <Segment value="point" icon={<Square className={classes.point} />} title="Point up" />
-                <Segment value="side" icon={<Square />} title="Side up" />
+                <Segment value="point" icon={<Square className={classes.point} />} title={t('properties.pointUp')} />
+                <Segment value="side" icon={<Square />} title={t('properties.sideUp')} />
             </SegmentedGroup>
         </Field>
     );

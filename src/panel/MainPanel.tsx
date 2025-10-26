@@ -1,5 +1,6 @@
 import { makeStyles, Tab, TabList } from '@fluentui/react-components';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { EditMode } from '../editMode';
 import { TabActivity } from '../TabActivity';
 import { useEditMode } from '../useEditMode';
@@ -15,6 +16,7 @@ export const MainPanel: React.FC = () => {
     const classes = useStyles();
     const [tab, setTab] = useState<Tabs>('objects');
     const [, setEditMode] = useEditMode();
+    const { t } = useTranslation();
 
     const handleTabChanged = (tab: Tabs) => {
         setTab(tab);
@@ -28,10 +30,10 @@ export const MainPanel: React.FC = () => {
     return (
         <div className={classes.wrapper}>
             <TabList selectedValue={tab} onTabSelect={(ev, data) => handleTabChanged(data.value as Tabs)}>
-                <Tab value="arena">Arena</Tab>
-                <Tab value="objects">Objects</Tab>
-                <Tab value="status">Icons</Tab>
-                <Tab value="draw">Draw</Tab>
+                <Tab value="arena">{t('helpDialog.arena')}</Tab>
+                <Tab value="objects">{t('helpDialog.objects')}</Tab>
+                <Tab value="status">{t('helpDialog.icons')}</Tab>
+                <Tab value="draw">{t('helpDialog.draw')}</Tab>
             </TabList>
             <div className={classes.container}>
                 <TabActivity value="arena" activeTab={tab}>

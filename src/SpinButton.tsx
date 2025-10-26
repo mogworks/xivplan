@@ -5,6 +5,7 @@ import {
     SpinButtonProps,
 } from '@fluentui/react-components';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { formatNumber, fractionDigitsToStep, round } from './util';
 
 export interface CustomSpinButtonProps extends Omit<SpinButtonProps, 'displayValue'> {
@@ -17,6 +18,8 @@ export interface CustomSpinButtonProps extends Omit<SpinButtonProps, 'displayVal
  */
 export const SpinButton: React.FC<CustomSpinButtonProps> = ({ value, onChange, fractionDigits, ...props }) => {
     fractionDigits ??= 0;
+
+    const { t } = useTranslation();
 
     const wrappedOnChange = (event: SpinButtonChangeEvent, data: SpinButtonOnChangeData) => {
         if (!isValid(data.value)) {
@@ -50,6 +53,8 @@ export const SpinButton: React.FC<CustomSpinButtonProps> = ({ value, onChange, f
             value={value ?? NaN}
             displayValue={formatNumber(value, fractionDigits)}
             onChange={wrappedOnChange}
+            incrementButton={props.incrementButton ?? { 'aria-label': t('spin.increment') }}
+            decrementButton={props.decrementButton ?? { 'aria-label': t('spin.decrement') }}
         />
     );
 };

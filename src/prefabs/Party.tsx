@@ -2,6 +2,7 @@ import * as React from 'react';
 import { Group, Image, Rect } from 'react-konva';
 import { getDragOffset, registerDropHandler } from '../DropHandler';
 import { getJob, getJobIconUrl, Job } from '../jobs';
+import { useTranslation } from 'react-i18next';
 import { DetailsItem } from '../panel/DetailsItem';
 import { ListComponentProps, registerListComponent } from '../panel/ListComponentRegistry';
 import { LayerName } from '../render/layers';
@@ -19,23 +20,25 @@ import { ResizeableObjectContainer } from './ResizeableObjectContainer';
 const DEFAULT_SIZE = 32;
 
 function makeIcon(job: Job) {
-    const { icon, name } = getJob(job);
+    const { icon, defaultNameKey } = getJob(job);
 
     const Component: React.FC = () => {
         const [, setDragObject] = usePanelDrag();
         const iconUrl = getJobIconUrl(icon);
+        const { t } = useTranslation();
+        const label = t(defaultNameKey);
 
         return (
             <PrefabIcon
                 draggable
-                name={name}
+                name={label}
                 icon={iconUrl}
                 onDragStart={(e) => {
                     setDragObject({
                         object: {
                             type: ObjectType.Party,
                             image: iconUrl,
-                            name,
+                            defaultNameKey: defaultNameKey,
                         },
                         offset: getDragOffset(e),
                     });
@@ -43,7 +46,7 @@ function makeIcon(job: Job) {
             />
         );
     };
-    Component.displayName = makeDisplayName(name);
+    Component.displayName = makeDisplayName(defaultNameKey);
     return Component;
 }
 
@@ -53,7 +56,6 @@ registerDropHandler<PartyObject>(ObjectType.Party, (object, position) => {
         object: {
             type: ObjectType.Party,
             image: '',
-            name: '',
             status: [],
             width: DEFAULT_SIZE,
             height: DEFAULT_SIZE,
@@ -98,7 +100,9 @@ const PartyRenderer: React.FC<RendererProps<PartyObject>> = ({ object }) => {
 registerRenderer<PartyObject>(ObjectType.Party, LayerName.Default, PartyRenderer);
 
 const PartyDetails: React.FC<ListComponentProps<PartyObject>> = ({ object, ...props }) => {
-    return <DetailsItem icon={object.image} name={object.name} object={object} {...props} />;
+    const { t } = useTranslation();
+    const name = object.name ?? (object.defaultNameKey ? t(object.defaultNameKey) : '');
+    return <DetailsItem icon={object.image} name={name} object={object} {...props} />;
 };
 
 registerListComponent<PartyObject>(ObjectType.Party, PartyDetails);

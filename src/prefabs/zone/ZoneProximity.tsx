@@ -17,15 +17,17 @@ import { PrefabIcon } from '../PrefabIcon';
 import { RadiusObjectContainer } from '../RadiusObjectContainer';
 import { useHighlightProps } from '../highlight';
 import { getArrowStyle, getShadowColor } from './style';
+import { useTranslation } from 'react-i18next';
 
 const DEFAULT_RADIUS = 200;
 
 export const ZoneProximity: React.FC = () => {
     const [, setDragObject] = usePanelDrag();
+    const { t } = useTranslation();
     return (
         <PrefabIcon
             draggable
-            name="Proximity AOE"
+            name={t('objects.proximityAoe', { defaultValue: 'Proximity AOE' })}
             icon={<Icon />}
             onDragStart={(e) => {
                 setDragObject({
@@ -192,10 +194,11 @@ const ProximityContainer: React.FC<RendererProps<CircleZone>> = ({ object }) => 
 registerRenderer<CircleZone>(ObjectType.Proximity, LayerName.Ground, ProximityContainer);
 
 const ProximityDetails: React.FC<ListComponentProps<CircleZone>> = ({ object, ...props }) => {
+    const { t } = useTranslation();
     return (
         <DetailsItem
             icon={<Icon width="100%" height="100%" style={{ [panelVars.colorZoneOrange]: object.color }} />}
-            name="Proximity AOE"
+            name={t('objects.proximityAoe', { defaultValue: 'Proximity AOE' })}
             object={object}
             {...props}
         />

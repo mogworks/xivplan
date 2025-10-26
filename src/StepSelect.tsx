@@ -31,6 +31,7 @@ import {
 } from '@fluentui/react-components';
 import { AddFilled, ArrowSwapRegular, DeleteFilled, DeleteRegular, bundleIcon } from '@fluentui/react-icons';
 import React, { HTMLAttributes, RefAttributes, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { HotkeyBlockingDialogBody } from './HotkeyBlockingDialogBody';
 import { useScene } from './SceneProvider';
 import { ScenePreview } from './render/SceneRenderer';
@@ -85,10 +86,11 @@ interface StepButtonProps {
 
 const StepButton: React.FC<StepButtonProps> = ({ index }) => {
     const classes = useStyles();
+    const { t } = useTranslation();
     const stepText = getStepText(index);
 
     return (
-        <Tooltip content={`Step ${stepText}`} relationship="label" withArrow>
+        <Tooltip content={t('steps.step', { n: stepText })} relationship="label" withArrow>
             <Tab value={index}>
                 <div className={classes.tab}>{stepText}</div>
             </Tab>
@@ -98,9 +100,10 @@ const StepButton: React.FC<StepButtonProps> = ({ index }) => {
 
 const AddStepButton: React.FC<ButtonProps> = (props) => {
     const { dispatch } = useScene();
+    const { t } = useTranslation();
 
     return (
-        <Tooltip content="Add new step" relationship="label" withArrow>
+        <Tooltip content={t('steps.addNew')} relationship="label" withArrow>
             <Button icon={<AddFilled />} appearance="subtle" onClick={() => dispatch({ type: 'addStep' })} {...props} />
         </Tooltip>
     );
@@ -110,10 +113,11 @@ const DeleteIcon = bundleIcon(DeleteFilled, DeleteRegular);
 
 const RemoveStepButton: React.FC = () => {
     const { scene, stepIndex, dispatch } = useScene();
+    const { t } = useTranslation();
     const stepText = getStepText(stepIndex);
 
     return (
-        <Tooltip content={`Delete step ${stepText}`} relationship="label" withArrow>
+        <Tooltip content={t('steps.deleteStep', { n: stepText })} relationship="label" withArrow>
             <Button
                 icon={<DeleteIcon />}
                 appearance="subtle"
@@ -127,11 +131,12 @@ const RemoveStepButton: React.FC = () => {
 const ReorderStepsButton: React.FC = () => {
     const classes = useStyles();
     const { scene } = useScene();
+    const { t } = useTranslation();
 
     return (
         <Dialog>
             <DialogTrigger>
-                <Tooltip content="Reorder steps" relationship="label" withArrow>
+                <Tooltip content={t('steps.reorder')} relationship="label" withArrow>
                     <Button icon={<ArrowSwapRegular />} disabled={scene.steps.length < 2} appearance="subtle" />
                 </Tooltip>
             </DialogTrigger>
@@ -147,6 +152,7 @@ const ReorderStepsButton: React.FC = () => {
 const ReoderStepsDialogContent: React.FC = () => {
     const classes = useStyles();
     const { scene, dispatch } = useScene();
+    const { t } = useTranslation();
     const [sceneSnapshot] = useState<Scene>(scene);
     const [order, setOrder] = useState<StepOrderItem[]>(scene.steps.map((_, i) => getStepOrderItem(i)));
 
@@ -156,22 +162,20 @@ const ReoderStepsDialogContent: React.FC = () => {
 
     return (
         <>
-            <DialogTitle>Reorder steps</DialogTitle>
+            <DialogTitle>{t('steps.reorder')}</DialogTitle>
             <DialogContent className={classes.dialogContent}>
-                <div>
-                    Drag and drop to reorder steps, then click <strong>Apply</strong> to save your changes.
-                </div>
+                <div>{t('steps.reorderInstructions')}</div>
 
                 <ReorderStepsList scene={sceneSnapshot} order={order} onOrderChange={setOrder} />
             </DialogContent>
             <DialogActions>
                 <DialogTrigger>
                     <Button appearance="primary" onClick={applyOrder}>
-                        Apply
+                        {t('actions.apply')}
                     </Button>
                 </DialogTrigger>
                 <DialogTrigger>
-                    <Button>Cancel</Button>
+                    <Button>{t('actions.cancel')}</Button>
                 </DialogTrigger>
             </DialogActions>
         </>
@@ -268,7 +272,8 @@ const ReorderableStepItem: React.FC<StepItemProps> = ({ scene, step }) => {
 
 const StepItem: React.FC<StepItemProps> = ({ ref, scene, step, className, ...props }) => {
     const classes = useStyles();
-    const stepText = `Step ${getStepText(step.index)}`;
+    const { t } = useTranslation();
+    const stepText = t('steps.step', { n: getStepText(step.index) });
 
     return (
         <div ref={ref} className={mergeClasses(classes.stepItem, className)} {...props}>

@@ -1,4 +1,5 @@
 import { makeStyles } from '@fluentui/react-components';
+import { useTranslation } from 'react-i18next';
 import Konva from 'konva';
 import { NodeConfig } from 'konva/lib/Node';
 import { ShapeConfig } from 'konva/lib/Shape';
@@ -463,7 +464,16 @@ function getTargetNode(object: SceneObject | undefined) {
 const TetherDetails: React.FC<ListComponentProps<Tether>> = ({ object, ...props }) => {
     const classes = useStyles();
     const { scene } = useScene();
-    const name = getTetherName(object.tether);
+    const { t } = useTranslation();
+    const tetherKeyMap: Record<TetherType, string> = {
+        [TetherType.Line]: 'tethers.line',
+        [TetherType.Close]: 'tethers.close',
+        [TetherType.Far]: 'tethers.far',
+        [TetherType.MinusMinus]: 'tethers.minusMinus',
+        [TetherType.PlusMinus]: 'tethers.plusMinus',
+        [TetherType.PlusPlus]: 'tethers.plusPlus',
+    };
+    const name = t(tetherKeyMap[object.tether], { defaultValue: getTetherName(object.tether) });
 
     const startObj = getObjectById(scene, object.startId);
     const endObj = getObjectById(scene, object.endId);

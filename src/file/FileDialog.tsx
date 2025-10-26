@@ -18,6 +18,7 @@ import { FileSystemNotSupportedMessage, OpenFileSystem, SaveFileSystem } from '.
 import { OpenLocalStorage, SaveLocalStorage } from './FileDialogLocalStorage';
 import { ImportFromString } from './FileDialogShare';
 import { supportsFs } from './filesystem';
+import { useTranslation } from 'react-i18next';
 
 type Tabs = 'file' | 'localStorage' | 'import' | 'fileUnsupported';
 
@@ -27,12 +28,13 @@ export const OpenDialog: React.FC<OpenDialogProps> = (props) => {
     const classes = useStyles();
     const [tab, setTab] = useState<Tabs>(supportsFs ? 'file' : 'localStorage');
     const portalNode = createHtmlPortalNode({ attributes: { class: classes.actionsPortal } });
+    const { t } = useTranslation();
 
     return (
         <Dialog {...props}>
             <DialogSurface>
                 <HotkeyBlockingDialogBody>
-                    <DialogTitle>Open file</DialogTitle>
+                    <DialogTitle>{t('file.openDialog.title')}</DialogTitle>
                     <DialogContent className={classes.openContent}>
                         <TabList
                             size="small"
@@ -40,10 +42,10 @@ export const OpenDialog: React.FC<OpenDialogProps> = (props) => {
                             selectedValue={tab}
                             onTabSelect={(ev, data) => setTab(data.value as Tabs)}
                         >
-                            {supportsFs && <Tab value="file">Local file</Tab>}
-                            <Tab value="localStorage">Browser storage</Tab>
-                            <Tab value="import">Import plan link</Tab>
-                            {!supportsFs && <Tab value="fileUnsupported">Local file</Tab>}
+                            {supportsFs && <Tab value="file">{t('file.tabs.localFile')}</Tab>}
+                            <Tab value="localStorage">{t('file.tabs.browserStorage')}</Tab>
+                            <Tab value="import">{t('file.tabs.import')}</Tab>
+                            {!supportsFs && <Tab value="fileUnsupported">{t('file.tabs.localFile')}</Tab>}
                         </TabList>
                         <TabActivity value="file" activeTab={tab}>
                             <OpenFileSystem actions={portalNode} />
@@ -73,12 +75,13 @@ export const SaveAsDialog: React.FC<SaveAsDialogProps> = (props) => {
     const classes = useStyles();
     const [tab, setTab] = useState<Tabs>(supportsFs ? 'file' : 'localStorage');
     const portalNode = createHtmlPortalNode();
+    const { t } = useTranslation();
 
     return (
         <Dialog {...props}>
             <DialogSurface>
                 <HotkeyBlockingDialogBody>
-                    <DialogTitle>Save file</DialogTitle>
+                    <DialogTitle>{t('file.saveDialog.title')}</DialogTitle>
                     <DialogContent className={classes.saveContent}>
                         <TabList
                             size="small"
@@ -86,9 +89,9 @@ export const SaveAsDialog: React.FC<SaveAsDialogProps> = (props) => {
                             selectedValue={tab}
                             onTabSelect={(ev, data) => setTab(data.value as Tabs)}
                         >
-                            {supportsFs && <Tab value="file">Local file</Tab>}
-                            <Tab value="localStorage">Browser storage</Tab>
-                            {!supportsFs && <Tab value="fileUnsupported">Local file</Tab>}
+                            {supportsFs && <Tab value="file">{t('file.tabs.localFile')}</Tab>}
+                            <Tab value="localStorage">{t('file.tabs.browserStorage')}</Tab>
+                            {!supportsFs && <Tab value="fileUnsupported">{t('file.tabs.localFile')}</Tab>}
                         </TabList>
                         <TabActivity value="file" activeTab={tab}>
                             <SaveFileSystem actions={portalNode} />

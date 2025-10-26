@@ -1,6 +1,7 @@
 import Konva from 'konva';
 import { CircleConfig } from 'konva/lib/shapes/Circle';
 import React, { useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Circle, Group } from 'react-konva';
 import { getDragOffset, registerDropHandler } from '../../DropHandler';
 import { useScene } from '../../SceneProvider';
@@ -24,17 +25,16 @@ import { ChevronTail } from './shapes';
 import { getStackCircleProps } from './stackUtil';
 import { getArrowStyle, getZoneStyle } from './style';
 
-const NAME = 'Stack';
-
 const DEFAULT_RADIUS = 75;
 
 export const ZoneStack: React.FC = () => {
     const [, setDragObject] = usePanelDrag();
+    const { t } = useTranslation();
 
     return (
         <PrefabIcon
             draggable
-            name={NAME}
+            name={t('objects.stack', { defaultValue: 'Stack' })}
             icon={<Icon />}
             onDragStart={(e) => {
                 setDragObject({
@@ -161,10 +161,11 @@ const StackContainer: React.FC<RendererProps<StackZone>> = ({ object }) => {
 registerRenderer<StackZone>(ObjectType.Stack, LayerName.Ground, StackContainer);
 
 const StackDetails: React.FC<ListComponentProps<StackZone>> = ({ object, ...props }) => {
+    const { t } = useTranslation();
     return (
         <DetailsItem
             icon={<Icon width="100%" height="100%" style={{ [panelVars.colorZoneOrange]: object.color }} />}
-            name={NAME}
+            name={t('objects.stack', { defaultValue: 'Stack' })}
             object={object}
             {...props}
         />

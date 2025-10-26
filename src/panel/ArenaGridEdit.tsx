@@ -11,6 +11,7 @@ import {
     bundleIcon,
 } from '@fluentui/react-icons';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { DeferredInput } from '../DeferredInput';
 import { InfoField } from '../InfoField';
 import { useScene } from '../SceneProvider';
@@ -82,6 +83,7 @@ export const ArenaGridEdit: React.FC = () => {
     const classes = useControlStyles();
     const { scene, dispatch } = useScene();
     const grid = scene.arena.grid;
+    const { t } = useTranslation();
 
     const setGrid = (grid: Grid, transient = false) => {
         dispatch({ type: 'arenaGrid', value: grid, transient });
@@ -141,22 +143,26 @@ export const ArenaGridEdit: React.FC = () => {
 
     return (
         <div className={classes.column}>
-            <Field label="Grid type">
+            <Field label={t('arena.gridType')}>
                 <SegmentedGroup
                     name="arena-grid"
                     value={grid.type}
                     onChange={(ev, data) => onTypeChange(data.value as GridType)}
                 >
-                    <Segment value={GridType.None} icon={<SquareHintIcon />} title="None" />
-                    <Segment value={GridType.Radial} icon={<CircleIcon />} title="Radial" />
-                    <Segment value={GridType.CustomRadial} icon={<DataPieIcon />} title="Custom radial" />
-                    <Segment value={GridType.Rectangular} icon={<SquareIcon />} title="Rectangular" />
-                    <Segment value={GridType.CustomRectangular} icon={<GridIcon />} title="Custom rectangular" />
+                    <Segment value={GridType.None} icon={<SquareHintIcon />} title={t('arena.none')} />
+                    <Segment value={GridType.Radial} icon={<CircleIcon />} title={t('arena.radial')} />
+                    <Segment value={GridType.CustomRadial} icon={<DataPieIcon />} title={t('arena.customRadial')} />
+                    <Segment value={GridType.Rectangular} icon={<SquareIcon />} title={t('arena.rectangular')} />
+                    <Segment
+                        value={GridType.CustomRectangular}
+                        icon={<GridIcon />}
+                        title={t('arena.customRectangular')}
+                    />
                 </SegmentedGroup>
             </Field>
             {grid.type === GridType.Rectangular && (
                 <div className={classes.row}>
-                    <Field label="Columns">
+                    <Field label={t('arena.columns')}>
                         <SpinButton
                             min={1}
                             max={100}
@@ -169,7 +175,7 @@ export const ArenaGridEdit: React.FC = () => {
                             }}
                         />
                     </Field>
-                    <Field label="Rows">
+                    <Field label={t('arena.rows')}>
                         <SpinButton
                             min={1}
                             max={100}
@@ -187,7 +193,7 @@ export const ArenaGridEdit: React.FC = () => {
             {grid.type === GridType.Radial && (
                 <>
                     <div className={classes.row}>
-                        <Field label="Spokes">
+                        <Field label={t('arena.spokes')}>
                             <SpinButton
                                 min={1}
                                 max={360}
@@ -200,7 +206,7 @@ export const ArenaGridEdit: React.FC = () => {
                                 }}
                             />
                         </Field>
-                        <Field label="Rings">
+                        <Field label={t('arena.rings')}>
                             <SpinButton
                                 min={1}
                                 max={100}
@@ -214,7 +220,7 @@ export const ArenaGridEdit: React.FC = () => {
                             />
                         </Field>
 
-                        <Field label="Rotation">
+                        <Field label={t('arena.rotation')}>
                             <SpinButtonUnits
                                 min={-180}
                                 max={180}
@@ -234,7 +240,7 @@ export const ArenaGridEdit: React.FC = () => {
             )}
             {grid.type === GridType.CustomRectangular && (
                 <>
-                    <InfoField label="Row stops" info="Enter a space-separated list of Y coordinates for grid lines.">
+                    <InfoField label={t('arena.rowStops')} info={t('arena.rowStopsInfo')}>
                         <DeferredInput
                             value={customRows}
                             onChange={(ev, data) => {
@@ -244,10 +250,7 @@ export const ArenaGridEdit: React.FC = () => {
                             onCommit={commit}
                         />
                     </InfoField>
-                    <InfoField
-                        label="Column stops"
-                        info="Enter a space-separated list of X coordinates for grid lines."
-                    >
+                    <InfoField label={t('arena.columnStops')} info={t('arena.columnStopsInfo')}>
                         <DeferredInput
                             value={customCols}
                             onChange={(ev, data) => {
@@ -261,7 +264,7 @@ export const ArenaGridEdit: React.FC = () => {
             )}
             {grid.type === GridType.CustomRadial && (
                 <>
-                    <InfoField label="Ring stops" info="Enter a space-separated list of radii for grid rings.">
+                    <InfoField label={t('arena.ringStops')} info={t('arena.ringStopsInfo')}>
                         <DeferredInput
                             value={customRings}
                             onChange={(ev, data) => {
@@ -271,10 +274,7 @@ export const ArenaGridEdit: React.FC = () => {
                             onCommit={commit}
                         />
                     </InfoField>
-                    <InfoField
-                        label="Spoke angles"
-                        info="Enter a space-separated list of angles in degrees for grid spokes."
-                    >
+                    <InfoField label={t('arena.spokeAngles')} info={t('arena.spokeAnglesInfo')}>
                         <DeferredInput
                             value={customSpokes}
                             onChange={(ev, data) => {

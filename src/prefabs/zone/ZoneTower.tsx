@@ -16,6 +16,7 @@ import { RadiusObjectContainer } from '../RadiusObjectContainer';
 import { useHighlightProps } from '../highlight';
 import { getStackCircleProps, STACK_CIRCLE_INSET } from './stackUtil';
 import { getZoneStyle } from './style';
+import { useTranslation } from 'react-i18next';
 
 const DEFAULT_COLOR = '#bae3ff';
 const DEFAULT_RADIUS = 40;
@@ -23,11 +24,12 @@ const DEFAULT_COUNT = 1;
 
 export const ZoneTower: React.FC = () => {
     const [, setDragObject] = usePanelDrag();
+    const { t } = useTranslation();
 
     return (
         <PrefabIcon
             draggable
-            name="Meteor/tower"
+            name={t('objects.meteorTower', { defaultValue: 'Meteor/tower' })}
             icon={<Icon />}
             onDragStart={(e) => {
                 setDragObject({
@@ -107,10 +109,11 @@ const TowerContainer: React.FC<RendererProps<TowerZone>> = ({ object }) => {
 registerRenderer<TowerZone>(ObjectType.Tower, LayerName.Ground, TowerContainer);
 
 const TowerDetails: React.FC<ListComponentProps<TowerZone>> = ({ object, ...props }) => {
+    const { t } = useTranslation();
     return (
         <DetailsItem
             icon={<Icon width="100%" height="100%" style={{ [panelVars.colorZoneOrange]: object.color }} />}
-            name="Meteor/tower"
+            name={t('objects.meteorTower', { defaultValue: 'Meteor/tower' })}
             object={object}
             {...props}
         />

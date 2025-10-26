@@ -10,6 +10,7 @@ import { DownloadButton } from './DownloadButton';
 import { FileBrowser } from './FileBrowser';
 import { useConfirmUnsavedChanges } from './confirm';
 import { addRecentFile, getFileSource, showSavePlanPicker } from './filesystem';
+import { Trans, useTranslation } from 'react-i18next';
 
 export interface OpenFileSystemProps {
     actions: HtmlPortalNode;
@@ -21,6 +22,7 @@ export const OpenFileSystem: React.FC<OpenFileSystemProps> = ({ actions }) => {
     const dismissDialog = useCloseDialog();
     const [confirmUnsavedChanges, renderModal] = useConfirmUnsavedChanges();
     const [selectedFile, setSelectedFile] = useState<FileSystemFileHandle>();
+    const { t } = useTranslation();
 
     const loadSceneFromFile = async (handle: FileSystemFileHandle) => {
         if (isDirty && !(await confirmUnsavedChanges())) {
@@ -45,10 +47,10 @@ export const OpenFileSystem: React.FC<OpenFileSystemProps> = ({ actions }) => {
                         disabled={!selectedFile}
                         onClick={() => selectedFile && loadSceneFromFile(selectedFile)}
                     >
-                        Open
+                        {t('file.dialog.buttons.open')}
                     </Button>
                     <DialogTrigger>
-                        <Button>Cancel</Button>
+                        <Button>{t('actions.cancel')}</Button>
                     </DialogTrigger>
                 </DialogActions>
             </InPortal>
@@ -65,6 +67,7 @@ export const SaveFileSystem: React.FC<SaveFileSystemProps> = ({ actions }) => {
     const dismissDialog = useCloseDialog();
     const setSource = useSetSource();
     const { canonicalScene, source } = useScene();
+    const { t } = useTranslation();
 
     const currentName = source?.name;
 
@@ -86,15 +89,15 @@ export const SaveFileSystem: React.FC<SaveFileSystemProps> = ({ actions }) => {
     return (
         <>
             <div>
-                <p>Click &quot;Save as&quot; below to save the plan to your computer.</p>
+                <p>{t('file.saveDialog.fsSaveDescription')}</p>
             </div>
             <InPortal node={actions}>
                 <DialogActions>
                     <Button appearance="primary" onClick={save}>
-                        Save as
+                        {t('file.dialog.buttons.saveAs')}
                     </Button>
                     <DialogTrigger>
-                        <Button>Cancel</Button>
+                        <Button>{t('actions.cancel')}</Button>
                     </DialogTrigger>
                 </DialogActions>
             </InPortal>
@@ -108,24 +111,33 @@ export interface FileSystemNotSupportedMessageProps {
 }
 
 export const FileSystemNotSupportedMessage: React.FC<FileSystemNotSupportedMessageProps> = ({ actions, download }) => {
+    const { t } = useTranslation();
     return (
         <>
             <div>
                 <p>
-                    Your browser does not support the experimental File System API. You can download the plan as an{' '}
-                    <strong>.xivplancn</strong> file, then drag and drop it onto the page to open it again.
+                    <Trans
+                        i18nKey="file.fsNotSupported.message1"
+                        components={{
+                            ext: <strong />,
+                        }}
+                    />
                 </p>
                 <p>
-                    To save files locally, use a Chromium-based browser such as{' '}
-                    <ExternalLink href="https://www.microsoft.com/edge">Edge</ExternalLink> or{' '}
-                    <ExternalLink href="https://www.google.com/chrome/">Chrome</ExternalLink>.
+                    <Trans
+                        i18nKey="file.fsNotSupported.message2"
+                        components={{
+                            edge: <ExternalLink href="https://www.microsoft.com/edge" />,
+                            chrome: <ExternalLink href="https://www.google.com/chrome/" />,
+                        }}
+                    />
                 </p>
             </div>
             <InPortal node={actions}>
                 <DialogActions>
                     {download && <DownloadButton appearance="primary" />}
                     <DialogTrigger>
-                        <Button>Cancel</Button>
+                        <Button>{t('actions.cancel')}</Button>
                     </DialogTrigger>
                 </DialogActions>
             </InPortal>

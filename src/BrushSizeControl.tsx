@@ -1,5 +1,6 @@
 import { Field, makeStyles, mergeClasses, SpinButtonProps, tokens } from '@fluentui/react-components';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { SpinButton } from './SpinButton';
 import { sceneTokens } from './theme';
 import { useControlStyles } from './useControlStyles';
@@ -14,13 +15,14 @@ export interface BrushSizeControlProps extends SpinButtonProps {
 export const BrushSizeControl: React.FC<BrushSizeControlProps> = ({ color, opacity, value, ...props }) => {
     const classes = useStyles();
     const controlClasses = useControlStyles();
+    const { t } = useTranslation();
 
     const size = value ?? 0;
     const pos = Math.max(BOX_SIZE / 2, size / 2);
 
     return (
         <div className={mergeClasses(controlClasses.row, controlClasses.rightGap)}>
-            <Field label="Brush size" className={controlClasses.cell}>
+            <Field label={t('draw.brushSize')} className={controlClasses.cell}>
                 <SpinButton value={value} min={2} step={2} {...props} />
             </Field>
 

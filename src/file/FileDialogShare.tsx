@@ -15,6 +15,7 @@ import { useCloseDialog } from '../useCloseDialog';
 import { useIsDirty } from '../useIsDirty';
 import { useConfirmUnsavedChanges } from './confirm';
 import { parseSceneLink } from './share';
+import { useTranslation } from 'react-i18next';
 
 export interface ImportFromStringProps {
     actions: HtmlPortalNode;
@@ -24,6 +25,7 @@ export const ImportFromString: React.FC<ImportFromStringProps> = ({ actions }) =
     const isDirty = useIsDirty();
     const loadScene = useLoadScene();
     const dismissDialog = useCloseDialog();
+    const { t } = useTranslation();
 
     const [confirmUnsavedChanges, renderModal] = useConfirmUnsavedChanges();
     const [data, setData] = useState<string | undefined>('');
@@ -42,7 +44,7 @@ export const ImportFromString: React.FC<ImportFromStringProps> = ({ actions }) =
 
         const scene = decodeScene(data);
         if (!scene) {
-            setError('Invalid link');
+            setError(t('share.invalidLink'));
             return;
         }
 
@@ -64,7 +66,11 @@ export const ImportFromString: React.FC<ImportFromStringProps> = ({ actions }) =
 
     return (
         <>
-            <Field label="Enter plan link" validationState={error ? 'error' : 'none'} validationMessage={error}>
+            <Field
+                label={t('share.enterLinkLabel')}
+                validationState={error ? 'error' : 'none'}
+                validationMessage={error}
+            >
                 <Textarea rows={4} onChange={onChange} onKeyUp={onKeyUp} />
             </Field>
 
@@ -73,10 +79,10 @@ export const ImportFromString: React.FC<ImportFromStringProps> = ({ actions }) =
             <InPortal node={actions}>
                 <DialogActions>
                     <Button appearance="primary" disabled={!data} onClick={importLink}>
-                        Import
+                        {t('share.import')}
                     </Button>
                     <DialogTrigger>
-                        <Button>Cancel</Button>
+                        <Button>{t('actions.cancel')}</Button>
                     </DialogTrigger>
                 </DialogActions>
             </InPortal>
