@@ -4,9 +4,11 @@ import React from 'react';
 import { useAsyncFn } from 'react-use';
 import { downloadBlob } from './blob';
 import { exportLocalStorageFiles } from './localStorage';
+import { useTranslation } from 'react-i18next';
 
 export const DownloadLocalStorageButton: React.FC<ButtonProps> = ({ ...props }) => {
     const classes = useStyles();
+    const { t } = useTranslation();
 
     const [state, download] = useAsyncFn(async () => {
         const blob = await exportLocalStorageFiles();
@@ -21,7 +23,7 @@ export const DownloadLocalStorageButton: React.FC<ButtonProps> = ({ ...props }) 
             disabled={state.loading}
             {...props}
         >
-            Download all
+            {t('file.localStorage.downloadAll')}
         </Button>
     );
 };

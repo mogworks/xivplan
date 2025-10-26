@@ -1,5 +1,6 @@
 import Konva from 'konva';
 import React, { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Group, Rect } from 'react-konva';
 import { getDragOffset, registerDropHandler } from '../../DropHandler';
 import Icon from '../../assets/zone/line_stack.svg?react';
@@ -17,18 +18,17 @@ import { useHighlightProps } from '../highlight';
 import { ChevronConfig, ChevronTail } from './shapes';
 import { getArrowStyle } from './style';
 
-const NAME = 'Line stack';
-
 const DEFAULT_WIDTH = 100;
 const DEFAULT_HEIGHT = 150;
 
 export const ZoneLineStack: React.FC = () => {
     const [, setDragObject] = usePanelDrag();
+    const { t } = useTranslation();
 
     return (
         <PrefabIcon
             draggable
-            name={NAME}
+            name={t('objects.lineStack', { defaultValue: 'Line stack' })}
             icon={<Icon />}
             onDragStart={(e) => {
                 setDragObject({
@@ -141,10 +141,11 @@ const LineStackRenderer: React.FC<RendererProps<RectangleZone>> = ({ object }) =
 registerRenderer<RectangleZone>(ObjectType.LineStack, LayerName.Ground, LineStackRenderer);
 
 const LineStackDetails: React.FC<ListComponentProps<RectangleZone>> = ({ object, ...props }) => {
+    const { t } = useTranslation();
     return (
         <DetailsItem
             icon={<Icon width="100%" height="100%" style={{ [panelVars.colorZoneOrange]: object.color }} />}
-            name={NAME}
+            name={t('objects.lineStack', { defaultValue: 'Line stack' })}
             object={object}
             {...props}
         />

@@ -16,16 +16,18 @@ import { ResizeableObjectContainer } from '../ResizeableObjectContainer';
 import { useHighlightProps } from '../highlight';
 import { ChevronTail } from './shapes';
 import { getArrowStyle, getZoneStyle } from './style';
+import { useTranslation } from 'react-i18next';
 
 const DEFAULT_SIZE = 150;
 
 export const ZoneLineKnockback: React.FC = () => {
     const [, setDragObject] = usePanelDrag();
+    const { t } = useTranslation();
 
     return (
         <PrefabIcon
             draggable
-            name="Line knockback"
+            name={t('objects.lineKnockback', { defaultValue: 'Line knockback' })}
             icon={<Icon />}
             onDragStart={(e) => {
                 setDragObject({
@@ -140,10 +142,11 @@ const LineKnockbackRenderer: React.FC<RendererProps<RectangleZone>> = ({ object 
 registerRenderer<RectangleZone>(ObjectType.LineKnockback, LayerName.Ground, LineKnockbackRenderer);
 
 const LineKnockbackDetails: React.FC<ListComponentProps<RectangleZone>> = ({ object, ...props }) => {
+    const { t } = useTranslation();
     return (
         <DetailsItem
             icon={<Icon width="100%" height="100%" style={{ [panelVars.colorZoneOrange]: object.color }} />}
-            name="Line knockback"
+            name={t('objects.lineKnockback', { defaultValue: 'Line knockback' })}
             object={object}
             {...props}
         />

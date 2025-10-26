@@ -137,7 +137,10 @@ export interface ArenaPreset extends Arena {
 }
 
 export interface NamedObject {
-    readonly name: string;
+    // Optional user-defined name. If provided, it takes precedence over translated name.
+    readonly name?: string;
+    // Optional translation key for dynamic localization (old data may not have it).
+    readonly defaultNameKey?: string;
 }
 
 export interface ColoredObject {
@@ -397,7 +400,9 @@ export const isDrawObject = makeObjectTest<DrawObject>(ObjectType.Draw);
 
 export function isNamed<T>(object: T): object is NamedObject & T {
     const obj = object as NamedObject & T;
-    return obj && typeof obj.name === 'string';
+    // Show NameControl if the object supports naming: either a user-defined name exists
+    // or a defaultNameKey is present (new plans). Use property existence check instead of typeof string.
+    return !!obj && ('name' in obj || 'defaultNameKey' in obj);
 }
 
 export function isColored<T>(object: T): object is ColoredObject & T {

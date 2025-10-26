@@ -15,6 +15,7 @@ import {
     bundleIcon,
 } from '@fluentui/react-icons';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { BrushSizeControl } from '../BrushSizeControl';
 import { CompactColorPicker, CompactColorPickerProps } from '../CompactColorPicker';
 import { CompactSwatchColorPicker } from '../CompactSwatchColorPicker';
@@ -39,6 +40,7 @@ export const DrawPanel: React.FC = () => {
     const colorSwatches = useColorSwatches();
     const [editMode, setEditMode] = useEditMode();
     const [config, setConfig] = useDrawConfig();
+    const { t } = useTranslation();
 
     const setColor: CompactColorPickerProps['onChange'] = (data) => setConfig({ ...config, color: data.value });
 
@@ -69,23 +71,32 @@ export const DrawPanel: React.FC = () => {
 
     return (
         <div className={mergeClasses(controlClasses.panel, controlClasses.column)}>
-            <Field label="Tool">
+            <Field label={t('draw.tool')}>
                 <div className={classes.wrapper}>
                     <ToggleButton size="large" icon={<CursorClick />} {...getToolButtonProps(EditMode.Normal)}>
-                        Edit
+                        {t('draw.edit')}
                     </ToggleButton>
                     <ToggleButton size="large" icon={<DrawImage />} {...getToolButtonProps(EditMode.Draw)}>
-                        Draw
+                        {t('draw.draw')}
                     </ToggleButton>
                 </div>
             </Field>
-            <CompactColorPicker label="Color" placeholder="Brush color" color={config.color} onChange={setColor} />
+            <CompactColorPicker
+                label={t('draw.color')}
+                placeholder={t('draw.brushColor')}
+                color={config.color}
+                onChange={setColor}
+            />
             <CompactSwatchColorPicker
                 swatches={colorSwatches}
                 selectedValue={config.color}
                 onSelectionChange={(ev, data) => setColor({ value: data.selectedSwatch, transient: false })}
             />
-            <OpacitySlider value={config.opacity} onChange={(ev, data) => setOpacity(data.value)} />
+            <OpacitySlider
+                label={t('draw.opacity')}
+                value={config.opacity}
+                onChange={(ev, data) => setOpacity(data.value)}
+            />
             <BrushSizeControl
                 value={config.brushSize}
                 color={config.color}

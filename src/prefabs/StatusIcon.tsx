@@ -4,6 +4,7 @@ import { Group, Image as KonvaImage, Rect, Text } from 'react-konva';
 import useImage from 'use-image';
 import { getDragOffset, registerDropHandler } from '../DropHandler';
 import { DetailsItem } from '../panel/DetailsItem';
+import { useTranslation } from 'react-i18next';
 import { ListComponentProps, registerListComponent } from '../panel/ListComponentRegistry';
 import { RendererProps, registerRenderer } from '../render/ObjectRegistry';
 import { LayerName } from '../render/layers';
@@ -116,20 +117,23 @@ const IconRenderer: React.FC<RendererProps<IconObject>> = ({ object }) => {
 registerRenderer<IconObject>(ObjectType.Icon, LayerName.Default, IconRenderer);
 
 const IconDetails: React.FC<ListComponentProps<IconObject>> = ({ object, ...props }) => {
-    return <DetailsItem icon={object.image} name={object.name} object={object} {...props} />;
+    const { t } = useTranslation();
+    const name = object.name ?? (object.defaultNameKey ? t(object.defaultNameKey) : '');
+    return <DetailsItem icon={object.image} name={name} object={object} {...props} />;
 };
 
 registerListComponent<IconObject>(ObjectType.Icon, IconDetails);
 
 export interface StatusIconProps {
     name: string;
+    defaultNameKey?: string;
     icon: string;
     iconId?: number;
     maxStacks?: number;
     scale?: number;
 }
 
-export const StatusIcon: React.FC<StatusIconProps> = ({ name, icon, iconId, maxStacks, scale }) => {
+export const StatusIcon: React.FC<StatusIconProps> = ({ name, defaultNameKey, icon, iconId, maxStacks, scale }) => {
     const [, setDragObject] = usePanelDrag();
     const [image] = useImage(icon);
 
@@ -156,7 +160,7 @@ export const StatusIcon: React.FC<StatusIconProps> = ({ name, icon, iconId, maxS
                     object: {
                         type: ObjectType.Icon,
                         image: icon,
-                        name,
+                        defaultNameKey,
                         width,
                         height,
                         iconId,

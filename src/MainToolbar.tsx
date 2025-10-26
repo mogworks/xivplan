@@ -72,25 +72,25 @@ export const MainToolbar: React.FC = () => {
 
             <InPortal node={toolbarNode}>
                 <Toolbar className={classes.toolbar}>
-                    {/* <CollapsableToolbarButton icon={<NewRegular />}>New</CollapsableToolbarButton> */}
+                    {/* <CollapsableToolbarButton icon={<NewRegular />}>{t('toolbar.new')}</CollapsableToolbarButton> */}
                     <CollapsableToolbarButton icon={<OpenRegular />} onClick={() => setOpenFileOpen(true)}>
-                        Open
+                        {t('toolbar.open')}
                     </CollapsableToolbarButton>
 
                     <SaveButton />
 
                     <CollapsableToolbarButton icon={<ArrowUndoRegular />} onClick={undo} disabled={!undoPossible}>
-                        Undo
+                        {t('toolbar.undo')}
                     </CollapsableToolbarButton>
                     <CollapsableToolbarButton icon={<ArrowRedoRegular />} onClick={redo} disabled={!redoPossible}>
-                        Redo
+                        {t('toolbar.redo')}
                     </CollapsableToolbarButton>
 
                     <ToolbarDivider />
 
-                    <ShareDialogButton>Share</ShareDialogButton>
+                    <ShareDialogButton>{t('toolbar.share')}</ShareDialogButton>
 
-                    <StepScreenshotButton>Screenshot</StepScreenshotButton>
+                    <StepScreenshotButton>{t('toolbar.screenshot')}</StepScreenshotButton>
                 </Toolbar>
             </InPortal>
         </>
@@ -104,16 +104,20 @@ interface SaveButtonState {
     disabled?: boolean;
 }
 
-function getSaveButtonState(source: FileSource | undefined, isDirty: boolean): SaveButtonState {
+function getSaveButtonState(
+    source: FileSource | undefined,
+    isDirty: boolean,
+    t: (key: string) => string,
+): SaveButtonState {
     if (!source) {
-        return { type: 'saveas', text: 'Save as', icon: <SaveEditRegular /> };
+        return { type: 'saveas', text: t('toolbar.saveAs'), icon: <SaveEditRegular /> };
     }
 
     if (source.type === 'blob') {
-        return { type: 'download', text: 'Download', icon: <ArrowDownloadRegular /> };
+        return { type: 'download', text: t('toolbar.download'), icon: <ArrowDownloadRegular /> };
     }
 
-    return { type: 'save', text: 'Save', icon: <SaveRegular />, disabled: !isDirty };
+    return { type: 'save', text: t('toolbar.save'), icon: <SaveRegular />, disabled: !isDirty };
 }
 
 const SaveButton: React.FC = () => {
@@ -124,7 +128,7 @@ const SaveButton: React.FC = () => {
     const { canonicalScene, source } = useScene();
     const setSource = useSetSource();
 
-    const { type, text, icon, disabled } = getSaveButtonState(source, isDirty);
+    const { type, text, icon, disabled } = getSaveButtonState(source, isDirty, t);
 
     const save = async () => {
         if (!source) {
@@ -196,12 +200,12 @@ const SaveButton: React.FC = () => {
                     <MenuList>
                         {type !== 'saveas' && (
                             <MenuItem icon={<SaveEditRegular />} onClick={() => setSaveAsOpen(true)}>
-                                Save as...
+                                {t('toolbar.saveAsEllipsis')}
                             </MenuItem>
                         )}
                         {type !== 'download' && (
                             <MenuItem icon={<ArrowDownloadRegular />} onClick={download}>
-                                Download
+                                {t('toolbar.download')}
                             </MenuItem>
                         )}
                     </MenuList>

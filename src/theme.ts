@@ -1,4 +1,5 @@
 import { ColorSwatchProps, Theme, webDarkTheme, webLightTheme } from '@fluentui/react-components';
+import { useTranslation } from 'react-i18next';
 import { ShapeConfig } from 'konva/lib/Shape';
 import { CSSProperties, useContext } from 'react';
 import { DarkModeContext } from './ThemeContext';
@@ -186,25 +187,26 @@ export function makeColorSwatch(color: string, label: string): ColorSwatchProps 
 }
 
 export function useColorSwatches(): ColorSwatchProps[] {
+    const { t } = useTranslation();
     const theme = useSceneTheme();
 
     return [
-        makeColorSwatch(COLOR_RED, 'red'),
-        makeColorSwatch(COLOR_ORANGE, 'orange'),
-        makeColorSwatch(COLOR_YELLOW, 'yellow'),
-        makeColorSwatch(COLOR_GREEN, 'green'),
-        makeColorSwatch(COLOR_CYAN, 'cyan'),
-        makeColorSwatch(COLOR_BLUE, 'blue'),
-        makeColorSwatch(COLOR_VIOLET, 'violet'),
-        makeColorSwatch(COLOR_PINK, 'pink'),
-        makeColorSwatch(COLOR_FUSCHIA, 'fuschia'),
-        makeColorSwatch(COLOR_BLUE_WHITE, 'blueish-white'),
-        makeColorSwatch(COLOR_DARK_PURPLE, 'dark-purple'),
-        makeColorSwatch(COLOR_WHITE, 'white'),
-        makeColorSwatch(COLOR_BLACK, 'black'),
-        makeColorSwatch(theme.colorGrid, 'grid'),
-        makeColorSwatch(theme.colorArena, 'arena'),
-        makeColorSwatch(theme.colorBackground, 'background'),
+        makeColorSwatch(COLOR_RED, t('colors.red')),
+        makeColorSwatch(COLOR_ORANGE, t('colors.orange')),
+        makeColorSwatch(COLOR_YELLOW, t('colors.yellow')),
+        makeColorSwatch(COLOR_GREEN, t('colors.green')),
+        makeColorSwatch(COLOR_CYAN, t('colors.cyan')),
+        makeColorSwatch(COLOR_BLUE, t('colors.blue')),
+        makeColorSwatch(COLOR_VIOLET, t('colors.violet')),
+        makeColorSwatch(COLOR_PINK, t('colors.pink')),
+        makeColorSwatch(COLOR_FUSCHIA, t('colors.fuschia')),
+        makeColorSwatch(COLOR_BLUE_WHITE, t('colors.blueish-white')),
+        makeColorSwatch(COLOR_DARK_PURPLE, t('colors.dark-purple')),
+        makeColorSwatch(COLOR_WHITE, t('colors.white')),
+        makeColorSwatch(COLOR_BLACK, t('colors.black')),
+        makeColorSwatch(theme.colorGrid, t('colors.grid')),
+        makeColorSwatch(theme.colorArena, t('colors.arena')),
+        makeColorSwatch(theme.colorBackground, t('colors.background')),
     ];
 }
 

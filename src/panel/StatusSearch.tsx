@@ -10,6 +10,7 @@ import {
     useToastController,
 } from '@fluentui/react-components';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAsync, useDebounce, useLocalStorage } from 'react-use';
 import { MessageToast } from '../MessageToast';
 import { PANEL_PADDING } from './PanelStyles';
@@ -56,6 +57,7 @@ export const StatusSearch: React.FC = () => {
     const [debouncedFilter, setDebouncedFilter] = useState('');
     const [language, setLanguage] = useLocalStorage<Language>('language', 'en');
     const { dispatchToast } = useToastController();
+    const { t } = useTranslation();
 
     const [filter, setFilter] = useState('');
 
@@ -78,7 +80,7 @@ export const StatusSearch: React.FC = () => {
             return fetchStatuses(debouncedFilter, controller.signal, language);
         } catch (ex) {
             console.warn(ex);
-            dispatchToast(<MessageToast title="Error" message={ex} />, { intent: 'error' });
+            dispatchToast(<MessageToast title={t('statusSearch.error')} message={ex} />, { intent: 'error' });
             return [];
         }
     }, [debouncedFilter, language, dispatchToast]);
@@ -87,7 +89,7 @@ export const StatusSearch: React.FC = () => {
         // TODO: replace with tabster? https://tabster.io/docs/mover
         // <FocusZone direction={FocusZoneDirection.vertical}>
         <div className={classes.statusSearch}>
-            <Field label="Language">
+            <Field label={t('statusSearch.languageLabel')}>
                 <Dropdown
                     appearance="underline"
                     value={LANGUAGE_OPTIONS[language ?? 'en']}
@@ -105,7 +107,7 @@ export const StatusSearch: React.FC = () => {
                 className={classes.search}
                 appearance="underline"
                 type="text"
-                placeholder="Status name"
+                placeholder={t('statusSearch.statusNamePlaceholder')}
                 value={filter}
                 onChange={(ev, data) => handleFilterChanged(data.value)}
             />
@@ -116,7 +118,7 @@ export const StatusSearch: React.FC = () => {
                 <StatusGrid items={items.value} columns={6} className={classes.list} />
             )}
 
-            {!items.loading && debouncedFilter && items.value?.length === 0 && <p>No results.</p>}
+            {!items.loading && debouncedFilter && items.value?.length === 0 && <p>{t('statusSearch.noResults')}</p>}
         </div>
     );
 };

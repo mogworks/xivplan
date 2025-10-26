@@ -7,6 +7,7 @@ import { getBlobSource } from './file/blob';
 import { useConfirmUnsavedChanges } from './file/confirm';
 import { getFileSource } from './file/filesystem';
 import { useIsDirty } from './useIsDirty';
+import { useTranslation } from 'react-i18next';
 
 export function useFileLoader() {
     const loadScene = useLoadScene();
@@ -27,6 +28,7 @@ export function useFileLoaderDropTarget() {
     const isDirty = useIsDirty();
     const { dispatchToast } = useToastController();
     const [confirmUnsavedChanges, renderModal] = useConfirmUnsavedChanges();
+    const { t } = useTranslation();
 
     const onDragOver: React.DragEventHandler = (ev) => {
         ev.preventDefault();
@@ -46,12 +48,18 @@ export function useFileLoaderDropTarget() {
             try {
                 await loadFile(file);
             } catch (ex: unknown) {
-                dispatchToast(<MessageToast title="Error" message={ex} />, { intent: 'error' });
+                dispatchToast(<MessageToast title={t('toasts.error')} message={ex} />, { intent: 'error' });
             }
         } else {
-            dispatchToast(<MessageToast title="Unsupported file" message={`Cannot open file "${file.name}"`} />, {
-                intent: 'info',
-            });
+            dispatchToast(
+                <MessageToast
+                    title={t('toasts.unsupportedFileTitle')}
+                    message={t('toasts.cannotOpenFile', { name: file.name })}
+                />,
+                {
+                    intent: 'info',
+                },
+            );
         }
     };
 

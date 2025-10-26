@@ -1,5 +1,6 @@
 import { Field } from '@fluentui/react-components';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { useScene } from '../../SceneProvider';
 import { Segment, SegmentedGroup } from '../../Segmented';
 import { StackCountObject } from '../../scene';
@@ -12,6 +13,7 @@ const STACK_VALUES = [1, 2, 3, 4];
 export const StackCountControl: React.FC<PropertiesControlProps<StackCountObject>> = ({ objects }) => {
     const classes = useControlStyles();
     const { dispatch } = useScene();
+    const { t } = useTranslation();
 
     const count = commonValue(objects, (obj) => obj.count);
 
@@ -20,7 +22,7 @@ export const StackCountControl: React.FC<PropertiesControlProps<StackCountObject
     };
 
     return (
-        <Field label="Player count" className={classes.cell}>
+        <Field label={t('properties.playerCount')} className={classes.cell}>
             <SegmentedGroup
                 name="player-count"
                 value={String(count)}
@@ -32,7 +34,7 @@ export const StackCountControl: React.FC<PropertiesControlProps<StackCountObject
                         value={i.toString()}
                         icon={i.toString()}
                         size="mediumText"
-                        title={getItemTitle(i)}
+                        title={getItemTitle(i, t)}
                     />
                 ))}
             </SegmentedGroup>
@@ -40,10 +42,17 @@ export const StackCountControl: React.FC<PropertiesControlProps<StackCountObject
     );
 };
 
-const NUMBERS = ['One', 'Two', 'Three', 'Four'];
-
-function getItemTitle(count: number) {
-    const number = NUMBERS[count - 1] ?? '';
-
-    return `${number} Player${count == 1 ? 's' : ''}`;
+function getItemTitle(count: number, t: (key: string) => string) {
+    switch (count) {
+        case 1:
+            return t('properties.onePlayer');
+        case 2:
+            return t('properties.twoPlayers');
+        case 3:
+            return t('properties.threePlayers');
+        case 4:
+            return t('properties.fourPlayers');
+        default:
+            return `${count}`;
+    }
 }

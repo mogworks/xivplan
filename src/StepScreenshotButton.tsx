@@ -56,7 +56,7 @@ export const StepScreenshotButton: React.FC<StepScreenshotButtonProps> = (props)
         setTakingScreenshot(false);
 
         if (error) {
-            dispatchToast(<MessageToast title="Error" message={error} />, { intent: 'error' });
+            dispatchToast(<MessageToast title={t('toasts.error')} message={error} />, { intent: 'error' });
         } else {
             dispatchToast(<ScreenshotSuccessToast />, { intent: 'success', timeout: 2000 });
         }
@@ -69,7 +69,9 @@ export const StepScreenshotButton: React.FC<StepScreenshotButtonProps> = (props)
         }
 
         setTakingScreenshot(false);
-        dispatchToast(<MessageToast title="Error" message="Screenshot timed out" />, { intent: 'error' });
+        dispatchToast(<MessageToast title={t('toasts.error')} message={t('toasts.screenshotTimeout')} />, {
+            intent: 'error',
+        });
     };
 
     const [, , startTimeout] = useTimeoutFn(handleTimeout, SCREENSHOT_TIMEOUT);
@@ -110,15 +112,15 @@ export const StepScreenshotButton: React.FC<StepScreenshotButtonProps> = (props)
                 <MenuPopover>
                     <MenuList>
                         <MenuGroup>
-                            <MenuGroupHeader>Screenshot scale</MenuGroupHeader>
+                            <MenuGroupHeader>{t('screenshot.scaleHeader')}</MenuGroupHeader>
                             <MenuItemRadio name="scale" value="1">
-                                1X
+                                {t('screenshot.scale1x')}
                             </MenuItemRadio>
                             <MenuItemRadio name="scale" value="2">
-                                2X
+                                {t('screenshot.scale2x')}
                             </MenuItemRadio>
                             <MenuItemRadio name="scale" value="4">
-                                4X
+                                {t('screenshot.scale4x')}
                             </MenuItemRadio>
                         </MenuGroup>
                     </MenuList>
@@ -136,9 +138,10 @@ export const StepScreenshotButton: React.FC<StepScreenshotButtonProps> = (props)
 };
 
 const ScreenshotSuccessToast = () => {
+    const { t } = useTranslation();
     return (
         <Toast>
-            <ToastTitle action={<ToastDismissButton />}>Screenshot copied to clipboard</ToastTitle>
+            <ToastTitle action={<ToastDismissButton />}>{t('toasts.screenshotCopied')}</ToastTitle>
         </Toast>
     );
 };

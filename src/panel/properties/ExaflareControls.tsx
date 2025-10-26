@@ -1,5 +1,6 @@
 import { Field } from '@fluentui/react-components';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { useScene } from '../../SceneProvider';
 import { SpinButton } from '../../SpinButton';
 import { SpinButtonUnits } from '../../SpinButtonUnits';
@@ -18,6 +19,7 @@ import { PropertiesControlProps } from '../PropertiesControl';
 export const ExaflareLengthControl: React.FC<PropertiesControlProps<ExaflareZone>> = ({ objects }) => {
     const classes = useControlStyles();
     const { dispatch } = useScene();
+    const { t } = useTranslation();
 
     const length = commonValue(objects, (obj) => obj.length);
 
@@ -26,7 +28,7 @@ export const ExaflareLengthControl: React.FC<PropertiesControlProps<ExaflareZone
     );
 
     return (
-        <Field label="Length" className={classes.cell}>
+        <Field label={t('properties.length')} className={classes.cell}>
             <SpinButton
                 value={length}
                 onChange={onLengthChanged}
@@ -41,6 +43,7 @@ export const ExaflareLengthControl: React.FC<PropertiesControlProps<ExaflareZone
 export const ExaflareSpacingControl: React.FC<PropertiesControlProps<ExaflareZone>> = ({ objects }) => {
     const classes = useControlStyles();
     const { dispatch } = useScene();
+    const { t } = useTranslation();
 
     const spacing = commonValue(objects, (obj) => obj.spacing);
 
@@ -49,7 +52,7 @@ export const ExaflareSpacingControl: React.FC<PropertiesControlProps<ExaflareZon
     );
 
     return (
-        <Field label="Spacing" className={classes.cell}>
+        <Field label={t('properties.spacing')} className={classes.cell}>
             <SpinButtonUnits
                 value={spacing}
                 suffix="%"

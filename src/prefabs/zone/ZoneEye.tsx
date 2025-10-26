@@ -17,6 +17,7 @@ import { HideGroup } from '../HideGroup';
 import { PrefabIcon } from '../PrefabIcon';
 import { RadiusObjectContainer } from '../RadiusObjectContainer';
 import { useHighlightProps } from '../highlight';
+import { useTranslation } from 'react-i18next';
 
 const DEFAULT_RADIUS = 25;
 const DEFAULT_OPACITY = 100;
@@ -24,10 +25,11 @@ const DEFAULT_COLOR = '#ff0000';
 
 export const ZoneEye: React.FC = () => {
     const [, setDragObject] = usePanelDrag();
+    const { t } = useTranslation();
     return (
         <PrefabIcon
             draggable
-            name="Look away"
+            name={t('properties.lookAway')}
             icon={<Icon />}
             onDragStart={(e) => {
                 setDragObject({
@@ -203,10 +205,11 @@ const EyeContainer: React.FC<RendererProps<EyeObject>> = ({ object }) => {
 registerRenderer<EyeObject>(ObjectType.Eye, LayerName.Ground, EyeContainer);
 
 const EyeDetails: React.FC<ListComponentProps<EyeObject>> = ({ object, ...props }) => {
+    const { t } = useTranslation();
     return (
         <DetailsItem
             icon={<Icon width="100%" height="100%" style={{ [panelVars.colorZoneEye]: object.color }} />}
-            name={object.invert ? 'Look towards' : 'Look away'}
+            name={object.invert ? t('properties.lookTowards') : t('properties.lookAway')}
             object={object}
             {...props}
         />

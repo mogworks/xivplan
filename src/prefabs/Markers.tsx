@@ -23,6 +23,7 @@ import { HideGroup } from './HideGroup';
 import { PrefabIcon } from './PrefabIcon';
 import { ResizeableObjectContainer } from './ResizeableObjectContainer';
 import { useHighlightProps } from './highlight';
+import { useTranslation } from 'react-i18next';
 
 // https://github.com/ArnaudBarre/eslint-plugin-react-refresh/issues/103
 /* eslint-disable react-refresh/only-export-components */
@@ -30,10 +31,12 @@ import { useHighlightProps } from './highlight';
 const DEFAULT_SIZE = 42;
 const ICON_RATIO = 32 / DEFAULT_SIZE;
 
-function makeIcon(name: string, icon: string, shape: 'circle' | 'square', color: string) {
+function makeIcon(defaultNameKey: string, icon: string, shape: 'circle' | 'square', color: string) {
     const Component: React.FC = () => {
         const [, setDragObject] = usePanelDrag();
         const iconUrl = `/marker/${icon}`;
+        const { t } = useTranslation();
+        const name = t(defaultNameKey);
 
         return (
             <PrefabIcon
@@ -45,7 +48,7 @@ function makeIcon(name: string, icon: string, shape: 'circle' | 'square', color:
                         object: {
                             type: ObjectType.Marker,
                             image: iconUrl,
-                            name,
+                            defaultNameKey,
                             color,
                             shape,
                         },
@@ -55,7 +58,7 @@ function makeIcon(name: string, icon: string, shape: 'circle' | 'square', color:
             />
         );
     };
-    Component.displayName = makeDisplayName(name);
+    Component.displayName = makeDisplayName(defaultNameKey);
     return Component;
 }
 
@@ -64,7 +67,6 @@ registerDropHandler<MarkerObject>(ObjectType.Marker, (object, position) => {
         type: 'add',
         object: {
             type: ObjectType.Marker,
-            name: '',
             image: '',
             shape: 'square',
             color: COLOR_MARKER_RED,
@@ -250,16 +252,18 @@ const MarkerRenderer: React.FC<RendererProps<MarkerObject>> = ({ object }) => {
 registerRenderer<MarkerObject>(ObjectType.Marker, LayerName.Ground, MarkerRenderer);
 
 const MarkerDetails: React.FC<ListComponentProps<MarkerObject>> = ({ object, ...props }) => {
-    return <DetailsItem icon={object.image} name={object.name} object={object} {...props} />;
+    const { t } = useTranslation();
+    const name = object.name ?? (object.defaultNameKey ? t(object.defaultNameKey) : '');
+    return <DetailsItem icon={object.image} name={name} object={object} {...props} />;
 };
 
 registerListComponent<MarkerObject>(ObjectType.Marker, MarkerDetails);
 
-export const WaymarkA = makeIcon('Waymark A', 'waymark_a.png', 'circle', COLOR_MARKER_RED);
-export const WaymarkB = makeIcon('Waymark B', 'waymark_b.png', 'circle', COLOR_MARKER_YELLOW);
-export const WaymarkC = makeIcon('Waymark C', 'waymark_c.png', 'circle', COLOR_MARKER_BLUE);
-export const WaymarkD = makeIcon('Waymark D', 'waymark_d.png', 'circle', COLOR_MARKER_PURPLE);
-export const Waymark1 = makeIcon('Waymark 1', 'waymark_1.png', 'square', COLOR_MARKER_RED);
-export const Waymark2 = makeIcon('Waymark 2', 'waymark_2.png', 'square', COLOR_MARKER_YELLOW);
-export const Waymark3 = makeIcon('Waymark 3', 'waymark_3.png', 'square', COLOR_MARKER_BLUE);
-export const Waymark4 = makeIcon('Waymark 4', 'waymark_4.png', 'square', COLOR_MARKER_PURPLE);
+export const WaymarkA = makeIcon('objects.waymarkA', 'waymark_a.png', 'circle', COLOR_MARKER_RED);
+export const WaymarkB = makeIcon('objects.waymarkB', 'waymark_b.png', 'circle', COLOR_MARKER_YELLOW);
+export const WaymarkC = makeIcon('objects.waymarkC', 'waymark_c.png', 'circle', COLOR_MARKER_BLUE);
+export const WaymarkD = makeIcon('objects.waymarkD', 'waymark_d.png', 'circle', COLOR_MARKER_PURPLE);
+export const Waymark1 = makeIcon('objects.waymark1', 'waymark_1.png', 'square', COLOR_MARKER_RED);
+export const Waymark2 = makeIcon('objects.waymark2', 'waymark_2.png', 'square', COLOR_MARKER_YELLOW);
+export const Waymark3 = makeIcon('objects.waymark3', 'waymark_3.png', 'square', COLOR_MARKER_BLUE);
+export const Waymark4 = makeIcon('objects.waymark4', 'waymark_4.png', 'square', COLOR_MARKER_PURPLE);

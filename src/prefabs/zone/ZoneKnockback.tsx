@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Circle, Group } from 'react-konva';
 import { getDragOffset, registerDropHandler } from '../../DropHandler';
 import Icon from '../../assets/zone/knockback.svg?react';
@@ -20,10 +21,11 @@ const DEFAULT_RADIUS = 150;
 
 export const ZoneKnockback: React.FC = () => {
     const [, setDragObject] = usePanelDrag();
+    const { t } = useTranslation();
     return (
         <PrefabIcon
             draggable
-            name="Circular knockback"
+            name={t('objects.circularKnockback', { defaultValue: 'Circular knockback' })}
             icon={<Icon />}
             onDragStart={(e) => {
                 setDragObject({
@@ -108,10 +110,11 @@ const KnockbackContainer: React.FC<RendererProps<CircleZone>> = ({ object }) => 
 registerRenderer<CircleZone>(ObjectType.Knockback, LayerName.Ground, KnockbackContainer);
 
 const KnockbackDetails: React.FC<ListComponentProps<CircleZone>> = ({ object, ...props }) => {
+    const { t } = useTranslation();
     return (
         <DetailsItem
             icon={<Icon width="100%" height="100%" style={{ [panelVars.colorZoneOrange]: object.color }} />}
-            name="Knockback"
+            name={t('objects.circularKnockback', { defaultValue: 'Circular knockback' })}
             object={object}
             {...props}
         />

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import {
     StatusAttack1,
     StatusAttack2,
@@ -46,10 +47,11 @@ import { ObjectGroup, Section } from './Section';
 
 export const StatusMarkers: React.FC = () => {
     const classes = useControlStyles();
+    const { t } = useTranslation();
 
     return (
         <div className={classes.panel}>
-            <Section title="General">
+            <Section title={t('status.general')}>
                 <ObjectGroup>
                     <StatusAttack1 />
                     <StatusAttack2 />
@@ -76,7 +78,7 @@ export const StatusMarkers: React.FC = () => {
                     <StatusSquare />
                 </ObjectGroup>
             </Section>
-            <Section title="Counters">
+            <Section title={t('status.counters')}>
                 <ObjectGroup>
                     <StatusCounter1 />
                     <StatusCounter2 />
@@ -88,7 +90,7 @@ export const StatusMarkers: React.FC = () => {
                     <StatusCounter8 />
                 </ObjectGroup>
             </Section>
-            <Section title="Target indicators">
+            <Section title={t('status.targetIndicators')}>
                 <ObjectGroup>
                     <StatusBlueCircleTarget />
                     <StatusGreenCircleTarget />
@@ -108,7 +110,7 @@ export const StatusMarkers: React.FC = () => {
                     <StatusEdenBlue />
                 </ObjectGroup>
             </Section>
-            <Section title="Status effects">
+            <Section title={t('status.effects')}>
                 <ObjectGroup>
                     <StatusDice1 />
                     <StatusDice2 />

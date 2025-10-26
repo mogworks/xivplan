@@ -1,5 +1,6 @@
 import { mergeClasses } from '@fluentui/react-components';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { useCurrentStep } from '../SceneProvider';
 import {
     SceneObject,
@@ -91,7 +92,8 @@ const ControlCondition: React.FC<ControlConditionProps> = ({ objects, test, inve
 };
 
 const NoObjectsMessage: React.FC = () => {
-    return <p>No objects selected.</p>;
+    const { t } = useTranslation();
+    return <p>{t('panel.noSelection')}</p>;
 };
 
 const Controls: React.FC = () => {

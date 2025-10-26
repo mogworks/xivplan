@@ -23,6 +23,7 @@ import {
 } from '@fluentui/react-components';
 import { OptionsFilled } from '@fluentui/react-icons';
 import React, { ButtonHTMLAttributes, Dispatch, MouseEventHandler, SetStateAction, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAsync, useCounter, useLocalStorage, useSessionStorage } from 'react-use';
 import { HotkeyBlockingDialogBody } from '../HotkeyBlockingDialogBody';
 import { useScene } from '../SceneProvider';
@@ -93,11 +94,12 @@ function getPresetKey(group: string | undefined, name: string) {
 const SelectPresetButton: React.FC = () => {
     const classes = useStyles();
     const [open, setOpen] = useState(false);
+    const { t } = useTranslation();
 
     return (
         <Dialog open={open} onOpenChange={(ev, data) => setOpen(data.open)}>
             <DialogTrigger disableButtonEnhancement>
-                <Button icon={<OptionsFilled />}>Arena presets</Button>
+                <Button icon={<OptionsFilled />}>{t('arena.presets')}</Button>
             </DialogTrigger>
             <DialogSurface className={classes.dialogSurface}>
                 <PresetsDialogBody setOpen={setOpen} />
@@ -113,6 +115,7 @@ interface PresetsDialogBodyProps {
 const PresetsDialogBody: React.FC<PresetsDialogBodyProps> = ({ setOpen }) => {
     const classes = useStyles();
     const { dispatch } = useScene();
+    const { t } = useTranslation();
 
     const [counter, { inc: reloadRevealedPresets }] = useCounter();
     const revealedPresets = useAsync(getRevealedArenaPresets, [counter]);
@@ -149,7 +152,7 @@ const PresetsDialogBody: React.FC<PresetsDialogBodyProps> = ({ setOpen }) => {
 
     return (
         <HotkeyBlockingDialogBody>
-            <DialogTitle>Arena presets</DialogTitle>
+            <DialogTitle>{t('arena.presets')}</DialogTitle>
             <DialogContent className={classes.dialogContent}>
                 <NavDrawer
                     className={classes.nav}
@@ -207,17 +210,17 @@ const PresetsDialogBody: React.FC<PresetsDialogBodyProps> = ({ setOpen }) => {
                     className={classes.revealAll}
                     checked={revealAll}
                     onChange={(ev, data) => setRevealAll(data.checked)}
-                    label="Show all presets"
+                    label={t('arena.showAllPresets')}
                 />
                 <Button
                     appearance="primary"
                     disabled={!selectedPreset}
                     onClick={() => selectedPreset && applyPreset(selectedPreset)}
                 >
-                    Select preset
+                    {t('arena.selectPreset')}
                 </Button>
                 <DialogTrigger disableButtonEnhancement>
-                    <Button>Cancel</Button>
+                    <Button>{t('arena.cancel')}</Button>
                 </DialogTrigger>
             </DialogActions>
         </HotkeyBlockingDialogBody>
@@ -245,6 +248,7 @@ const PresetItem: React.FC<PresetItemProps> = ({
     ...props
 }) => {
     const classes = useStyles();
+    const { t } = useTranslation();
 
     const isSpoiler = !(preset.isSpoilerFree || revealedPresets?.includes(presetKey));
 
@@ -293,7 +297,7 @@ const PresetItem: React.FC<PresetItemProps> = ({
                 </div>
                 {isSpoiler && (
                     <div className={classes.spoilerNotice}>
-                        <p>Click to show</p>
+                        <p>{t('arena.clickToShow')}</p>
                     </div>
                 )}
             </div>

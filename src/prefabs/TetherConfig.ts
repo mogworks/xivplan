@@ -1,4 +1,5 @@
 import { ObjectType, SceneObject, Tether, TetherType, isMoveable } from '../scene';
+import i18n from '../i18n';
 import { COLOR_FUSCHIA, COLOR_GREEN, COLOR_ORANGE } from '../theme';
 import { combinations } from '../util';
 
@@ -20,7 +21,17 @@ const CONFIGS: Record<TetherType, TetherConfig> = {
 };
 
 export function getTetherName(tether: TetherType) {
-    return CONFIGS[tether].name;
+    const keyMap: Record<TetherType, string> = {
+        [TetherType.Line]: 'tethers.line',
+        [TetherType.Close]: 'tethers.close',
+        [TetherType.Far]: 'tethers.far',
+        [TetherType.MinusMinus]: 'tethers.minusMinus',
+        [TetherType.PlusMinus]: 'tethers.plusMinus',
+        [TetherType.PlusPlus]: 'tethers.plusPlus',
+    };
+
+    const key = keyMap[tether];
+    return i18n.t(key, { defaultValue: CONFIGS[tether].name });
 }
 
 export function makeTether(startId: number, endId: number, tether = TetherType.Line): Omit<Tether, 'id'> {
