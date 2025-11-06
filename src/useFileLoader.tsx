@@ -38,7 +38,7 @@ export function useFileLoaderDropTarget() {
             return;
         }
 
-        if (file.name.endsWith('.xivplan')) {
+        if (file.name.endsWith('.xivplancn')) {
             if (isDirty && !(await confirmUnsavedChanges())) {
                 return;
             }

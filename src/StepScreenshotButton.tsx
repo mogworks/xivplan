@@ -19,6 +19,7 @@ import {
 import { ScreenshotRegular } from '@fluentui/react-icons';
 import Konva from 'konva';
 import React, { useContext, useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useLocalStorage, useTimeoutFn } from 'react-use';
 import { CollapsableSplitButton } from './CollapsableToolbarButton';
 import { getCanvasSize } from './coord';
@@ -37,6 +38,7 @@ export type StepScreenshotButtonProps = SplitButtonProps;
 export const StepScreenshotButton: React.FC<StepScreenshotButtonProps> = (props) => {
     const classes = useStyles();
     const [scale, setScale] = useLocalStorage('screenshotPixelRatio', 1);
+    const { t } = useTranslation();
     const [takingScreenshot, setTakingScreenshot] = useState(false);
     const { dispatchToast } = useToastController();
 
@@ -79,7 +81,7 @@ export const StepScreenshotButton: React.FC<StepScreenshotButtonProps> = (props)
 
     useHotkeys(
         'ctrl+shift+c',
-        { category: '7.Steps', help: 'Screenshot current step' },
+        { category: '7.Steps', help: t('hotkeys.screenshotCurrentStep') },
         (ev) => {
             setTakingScreenshot(true);
             ev.preventDefault();
