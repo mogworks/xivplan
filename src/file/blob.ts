@@ -1,7 +1,7 @@
 import { BlobFileSource } from '../SceneProvider';
 import { Scene } from '../scene';
 
-const DEFAULT_FILENAME = 'plan.xivplan';
+const DEFAULT_FILENAME = 'plan.xivplancn';
 
 export function getBlobSource(file: File): BlobFileSource;
 export function getBlobSource(name?: string | undefined): BlobFileSource;
@@ -24,14 +24,14 @@ export function getBlobSource(file: File | string | undefined): BlobFileSource {
 export function downloadScene(scene: Readonly<Scene>, name: string | undefined) {
     name = name ?? DEFAULT_FILENAME;
 
-    if (!name.endsWith('.xivplan')) {
-        name = name + '.xivplan';
+    if (!name.endsWith('.xivplancn')) {
+        name = name + '.xivplancn';
     }
 
     const json = JSON.stringify(scene, undefined, 2);
 
     const file = new File([json], name, {
-        type: 'application/vnd.xivplan.plan+json',
+        type: 'application/vnd.xivplancn.plan+json',
     });
 
     downloadBlob(file, name);
