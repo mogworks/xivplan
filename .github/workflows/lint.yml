@@ -2,21 +2,25 @@ name: Lint
 
 on:
   push:
-    branches: [main]
+    branches: [cn]
   pull_request:
+    branches: [cn]
 
 jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
-      - uses: actions/setup-node@v5
+      - uses: pnpm/action-setup@v4
         with:
-          cache: npm
+          version: latest
+      - uses: actions/setup-node@v6
+        with:
           node-version: latest
-      - name: Install modules
-        run: npm ci
+          cache: pnpm
+      - name: Install dependencies
+        run: pnpm install --no-frozen-lockfile
       - name: Run Prettier
-        run: npm run prettier:check
+        run: pnpm run prettier:check
       - name: Run ESLint
-        run: npm run lint
+        run: pnpm run lint

@@ -18,6 +18,7 @@ import {
     SaveRegular,
 } from '@fluentui/react-icons';
 import React, { ReactElement, useContext, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { InPortal } from 'react-reverse-portal';
 import { CollapsableSplitButton, CollapsableToolbarButton } from './CollapsableToolbarButton';
 import { FileSource, useScene, useSceneUndoRedoPossible, useSetSource } from './SceneProvider';
@@ -40,6 +41,7 @@ const useStyles = makeStyles({
 
 export const MainToolbar: React.FC = () => {
     const classes = useStyles();
+    const { t } = useTranslation();
     const toolbarNode = useContext(ToolbarContext);
     const { dispatch } = useScene();
     const [undoPossible, redoPossible] = useSceneUndoRedoPossible();
@@ -54,7 +56,7 @@ export const MainToolbar: React.FC = () => {
 
     useHotkeys(
         'ctrl+o',
-        { category: '2.File', help: 'Open' },
+        { category: '2.File', help: t('hotkeys.open') },
         (e) => {
             setOpenFileOpen(true);
             e.preventDefault();
@@ -115,6 +117,7 @@ function getSaveButtonState(source: FileSource | undefined, isDirty: boolean): S
 }
 
 const SaveButton: React.FC = () => {
+    const { t } = useTranslation();
     const isDirty = useIsDirty();
     const setSavedState = useSetSavedState();
     const [saveAsOpen, setSaveAsOpen] = useState(false);
@@ -157,7 +160,7 @@ const SaveButton: React.FC = () => {
 
     useHotkeys(
         'ctrl+s',
-        { category: '2.File', help: 'Save' },
+        { category: '2.File', help: t('hotkeys.save') },
         (e) => {
             save();
             e.preventDefault();
@@ -166,7 +169,7 @@ const SaveButton: React.FC = () => {
     );
     useHotkeys(
         'ctrl+shift+s',
-        { category: '2.File', help: 'Save as' },
+        { category: '2.File', help: t('hotkeys.saveAs') },
         (e) => {
             setSaveAsOpen(true);
             e.preventDefault();

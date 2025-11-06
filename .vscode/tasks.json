@@ -2,9 +2,10 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "type": "npm",
-      "script": "dev",
-      "label": "npm: dev",
+      "type": "shell",
+      "command": "pnpm",
+      "args": ["dev"],
+      "label": "pnpm: dev",
       "group": {
         "kind": "build",
         "isDefault": true
@@ -13,9 +14,10 @@
       "problemMatcher": ["$tsc-watch"]
     },
     {
-      "type": "npm",
-      "script": "lint",
-      "label": "npm: lint",
+      "type": "shell",
+      "command": "pnpm",
+      "args": ["lint"],
+      "label": "pnpm: lint",
       "problemMatcher": ["$eslint-stylish"]
     }
   ]
