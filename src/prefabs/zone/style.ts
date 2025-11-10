@@ -31,16 +31,8 @@ export function getZoneStyle(
     hollow = false,
     realistic?: boolean,
     realisticProps?: Omit<ZoneStyleRealistic, 'realistic'>,
-): ZoneStyleClassic | (ZoneStyleRealistic & { strokeWidth: number }) {
+): ZoneStyleClassic | (ZoneStyleRealistic & Omit<ZoneStyleClassic, 'realistic'>) {
     const strokeWidth = getStrokeWidth(size);
-
-    if (realistic) {
-        return {
-            realistic: true,
-            strokeWidth,
-            ...realisticProps,
-        };
-    }
 
     const c = new Color(color);
 
@@ -53,6 +45,15 @@ export function getZoneStyle(
     stroke.alpha = opacity / 50;
     const strokeStr = stroke.display();
 
+    if (realistic) {
+        return {
+            fill: fillStr,
+            stroke: strokeStr,
+            strokeWidth,
+            realistic: true,
+            ...realisticProps,
+        };
+    }
     return { fill: fillStr, stroke: strokeStr, strokeWidth };
 }
 

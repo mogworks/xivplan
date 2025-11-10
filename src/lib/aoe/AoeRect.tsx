@@ -15,8 +15,8 @@ export default function AoeRect(props: AoeRectProps) {
         return (
             <AoeEffect cacheKeys={[props.width, props.height, props.zoneStyle]} {...props.zoneStyle}>
                 <Rect
-                    x={STROKE_WIDTH / 2}
-                    y={STROKE_WIDTH / 2}
+                    offsetX={-STROKE_WIDTH / 2}
+                    offsetY={-STROKE_WIDTH / 2}
                     width={props.width - STROKE_WIDTH}
                     height={props.height - STROKE_WIDTH}
                 />
@@ -27,8 +27,8 @@ export default function AoeRect(props: AoeRectProps) {
     const s = props.zoneStyle as ZoneStyleClassic;
     return (
         <Rect
-            x={s.strokeWidth / 2}
-            y={s.strokeWidth / 2}
+            offsetX={-s.strokeWidth / 2}
+            offsetY={-s.strokeWidth / 2}
             width={props.width - s.strokeWidth}
             height={props.height - s.strokeWidth}
             {...props.zoneStyle}

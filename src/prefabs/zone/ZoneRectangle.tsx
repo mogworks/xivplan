@@ -51,7 +51,7 @@ registerDropHandler<RectangleZone>(ObjectType.Rect, (object, position) => {
             width: DEFAULT_SIZE,
             height: DEFAULT_SIZE,
             rotation: 0,
-            variantType: 'realistic',
+            styleType: 'realistic',
             ...object,
             ...position,
         },
@@ -62,8 +62,8 @@ const RectangleRenderer: React.FC<RendererProps<RectangleZone>> = ({ object }) =
     const highlightProps = useHighlightProps(object);
 
     const size = Math.min(object.width, object.height);
-    const isRealistic = (object.variantType ?? 'realistic') === 'realistic';
-    const classicHollow = object.variantType === 'hollow';
+    const isRealistic = (object.styleType ?? 'realistic') === 'realistic';
+    const classicHollow = object.styleType === 'hollow';
 
     const style = getZoneStyle(
         object.color,

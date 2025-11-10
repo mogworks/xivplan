@@ -151,10 +151,10 @@ export interface HollowObject {
     readonly hollow?: boolean;
 }
 
-export type VariantType = 'realistic' | 'solid' | 'hollow';
+export type ZoneStyleType = 'realistic' | 'solid' | 'hollow';
 
-export interface VariantObject {
-    readonly variantType?: VariantType;
+export interface ZoneStyleObject {
+    readonly styleType?: ZoneStyleType;
     readonly globalOpacity?: number;
     readonly baseColor?: string;
     readonly baseOpacity?: number;
@@ -316,7 +316,7 @@ export interface ArcZone extends ConeProps, InnerRadiusObject, BaseObject {
 }
 export const isArcZone = makeObjectTest<ArcZone>(ObjectType.Arc);
 
-export interface RectangleZone extends ResizeableObject, ColoredObject, VariantObject, BaseObject {
+export interface RectangleZone extends ResizeableObject, ColoredObject, ZoneStyleObject, BaseObject {
     readonly type:
         | ObjectType.Rect
         | ObjectType.LineStack
@@ -334,6 +334,11 @@ export const isRectangleZone = makeObjectTest<RectangleZone>(
     ObjectType.Triangle,
     ObjectType.RightTriangle,
 );
+
+// Objects that support the "realistic" zone style.
+// Currently only rectangle-like zones support it, but this alias allows future expansion.
+// 更简洁的命名：判断对象是否支持写实样式
+export const supportsRealisticStyle = isRectangleZone;
 
 export type PolygonOrientation = 'point' | 'side';
 
