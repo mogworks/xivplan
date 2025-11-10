@@ -330,7 +330,7 @@
     "edenBlue": "蓝色标记"
   },
   "prefabs": {
-    "zones": "AoE",
+    "zones": "机制",
     "waymarks": "场标",
     "party": "友方",
     "enemies": "敌方",
