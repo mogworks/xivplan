@@ -114,9 +114,14 @@ registerRenderer<RectangleZone>(ObjectType.Rect, LayerName.Ground, RectangleRend
 
 const RectangleDetails: React.FC<ListComponentProps<RectangleZone>> = ({ object, ...props }) => {
     const { t } = useTranslation();
+    // 缩略图颜色：
+    // - 经典样式使用 object.color
+    // - 写实样式使用 object.baseColor（若未设置则回退到 DEFAULT_AOE_COLOR）
+    const isRealistic = (object.styleType ?? 'realistic') === 'realistic';
+    const displayColor = isRealistic ? (object.baseColor ?? DEFAULT_AOE_COLOR) : object.color;
     return (
         <DetailsItem
-            icon={<Icon width="100%" height="100%" style={{ [panelVars.colorZoneOrange]: object.color }} />}
+            icon={<Icon width="100%" height="100%" style={{ [panelVars.colorZoneOrange]: displayColor }} />}
             name={t('objects.rectangle', { defaultValue: 'Rectangle' })}
             object={object}
             {...props}
