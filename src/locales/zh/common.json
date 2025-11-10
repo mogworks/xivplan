@@ -255,7 +255,9 @@
     "fourPlayers": "四名玩家",
     "lookTowards": "面对",
     "lookAway": "背对",
-    "variant": "变体"
+    "variant": "变体",
+    "show": "显示",
+    "hide": "隐藏"
   },
   "colors": {
     "invalidColor": "无效的颜色",
@@ -466,6 +468,15 @@
     "redMage": "赤魔法师",
     "pictomancer": "绘灵法师",
     "blueMage": "青魔法师"
+  },
+  "aoe": {
+    "globalOpacity": "整体不透明度",
+    "baseColor": "基底颜色",
+    "baseOpacity": "基底不透明度",
+    "innerGlowColor": "内发光颜色",
+    "innerGlowOpacity": "内发光不透明度",
+    "outlineColor": "外轮廓颜色",
+    "outlineOpacity": "外轮廓不透明度"
   },
   "spin": {
     "increment": "增加数值",
