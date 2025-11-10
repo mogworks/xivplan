@@ -23,6 +23,7 @@ export interface ResizerProps {
     minWidth?: number;
     minHeight?: number;
     transformerProps?: Konva.TransformerConfig;
+    skipClearCache?: boolean;
     children: (onTransformEnd: (evt: Konva.KonvaEventObject<Event>) => void) => React.ReactElement;
 }
 
@@ -33,6 +34,7 @@ export const Resizer: React.FC<ResizerProps> = ({
     minWidth,
     minHeight,
     transformerProps,
+    skipClearCache = false,
     children,
 }) => {
     const { dispatch } = useScene();
@@ -69,7 +71,9 @@ export const Resizer: React.FC<ResizerProps> = ({
         node.scaleY(1);
         node.x(0);
         node.y(0);
-        node.clearCache();
+        if (!skipClearCache) {
+            node.clearCache();
+        }
 
         dispatch({ type: 'update', value: { ...object, ...newProps } as SceneObject });
     };

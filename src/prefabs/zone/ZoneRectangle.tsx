@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Group, Rect } from 'react-konva';
 import { getDragOffset, registerDropHandler } from '../../DropHandler';
 import Icon from '../../assets/zone/square.svg?react';
+import AoeRect from '../../lib/aoe/AoeRect';
 import { DetailsItem } from '../../panel/DetailsItem';
 import { ListComponentProps, registerListComponent } from '../../panel/ListComponentRegistry';
 import { registerRenderer, RendererProps } from '../../render/ObjectRegistry';
@@ -66,7 +67,7 @@ const RectangleRenderer: React.FC<RendererProps<RectangleZone>> = ({ object }) =
     const highlightHeight = object.height + highlightOffset;
 
     return (
-        <ResizeableObjectContainer object={object} transformerProps={{ keepRatio: false }}>
+        <ResizeableObjectContainer object={object} transformerProps={{ keepRatio: false }} skipClearCache>
             {(groupProps) => (
                 <Group {...groupProps}>
                     {highlightProps && (
@@ -79,7 +80,7 @@ const RectangleRenderer: React.FC<RendererProps<RectangleZone>> = ({ object }) =
                         />
                     )}
                     <HideGroup>
-                        <Rect width={object.width} height={object.height} {...style} />
+                        <AoeRect width={object.width} height={object.height} />
                     </HideGroup>
                 </Group>
             )}

@@ -27,9 +27,11 @@ interface GlowProps {
     color: string;
     blurRadius: number;
     shadowOpacity: number;
+    // 性能优化：只在这些keys改变时重新渲染阴影和缓存，不同形状根据自己情况传入相应的keys
+    cacheKeys?: unknown[];
 }
 
-function Glow({ children, color, blurRadius, shadowOpacity }: GlowProps) {
+function Glow({ children, color, blurRadius, shadowOpacity, cacheKeys }: GlowProps) {
     const groupRef = useRef<Konva.Group>(null);
 
     useEffect(() => {
@@ -45,8 +47,11 @@ function Glow({ children, color, blurRadius, shadowOpacity }: GlowProps) {
             shadow.blurRadius(blurRadius * Konva.pixelRatio);
         }
 
+        // Cache the whole group so destination-out composition works within the group context.
+        // IMPORTANT: do NOT depend on `children` here; its identity changes frequently
+        // during interactive edits and would cause expensive re-caching.
         group.cache();
-    }, [children, color, blurRadius, shadowOpacity]);
+    }, [color, blurRadius, shadowOpacity, cacheKeys]);
 
     const base = React.cloneElement(children, {
         fill: color,
@@ -79,17 +84,19 @@ function InnerGlow({
     children,
     color = '#ff751f',
     opacity = 1,
+    cacheKeys,
 }: {
     children: ReactKonvaShapeElement;
     color?: string;
     opacity?: number;
+    cacheKeys?: unknown[];
 }) {
     return (
         <Group listening={false} opacity={opacity}>
-            <Glow color={color} blurRadius={16} shadowOpacity={0.1}>
+            <Glow color={color} blurRadius={16} shadowOpacity={0.1} cacheKeys={cacheKeys}>
                 {children}
             </Glow>
-            <Glow color={color} blurRadius={32} shadowOpacity={0.1}>
+            <Glow color={color} blurRadius={32} shadowOpacity={0.1} cacheKeys={cacheKeys}>
                 {children}
             </Glow>
         </Group>
@@ -100,17 +107,19 @@ function OuterGlow({
     children,
     color = '#fffc79',
     opacity = 1,
+    cacheKeys,
 }: {
     children: ReactKonvaShapeElement;
     color?: string;
     opacity?: number;
+    cacheKeys?: unknown[];
 }) {
     return (
         <Group listening={false} opacity={opacity}>
-            <Glow color={color} blurRadius={4} shadowOpacity={1}>
+            <Glow color={color} blurRadius={4} shadowOpacity={1} cacheKeys={cacheKeys}>
                 {children}
             </Glow>
-            <Glow color={color} blurRadius={8} shadowOpacity={1}>
+            <Glow color={color} blurRadius={8} shadowOpacity={1} cacheKeys={cacheKeys}>
                 {children}
             </Glow>
         </Group>
@@ -126,6 +135,7 @@ export function AoeEffect({
     innerGlowOpacity = 1,
     outerGlowColor = '#fffc79',
     outerGlowOpacity = 1,
+    cacheKeys,
 }: {
     children: ReactKonvaShapeElement;
     opacity?: number;
@@ -135,16 +145,17 @@ export function AoeEffect({
     innerGlowOpacity?: number;
     outerGlowColor?: string;
     outerGlowOpacity?: number;
+    cacheKeys?: unknown[];
 }) {
     const base = React.cloneElement(children, { fill: baseColor, opacity: baseOpacity });
 
     return (
         <Group opacity={opacity}>
             {base}
-            <InnerGlow color={innerGlowColor} opacity={innerGlowOpacity}>
+            <InnerGlow color={innerGlowColor} opacity={innerGlowOpacity} cacheKeys={cacheKeys}>
                 {children}
             </InnerGlow>
-            <OuterGlow color={outerGlowColor} opacity={outerGlowOpacity}>
+            <OuterGlow color={outerGlowColor} opacity={outerGlowOpacity} cacheKeys={cacheKeys}>
                 {children}
             </OuterGlow>
         </Group>

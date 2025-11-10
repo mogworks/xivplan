@@ -16,6 +16,7 @@ export interface ResizeableObjectContainerProps {
     cacheKey?: unknown;
     resizerProps?: Partial<ResizerProps>;
     transformerProps?: Konva.TransformerConfig;
+    skipClearCache?: boolean;
     children: (groupProps: GroupProps) => React.ReactElement;
 }
 
@@ -25,13 +26,14 @@ export const ResizeableObjectContainer: React.FC<ResizeableObjectContainerProps>
     cacheKey,
     resizerProps,
     transformerProps,
+    skipClearCache = false,
     children,
 }) => {
     const [resizing, setResizing] = useState(false);
     const dragging = useIsDragging(object);
     const shapeRef = useRef<Konva.Group>(null);
 
-    useKonvaCache(shapeRef, { enabled: !!cache }, [cacheKey, object]);
+    useKonvaCache(shapeRef, { enabled: !!cache, skipClearCache }, [cacheKey, object]);
 
     return (
         <ActivePortal isActive={dragging || resizing}>
@@ -41,6 +43,7 @@ export const ResizeableObjectContainer: React.FC<ResizeableObjectContainerProps>
                     nodeRef={shapeRef}
                     dragging={dragging}
                     transformerProps={transformerProps}
+                    skipClearCache={skipClearCache}
                     {...resizerProps}
                 >
                     {(onTransformEnd) => {
