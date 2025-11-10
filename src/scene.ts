@@ -337,7 +337,6 @@ export const isRectangleZone = makeObjectTest<RectangleZone>(
 
 // Objects that support the "realistic" zone style.
 // Currently only rectangle-like zones support it, but this alias allows future expansion.
-// 更简洁的命名：判断对象是否支持写实样式
 export const supportsRealisticStyle = isRectangleZone;
 
 export type PolygonOrientation = 'point' | 'side';
