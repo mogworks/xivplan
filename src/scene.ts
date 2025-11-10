@@ -151,6 +151,19 @@ export interface HollowObject {
     readonly hollow?: boolean;
 }
 
+export type VariantType = 'realistic' | 'solid' | 'hollow';
+
+export interface VariantObject {
+    readonly variantType?: VariantType;
+    readonly globalOpacity?: number;
+    readonly baseColor?: string;
+    readonly baseOpacity?: number;
+    readonly innerGlowColor?: string;
+    readonly innerGlowOpacity?: number;
+    readonly outlineColor?: string;
+    readonly outlineOpacity?: number;
+}
+
 export interface MoveableObject {
     readonly x: number;
     readonly y: number;
@@ -303,7 +316,7 @@ export interface ArcZone extends ConeProps, InnerRadiusObject, BaseObject {
 }
 export const isArcZone = makeObjectTest<ArcZone>(ObjectType.Arc);
 
-export interface RectangleZone extends ResizeableObject, ColoredObject, HollowObject, BaseObject {
+export interface RectangleZone extends ResizeableObject, ColoredObject, VariantObject, BaseObject {
     readonly type:
         | ObjectType.Rect
         | ObjectType.LineStack
@@ -312,6 +325,7 @@ export interface RectangleZone extends ResizeableObject, ColoredObject, HollowOb
         | ObjectType.Triangle
         | ObjectType.RightTriangle;
 }
+
 export const isRectangleZone = makeObjectTest<RectangleZone>(
     ObjectType.Rect,
     ObjectType.LineStack,

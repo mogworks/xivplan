@@ -128,7 +128,7 @@ function Outerline({
 
 export function AoeEffect({
     children,
-    opacity = 1,
+    globalOpacity = 1,
     baseColor = '#fb923c',
     baseOpacity = 0.25,
     innerGlowColor = '#ff751f',
@@ -138,7 +138,7 @@ export function AoeEffect({
     cacheKeys,
 }: {
     children: ReactKonvaShapeElement;
-    opacity?: number;
+    globalOpacity?: number;
     baseColor?: string;
     baseOpacity?: number;
     innerGlowColor?: string;
@@ -150,7 +150,7 @@ export function AoeEffect({
     const base = React.cloneElement(children, { fill: baseColor, opacity: baseOpacity });
 
     return (
-        <Group opacity={opacity}>
+        <Group opacity={globalOpacity}>
             {base}
             <InnerGlow color={innerGlowColor} opacity={innerGlowOpacity} cacheKeys={cacheKeys}>
                 {children}

@@ -1,5 +1,25 @@
 import Color from 'colorjs.io';
 
+export interface ZoneStyleClassic {
+    realistic?: false;
+    fill: string;
+    stroke: string;
+    strokeWidth: number;
+}
+
+export interface ZoneStyleRealistic {
+    realistic: true;
+    globalOpacity?: number;
+    baseColor?: string;
+    baseOpacity?: number;
+    innerGlowColor?: string;
+    innerGlowOpacity?: number;
+    outlineColor?: string;
+    outlineOpacity?: number;
+}
+
+export type ZoneStyle = ZoneStyleClassic | ZoneStyleRealistic;
+
 function getStrokeWidth(size: number) {
     return Math.max(2, Math.min(4, size / 100));
 }
@@ -9,8 +29,19 @@ export function getZoneStyle(
     opacity: number,
     size = 0,
     hollow = false,
-): { fill: string; stroke: string; strokeWidth: number } {
+    realistic?: boolean,
+    realisticProps?: Omit<ZoneStyleRealistic, 'realistic'>,
+): ZoneStyleClassic | (ZoneStyleRealistic & { strokeWidth: number }) {
     const strokeWidth = getStrokeWidth(size);
+
+    if (realistic) {
+        return {
+            realistic: true,
+            strokeWidth,
+            ...realisticProps,
+        };
+    }
+
     const c = new Color(color);
 
     // TODO: update to c.set({ alpha: value }) once colorjs.io v0.6.0 is released

@@ -51,6 +51,7 @@ registerDropHandler<RectangleZone>(ObjectType.Rect, (object, position) => {
             width: DEFAULT_SIZE,
             height: DEFAULT_SIZE,
             rotation: 0,
+            variantType: 'realistic',
             ...object,
             ...position,
         },
@@ -60,7 +61,28 @@ registerDropHandler<RectangleZone>(ObjectType.Rect, (object, position) => {
 const RectangleRenderer: React.FC<RendererProps<RectangleZone>> = ({ object }) => {
     const highlightProps = useHighlightProps(object);
 
-    const style = getZoneStyle(object.color, object.opacity, Math.min(object.width, object.height), object.hollow);
+    const size = Math.min(object.width, object.height);
+    const isRealistic = (object.variantType ?? 'realistic') === 'realistic';
+    const classicHollow = object.variantType === 'hollow';
+
+    const style = getZoneStyle(
+        object.color,
+        object.opacity,
+        size,
+        classicHollow,
+        isRealistic,
+        isRealistic
+            ? {
+                  globalOpacity: object.globalOpacity,
+                  baseColor: object.baseColor,
+                  baseOpacity: object.baseOpacity,
+                  innerGlowColor: object.innerGlowColor,
+                  innerGlowOpacity: object.innerGlowOpacity,
+                  outlineColor: object.outlineColor,
+                  outlineOpacity: object.outlineOpacity,
+              }
+            : undefined,
+    );
 
     const highlightOffset = style.strokeWidth;
     const highlightWidth = object.width + highlightOffset;
@@ -80,7 +102,7 @@ const RectangleRenderer: React.FC<RendererProps<RectangleZone>> = ({ object }) =
                         />
                     )}
                     <HideGroup>
-                        <AoeRect width={object.width} height={object.height} />
+                        <AoeRect width={object.width} height={object.height} zoneStyle={style} />
                     </HideGroup>
                 </Group>
             )}
