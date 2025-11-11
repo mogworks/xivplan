@@ -162,6 +162,14 @@ export interface ZoneStyleObject extends HollowObject {
     readonly outlineOpacity?: number;
 }
 
+// Objects that support the "native" zone style.
+export const supportsNativeStyle = makeObjectTest<ZoneStyleObject & UnknownObject>(
+    ObjectType.Rect,
+    ObjectType.Line,
+    ObjectType.Circle,
+    ObjectType.Donut,
+);
+
 export interface MoveableObject {
     readonly x: number;
     readonly y: number;
@@ -331,14 +339,6 @@ export const isRectangleZone = makeObjectTest<RectangleZone>(
     ObjectType.LineKnockAway,
     ObjectType.Triangle,
     ObjectType.RightTriangle,
-);
-
-// Objects that support the "native" zone style.
-export const supportsNativeStyle = makeObjectTest<ZoneStyleObject & UnknownObject>(
-    ObjectType.Rect,
-    ObjectType.Line,
-    ObjectType.Circle,
-    ObjectType.Donut,
 );
 
 export type PolygonOrientation = 'point' | 'side';
