@@ -16,7 +16,7 @@ import {
     createControlPointManager,
 } from './ControlPoint';
 import { DraggableObject } from './DraggableObject';
-import { MIN_RADIUS } from './bounds';
+import { MIN_RADIUS, MIN_RADIUS_GAP } from './bounds';
 import { useShowResizer } from './highlight';
 
 interface ControlPointProps {
@@ -114,8 +114,6 @@ enum HandleId {
 }
 
 const OUTSET = 0;
-// 内外径的最小间距
-const MIN_RADIUS_GAP = 10;
 const ROTATE_HANDLE_OFFSET = 50;
 
 const ROTATE_SNAP_DIVISION = 15;
