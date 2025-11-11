@@ -2,6 +2,7 @@ import { mergeClasses } from '@fluentui/react-components';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useCurrentStep } from '../SceneProvider';
+import { shouldUseNativeStyleControls } from '../lib/aoe/nativeStyleSupport';
 import {
     SceneObject,
     UnknownObject,
@@ -141,9 +142,7 @@ const Controls: React.FC = () => {
 
             {/* 原生（仿游戏原生风格）效果：整体不透明度 + 隐藏按钮 */}
             <div className={mergeClasses(classes.row)}>
-                {objects.length > 0 &&
-                objects.every(supportsNativeStyle) &&
-                objects.some((o) => supportsNativeStyle(o) && o.styleType === 'native') ? (
+                {shouldUseNativeStyleControls(objects) ? (
                     <AoeGlobalOpacityControl objects={objects} className={classes.grow} />
                 ) : (
                     <OpacityControl objects={objects} className={classes.grow} />

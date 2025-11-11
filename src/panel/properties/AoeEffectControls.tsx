@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { CompactColorPicker } from '../../CompactColorPicker';
 import { useScene } from '../../SceneProvider';
 import { SpinButton } from '../../SpinButton';
+import { shouldUseNativeStyleControls } from '../../lib/aoe/nativeStyleSupport';
 import { ZoneStyleObject, supportsNativeStyle } from '../../scene';
 import { commonValue } from '../../util';
 import { PropertiesControlProps } from '../PropertiesControl';
@@ -32,7 +33,7 @@ export const AoeEffectControls: React.FC<PropertiesControlProps<ZoneStyleObject>
     const { dispatch } = useScene();
 
     // 仅当所有选中对象都支持原生样式，且至少一个对象为 native 变体时显示
-    if (!objects.every(supportsNativeStyle) || !objects.some((o) => o.styleType === 'native')) {
+    if (!shouldUseNativeStyleControls(objects)) {
         return null;
     }
 

@@ -316,7 +316,7 @@ export interface ArcZone extends ConeProps, InnerRadiusObject, BaseObject {
 }
 export const isArcZone = makeObjectTest<ArcZone>(ObjectType.Arc);
 
-export interface RectangleZone extends ResizeableObject, ColoredObject, ZoneStyleObject, BaseObject {
+export interface RectangleZone extends ResizeableObject, ColoredObject, HollowObject, ZoneStyleObject, BaseObject {
     readonly type:
         | ObjectType.Rect
         | ObjectType.LineStack
