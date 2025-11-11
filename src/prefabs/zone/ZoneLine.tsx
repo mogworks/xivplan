@@ -5,6 +5,7 @@ import Icon from '../../assets/zone/line.svg?react';
 import { getPointerAngle, snapAngle } from '../../coord';
 import { getResizeCursor } from '../../cursor';
 import { getDragOffset, registerDropHandler } from '../../DropHandler';
+import AoeRect from '../../lib/aoe/AoeRect';
 import { DetailsItem } from '../../panel/DetailsItem';
 import { ListComponentProps, registerListComponent } from '../../panel/ListComponentRegistry';
 import { LayerName } from '../../render/layers';
@@ -63,6 +64,7 @@ registerDropHandler<LineZone>(ObjectType.Line, (object, position) => {
             width: DEFAULT_WIDTH,
             length: DEFAULT_LENGTH,
             rotation: 0,
+            styleType: 'native',
             ...object,
             ...position,
         },
@@ -71,9 +73,14 @@ registerDropHandler<LineZone>(ObjectType.Line, (object, position) => {
 
 const LineDetails: React.FC<ListComponentProps<LineZone>> = ({ object, ...props }) => {
     const { t } = useTranslation();
+    // 缩略图颜色：
+    // - 朴素样式使用 object.color
+    // - 原生样式使用 object.baseColor（若未设置则回退到 DEFAULT_AOE_COLOR）
+    const isNative = (object.styleType ?? 'native') === 'native';
+    const displayColor = isNative ? (object.baseColor ?? DEFAULT_AOE_COLOR) : object.color;
     return (
         <DetailsItem
-            icon={<Icon width="100%" height="100%" style={{ [panelVars.colorZoneOrange]: object.color }} />}
+            icon={<Icon width="100%" height="100%" style={{ [panelVars.colorZoneOrange]: displayColor }} />}
             name={t('objects.line', { defaultValue: 'Line' })}
             object={object}
             {...props}
@@ -182,7 +189,29 @@ interface LineRendererProps extends RendererProps<LineZone> {
 
 const LineRenderer: React.FC<LineRendererProps> = ({ object, length, width, rotation, isDragging }) => {
     const highlightProps = useHighlightProps(object);
-    const style = getZoneStyle(object.color, object.opacity, Math.min(length, width), object.hollow);
+
+    const size = Math.min(length, width);
+    const isNative = (object.styleType ?? 'native') === 'native';
+    const isHollow = object.styleType === 'hollow';
+
+    const style = getZoneStyle(
+        object.color,
+        object.opacity,
+        size,
+        isHollow,
+        isNative,
+        isNative
+            ? {
+                  globalOpacity: object.globalOpacity,
+                  baseColor: object.baseColor,
+                  baseOpacity: object.baseOpacity,
+                  innerGlowColor: object.innerGlowColor,
+                  innerGlowOpacity: object.innerGlowOpacity,
+                  outlineColor: object.outlineColor,
+                  outlineOpacity: object.outlineOpacity,
+              }
+            : undefined,
+    );
 
     const x = -width / 2;
     const y = -length;
@@ -204,7 +233,7 @@ const LineRenderer: React.FC<LineRendererProps> = ({ object, length, width, rota
                 />
             )}
             <HideGroup>
-                <Rect x={x} y={y} width={width} height={length} {...style} />
+                <AoeRect offsetX={-x} offsetY={-y} width={width} height={length} zoneStyle={style} />
 
                 {isDragging && <Circle radius={CENTER_DOT_RADIUS} fill={style.stroke} />}
             </HideGroup>

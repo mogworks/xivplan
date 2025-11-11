@@ -3,6 +3,8 @@ import type { ZoneStyle, ZoneStyleSimple } from '../../prefabs/zone/style';
 import { AoeEffect, STROKE_WIDTH } from './AoeEffect';
 
 export interface AoeRectProps {
+    offsetX?: number;
+    offsetY?: number;
     width: number;
     height: number;
     zoneStyle: ZoneStyle;
@@ -15,8 +17,8 @@ export default function AoeRect(props: AoeRectProps) {
         return (
             <AoeEffect cacheKeys={[props.width, props.height, props.zoneStyle]} {...props.zoneStyle}>
                 <Rect
-                    offsetX={-STROKE_WIDTH / 2}
-                    offsetY={-STROKE_WIDTH / 2}
+                    offsetX={(props.offsetX ?? 0) - STROKE_WIDTH / 2}
+                    offsetY={(props.offsetY ?? 0) - STROKE_WIDTH / 2}
                     width={props.width - STROKE_WIDTH}
                     height={props.height - STROKE_WIDTH}
                 />
@@ -27,8 +29,8 @@ export default function AoeRect(props: AoeRectProps) {
     const s = props.zoneStyle as ZoneStyleSimple;
     return (
         <Rect
-            offsetX={-s.strokeWidth / 2}
-            offsetY={-s.strokeWidth / 2}
+            offsetX={(props.offsetX ?? 0) - s.strokeWidth / 2}
+            offsetY={(props.offsetY ?? 0) - s.strokeWidth / 2}
             width={props.width - s.strokeWidth}
             height={props.height - s.strokeWidth}
             {...props.zoneStyle}

@@ -292,7 +292,7 @@ export interface DonutZone extends RadiusObject, InnerRadiusObject, ColoredObjec
 }
 export const isDonutZone = makeObjectTest<DonutZone>(ObjectType.Donut);
 
-export interface LineProps extends MoveableObject, ColoredObject, HollowObject, RotateableObject {
+export interface LineProps extends MoveableObject, ColoredObject, ZoneStyleObject, RotateableObject {
     readonly length: number;
     readonly width: number;
 }
@@ -336,8 +336,7 @@ export const isRectangleZone = makeObjectTest<RectangleZone>(
 );
 
 // Objects that support the "native" zone style.
-// Currently only rectangle-like zones support it, but this alias allows future expansion.
-export const supportsNativeStyle = isRectangleZone;
+export const supportsNativeStyle = makeObjectTest<ZoneStyleObject & UnknownObject>(ObjectType.Rect, ObjectType.Line);
 
 export type PolygonOrientation = 'point' | 'side';
 
