@@ -114,6 +114,8 @@ enum HandleId {
 }
 
 const OUTSET = 0;
+// 内外径的最小间距
+const MIN_RADIUS_GAP = 10;
 const ROTATE_HANDLE_OFFSET = 50;
 
 const ROTATE_SNAP_DIVISION = 15;
@@ -190,26 +192,56 @@ function getInnerRadiusHandles(r: number): Handle[] {
 
 const RadiusControlPoints = createControlPointManager<RadiusObject, RadiusObjectState, ControlPointProps>({
     handleFunc: (object, handle, props) => {
-        const radius = getRadius(object, handle) + OUTSET;
-        const rotation = isRotateable(object) ? object.rotation : 0;
-        const handles = getNormalHandles(radius, rotation);
-
-        if (props.allowRotate) {
-            handles.push(getRotateHandle(radius));
-        }
-
         if (props.allowInnerRadius) {
-            const innerRadius = getInnerRadius(object, handle, props) - OUTSET;
-            handles.push(...getInnerRadiusHandles(innerRadius));
-        }
+            let radius = getRadius(object, handle) + OUTSET;
+            let innerRadius = getInnerRadius(object, handle, props) - OUTSET;
 
-        return handles;
+            if (handle.activeHandleId === HandleId.Radius) {
+                // 拖动外径时，限制外径不得小于（内径 + 间距）
+                radius = Math.max(radius, innerRadius + MIN_RADIUS_GAP);
+            } else if (handle.activeHandleId === HandleId.InnerRadius) {
+                // 拖动内径时，限制内径不得超过（外径 - 间距）
+                innerRadius = Math.min(innerRadius, radius - MIN_RADIUS_GAP);
+            }
+
+            const rotation = isRotateable(object) ? object.rotation : 0;
+            const handles = getNormalHandles(radius, rotation);
+
+            if (props.allowRotate) {
+                handles.push(getRotateHandle(radius));
+            }
+
+            handles.push(...getInnerRadiusHandles(innerRadius));
+
+            return handles;
+        } else {
+            const radius = getRadius(object, handle) + OUTSET;
+            const rotation = isRotateable(object) ? object.rotation : 0;
+            const handles = getNormalHandles(radius, rotation);
+
+            if (props.allowRotate) {
+                handles.push(getRotateHandle(radius));
+            }
+
+            return handles;
+        }
     },
     getRotation: getRotation,
     stateFunc: (object, handle, props) => {
-        const radius = getRadius(object, handle);
-        const innerRadius = getInnerRadius(object, handle, props);
+        let radius = getRadius(object, handle);
+        let innerRadius = getInnerRadius(object, handle, props);
         const rotation = getRotation(object, handle, props);
+
+        // 根据当前激活的手柄进行约束，保持两者至少相差 MIN_RADIUS_GAP
+        if (props.allowInnerRadius) {
+            if (handle.activeHandleId === HandleId.Radius) {
+                // 拖动外径时，限制外径不得小于（内径 + 间距）
+                radius = Math.max(radius, innerRadius + MIN_RADIUS_GAP);
+            } else if (handle.activeHandleId === HandleId.InnerRadius) {
+                // 拖动内径时，限制内径不得超过（外径 - 间距）
+                innerRadius = Math.min(innerRadius, radius - MIN_RADIUS_GAP);
+            }
+        }
 
         return { radius, rotation, innerRadius };
     },

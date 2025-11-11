@@ -260,7 +260,7 @@ export function isActor(object: UnknownObject): object is Actor {
     return isParty(object) || isEnemy(object);
 }
 
-export interface CircleZone extends RadiusObject, ColoredObject, ZoneStyleObject, BaseObject {
+export interface CircleZone extends RadiusObject, ColoredObject, HollowObject, ZoneStyleObject, BaseObject {
     readonly type:
         | ObjectType.Circle
         | ObjectType.Proximity
@@ -287,7 +287,7 @@ export interface EyeObject extends RadiusObject, ColoredObject, HollowObject, Ba
 }
 export const isEye = makeObjectTest<EyeObject>(ObjectType.Eye);
 
-export interface DonutZone extends RadiusObject, InnerRadiusObject, ColoredObject, BaseObject {
+export interface DonutZone extends RadiusObject, InnerRadiusObject, ColoredObject, ZoneStyleObject, BaseObject {
     readonly type: ObjectType.Donut;
 }
 export const isDonutZone = makeObjectTest<DonutZone>(ObjectType.Donut);
@@ -340,6 +340,7 @@ export const supportsNativeStyle = makeObjectTest<ZoneStyleObject & UnknownObjec
     ObjectType.Rect,
     ObjectType.Line,
     ObjectType.Circle,
+    ObjectType.Donut,
 );
 
 export type PolygonOrientation = 'point' | 'side';
