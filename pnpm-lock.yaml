@@ -30,8 +30,8 @@ importers:
         specifier: 2.0.313
         version: 2.0.313(react@19.2.0)
       '@fluentui/react-icons-mdl2':
-        specifier: 1.4.0
-        version: 1.4.0(@types/react-dom@19.2.2(@types/react@19.2.2))(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+        specifier: 1.4.1
+        version: 1.4.1(@types/react-dom@19.2.2(@types/react@19.2.2))(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       '@uiw/react-color-hue':
         specifier: 2.9.2
         version: 2.9.2(@babel/runtime@7.28.4)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
@@ -51,8 +51,8 @@ importers:
         specifier: 0.3.7
         version: 0.3.7
       i18next:
-        specifier: 25.6.1
-        version: 25.6.1(typescript@5.9.3)
+        specifier: 25.6.2
+        version: 25.6.2(typescript@5.9.3)
       i18next-browser-languagedetector:
         specifier: 8.2.0
         version: 8.2.0
@@ -82,7 +82,7 @@ importers:
         version: 5.2.1(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       react-i18next:
         specifier: 16.2.4
-        version: 16.2.4(i18next@25.6.1(typescript@5.9.3))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(typescript@5.9.3)
+        version: 16.2.4(i18next@25.6.2(typescript@5.9.3))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(typescript@5.9.3)
       react-konva:
         specifier: 19.0.10
         version: 19.0.10(@types/react@19.2.2)(konva@10.0.8)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
@@ -674,16 +674,16 @@ packages:
       react: '>=16.14.0 <20.0.0'
       react-dom: '>=16.14.0 <20.0.0'
 
-  '@fluentui/react-icon-provider@1.4.0':
-    resolution: {integrity: sha512-JMVjcgpJFaRhB3gSyluIgyb/hzqWpSNZauJODth26G+xUSLsUNfGZ9u8MRi+PRKkpEZrzRVgtasjORUv5qKxIQ==}
+  '@fluentui/react-icon-provider@1.4.1':
+    resolution: {integrity: sha512-2HoN0qJ/Xhdq2/4dxVMUd1Kif+hld7iaiykP4TVXCHJlIcCmZGaUJNzC7LrUtPVQQzNFGODjdyeD0xTCi5blDg==}
     peerDependencies:
       '@types/react': '>=16.8.0 <20.0.0'
       '@types/react-dom': '>=16.8.0 <20.0.0'
       react: '>=16.8.0 <20.0.0'
       react-dom: '>=16.8.0 <20.0.0'
 
-  '@fluentui/react-icons-mdl2@1.4.0':
-    resolution: {integrity: sha512-djQvy3BYkHvhfnZiTWQD4VMTphm4nVC9Yc+V85MwuEa6QYlpa2CfjwQHQkOi6O+lcFbz7x6RhqwQA57jzj20NQ==}
+  '@fluentui/react-icons-mdl2@1.4.1':
+    resolution: {integrity: sha512-BdLFVobxPVRHYyWMVr7y8LiZsPJXFB3AwWvofPXz24as9R8wnnvniRikTxLhWhAJdvBE4evyzqagvn6coqnvxQ==}
     peerDependencies:
       react: '>=16.8.0 <20.0.0'
 
@@ -1049,8 +1049,8 @@ packages:
       react: '>=16.14.0 <20.0.0'
       react-dom: '>=16.14.0 <20.0.0'
 
-  '@fluentui/react-window-provider@2.3.0':
-    resolution: {integrity: sha512-+0pBuW0KQ6rptvxy0U0FUAkLct3DCbHvxPe02FmqdPww1IkPNM/m56id807mCBo0CMnAk9oHIEfe8gqptFkWRg==}
+  '@fluentui/react-window-provider@2.3.1':
+    resolution: {integrity: sha512-yzKYYnPEimNXU2YvgY/aCru997DnD6O4fg+NXVwtxHaOq/hSaAlSugs4elVzlwbYOBbdEcELL5Rx1bUhRMvq9Q==}
     peerDependencies:
       '@types/react': '>=16.8.0 <20.0.0'
       react: '>=16.8.0 <20.0.0'
@@ -1058,11 +1058,11 @@ packages:
   '@fluentui/set-version@8.2.24':
     resolution: {integrity: sha512-8uNi2ThvNgF+6d3q2luFVVdk/wZV0AbRfJ85kkvf2+oSRY+f6QVK0w13vMorNhA5puumKcZniZoAfUF02w7NSg==}
 
-  '@fluentui/style-utilities@8.13.3':
-    resolution: {integrity: sha512-7MWYLCJk2Z4FTTxxH5f8plNhNdYegwIVkOE/lNAOn/h+pBxNzm9AioiTGqiMn2qQV/HNktPA5EPPyPjMceVYAg==}
+  '@fluentui/style-utilities@8.13.4':
+    resolution: {integrity: sha512-0cGVkGcIqYdo2W4IG3LCcaJZjmARB5KoVl8anWtM+Yhbrapc+22gCNPgg8O9E3Htzsr+rhHfFIcNAfZR5Q7asQ==}
 
-  '@fluentui/theme@2.7.0':
-    resolution: {integrity: sha512-r+WWK/Nsq0oJT+xTvLuLy+jI//6alZGn02eLV65UxjPBTkvoTPihKned/5U7EEdoxW63Eje6JM8Tgb/+hCExSQ==}
+  '@fluentui/theme@2.7.1':
+    resolution: {integrity: sha512-r3DONB0UtrfHx8qGaKdPT/kUOGUx3Rdfj5DNa7CuUbzKuHaI8LDd7MkmG2FBzL2iA0m3hdQ6j9bfn4Ya64wwNw==}
     peerDependencies:
       '@types/react': '>=16.8.0 <20.0.0'
       react: '>=16.8.0 <20.0.0'
@@ -1070,8 +1070,8 @@ packages:
   '@fluentui/tokens@1.0.0-alpha.22':
     resolution: {integrity: sha512-i9fgYyyCWFRdUi+vQwnV6hp7wpLGK4p09B+O/f2u71GBXzPuniubPYvrIJYtl444DD6shLjYToJhQ1S6XTFwLg==}
 
-  '@fluentui/utilities@8.17.0':
-    resolution: {integrity: sha512-JBAZt/jP6wBGz7dIRPunwgxmN3MDjw02tS5f/7BVGsBP4I++Q93a0zkiSRdRSMZ3TnB4hJuygvEDR1zOmIP34A==}
+  '@fluentui/utilities@8.17.1':
+    resolution: {integrity: sha512-foFe3QPDY+qaVX2kqJT6f4oWfGF0Hc4VOedr1e+j0RnMm4YL1DEeQwVl0tAqkbu0VZlcVNnjINjb77ATRprA8g==}
     peerDependencies:
       '@types/react': '>=16.8.0 <20.0.0'
       react: '>=16.8.0 <20.0.0'
@@ -2042,8 +2042,8 @@ packages:
   i18next-browser-languagedetector@8.2.0:
     resolution: {integrity: sha512-P+3zEKLnOF0qmiesW383vsLdtQVyKtCNA9cjSoKCppTKPQVfKd2W8hbVo5ZhNJKDqeM7BOcvNoKJOjpHh4Js9g==}
 
-  i18next@25.6.1:
-    resolution: {integrity: sha512-yUWvdXtalZztmKrKw3yz/AvSP3yKyqIkVPx/wyvoYy9lkLmwzItLxp0iHZLG5hfVQ539Jor4XLO+U+NHIXg7pw==}
+  i18next@25.6.2:
+    resolution: {integrity: sha512-0GawNyVUw0yvJoOEBq1VHMAsqdM23XrHkMtl2gKEjviJQSLVXsrPqsoYAxBEugW5AB96I2pZkwRxyl8WZVoWdw==}
     peerDependencies:
       typescript: ^5
     peerDependenciesMeta:
@@ -3653,21 +3653,21 @@ snapshots:
     transitivePeerDependencies:
       - scheduler
 
-  '@fluentui/react-icon-provider@1.4.0(@types/react-dom@19.2.2(@types/react@19.2.2))(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)':
+  '@fluentui/react-icon-provider@1.4.1(@types/react-dom@19.2.2(@types/react@19.2.2))(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)':
     dependencies:
       '@fluentui/set-version': 8.2.24
-      '@fluentui/style-utilities': 8.13.3(@types/react@19.2.2)(react@19.2.0)
+      '@fluentui/style-utilities': 8.13.4(@types/react@19.2.2)(react@19.2.0)
       '@types/react': 19.2.2
       '@types/react-dom': 19.2.2(@types/react@19.2.2)
       react: 19.2.0
       react-dom: 19.2.0(react@19.2.0)
       tslib: 2.8.1
 
-  '@fluentui/react-icons-mdl2@1.4.0(@types/react-dom@19.2.2(@types/react@19.2.2))(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)':
+  '@fluentui/react-icons-mdl2@1.4.1(@types/react-dom@19.2.2(@types/react@19.2.2))(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)':
     dependencies:
-      '@fluentui/react-icon-provider': 1.4.0(@types/react-dom@19.2.2(@types/react@19.2.2))(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+      '@fluentui/react-icon-provider': 1.4.1(@types/react-dom@19.2.2(@types/react@19.2.2))(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       '@fluentui/set-version': 8.2.24
-      '@fluentui/utilities': 8.17.0(@types/react@19.2.2)(react@19.2.0)
+      '@fluentui/utilities': 8.17.1(@types/react@19.2.2)(react@19.2.0)
       '@microsoft/load-themed-styles': 1.10.295
       react: 19.2.0
       tslib: 2.8.1
@@ -4435,7 +4435,7 @@ snapshots:
       react: 19.2.0
       react-dom: 19.2.0(react@19.2.0)
 
-  '@fluentui/react-window-provider@2.3.0(@types/react@19.2.2)(react@19.2.0)':
+  '@fluentui/react-window-provider@2.3.1(@types/react@19.2.2)(react@19.2.0)':
     dependencies:
       '@fluentui/set-version': 8.2.24
       '@types/react': 19.2.2
@@ -4446,23 +4446,23 @@ snapshots:
     dependencies:
       tslib: 2.8.1
 
-  '@fluentui/style-utilities@8.13.3(@types/react@19.2.2)(react@19.2.0)':
+  '@fluentui/style-utilities@8.13.4(@types/react@19.2.2)(react@19.2.0)':
     dependencies:
       '@fluentui/merge-styles': 8.6.14
       '@fluentui/set-version': 8.2.24
-      '@fluentui/theme': 2.7.0(@types/react@19.2.2)(react@19.2.0)
-      '@fluentui/utilities': 8.17.0(@types/react@19.2.2)(react@19.2.0)
+      '@fluentui/theme': 2.7.1(@types/react@19.2.2)(react@19.2.0)
+      '@fluentui/utilities': 8.17.1(@types/react@19.2.2)(react@19.2.0)
       '@microsoft/load-themed-styles': 1.10.295
       tslib: 2.8.1
     transitivePeerDependencies:
       - '@types/react'
       - react
 
-  '@fluentui/theme@2.7.0(@types/react@19.2.2)(react@19.2.0)':
+  '@fluentui/theme@2.7.1(@types/react@19.2.2)(react@19.2.0)':
     dependencies:
       '@fluentui/merge-styles': 8.6.14
       '@fluentui/set-version': 8.2.24
-      '@fluentui/utilities': 8.17.0(@types/react@19.2.2)(react@19.2.0)
+      '@fluentui/utilities': 8.17.1(@types/react@19.2.2)(react@19.2.0)
       '@types/react': 19.2.2
       react: 19.2.0
       tslib: 2.8.1
@@ -4471,11 +4471,11 @@ snapshots:
     dependencies:
       '@swc/helpers': 0.5.17
 
-  '@fluentui/utilities@8.17.0(@types/react@19.2.2)(react@19.2.0)':
+  '@fluentui/utilities@8.17.1(@types/react@19.2.2)(react@19.2.0)':
     dependencies:
       '@fluentui/dom-utilities': 2.3.10
       '@fluentui/merge-styles': 8.6.14
-      '@fluentui/react-window-provider': 2.3.0(@types/react@19.2.2)(react@19.2.0)
+      '@fluentui/react-window-provider': 2.3.1(@types/react@19.2.2)(react@19.2.0)
       '@fluentui/set-version': 8.2.24
       '@types/react': 19.2.2
       react: 19.2.0
@@ -5611,7 +5611,7 @@ snapshots:
     dependencies:
       '@babel/runtime': 7.28.4
 
-  i18next@25.6.1(typescript@5.9.3):
+  i18next@25.6.2(typescript@5.9.3):
     dependencies:
       '@babel/runtime': 7.28.4
     optionalDependencies:
@@ -6058,11 +6058,11 @@ snapshots:
       react: 19.2.0
       react-dom: 19.2.0(react@19.2.0)
 
-  react-i18next@16.2.4(i18next@25.6.1(typescript@5.9.3))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(typescript@5.9.3):
+  react-i18next@16.2.4(i18next@25.6.2(typescript@5.9.3))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(typescript@5.9.3):
     dependencies:
       '@babel/runtime': 7.28.4
       html-parse-stringify: 3.0.1
-      i18next: 25.6.1(typescript@5.9.3)
+      i18next: 25.6.2(typescript@5.9.3)
       react: 19.2.0
       use-sync-external-store: 1.6.0(react@19.2.0)
     optionalDependencies:
