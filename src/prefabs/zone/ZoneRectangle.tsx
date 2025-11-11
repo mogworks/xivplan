@@ -63,13 +63,13 @@ const RectangleRenderer: React.FC<RendererProps<RectangleZone>> = ({ object }) =
 
     const size = Math.min(object.width, object.height);
     const isNative = (object.styleType ?? 'native') === 'native';
-    const classicHollow = object.styleType === 'hollow';
+    const isHollow = object.styleType === 'hollow';
 
     const style = getZoneStyle(
         object.color,
         object.opacity,
         size,
-        classicHollow,
+        isHollow,
         isNative,
         isNative
             ? {

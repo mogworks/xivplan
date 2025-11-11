@@ -1,6 +1,6 @@
 import Color from 'colorjs.io';
 
-export interface ZoneStyleClassic {
+export interface ZoneStyleSimple {
     native?: false;
     fill: string;
     stroke: string;
@@ -18,7 +18,7 @@ export interface ZoneStyleNative {
     outlineOpacity?: number;
 }
 
-export type ZoneStyle = ZoneStyleClassic | ZoneStyleNative;
+export type ZoneStyle = ZoneStyleSimple | ZoneStyleNative;
 
 function getStrokeWidth(size: number) {
     return Math.max(2, Math.min(4, size / 100));
@@ -31,7 +31,7 @@ export function getZoneStyle(
     hollow = false,
     native?: boolean,
     nativeProps?: Omit<ZoneStyleNative, 'native'>,
-): ZoneStyleClassic | (ZoneStyleNative & Omit<ZoneStyleClassic, 'native'>) {
+): ZoneStyleSimple | (ZoneStyleNative & Omit<ZoneStyleSimple, 'native'>) {
     const strokeWidth = getStrokeWidth(size);
 
     const c = new Color(color);

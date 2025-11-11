@@ -39,7 +39,6 @@ import { AoeEffectControls } from './properties/AoeEffectControls';
 import { AoeGlobalOpacityControl } from './properties/AoeGlobalOpacityControl';
 import { ArrowPointersControl } from './properties/ArrowControls';
 import { DrawObjectBrushControl } from './properties/BrushControl';
-import { ClassicColorControl, ClassicColorSwatchControl } from './properties/ClassicColorControls';
 import { ConeAngleControl } from './properties/ConeControls';
 import { EnemyRingControl } from './properties/EnemyControls';
 import { ExaflareLengthControl, ExaflareSpacingControl } from './properties/ExaflareControls';
@@ -57,6 +56,7 @@ import { PolygonOrientationControl, PolygonSidesControl } from './properties/Pol
 import { PositionControl } from './properties/PositionControl';
 import { InnerRadiusControl, RadiusControl } from './properties/RadiusControl';
 import { RotationControl } from './properties/RotationControl';
+import { SimpleColorControl, SimpleColorSwatchControl } from './properties/SimpleColorControls';
 import { SizeControl } from './properties/SizeControl';
 import { StackCountControl } from './properties/StackCountControl';
 import { StarburstSpokeCountControl, StarburstSpokeWidthControl } from './properties/StarburstControls';
@@ -125,7 +125,7 @@ const Controls: React.FC = () => {
             {/* Style */}
             <ControlCondition objects={objects} test={isTether} control={TetherTypeControl} />
             <div className={mergeClasses(classes.row, classes.alignTop)}>
-                <ClassicColorControl objects={objects} className={classes.grow} />
+                <SimpleColorControl objects={objects} className={classes.grow} />
                 <ControlCondition objects={objects} test={isArrow} control={ArrowPointersControl} />
                 <ControlCondition
                     objects={objects}
@@ -134,7 +134,7 @@ const Controls: React.FC = () => {
                 />
                 <ControlCondition objects={objects} test={isMarker} control={MarkerShapeControl} />
             </div>
-            <ClassicColorSwatchControl objects={objects} />
+            <SimpleColorSwatchControl objects={objects} />
             <ControlCondition objects={objects} test={isText} control={TextOutlineControl} />
 
             {/* 原生（仿游戏原生风格）效果：显示三组颜色与不透明度控制 */}

@@ -1,5 +1,5 @@
 import { Rect } from 'react-konva';
-import type { ZoneStyle, ZoneStyleClassic } from '../../prefabs/zone/style';
+import type { ZoneStyle, ZoneStyleSimple } from '../../prefabs/zone/style';
 import { AoeEffect, STROKE_WIDTH } from './AoeEffect';
 
 export interface AoeRectProps {
@@ -24,7 +24,7 @@ export default function AoeRect(props: AoeRectProps) {
         );
     }
 
-    const s = props.zoneStyle as ZoneStyleClassic;
+    const s = props.zoneStyle as ZoneStyleSimple;
     return (
         <Rect
             offsetX={-s.strokeWidth / 2}
