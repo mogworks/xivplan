@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Circle } from 'react-konva';
 import { getDragOffset, registerDropHandler } from '../../DropHandler';
 import Icon from '../../assets/zone/circle.svg?react';
+import AoeCircle from '../../lib/aoe/AoeCircle';
 import { DetailsItem } from '../../panel/DetailsItem';
 import { ListComponentProps, registerListComponent } from '../../panel/ListComponentRegistry';
 import { registerRenderer, RendererProps } from '../../render/ObjectRegistry';
@@ -47,6 +48,7 @@ registerDropHandler<CircleZone>(ObjectType.Circle, (object, position) => {
             color: DEFAULT_AOE_COLOR,
             opacity: DEFAULT_AOE_OPACITY,
             radius: DEFAULT_RADIUS,
+            styleType: 'native',
             ...object,
             ...position,
         },
@@ -60,14 +62,35 @@ interface CircleRendererProps extends RendererProps<CircleZone> {
 
 const CircleRenderer: React.FC<CircleRendererProps> = ({ object, radius, isDragging }) => {
     const highlightProps = useHighlightProps(object);
-    const style = getZoneStyle(object.color, object.opacity, radius * 2, object.hollow);
+
+    const isNative = (object.styleType ?? 'native') === 'native';
+    const isHollow = object.styleType === 'hollow';
+
+    const style = getZoneStyle(
+        object.color,
+        object.opacity,
+        radius * 2,
+        isHollow,
+        isNative,
+        isNative
+            ? {
+                  globalOpacity: object.globalOpacity,
+                  baseColor: object.baseColor,
+                  baseOpacity: object.baseOpacity,
+                  innerGlowColor: object.innerGlowColor,
+                  innerGlowOpacity: object.innerGlowOpacity,
+                  outlineColor: object.outlineColor,
+                  outlineOpacity: object.outlineOpacity,
+              }
+            : undefined,
+    );
 
     return (
         <>
             {highlightProps && <Circle radius={radius + style.strokeWidth / 2} {...highlightProps} />}
 
             <HideGroup>
-                <Circle radius={radius} {...style} />
+                <AoeCircle radius={radius} zoneStyle={style} />
 
                 {isDragging && <Circle radius={CENTER_DOT_RADIUS} fill={style.stroke} />}
             </HideGroup>
@@ -87,9 +110,14 @@ registerRenderer<CircleZone>(ObjectType.Circle, LayerName.Ground, CircleContaine
 
 const CircleDetails: React.FC<ListComponentProps<CircleZone>> = ({ object, ...props }) => {
     const { t } = useTranslation();
+    // 缩略图颜色：
+    // - 朴素样式使用 object.color
+    // - 原生样式使用 object.baseColor（若未设置则回退到 DEFAULT_AOE_COLOR）
+    const isNative = (object.styleType ?? 'native') === 'native';
+    const displayColor = isNative ? (object.baseColor ?? DEFAULT_AOE_COLOR) : object.color;
     return (
         <DetailsItem
-            icon={<Icon width="100%" height="100%" style={{ [panelVars.colorZoneOrange]: object.color }} />}
+            icon={<Icon width="100%" height="100%" style={{ [panelVars.colorZoneOrange]: displayColor }} />}
             name={t('objects.circle', { defaultValue: 'Circle' })}
             object={object}
             {...props}

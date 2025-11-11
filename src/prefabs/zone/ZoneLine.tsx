@@ -160,14 +160,14 @@ const LineControlPoints = createControlPointManager<LineZone, LineState>({
     },
     onRenderBorder: (object, state) => {
         const strokeWidth = 1;
-        const width = state.width + strokeWidth * 2;
-        const length = state.length + strokeWidth * 2;
+        const width = state.width;
+        const length = state.length;
 
         return (
             <>
                 <Rect
                     x={-width / 2}
-                    y={-length + strokeWidth}
+                    y={-length}
                     width={width}
                     height={length}
                     stroke={CONTROL_POINT_BORDER_COLOR}

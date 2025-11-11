@@ -113,7 +113,7 @@ enum HandleId {
     InnerRadius,
 }
 
-const OUTSET = 2;
+const OUTSET = 0;
 const ROTATE_HANDLE_OFFSET = 50;
 
 const ROTATE_SNAP_DIVISION = 15;

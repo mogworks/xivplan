@@ -260,7 +260,7 @@ export function isActor(object: UnknownObject): object is Actor {
     return isParty(object) || isEnemy(object);
 }
 
-export interface CircleZone extends RadiusObject, ColoredObject, HollowObject, BaseObject {
+export interface CircleZone extends RadiusObject, ColoredObject, ZoneStyleObject, BaseObject {
     readonly type:
         | ObjectType.Circle
         | ObjectType.Proximity
@@ -336,7 +336,11 @@ export const isRectangleZone = makeObjectTest<RectangleZone>(
 );
 
 // Objects that support the "native" zone style.
-export const supportsNativeStyle = makeObjectTest<ZoneStyleObject & UnknownObject>(ObjectType.Rect, ObjectType.Line);
+export const supportsNativeStyle = makeObjectTest<ZoneStyleObject & UnknownObject>(
+    ObjectType.Rect,
+    ObjectType.Line,
+    ObjectType.Circle,
+);
 
 export type PolygonOrientation = 'point' | 'side';
 
