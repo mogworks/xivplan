@@ -78,30 +78,30 @@ export const PrefabsPanel: React.FC = () => {
         <div className={controlClasses.panel}>
             <Section title={t('prefabs.zones')}>
                 <ObjectGroup>
-                    <ZoneRightTriangle />
-                    <ZoneTriangle />
                     <ZoneSquare />
                     <ZoneLine />
-                    <ZoneDonut />
                     <ZoneCircle />
-
-                    <ZoneKnockback />
-                    <ZoneProximity />
-                    <ZoneLineStack />
-                    <ZoneStack />
-                    <ZoneArc />
+                    <ZoneDonut />
                     <ZoneCone />
+                    <ZoneArc />
 
                     <ZoneLineKnockback />
                     <ZoneLineKnockAway />
+                    <ZoneKnockback />
+                    <ZoneProximity />
                     <ZoneExaflare />
                     <ZoneStarburst />
+
+                    <ZoneStack />
+                    <ZoneLineStack />
                     <ZoneRotateClockwise />
                     <ZoneRotateCounterClockwise />
-
-                    <ZonePolygon />
                     <ZoneTower />
                     <ZoneEye />
+
+                    <ZoneTriangle />
+                    <ZoneRightTriangle />
+                    <ZonePolygon />
                 </ObjectGroup>
             </Section>
 
