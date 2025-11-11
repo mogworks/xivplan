@@ -151,7 +151,7 @@ export interface HollowObject {
     readonly hollow?: boolean;
 }
 
-export type ZoneStyleType = 'realistic' | 'solid' | 'hollow';
+export type ZoneStyleType = 'native' | 'solid' | 'hollow';
 
 export interface ZoneStyleObject {
     readonly styleType?: ZoneStyleType;
@@ -335,9 +335,9 @@ export const isRectangleZone = makeObjectTest<RectangleZone>(
     ObjectType.RightTriangle,
 );
 
-// Objects that support the "realistic" zone style.
+// Objects that support the "native" zone style.
 // Currently only rectangle-like zones support it, but this alias allows future expansion.
-export const supportsRealisticStyle = isRectangleZone;
+export const supportsNativeStyle = isRectangleZone;
 
 export type PolygonOrientation = 'point' | 'side';
 

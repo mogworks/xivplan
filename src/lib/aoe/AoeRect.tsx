@@ -9,9 +9,9 @@ export interface AoeRectProps {
 }
 
 export default function AoeRect(props: AoeRectProps) {
-    const isRealistic = props.zoneStyle.realistic === true;
+    const isNative = props.zoneStyle.native === true;
 
-    if (isRealistic) {
+    if (isNative) {
         return (
             <AoeEffect cacheKeys={[props.width, props.height, props.zoneStyle]} {...props.zoneStyle}>
                 <Rect

@@ -28,7 +28,7 @@ import {
     isTether,
     isText,
     supportsHollow,
-    supportsRealisticStyle,
+    supportsNativeStyle,
     supportsStackCount,
 } from '../scene';
 import { getSelectedObjects, useSelection } from '../selection';
@@ -119,7 +119,7 @@ const Controls: React.FC = () => {
             <ControlCondition objects={objects} test={isNamed} control={NameControl} />
             <ControlCondition objects={objects} test={isImageObject} control={ImageControl} />
 
-            <ControlCondition objects={objects} test={supportsRealisticStyle} control={ZoneStyleTypeControl} />
+            <ControlCondition objects={objects} test={supportsNativeStyle} control={ZoneStyleTypeControl} />
 
             {/* Style */}
             <ControlCondition objects={objects} test={isTether} control={TetherTypeControl} />
@@ -128,7 +128,7 @@ const Controls: React.FC = () => {
                 <ControlCondition objects={objects} test={isArrow} control={ArrowPointersControl} />
                 <ControlCondition
                     objects={objects}
-                    test={(obj) => supportsHollow(obj) && !supportsRealisticStyle(obj)}
+                    test={(obj) => supportsHollow(obj) && !supportsNativeStyle(obj)}
                     control={HollowControl}
                 />
                 <ControlCondition objects={objects} test={isMarker} control={MarkerShapeControl} />
@@ -136,14 +136,14 @@ const Controls: React.FC = () => {
             <ClassicColorSwatchControl objects={objects} />
             <ControlCondition objects={objects} test={isText} control={TextOutlineControl} />
 
-            {/* 写实效果：显示三组颜色与不透明度控制 */}
+            {/* 原生（仿游戏原生风格）效果：显示三组颜色与不透明度控制 */}
             <AoeEffectControls objects={objects} />
 
-            {/* 写实效果：整体不透明度 + 隐藏按钮 */}
+            {/* 原生（仿游戏原生风格）效果：整体不透明度 + 隐藏按钮 */}
             <div className={mergeClasses(classes.row)}>
                 {objects.length > 0 &&
-                objects.every(supportsRealisticStyle) &&
-                objects.some((o) => supportsRealisticStyle(o) && o.styleType === 'realistic') ? (
+                objects.every(supportsNativeStyle) &&
+                objects.some((o) => supportsNativeStyle(o) && o.styleType === 'native') ? (
                     <AoeGlobalOpacityControl objects={objects} className={classes.grow} />
                 ) : (
                     <OpacityControl objects={objects} className={classes.grow} />

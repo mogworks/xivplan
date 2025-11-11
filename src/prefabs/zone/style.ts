@@ -1,14 +1,14 @@
 import Color from 'colorjs.io';
 
 export interface ZoneStyleClassic {
-    realistic?: false;
+    native?: false;
     fill: string;
     stroke: string;
     strokeWidth: number;
 }
 
-export interface ZoneStyleRealistic {
-    realistic: true;
+export interface ZoneStyleNative {
+    native: true;
     globalOpacity?: number;
     baseColor?: string;
     baseOpacity?: number;
@@ -18,7 +18,7 @@ export interface ZoneStyleRealistic {
     outlineOpacity?: number;
 }
 
-export type ZoneStyle = ZoneStyleClassic | ZoneStyleRealistic;
+export type ZoneStyle = ZoneStyleClassic | ZoneStyleNative;
 
 function getStrokeWidth(size: number) {
     return Math.max(2, Math.min(4, size / 100));
@@ -29,9 +29,9 @@ export function getZoneStyle(
     opacity: number,
     size = 0,
     hollow = false,
-    realistic?: boolean,
-    realisticProps?: Omit<ZoneStyleRealistic, 'realistic'>,
-): ZoneStyleClassic | (ZoneStyleRealistic & Omit<ZoneStyleClassic, 'realistic'>) {
+    native?: boolean,
+    nativeProps?: Omit<ZoneStyleNative, 'native'>,
+): ZoneStyleClassic | (ZoneStyleNative & Omit<ZoneStyleClassic, 'native'>) {
     const strokeWidth = getStrokeWidth(size);
 
     const c = new Color(color);
@@ -45,13 +45,13 @@ export function getZoneStyle(
     stroke.alpha = opacity / 50;
     const strokeStr = stroke.display();
 
-    if (realistic) {
+    if (native) {
         return {
             fill: fillStr,
             stroke: strokeStr,
             strokeWidth,
-            realistic: true,
-            ...realisticProps,
+            native: true,
+            ...nativeProps,
         };
     }
     return { fill: fillStr, stroke: strokeStr, strokeWidth };

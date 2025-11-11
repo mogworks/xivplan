@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { CompactColorPicker } from '../../CompactColorPicker';
 import { useScene } from '../../SceneProvider';
 import { SpinButton } from '../../SpinButton';
-import { ZoneStyleObject, supportsRealisticStyle } from '../../scene';
+import { ZoneStyleObject, supportsNativeStyle } from '../../scene';
 import { commonValue } from '../../util';
 import { PropertiesControlProps } from '../PropertiesControl';
 
@@ -31,8 +31,8 @@ export const AoeEffectControls: React.FC<PropertiesControlProps<ZoneStyleObject>
     const { t } = useTranslation();
     const { dispatch } = useScene();
 
-    // 仅当所有选中对象都支持写实样式，且至少一个对象为 realistic 变体时显示
-    if (!objects.every(supportsRealisticStyle) || !objects.some((o) => o.styleType === 'realistic')) {
+    // 仅当所有选中对象都支持原生样式，且至少一个对象为 native 变体时显示
+    if (!objects.every(supportsNativeStyle) || !objects.some((o) => o.styleType === 'native')) {
         return null;
     }
 
@@ -46,9 +46,7 @@ export const AoeEffectControls: React.FC<PropertiesControlProps<ZoneStyleObject>
     const updateStyle = (patch: Partial<ZoneStyleObject>, transient = false) =>
         dispatch({
             type: 'update',
-            value: objects.map((obj) =>
-                supportsRealisticStyle(obj) ? { ...obj, styleType: 'realistic', ...patch } : obj,
-            ),
+            value: objects.map((obj) => (supportsNativeStyle(obj) ? { ...obj, styleType: 'native', ...patch } : obj)),
             transient,
         });
 

@@ -15,7 +15,7 @@ export const ZoneStyleTypeControl: React.FC<PropertiesControlProps<ZoneStyleObje
     const solid = commonValue(objects, (obj) => obj.styleType === 'solid');
     const hollow = commonValue(objects, (obj) => obj.styleType === 'hollow');
 
-    const styleType = solid ? 'solid' : hollow ? 'hollow' : 'realistic';
+    const styleType = solid ? 'solid' : hollow ? 'hollow' : 'native';
 
     const onVariantChanged = (styleType: ZoneStyleType) => {
         if (styleType === 'solid') {
@@ -28,7 +28,7 @@ export const ZoneStyleTypeControl: React.FC<PropertiesControlProps<ZoneStyleObje
         } else {
             dispatch({
                 type: 'update',
-                value: objects.map((obj) => ({ ...obj, styleType: 'realistic' })),
+                value: objects.map((obj) => ({ ...obj, styleType: 'native' })),
             });
         }
     };
@@ -41,10 +41,10 @@ export const ZoneStyleTypeControl: React.FC<PropertiesControlProps<ZoneStyleObje
                 onChange={(ev, data) => onVariantChanged(data.value as ZoneStyleType)}
             >
                 <Segment
-                    value={'realistic'}
+                    value={'native'}
                     size="mediumText"
-                    title={t('properties.realistic')}
-                    icon={<RealisticIcon aria-label={t('properties.realistic')} />}
+                    title={t('properties.native')}
+                    icon={<NativeIcon aria-label={t('properties.native')} />}
                 />
                 <Segment value={'solid'} size="mediumText" title={t('properties.solid')} icon={<CircleFilled />} />
                 <Segment value={'hollow'} size="mediumText" title={t('properties.hollow')} icon={<CircleRegular />} />
@@ -53,17 +53,17 @@ export const ZoneStyleTypeControl: React.FC<PropertiesControlProps<ZoneStyleObje
     );
 };
 
-/** A simple inline SVG icon to represent 'realistic' effect */
-const RealisticIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
+/** A simple inline SVG icon to represent 'native' effect */
+const NativeIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
     <svg viewBox="0 0 24 24" width="1em" height="1em" aria-hidden="true" {...props}>
         <defs>
-            <linearGradient id="aoe-realistic-grad" x1="0" y1="0" x2="0" y2="1">
+            <linearGradient id="aoe-native-grad" x1="0" y1="0" x2="0" y2="1">
                 <stop offset="0%" stopColor="#ffb777" />
                 <stop offset="100%" stopColor="#fb923c" />
             </linearGradient>
         </defs>
         {/* Base fill, larger to improve visual presence */}
-        <rect x="2.5" y="4.5" width="19" height="15" rx="4" fill="url(#aoe-realistic-grad)" />
+        <rect x="2.5" y="4.5" width="19" height="15" rx="4" fill="url(#aoe-native-grad)" />
         {/* Outer outline (外轮廓) */}
         <rect x="2.5" y="4.5" width="19" height="15" rx="4" fill="none" stroke="#fffc79" strokeWidth="2" />
         {/* Inner glow */}

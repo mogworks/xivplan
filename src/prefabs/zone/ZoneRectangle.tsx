@@ -51,7 +51,7 @@ registerDropHandler<RectangleZone>(ObjectType.Rect, (object, position) => {
             width: DEFAULT_SIZE,
             height: DEFAULT_SIZE,
             rotation: 0,
-            styleType: 'realistic',
+            styleType: 'native',
             ...object,
             ...position,
         },
@@ -62,7 +62,7 @@ const RectangleRenderer: React.FC<RendererProps<RectangleZone>> = ({ object }) =
     const highlightProps = useHighlightProps(object);
 
     const size = Math.min(object.width, object.height);
-    const isRealistic = (object.styleType ?? 'realistic') === 'realistic';
+    const isNative = (object.styleType ?? 'native') === 'native';
     const classicHollow = object.styleType === 'hollow';
 
     const style = getZoneStyle(
@@ -70,8 +70,8 @@ const RectangleRenderer: React.FC<RendererProps<RectangleZone>> = ({ object }) =
         object.opacity,
         size,
         classicHollow,
-        isRealistic,
-        isRealistic
+        isNative,
+        isNative
             ? {
                   globalOpacity: object.globalOpacity,
                   baseColor: object.baseColor,
@@ -115,10 +115,10 @@ registerRenderer<RectangleZone>(ObjectType.Rect, LayerName.Ground, RectangleRend
 const RectangleDetails: React.FC<ListComponentProps<RectangleZone>> = ({ object, ...props }) => {
     const { t } = useTranslation();
     // 缩略图颜色：
-    // - 经典样式使用 object.color
-    // - 写实样式使用 object.baseColor（若未设置则回退到 DEFAULT_AOE_COLOR）
-    const isRealistic = (object.styleType ?? 'realistic') === 'realistic';
-    const displayColor = isRealistic ? (object.baseColor ?? DEFAULT_AOE_COLOR) : object.color;
+    // - 朴素样式使用 object.color
+    // - 原生样式使用 object.baseColor（若未设置则回退到 DEFAULT_AOE_COLOR）
+    const isNative = (object.styleType ?? 'native') === 'native';
+    const displayColor = isNative ? (object.baseColor ?? DEFAULT_AOE_COLOR) : object.color;
     return (
         <DetailsItem
             icon={<Icon width="100%" height="100%" style={{ [panelVars.colorZoneOrange]: displayColor }} />}
