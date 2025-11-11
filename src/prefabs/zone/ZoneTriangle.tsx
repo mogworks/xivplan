@@ -52,7 +52,6 @@ registerDropHandler<RectangleZone>(ObjectType.Triangle, (object, position) => {
             width: DEFAULT_TRIANGLE_WIDTH,
             height: DEFAULT_TRIANGLE_HEIGHT,
             rotation: 0,
-            styleType: 'native',
             ...object,
             ...position,
         },
