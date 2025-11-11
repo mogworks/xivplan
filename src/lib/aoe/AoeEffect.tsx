@@ -8,15 +8,11 @@ export const STROKE_WIDTH = Konva.pixelRatio * 2;
 type ReactKonvaExports = typeof import('react-konva');
 type ReactKonvaShapeCtor =
     | ReactKonvaExports['Arc']
-    | ReactKonvaExports['Arrow']
     | ReactKonvaExports['Circle']
-    | ReactKonvaExports['Ellipse']
     | ReactKonvaExports['Line']
-    | ReactKonvaExports['Path']
     | ReactKonvaExports['Rect']
     | ReactKonvaExports['RegularPolygon']
     | ReactKonvaExports['Ring']
-    | ReactKonvaExports['Star']
     | ReactKonvaExports['Wedge']
     | ReactKonvaExports['Shape'];
 
