@@ -51,7 +51,7 @@ registerDropHandler<RectangleZone>(ObjectType.Rect, (object, position) => {
             width: DEFAULT_SIZE,
             height: DEFAULT_SIZE,
             rotation: 0,
-            styleType: 'native',
+            native: true,
             ...object,
             ...position,
         },
@@ -62,8 +62,8 @@ const RectangleRenderer: React.FC<RendererProps<RectangleZone>> = ({ object }) =
     const highlightProps = useHighlightProps(object);
 
     const size = Math.min(object.width, object.height);
-    const isNative = (object.styleType ?? 'native') === 'native';
-    const isHollow = object.styleType === 'hollow';
+    const isNative = object.native ?? true;
+    const isHollow = !isNative && (object.hollow ?? false);
 
     const style = getZoneStyle(
         object.color,
@@ -117,7 +117,7 @@ const RectangleDetails: React.FC<ListComponentProps<RectangleZone>> = ({ object,
     // 缩略图颜色：
     // - 朴素样式使用 object.color
     // - 原生样式使用 object.baseColor（若未设置则回退到 DEFAULT_AOE_COLOR）
-    const isNative = (object.styleType ?? 'native') === 'native';
+    const isNative = object.native ?? true;
     const displayColor = isNative ? (object.baseColor ?? DEFAULT_AOE_COLOR) : object.color;
     return (
         <DetailsItem

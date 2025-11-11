@@ -64,7 +64,7 @@ registerDropHandler<LineZone>(ObjectType.Line, (object, position) => {
             width: DEFAULT_WIDTH,
             length: DEFAULT_LENGTH,
             rotation: 0,
-            styleType: 'native',
+            native: true,
             ...object,
             ...position,
         },
@@ -76,7 +76,7 @@ const LineDetails: React.FC<ListComponentProps<LineZone>> = ({ object, ...props 
     // 缩略图颜色：
     // - 朴素样式使用 object.color
     // - 原生样式使用 object.baseColor（若未设置则回退到 DEFAULT_AOE_COLOR）
-    const isNative = (object.styleType ?? 'native') === 'native';
+    const isNative = object.native ?? true;
     const displayColor = isNative ? (object.baseColor ?? DEFAULT_AOE_COLOR) : object.color;
     return (
         <DetailsItem
@@ -191,8 +191,8 @@ const LineRenderer: React.FC<LineRendererProps> = ({ object, length, width, rota
     const highlightProps = useHighlightProps(object);
 
     const size = Math.min(length, width);
-    const isNative = (object.styleType ?? 'native') === 'native';
-    const isHollow = object.styleType === 'hollow';
+    const isNative = object.native ?? true;
+    const isHollow = !isNative && (object.hollow ?? false);
 
     const style = getZoneStyle(
         object.color,

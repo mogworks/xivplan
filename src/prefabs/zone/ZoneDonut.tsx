@@ -50,7 +50,7 @@ registerDropHandler<DonutZone>(ObjectType.Donut, (object, position) => {
             opacity: DEFAULT_AOE_OPACITY,
             innerRadius: DEFAULT_INNER_RADIUS,
             radius: DEFAULT_OUTER_RADIUS,
-            styleType: 'native',
+            native: true,
             ...object,
             ...position,
         },
@@ -66,8 +66,8 @@ interface DonutRendererProps extends RendererProps<DonutZone> {
 const DonutRenderer: React.FC<DonutRendererProps> = ({ object, radius, innerRadius, isDragging }) => {
     const highlightProps = useHighlightProps(object);
 
-    const isNative = (object.styleType ?? 'native') === 'native';
-    const isHollow = object.styleType === 'hollow';
+    const isNative = object.native ?? true;
+    const isHollow = !isNative && (object.hollow ?? false);
 
     const style = getZoneStyle(
         object.color,
@@ -124,7 +124,7 @@ const DonutDetails: React.FC<ListComponentProps<DonutZone>> = ({ object, ...prop
     // 缩略图颜色：
     // - 朴素样式使用 object.color
     // - 原生样式使用 object.baseColor（若未设置则回退到 DEFAULT_AOE_COLOR）
-    const isNative = (object.styleType ?? 'native') === 'native';
+    const isNative = object.native ?? true;
     const displayColor = isNative ? (object.baseColor ?? DEFAULT_AOE_COLOR) : object.color;
     return (
         <DetailsItem

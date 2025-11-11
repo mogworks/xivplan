@@ -4,31 +4,33 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useScene } from '../../SceneProvider';
 import { Segment, SegmentedGroup } from '../../Segmented';
-import { ZoneStyleObject, ZoneStyleType } from '../../scene';
+import { ZoneStyleObject } from '../../scene';
 import { commonValue } from '../../util';
 import { PropertiesControlProps } from '../PropertiesControl';
+
+type ZoneStyleType = 'solid' | 'hollow' | 'native';
 
 export const ZoneStyleTypeControl: React.FC<PropertiesControlProps<ZoneStyleObject>> = ({ objects }) => {
     const { dispatch } = useScene();
     const { t } = useTranslation();
 
-    const solid = commonValue(objects, (obj) => obj.styleType === 'solid');
-    const hollow = commonValue(objects, (obj) => obj.styleType === 'hollow');
+    const solid = commonValue(objects, (obj) => !obj.native && !obj.hollow);
+    const hollow = commonValue(objects, (obj) => !obj.native && obj.hollow);
 
     const styleType = solid ? 'solid' : hollow ? 'hollow' : 'native';
 
-    const onVariantChanged = (styleType: ZoneStyleType) => {
+    const onStyleTypeChanged = (styleType: ZoneStyleType) => {
         if (styleType === 'solid') {
-            dispatch({ type: 'update', value: objects.map((obj) => ({ ...obj, styleType: 'solid' })) });
+            dispatch({ type: 'update', value: objects.map((obj) => ({ ...obj, native: false, hollow: false })) });
         } else if (styleType === 'hollow') {
             dispatch({
                 type: 'update',
-                value: objects.map((obj) => ({ ...obj, styleType: 'hollow' })),
+                value: objects.map((obj) => ({ ...obj, native: false, hollow: true })),
             });
         } else {
             dispatch({
                 type: 'update',
-                value: objects.map((obj) => ({ ...obj, styleType: 'native' })),
+                value: objects.map((obj) => ({ ...obj, native: true, hollow: false })),
             });
         }
     };
@@ -38,7 +40,7 @@ export const ZoneStyleTypeControl: React.FC<PropertiesControlProps<ZoneStyleObje
             <SegmentedGroup
                 name="shape-style"
                 value={styleType}
-                onChange={(ev, data) => onVariantChanged(data.value as ZoneStyleType)}
+                onChange={(ev, data) => onStyleTypeChanged(data.value as ZoneStyleType)}
             >
                 <Segment
                     value={'native'}

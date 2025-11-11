@@ -151,10 +151,8 @@ export interface HollowObject {
     readonly hollow?: boolean;
 }
 
-export type ZoneStyleType = 'native' | 'solid' | 'hollow';
-
-export interface ZoneStyleObject {
-    readonly styleType?: ZoneStyleType;
+export interface ZoneStyleObject extends HollowObject {
+    readonly native?: boolean;
     readonly globalOpacity?: number;
     readonly baseColor?: string;
     readonly baseOpacity?: number;
@@ -260,7 +258,7 @@ export function isActor(object: UnknownObject): object is Actor {
     return isParty(object) || isEnemy(object);
 }
 
-export interface CircleZone extends RadiusObject, ColoredObject, HollowObject, ZoneStyleObject, BaseObject {
+export interface CircleZone extends RadiusObject, ColoredObject, ZoneStyleObject, BaseObject {
     readonly type:
         | ObjectType.Circle
         | ObjectType.Proximity
@@ -316,7 +314,7 @@ export interface ArcZone extends ConeProps, InnerRadiusObject, BaseObject {
 }
 export const isArcZone = makeObjectTest<ArcZone>(ObjectType.Arc);
 
-export interface RectangleZone extends ResizeableObject, ColoredObject, HollowObject, ZoneStyleObject, BaseObject {
+export interface RectangleZone extends ResizeableObject, ColoredObject, ZoneStyleObject, BaseObject {
     readonly type:
         | ObjectType.Rect
         | ObjectType.LineStack

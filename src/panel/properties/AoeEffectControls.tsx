@@ -47,7 +47,7 @@ export const AoeEffectControls: React.FC<PropertiesControlProps<ZoneStyleObject>
     const updateStyle = (patch: Partial<ZoneStyleObject>, transient = false) =>
         dispatch({
             type: 'update',
-            value: objects.map((obj) => (supportsNativeStyle(obj) ? { ...obj, styleType: 'native', ...patch } : obj)),
+            value: objects.map((obj) => (supportsNativeStyle(obj) ? { ...obj, ...patch } : obj)),
             transient,
         });
 

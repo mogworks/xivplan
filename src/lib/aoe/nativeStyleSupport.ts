@@ -9,10 +9,10 @@ function allSupportNativeStyle(objects: readonly SceneObject[]): boolean {
 
 /**
  * 判断选中对象中是否至少有一个是原生（native）样式。
- * 仅在支持原生样式的对象上检查 styleType，避免在联合类型上访问不存在的属性。
+ * 仅在支持原生样式的对象上检查，避免在联合类型上访问不存在的属性。
  */
 function someNativeStyle(objects: readonly SceneObject[]): boolean {
-    return objects.some((o) => supportsNativeStyle(o) && o.styleType === 'native');
+    return objects.some((o) => supportsNativeStyle(o) && o.native);
 }
 
 /**
