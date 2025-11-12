@@ -8,7 +8,7 @@ import { useKonvaCache } from '../useKonvaCache';
 import { DraggableObject } from './DraggableObject';
 import { Resizer, ResizerProps } from './Resizer';
 
-export type GroupProps = Konva.NodeConfig & KonvaNodeEvents;
+export type GroupProps = Konva.NodeConfig & KonvaNodeEvents & { isResizing?: boolean };
 
 export interface ResizeableObjectContainerProps {
     object: ResizeableObject & UnknownObject;
@@ -57,6 +57,7 @@ export const ResizeableObjectContainer: React.FC<ResizeableObjectContainerProps>
                             offsetX: object.width / 2,
                             offsetY: object.height / 2,
                             rotation: object.rotation,
+                            isResizing: resizing,
                         });
                     }}
                 </Resizer>

@@ -81,7 +81,7 @@ const RectangleRenderer: React.FC<RendererProps<RectangleZone>> = ({ object }) =
 
     return (
         <ResizeableObjectContainer object={object} transformerProps={{ keepRatio: false }} skipClearCache>
-            {(groupProps) => (
+            {({ isResizing, ...groupProps }) => (
                 <Group {...groupProps}>
                     {highlightProps && (
                         <Rect
@@ -94,7 +94,7 @@ const RectangleRenderer: React.FC<RendererProps<RectangleZone>> = ({ object }) =
                     )}
                     <HideGroup>
                         {isNative ? (
-                            <AoeRect width={object.width} height={object.height} {...nativeStyle} />
+                            <AoeRect width={object.width} height={object.height} freeze={isResizing} {...nativeStyle} />
                         ) : (
                             <Rect width={object.width} height={object.height} {...style} />
                         )}
