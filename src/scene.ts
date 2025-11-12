@@ -163,6 +163,8 @@ export const supportsNativeStyle = makeObjectTest<ZoneStyleObject & UnknownObjec
     ObjectType.Line,
     ObjectType.Circle,
     ObjectType.Donut,
+    ObjectType.Cone,
+    ObjectType.Arc,
 );
 
 export interface MoveableObject {
@@ -303,7 +305,7 @@ export interface LineZone extends LineProps, BaseObject {
 }
 export const isLineZone = makeObjectTest<LineZone>(ObjectType.Line);
 
-export interface ConeProps extends RadiusObject, ColoredObject, HollowObject, RotateableObject {
+export interface ConeProps extends RadiusObject, ColoredObject, ZoneStyleObject, RotateableObject {
     readonly coneAngle: number;
 }
 
