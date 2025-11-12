@@ -2,8 +2,7 @@ import Konva from 'konva';
 import type { ShapeConfig } from 'konva/lib/Shape';
 import React, { useEffect, useRef } from 'react';
 import { Group } from 'react-konva';
-
-export const STROKE_WIDTH = Konva.pixelRatio * 2;
+import { useDebounceValue } from 'usehooks-ts';
 
 type ReactKonvaExports = typeof import('react-konva');
 type ReactKonvaShapeCtor =
@@ -23,11 +22,9 @@ interface GlowProps {
     color: string;
     blurRadius: number;
     shadowOpacity: number;
-    // 性能优化：只在这些keys改变时重新渲染阴影和缓存，不同形状根据自己情况传入相应的keys
-    cacheKeys?: unknown[];
 }
 
-function Glow({ children, color, blurRadius, shadowOpacity, cacheKeys }: GlowProps) {
+function Glow({ children, color, blurRadius, shadowOpacity }: GlowProps) {
     const groupRef = useRef<Konva.Group>(null);
 
     useEffect(() => {
@@ -44,15 +41,11 @@ function Glow({ children, color, blurRadius, shadowOpacity, cacheKeys }: GlowPro
         }
 
         // Cache the whole group so destination-out composition works within the group context.
-        // IMPORTANT: do NOT depend on `children` here; its identity changes frequently
-        // during interactive edits and would cause expensive re-caching.
         group.cache();
-    }, [color, blurRadius, shadowOpacity, cacheKeys]);
+    }, [children, color, blurRadius, shadowOpacity]);
 
     const base = React.cloneElement(children, {
         fill: color,
-        stroke: color,
-        strokeWidth: STROKE_WIDTH,
         opacity: 1,
         listening: false,
     });
@@ -80,19 +73,20 @@ function InnerGlow({
     children,
     color = '#ff751f',
     opacity = 1,
-    cacheKeys,
 }: {
     children: ReactKonvaShapeElement;
     color?: string;
     opacity?: number;
-    cacheKeys?: unknown[];
 }) {
     return (
         <Group listening={false} opacity={opacity}>
-            <Glow color={color} blurRadius={16} shadowOpacity={0.1} cacheKeys={cacheKeys}>
+            <Glow color={color} blurRadius={16} shadowOpacity={0.1}>
                 {children}
             </Glow>
-            <Glow color={color} blurRadius={32} shadowOpacity={0.1} cacheKeys={cacheKeys}>
+            <Glow color={color} blurRadius={24} shadowOpacity={0.1}>
+                {children}
+            </Glow>
+            <Glow color={color} blurRadius={32} shadowOpacity={0.1}>
                 {children}
             </Glow>
         </Group>
@@ -103,36 +97,27 @@ function Outerline({
     children,
     color = '#fffc79',
     opacity = 1,
-    cacheKeys,
 }: {
     children: ReactKonvaShapeElement;
     color?: string;
     opacity?: number;
-    cacheKeys?: unknown[];
 }) {
     return (
         <Group listening={false} opacity={opacity}>
-            <Glow color={color} blurRadius={4} shadowOpacity={1} cacheKeys={cacheKeys}>
+            <Glow color={color} blurRadius={4} shadowOpacity={1}>
                 {children}
             </Glow>
-            <Glow color={color} blurRadius={8} shadowOpacity={1} cacheKeys={cacheKeys}>
+            <Glow color={color} blurRadius={7} shadowOpacity={1}>
+                {children}
+            </Glow>
+            <Glow color={color} blurRadius={10} shadowOpacity={1}>
                 {children}
             </Glow>
         </Group>
     );
 }
 
-export function AoeEffect({
-    children,
-    globalOpacity = 1,
-    baseColor = '#fb923c',
-    baseOpacity = 0.25,
-    innerGlowColor = '#ff751f',
-    innerGlowOpacity = 1,
-    outlineColor = '#fffc79',
-    outlineOpacity = 1,
-    cacheKeys,
-}: {
+type AoeEffectProps = {
     children: ReactKonvaShapeElement;
     globalOpacity?: number;
     baseColor?: string;
@@ -141,19 +126,43 @@ export function AoeEffect({
     innerGlowOpacity?: number;
     outlineColor?: string;
     outlineOpacity?: number;
-    cacheKeys?: unknown[];
-}) {
-    const base = React.cloneElement(children, { fill: baseColor, opacity: baseOpacity });
+    freezeChildren?: boolean;
+};
 
-    return (
-        <Group opacity={globalOpacity}>
-            {base}
-            <InnerGlow color={innerGlowColor} opacity={innerGlowOpacity} cacheKeys={cacheKeys}>
-                {children}
-            </InnerGlow>
-            <Outerline color={outlineColor} opacity={outlineOpacity} cacheKeys={cacheKeys}>
-                {children}
-            </Outerline>
-        </Group>
-    );
-}
+export const AoeEffect = React.memo(
+    function AoeEffect({
+        children,
+        globalOpacity = 1,
+        baseColor = '#fb923c',
+        baseOpacity = 0.25,
+        innerGlowColor = '#ff751f',
+        innerGlowOpacity = 1,
+        outlineColor = '#fffc79',
+        outlineOpacity = 1,
+    }: AoeEffectProps) {
+        // 性能优化，避免频繁渲染阴影和滤镜
+        const [debouncedChildren] = useDebounceValue(children, 250);
+        const [debouncedInnerGlowColor] = useDebounceValue(innerGlowColor, 100);
+        const [debouncedInnerGlowOpacity] = useDebounceValue(innerGlowOpacity, 250);
+        const [debouncedOutlineColor] = useDebounceValue(outlineColor, 100);
+        const [debouncedOutlineOpacity] = useDebounceValue(outlineOpacity, 250);
+
+        const base = React.cloneElement(debouncedChildren, { fill: baseColor, opacity: baseOpacity });
+
+        return (
+            <Group opacity={globalOpacity}>
+                {base}
+                <InnerGlow color={debouncedInnerGlowColor} opacity={debouncedInnerGlowOpacity}>
+                    {debouncedChildren}
+                </InnerGlow>
+                <Outerline color={debouncedOutlineColor} opacity={debouncedOutlineOpacity}>
+                    {debouncedChildren}
+                </Outerline>
+            </Group>
+        );
+    },
+    (prev: AoeEffectProps, next: AoeEffectProps) => {
+        // freezeChildren 为 true 时，不触发重新渲染，可让外部通过传入 freezeChildren 控制是否重新渲染
+        return !!next.freezeChildren;
+    },
+);

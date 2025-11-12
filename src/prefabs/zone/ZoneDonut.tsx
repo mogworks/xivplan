@@ -61,9 +61,10 @@ interface DonutRendererProps extends RendererProps<DonutZone> {
     radius: number;
     innerRadius: number;
     isDragging?: boolean;
+    isResizing?: boolean;
 }
 
-const DonutRenderer: React.FC<DonutRendererProps> = ({ object, radius, innerRadius, isDragging }) => {
+const DonutRenderer: React.FC<DonutRendererProps> = ({ object, radius, innerRadius, isDragging, isResizing }) => {
     const highlightProps = useHighlightProps(object);
 
     const isNative = object.native ?? true;
@@ -101,7 +102,7 @@ const DonutRenderer: React.FC<DonutRendererProps> = ({ object, radius, innerRadi
                 />
             )}
             <HideGroup>
-                <AoeRing innerRadius={innerRadius} outerRadius={radius} zoneStyle={style} />
+                <AoeRing innerRadius={innerRadius} outerRadius={radius} zoneStyle={style} freezeChildren={isResizing} />
 
                 {isDragging && <Circle radius={CENTER_DOT_RADIUS} fill={style.stroke} />}
             </HideGroup>

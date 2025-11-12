@@ -185,9 +185,10 @@ interface LineRendererProps extends RendererProps<LineZone> {
     width: number;
     rotation: number;
     isDragging?: boolean;
+    isResizing?: boolean;
 }
 
-const LineRenderer: React.FC<LineRendererProps> = ({ object, length, width, rotation, isDragging }) => {
+const LineRenderer: React.FC<LineRendererProps> = ({ object, length, width, rotation, isDragging, isResizing }) => {
     const highlightProps = useHighlightProps(object);
 
     const size = Math.min(length, width);
@@ -233,7 +234,14 @@ const LineRenderer: React.FC<LineRendererProps> = ({ object, length, width, rota
                 />
             )}
             <HideGroup>
-                <AoeRect offsetX={-x} offsetY={-y} width={width} height={length} zoneStyle={style} />
+                <AoeRect
+                    offsetX={-x}
+                    offsetY={-y}
+                    width={width}
+                    height={length}
+                    zoneStyle={style}
+                    freezeChildren={isResizing}
+                />
 
                 {isDragging && <Circle radius={CENTER_DOT_RADIUS} fill={style.stroke} />}
             </HideGroup>
@@ -271,7 +279,14 @@ const LineContainer: React.FC<RendererProps<LineZone>> = ({ object }) => {
                     visible={showResizer && !dragging}
                     onTransformEnd={updateObject}
                 >
-                    {(props) => <LineRenderer object={object} isDragging={dragging || resizing} {...props} />}
+                    {(props) => (
+                        <LineRenderer
+                            object={object}
+                            isDragging={dragging || resizing}
+                            isResizing={resizing}
+                            {...props}
+                        />
+                    )}
                 </LineControlPoints>
             </DraggableObject>
         </ActivePortal>

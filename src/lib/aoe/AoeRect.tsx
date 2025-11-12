@@ -1,6 +1,6 @@
 import { Rect } from 'react-konva';
-import type { ZoneStyle, ZoneStyleSimple } from '../../prefabs/zone/style';
-import { AoeEffect, STROKE_WIDTH } from './AoeEffect';
+import type { ZoneStyle } from '../../prefabs/zone/style';
+import { AoeEffect } from './AoeEffect';
 
 export interface AoeRectProps {
     offsetX?: number;
@@ -8,6 +8,7 @@ export interface AoeRectProps {
     width: number;
     height: number;
     zoneStyle: ZoneStyle;
+    freezeChildren?: boolean;
 }
 
 export default function AoeRect(props: AoeRectProps) {
@@ -15,24 +16,23 @@ export default function AoeRect(props: AoeRectProps) {
 
     if (isNative) {
         return (
-            <AoeEffect cacheKeys={[props.width, props.height, props.zoneStyle]} {...props.zoneStyle}>
+            <AoeEffect freezeChildren={props.freezeChildren} {...props.zoneStyle}>
                 <Rect
-                    offsetX={(props.offsetX ?? 0) - STROKE_WIDTH / 2}
-                    offsetY={(props.offsetY ?? 0) - STROKE_WIDTH / 2}
-                    width={props.width - STROKE_WIDTH}
-                    height={props.height - STROKE_WIDTH}
+                    offsetX={props.offsetX ?? 0}
+                    offsetY={props.offsetY ?? 0}
+                    width={props.width}
+                    height={props.height}
                 />
             </AoeEffect>
         );
     }
 
-    const s = props.zoneStyle as ZoneStyleSimple;
     return (
         <Rect
-            offsetX={(props.offsetX ?? 0) - s.strokeWidth / 2}
-            offsetY={(props.offsetY ?? 0) - s.strokeWidth / 2}
-            width={props.width - s.strokeWidth}
-            height={props.height - s.strokeWidth}
+            offsetX={props.offsetX ?? 0}
+            offsetY={props.offsetY ?? 0}
+            width={props.width}
+            height={props.height}
             {...props.zoneStyle}
         />
     );

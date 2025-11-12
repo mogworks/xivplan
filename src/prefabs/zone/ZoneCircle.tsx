@@ -58,9 +58,10 @@ registerDropHandler<CircleZone>(ObjectType.Circle, (object, position) => {
 interface CircleRendererProps extends RendererProps<CircleZone> {
     radius: number;
     isDragging?: boolean;
+    isResizing?: boolean;
 }
 
-const CircleRenderer: React.FC<CircleRendererProps> = ({ object, radius, isDragging }) => {
+const CircleRenderer: React.FC<CircleRendererProps> = ({ object, radius, isDragging, isResizing }) => {
     const highlightProps = useHighlightProps(object);
 
     const isNative = object.native ?? true;
@@ -90,7 +91,7 @@ const CircleRenderer: React.FC<CircleRendererProps> = ({ object, radius, isDragg
             {highlightProps && <Circle radius={radius + style.strokeWidth / 2} {...highlightProps} />}
 
             <HideGroup>
-                <AoeCircle radius={radius} zoneStyle={style} />
+                <AoeCircle radius={radius} zoneStyle={style} freezeChildren={isResizing} />
 
                 {isDragging && <Circle radius={CENTER_DOT_RADIUS} fill={style.stroke} />}
             </HideGroup>

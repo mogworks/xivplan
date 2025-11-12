@@ -43,7 +43,8 @@
     "react-router-dom": "7.9.5",
     "react-use": "17.6.0",
     "simplify-js": "1.2.4",
-    "use-image": "1.1.4"
+    "use-image": "1.1.4",
+    "usehooks-ts": "3.1.1"
   },
   "devDependencies": {
     "@eslint/js": "9.39.1",

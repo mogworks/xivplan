@@ -1,12 +1,11 @@
 import { Circle } from 'react-konva';
-import type { ZoneStyle, ZoneStyleSimple } from '../../prefabs/zone/style';
-import { AoeEffect, STROKE_WIDTH } from './AoeEffect';
+import type { ZoneStyle } from '../../prefabs/zone/style';
+import { AoeEffect } from './AoeEffect';
 
 export interface AoeCircleProps {
-    offsetX?: number;
-    offsetY?: number;
     radius: number;
     zoneStyle: ZoneStyle;
+    freezeChildren?: boolean;
 }
 
 export default function AoeCircle(props: AoeCircleProps) {
@@ -14,23 +13,11 @@ export default function AoeCircle(props: AoeCircleProps) {
 
     if (isNative) {
         return (
-            <AoeEffect cacheKeys={[props.radius, props.zoneStyle]} {...props.zoneStyle}>
-                <Circle
-                    offsetX={props.offsetX ?? 0}
-                    offsetY={props.offsetY ?? 0}
-                    radius={props.radius - STROKE_WIDTH / 2}
-                />
+            <AoeEffect freezeChildren={props.freezeChildren} {...props.zoneStyle}>
+                <Circle radius={props.radius} />
             </AoeEffect>
         );
     }
 
-    const s = props.zoneStyle as ZoneStyleSimple;
-    return (
-        <Circle
-            offsetX={props.offsetX ?? 0}
-            offsetY={props.offsetY ?? 0}
-            radius={props.radius - s.strokeWidth / 2}
-            {...props.zoneStyle}
-        />
-    );
+    return <Circle radius={props.radius} {...props.zoneStyle} />;
 }
