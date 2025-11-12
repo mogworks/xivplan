@@ -1,3 +1,5 @@
+import type { NativeStyle } from './lib/aoe/nativeStyle';
+
 export enum ArenaShape {
     None = 'none',
     Rectangle = 'rectangle',
@@ -151,15 +153,8 @@ export interface HollowObject {
     readonly hollow?: boolean;
 }
 
-export interface ZoneStyleObject extends HollowObject {
+export interface ZoneStyleObject extends HollowObject, Readonly<NativeStyle> {
     readonly native?: boolean;
-    readonly globalOpacity?: number;
-    readonly baseColor?: string;
-    readonly baseOpacity?: number;
-    readonly innerGlowColor?: string;
-    readonly innerGlowOpacity?: number;
-    readonly outlineColor?: string;
-    readonly outlineOpacity?: number;
 }
 
 // Objects that support the "native" zone style.
