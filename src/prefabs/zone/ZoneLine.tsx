@@ -191,7 +191,10 @@ interface LineRendererProps extends RendererProps<LineZone> {
 const LineRenderer: React.FC<LineRendererProps> = ({ object, length, width, rotation, isDragging, isResizing }) => {
     const highlightProps = useHighlightProps(object);
 
-    const isNative = object.native ?? true;
+    // 若 object 没有 native 字段，说明是原版数据，则：
+    //   - 如果是空心，则不应用原生样式，以兼容原版数据
+    //   - 否则如果是实心，则应用原生样式
+    const isNative = object.native ?? object.hollow !== true;
     const isHollow = !isNative && (object.hollow ?? false);
 
     const style = getZoneStyle(object.color, object.opacity, Math.min(length, width), isHollow);
