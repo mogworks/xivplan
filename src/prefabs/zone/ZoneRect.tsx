@@ -380,9 +380,9 @@ const RectangleRenderer: React.FC<RectangleRendererProps> = ({
                     <AoeRect
                         width={width}
                         height={height}
-                        freeze={isResizing}
                         offsetX={width / 2 - (dx ?? 0)}
                         offsetY={height / 2 + (dy ?? 0)}
+                        freeze={isResizing}
                         {...nativeStyle}
                     />
                 ) : (
