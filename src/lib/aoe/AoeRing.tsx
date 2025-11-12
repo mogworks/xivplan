@@ -1,24 +1,17 @@
 import { Ring } from 'react-konva';
-import type { ZoneStyle } from '../../prefabs/zone/style';
 import { AoeEffect } from './AoeEffect';
+import type { NativeStyle } from './nativeStyle';
 
-export interface AoeRingProps {
+export interface AoeRingProps extends NativeStyle {
+    freeze?: boolean;
     innerRadius: number;
     outerRadius: number;
-    zoneStyle: ZoneStyle;
-    freezeChildren?: boolean;
 }
 
-export default function AoeRing(props: AoeRingProps) {
-    const isNative = props.zoneStyle.native === true;
-
-    if (isNative) {
-        return (
-            <AoeEffect freezeChildren={props.freezeChildren} {...props.zoneStyle}>
-                <Ring innerRadius={props.innerRadius} outerRadius={props.outerRadius} />
-            </AoeEffect>
-        );
-    }
-
-    return <Ring innerRadius={props.innerRadius} outerRadius={props.outerRadius} {...props.zoneStyle} />;
+export default function AoeRing({ freeze, innerRadius, outerRadius, ...styles }: AoeRingProps) {
+    return (
+        <AoeEffect freeze={freeze} {...styles}>
+            <Ring innerRadius={innerRadius} outerRadius={outerRadius} />
+        </AoeEffect>
+    );
 }

@@ -1,23 +1,16 @@
 import { Circle } from 'react-konva';
-import type { ZoneStyle } from '../../prefabs/zone/style';
 import { AoeEffect } from './AoeEffect';
+import { NativeStyle } from './nativeStyle';
 
-export interface AoeCircleProps {
+export interface AoeCircleProps extends NativeStyle {
+    freeze?: boolean;
     radius: number;
-    zoneStyle: ZoneStyle;
-    freezeChildren?: boolean;
 }
 
-export default function AoeCircle(props: AoeCircleProps) {
-    const isNative = props.zoneStyle.native === true;
-
-    if (isNative) {
-        return (
-            <AoeEffect freezeChildren={props.freezeChildren} {...props.zoneStyle}>
-                <Circle radius={props.radius} />
-            </AoeEffect>
-        );
-    }
-
-    return <Circle radius={props.radius} {...props.zoneStyle} />;
+export default function AoeCircle({ freeze, radius, ...styles }: AoeCircleProps) {
+    return (
+        <AoeEffect freeze={freeze} {...styles}>
+            <Circle radius={radius} />
+        </AoeEffect>
+    );
 }

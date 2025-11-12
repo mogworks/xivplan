@@ -67,31 +67,27 @@ const CircleRenderer: React.FC<CircleRendererProps> = ({ object, radius, isDragg
     const isNative = object.native ?? true;
     const isHollow = !isNative && (object.hollow ?? false);
 
-    const style = getZoneStyle(
-        object.color,
-        object.opacity,
-        radius * 2,
-        isHollow,
-        isNative,
-        isNative
-            ? {
-                  globalOpacity: object.globalOpacity,
-                  baseColor: object.baseColor,
-                  baseOpacity: object.baseOpacity,
-                  innerGlowColor: object.innerGlowColor,
-                  innerGlowOpacity: object.innerGlowOpacity,
-                  outlineColor: object.outlineColor,
-                  outlineOpacity: object.outlineOpacity,
-              }
-            : undefined,
-    );
+    const style = getZoneStyle(object.color, object.opacity, radius * 2, isHollow);
+    const nativeStyle = {
+        globalOpacity: object.globalOpacity,
+        baseColor: object.baseColor,
+        baseOpacity: object.baseOpacity,
+        innerGlowColor: object.innerGlowColor,
+        innerGlowOpacity: object.innerGlowOpacity,
+        outlineColor: object.outlineColor,
+        outlineOpacity: object.outlineOpacity,
+    };
 
     return (
         <>
             {highlightProps && <Circle radius={radius + style.strokeWidth / 2} {...highlightProps} />}
 
             <HideGroup>
-                <AoeCircle radius={radius} zoneStyle={style} freezeChildren={isResizing} />
+                {isNative ? (
+                    <AoeCircle radius={radius} freeze={isResizing} {...nativeStyle} />
+                ) : (
+                    <Circle radius={radius} {...style} />
+                )}
 
                 {isDragging && <Circle radius={CENTER_DOT_RADIUS} fill={style.stroke} />}
             </HideGroup>

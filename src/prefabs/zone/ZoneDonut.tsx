@@ -70,24 +70,16 @@ const DonutRenderer: React.FC<DonutRendererProps> = ({ object, radius, innerRadi
     const isNative = object.native ?? true;
     const isHollow = !isNative && (object.hollow ?? false);
 
-    const style = getZoneStyle(
-        object.color,
-        object.opacity,
-        radius * 2,
-        isHollow,
-        isNative,
-        isNative
-            ? {
-                  globalOpacity: object.globalOpacity,
-                  baseColor: object.baseColor,
-                  baseOpacity: object.baseOpacity,
-                  innerGlowColor: object.innerGlowColor,
-                  innerGlowOpacity: object.innerGlowOpacity,
-                  outlineColor: object.outlineColor,
-                  outlineOpacity: object.outlineOpacity,
-              }
-            : undefined,
-    );
+    const style = getZoneStyle(object.color, object.opacity, radius * 2, isHollow);
+    const nativeStyle = {
+        globalOpacity: object.globalOpacity,
+        baseColor: object.baseColor,
+        baseOpacity: object.baseOpacity,
+        innerGlowColor: object.innerGlowColor,
+        innerGlowOpacity: object.innerGlowOpacity,
+        outlineColor: object.outlineColor,
+        outlineOpacity: object.outlineOpacity,
+    };
 
     const highlightInnerRadius = Math.min(radius, innerRadius);
     const highlightOuterRadius = Math.max(radius, innerRadius);
@@ -102,7 +94,11 @@ const DonutRenderer: React.FC<DonutRendererProps> = ({ object, radius, innerRadi
                 />
             )}
             <HideGroup>
-                <AoeRing innerRadius={innerRadius} outerRadius={radius} zoneStyle={style} freezeChildren={isResizing} />
+                {isNative ? (
+                    <AoeRing innerRadius={innerRadius} outerRadius={radius} freeze={isResizing} {...nativeStyle} />
+                ) : (
+                    <Ring innerRadius={innerRadius} outerRadius={radius} {...style} />
+                )}
 
                 {isDragging && <Circle radius={CENTER_DOT_RADIUS} fill={style.stroke} />}
             </HideGroup>

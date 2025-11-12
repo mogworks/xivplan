@@ -160,14 +160,14 @@ const LineControlPoints = createControlPointManager<LineZone, LineState>({
     },
     onRenderBorder: (object, state) => {
         const strokeWidth = 1;
-        const width = state.width;
-        const length = state.length;
+        const width = state.width + strokeWidth * 2;
+        const length = state.length + strokeWidth * 2;
 
         return (
             <>
                 <Rect
                     x={-width / 2}
-                    y={-length}
+                    y={-length + strokeWidth}
                     width={width}
                     height={length}
                     stroke={CONTROL_POINT_BORDER_COLOR}
@@ -191,28 +191,19 @@ interface LineRendererProps extends RendererProps<LineZone> {
 const LineRenderer: React.FC<LineRendererProps> = ({ object, length, width, rotation, isDragging, isResizing }) => {
     const highlightProps = useHighlightProps(object);
 
-    const size = Math.min(length, width);
     const isNative = object.native ?? true;
     const isHollow = !isNative && (object.hollow ?? false);
 
-    const style = getZoneStyle(
-        object.color,
-        object.opacity,
-        size,
-        isHollow,
-        isNative,
-        isNative
-            ? {
-                  globalOpacity: object.globalOpacity,
-                  baseColor: object.baseColor,
-                  baseOpacity: object.baseOpacity,
-                  innerGlowColor: object.innerGlowColor,
-                  innerGlowOpacity: object.innerGlowOpacity,
-                  outlineColor: object.outlineColor,
-                  outlineOpacity: object.outlineOpacity,
-              }
-            : undefined,
-    );
+    const style = getZoneStyle(object.color, object.opacity, Math.min(length, width), isHollow);
+    const nativeStyle = {
+        globalOpacity: object.globalOpacity,
+        baseColor: object.baseColor,
+        baseOpacity: object.baseOpacity,
+        innerGlowColor: object.innerGlowColor,
+        innerGlowOpacity: object.innerGlowOpacity,
+        outlineColor: object.outlineColor,
+        outlineOpacity: object.outlineOpacity,
+    };
 
     const x = -width / 2;
     const y = -length;
@@ -234,14 +225,18 @@ const LineRenderer: React.FC<LineRendererProps> = ({ object, length, width, rota
                 />
             )}
             <HideGroup>
-                <AoeRect
-                    offsetX={-x}
-                    offsetY={-y}
-                    width={width}
-                    height={length}
-                    zoneStyle={style}
-                    freezeChildren={isResizing}
-                />
+                {isNative ? (
+                    <AoeRect
+                        offsetX={-x}
+                        offsetY={-y}
+                        width={width}
+                        height={length}
+                        freeze={isResizing}
+                        {...nativeStyle}
+                    />
+                ) : (
+                    <Rect offsetX={-x} offsetY={-y} width={width} height={length} {...style} />
+                )}
 
                 {isDragging && <Circle radius={CENTER_DOT_RADIUS} fill={style.stroke} />}
             </HideGroup>

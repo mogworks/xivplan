@@ -3,6 +3,7 @@ import type { ShapeConfig } from 'konva/lib/Shape';
 import React, { useEffect, useRef } from 'react';
 import { Group } from 'react-konva';
 import { useDebounceValue } from 'usehooks-ts';
+import { NativeStyle } from './nativeStyle';
 
 type ReactKonvaExports = typeof import('react-konva');
 type ReactKonvaShapeCtor =
@@ -117,17 +118,10 @@ function Outerline({
     );
 }
 
-type AoeEffectProps = {
+interface AoeEffectProps extends NativeStyle {
     children: ReactKonvaShapeElement;
-    globalOpacity?: number;
-    baseColor?: string;
-    baseOpacity?: number;
-    innerGlowColor?: string;
-    innerGlowOpacity?: number;
-    outlineColor?: string;
-    outlineOpacity?: number;
-    freezeChildren?: boolean;
-};
+    freeze?: boolean;
+}
 
 export const AoeEffect = React.memo(
     function AoeEffect({
@@ -162,7 +156,7 @@ export const AoeEffect = React.memo(
         );
     },
     (prev: AoeEffectProps, next: AoeEffectProps) => {
-        // freezeChildren 为 true 时，不触发重新渲染，可让外部通过传入 freezeChildren 控制是否重新渲染
-        return !!next.freezeChildren;
+        // freeze 为 true 时，不触发重新渲染，可让外部通过传入 freeze 控制是否重新渲染
+        return !!next.freeze;
     },
 );

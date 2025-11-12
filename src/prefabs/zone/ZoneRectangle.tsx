@@ -61,28 +61,19 @@ registerDropHandler<RectangleZone>(ObjectType.Rect, (object, position) => {
 const RectangleRenderer: React.FC<RendererProps<RectangleZone>> = ({ object }) => {
     const highlightProps = useHighlightProps(object);
 
-    const size = Math.min(object.width, object.height);
     const isNative = object.native ?? true;
     const isHollow = !isNative && (object.hollow ?? false);
 
-    const style = getZoneStyle(
-        object.color,
-        object.opacity,
-        size,
-        isHollow,
-        isNative,
-        isNative
-            ? {
-                  globalOpacity: object.globalOpacity,
-                  baseColor: object.baseColor,
-                  baseOpacity: object.baseOpacity,
-                  innerGlowColor: object.innerGlowColor,
-                  innerGlowOpacity: object.innerGlowOpacity,
-                  outlineColor: object.outlineColor,
-                  outlineOpacity: object.outlineOpacity,
-              }
-            : undefined,
-    );
+    const style = getZoneStyle(object.color, object.opacity, Math.min(object.width, object.height), isHollow);
+    const nativeStyle = {
+        globalOpacity: object.globalOpacity,
+        baseColor: object.baseColor,
+        baseOpacity: object.baseOpacity,
+        innerGlowColor: object.innerGlowColor,
+        innerGlowOpacity: object.innerGlowOpacity,
+        outlineColor: object.outlineColor,
+        outlineOpacity: object.outlineOpacity,
+    };
 
     const highlightOffset = style.strokeWidth;
     const highlightWidth = object.width + highlightOffset;
@@ -102,7 +93,11 @@ const RectangleRenderer: React.FC<RendererProps<RectangleZone>> = ({ object }) =
                         />
                     )}
                     <HideGroup>
-                        <AoeRect width={object.width} height={object.height} zoneStyle={style} />
+                        {isNative ? (
+                            <AoeRect width={object.width} height={object.height} {...nativeStyle} />
+                        ) : (
+                            <Rect width={object.width} height={object.height} {...style} />
+                        )}
                     </HideGroup>
                 </Group>
             )}
