@@ -11,7 +11,6 @@ export function getZoneStyle(
     hollow = false,
 ): { fill: string; stroke: string; strokeWidth: number } {
     const strokeWidth = getStrokeWidth(size);
-
     const c = new Color(color);
 
     // TODO: update to c.set({ alpha: value }) once colorjs.io v0.6.0 is released
