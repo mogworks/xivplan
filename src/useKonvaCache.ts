@@ -5,7 +5,6 @@ type CacheConfig = Exclude<Parameters<Node['cache']>[0], undefined>;
 
 export type UseKonvaCacheOptions = CacheConfig & {
     enabled?: boolean;
-    skipClearCache?: boolean;
 };
 
 /**
@@ -32,26 +31,26 @@ export function useKonvaCache(
     configOrDeps: UseKonvaCacheOptions | DependencyList,
     maybeDeps?: DependencyList,
 ) {
-    const [enabled, skipClearCache, config, deps] = useOptions(configOrDeps, maybeDeps);
+    const [enabled, config, deps] = useOptions(configOrDeps, maybeDeps);
 
     useLayoutEffect(() => {
         if (enabled) {
             ref.current?.cache(config);
-        } else if (!skipClearCache) {
+        } else {
             ref.current?.clearCache();
         }
-    }, [enabled, skipClearCache, config, ref, ...deps]); // eslint-disable-line react-hooks/exhaustive-deps
+    }, [enabled, config, ref, ...deps]); // eslint-disable-line react-hooks/exhaustive-deps
 }
 
 function useOptions(
     optionsOrDeps: UseKonvaCacheOptions | DependencyList,
     deps?: DependencyList,
-): [boolean, boolean, CacheConfig | undefined, DependencyList] {
+): [boolean, CacheConfig | undefined, DependencyList] {
     if (typeof optionsOrDeps === 'object') {
-        const { enabled, skipClearCache, ...config } = optionsOrDeps as UseKonvaCacheOptions;
+        const { enabled, ...config } = optionsOrDeps as UseKonvaCacheOptions;
 
-        return [enabled ?? true, skipClearCache ?? false, config, deps ?? []];
+        return [enabled ?? true, config, deps ?? []];
     }
 
-    return [true, false, undefined, optionsOrDeps];
+    return [true, undefined, optionsOrDeps];
 }

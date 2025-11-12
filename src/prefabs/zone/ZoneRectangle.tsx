@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next';
 import { Group, Rect } from 'react-konva';
 import { getDragOffset, registerDropHandler } from '../../DropHandler';
 import Icon from '../../assets/zone/square.svg?react';
-import AoeRect from '../../lib/aoe/AoeRect';
 import { DetailsItem } from '../../panel/DetailsItem';
 import { ListComponentProps, registerListComponent } from '../../panel/ListComponentRegistry';
 import { registerRenderer, RendererProps } from '../../render/ObjectRegistry';
@@ -51,7 +50,6 @@ registerDropHandler<RectangleZone>(ObjectType.Rect, (object, position) => {
             width: DEFAULT_SIZE,
             height: DEFAULT_SIZE,
             rotation: 0,
-            native: true,
             ...object,
             ...position,
         },
@@ -61,27 +59,15 @@ registerDropHandler<RectangleZone>(ObjectType.Rect, (object, position) => {
 const RectangleRenderer: React.FC<RendererProps<RectangleZone>> = ({ object }) => {
     const highlightProps = useHighlightProps(object);
 
-    const isNative = object.native ?? true;
-    const isHollow = !isNative && (object.hollow ?? false);
-
-    const style = getZoneStyle(object.color, object.opacity, Math.min(object.width, object.height), isHollow);
-    const nativeStyle = {
-        globalOpacity: object.globalOpacity,
-        baseColor: object.baseColor,
-        baseOpacity: object.baseOpacity,
-        innerGlowColor: object.innerGlowColor,
-        innerGlowOpacity: object.innerGlowOpacity,
-        outlineColor: object.outlineColor,
-        outlineOpacity: object.outlineOpacity,
-    };
+    const style = getZoneStyle(object.color, object.opacity, Math.min(object.width, object.height), object.hollow);
 
     const highlightOffset = style.strokeWidth;
     const highlightWidth = object.width + highlightOffset;
     const highlightHeight = object.height + highlightOffset;
 
     return (
-        <ResizeableObjectContainer object={object} transformerProps={{ keepRatio: false }} skipClearCache>
-            {({ isResizing, ...groupProps }) => (
+        <ResizeableObjectContainer object={object} transformerProps={{ keepRatio: false }}>
+            {(groupProps) => (
                 <Group {...groupProps}>
                     {highlightProps && (
                         <Rect
@@ -93,11 +79,7 @@ const RectangleRenderer: React.FC<RendererProps<RectangleZone>> = ({ object }) =
                         />
                     )}
                     <HideGroup>
-                        {isNative ? (
-                            <AoeRect width={object.width} height={object.height} freeze={isResizing} {...nativeStyle} />
-                        ) : (
-                            <Rect width={object.width} height={object.height} {...style} />
-                        )}
+                        <Rect width={object.width} height={object.height} {...style} />
                     </HideGroup>
                 </Group>
             )}
@@ -109,14 +91,9 @@ registerRenderer<RectangleZone>(ObjectType.Rect, LayerName.Ground, RectangleRend
 
 const RectangleDetails: React.FC<ListComponentProps<RectangleZone>> = ({ object, ...props }) => {
     const { t } = useTranslation();
-    // 缩略图颜色：
-    // - 朴素样式使用 object.color
-    // - 原生样式使用 object.baseColor（若未设置则回退到 DEFAULT_AOE_COLOR）
-    const isNative = object.native ?? true;
-    const displayColor = isNative ? (object.baseColor ?? DEFAULT_AOE_COLOR) : object.color;
     return (
         <DetailsItem
-            icon={<Icon width="100%" height="100%" style={{ [panelVars.colorZoneOrange]: displayColor }} />}
+            icon={<Icon width="100%" height="100%" style={{ [panelVars.colorZoneOrange]: object.color }} />}
             name={t('objects.rectangle', { defaultValue: 'Rectangle' })}
             object={object}
             {...props}

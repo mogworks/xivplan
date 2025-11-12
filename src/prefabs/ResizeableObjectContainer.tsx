@@ -8,7 +8,7 @@ import { useKonvaCache } from '../useKonvaCache';
 import { DraggableObject } from './DraggableObject';
 import { Resizer, ResizerProps } from './Resizer';
 
-export type GroupProps = Konva.NodeConfig & KonvaNodeEvents & { isResizing?: boolean };
+export type GroupProps = Konva.NodeConfig & KonvaNodeEvents;
 
 export interface ResizeableObjectContainerProps {
     object: ResizeableObject & UnknownObject;
@@ -16,7 +16,6 @@ export interface ResizeableObjectContainerProps {
     cacheKey?: unknown;
     resizerProps?: Partial<ResizerProps>;
     transformerProps?: Konva.TransformerConfig;
-    skipClearCache?: boolean;
     children: (groupProps: GroupProps) => React.ReactElement;
 }
 
@@ -26,14 +25,13 @@ export const ResizeableObjectContainer: React.FC<ResizeableObjectContainerProps>
     cacheKey,
     resizerProps,
     transformerProps,
-    skipClearCache = false,
     children,
 }) => {
     const [resizing, setResizing] = useState(false);
     const dragging = useIsDragging(object);
     const shapeRef = useRef<Konva.Group>(null);
 
-    useKonvaCache(shapeRef, { enabled: !!cache, skipClearCache }, [cacheKey, object]);
+    useKonvaCache(shapeRef, { enabled: !!cache }, [cacheKey, object]);
 
     return (
         <ActivePortal isActive={dragging || resizing}>
@@ -43,7 +41,6 @@ export const ResizeableObjectContainer: React.FC<ResizeableObjectContainerProps>
                     nodeRef={shapeRef}
                     dragging={dragging}
                     transformerProps={transformerProps}
-                    skipClearCache={skipClearCache}
                     {...resizerProps}
                 >
                     {(onTransformEnd) => {
@@ -57,7 +54,6 @@ export const ResizeableObjectContainer: React.FC<ResizeableObjectContainerProps>
                             offsetX: object.width / 2,
                             offsetY: object.height / 2,
                             rotation: object.rotation,
-                            isResizing: resizing,
                         });
                     }}
                 </Resizer>
