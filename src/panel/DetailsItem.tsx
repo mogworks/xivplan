@@ -9,6 +9,7 @@ import {
     EyeRegular,
 } from '@fluentui/react-icons';
 import React, { ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useScene } from '../SceneProvider';
 import { PrefabIcon } from '../prefabs/PrefabIcon';
 import { SceneObject } from '../scene';
@@ -71,13 +72,14 @@ const EyeIcon = bundleIcon(EyeFilled, EyeRegular);
 const DetailsItemHideButton: React.FC<DetailsItemHideButtonProps> = ({ object, className }) => {
     const classes = useStyles();
     const { dispatch } = useScene();
+    const { t } = useTranslation();
     const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
         dispatch({ type: 'update', value: setOrOmit(object, 'hide', !object.hide) });
         e.stopPropagation();
     };
 
     const Icon = object.hide ? EyeOffIcon : EyeIcon;
-    const tooltip = object.hide ? 'Show' : 'Hide';
+    const tooltip = object.hide ? t('properties.show') : t('properties.hide');
 
     return (
         <Button

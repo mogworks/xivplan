@@ -1,3 +1,5 @@
+import type { NativeStyle } from './lib/aoe/nativeStyle';
+
 export enum ArenaShape {
     None = 'none',
     Rectangle = 'rectangle',
@@ -151,6 +153,20 @@ export interface HollowObject {
     readonly hollow?: boolean;
 }
 
+export interface ZoneStyleObject extends HollowObject, Readonly<NativeStyle> {
+    readonly native?: boolean;
+}
+
+// Objects that support the "native" zone style.
+export const supportsNativeStyle = makeObjectTest<ZoneStyleObject & UnknownObject>(
+    ObjectType.Rect,
+    ObjectType.Line,
+    ObjectType.Circle,
+    ObjectType.Donut,
+    ObjectType.Cone,
+    ObjectType.Arc,
+);
+
 export interface MoveableObject {
     readonly x: number;
     readonly y: number;
@@ -247,7 +263,7 @@ export function isActor(object: UnknownObject): object is Actor {
     return isParty(object) || isEnemy(object);
 }
 
-export interface CircleZone extends RadiusObject, ColoredObject, HollowObject, BaseObject {
+export interface CircleZone extends RadiusObject, ColoredObject, ZoneStyleObject, BaseObject {
     readonly type:
         | ObjectType.Circle
         | ObjectType.Proximity
@@ -274,12 +290,12 @@ export interface EyeObject extends RadiusObject, ColoredObject, HollowObject, Ba
 }
 export const isEye = makeObjectTest<EyeObject>(ObjectType.Eye);
 
-export interface DonutZone extends RadiusObject, InnerRadiusObject, ColoredObject, BaseObject {
+export interface DonutZone extends RadiusObject, InnerRadiusObject, ColoredObject, ZoneStyleObject, BaseObject {
     readonly type: ObjectType.Donut;
 }
 export const isDonutZone = makeObjectTest<DonutZone>(ObjectType.Donut);
 
-export interface LineProps extends MoveableObject, ColoredObject, HollowObject, RotateableObject {
+export interface LineProps extends MoveableObject, ColoredObject, ZoneStyleObject, RotateableObject {
     readonly length: number;
     readonly width: number;
 }
@@ -289,7 +305,7 @@ export interface LineZone extends LineProps, BaseObject {
 }
 export const isLineZone = makeObjectTest<LineZone>(ObjectType.Line);
 
-export interface ConeProps extends RadiusObject, ColoredObject, HollowObject, RotateableObject {
+export interface ConeProps extends RadiusObject, ColoredObject, ZoneStyleObject, RotateableObject {
     readonly coneAngle: number;
 }
 
@@ -303,7 +319,7 @@ export interface ArcZone extends ConeProps, InnerRadiusObject, BaseObject {
 }
 export const isArcZone = makeObjectTest<ArcZone>(ObjectType.Arc);
 
-export interface RectangleZone extends ResizeableObject, ColoredObject, HollowObject, BaseObject {
+export interface RectangleZone extends ResizeableObject, ColoredObject, ZoneStyleObject, BaseObject {
     readonly type:
         | ObjectType.Rect
         | ObjectType.LineStack
@@ -312,6 +328,7 @@ export interface RectangleZone extends ResizeableObject, ColoredObject, HollowOb
         | ObjectType.Triangle
         | ObjectType.RightTriangle;
 }
+
 export const isRectangleZone = makeObjectTest<RectangleZone>(
     ObjectType.Rect,
     ObjectType.LineStack,
