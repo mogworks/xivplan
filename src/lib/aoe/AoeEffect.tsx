@@ -3,7 +3,7 @@ import type { ShapeConfig } from 'konva/lib/Shape';
 import React, { useEffect, useRef } from 'react';
 import { Group } from 'react-konva';
 import { useDebounceValue } from 'usehooks-ts';
-import { NativeStyle } from './nativeStyle';
+import type { NativeStyle } from './nativeStyle';
 
 type ReactKonvaExports = typeof import('react-konva');
 type ReactKonvaShapeCtor =

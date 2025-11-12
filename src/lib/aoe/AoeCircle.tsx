@@ -1,6 +1,6 @@
 import { Circle } from 'react-konva';
 import { AoeEffect } from './AoeEffect';
-import { NativeStyle } from './nativeStyle';
+import type { NativeStyle } from './nativeStyle';
 
 export interface AoeCircleProps extends NativeStyle {
     freeze?: boolean;
