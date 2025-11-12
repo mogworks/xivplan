@@ -42,6 +42,9 @@ export interface ControlPointConfig<T extends Vector2d, S, P> {
     stateFunc(object: T, handle: HandleFuncProps, props: Readonly<P>): S;
 
     getRotation?(object: T, handle: HandleFuncProps, props: Readonly<P>): number;
+
+    getCenterOffset?(object: T, handle: HandleFuncProps, props: Readonly<P>): Vector2d;
+
     /**
      * Renders the border or bounding box.
      */

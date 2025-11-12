@@ -5,6 +5,7 @@ import Icon from '../../assets/zone/line.svg?react';
 import { getPointerAngle, snapAngle } from '../../coord';
 import { getResizeCursor } from '../../cursor';
 import { getDragOffset, registerDropHandler } from '../../DropHandler';
+import AoeRect from '../../lib/aoe/AoeRect';
 import { DetailsItem } from '../../panel/DetailsItem';
 import { ListComponentProps, registerListComponent } from '../../panel/ListComponentRegistry';
 import { LayerName } from '../../render/layers';
@@ -63,6 +64,7 @@ registerDropHandler<LineZone>(ObjectType.Line, (object, position) => {
             width: DEFAULT_WIDTH,
             length: DEFAULT_LENGTH,
             rotation: 0,
+            native: true,
             ...object,
             ...position,
         },
@@ -71,9 +73,14 @@ registerDropHandler<LineZone>(ObjectType.Line, (object, position) => {
 
 const LineDetails: React.FC<ListComponentProps<LineZone>> = ({ object, ...props }) => {
     const { t } = useTranslation();
+    // 缩略图颜色：
+    // - 朴素样式使用 object.color
+    // - 原生样式使用 object.baseColor（若未设置则回退到 DEFAULT_AOE_COLOR）
+    const isNative = object.native ?? true;
+    const displayColor = isNative ? (object.baseColor ?? DEFAULT_AOE_COLOR) : object.color;
     return (
         <DetailsItem
-            icon={<Icon width="100%" height="100%" style={{ [panelVars.colorZoneOrange]: object.color }} />}
+            icon={<Icon width="100%" height="100%" style={{ [panelVars.colorZoneOrange]: displayColor }} />}
             name={t('objects.line', { defaultValue: 'Line' })}
             object={object}
             {...props}
@@ -178,11 +185,28 @@ interface LineRendererProps extends RendererProps<LineZone> {
     width: number;
     rotation: number;
     isDragging?: boolean;
+    isResizing?: boolean;
 }
 
-const LineRenderer: React.FC<LineRendererProps> = ({ object, length, width, rotation, isDragging }) => {
+const LineRenderer: React.FC<LineRendererProps> = ({ object, length, width, rotation, isDragging, isResizing }) => {
     const highlightProps = useHighlightProps(object);
-    const style = getZoneStyle(object.color, object.opacity, Math.min(length, width), object.hollow);
+
+    // 若 object 没有 native 字段，说明是原版数据，则：
+    //   - 如果是空心，则不应用原生样式，以兼容原版数据
+    //   - 否则如果是实心，则应用原生样式
+    const isNative = object.native ?? object.hollow !== true;
+    const isHollow = !isNative && (object.hollow ?? false);
+
+    const style = getZoneStyle(object.color, object.opacity, Math.min(length, width), isHollow);
+    const nativeStyle = {
+        globalOpacity: object.globalOpacity,
+        baseColor: object.baseColor,
+        baseOpacity: object.baseOpacity,
+        innerGlowColor: object.innerGlowColor,
+        innerGlowOpacity: object.innerGlowOpacity,
+        outlineColor: object.outlineColor,
+        outlineOpacity: object.outlineOpacity,
+    };
 
     const x = -width / 2;
     const y = -length;
@@ -204,7 +228,18 @@ const LineRenderer: React.FC<LineRendererProps> = ({ object, length, width, rota
                 />
             )}
             <HideGroup>
-                <Rect x={x} y={y} width={width} height={length} {...style} />
+                {isNative ? (
+                    <AoeRect
+                        offsetX={-x}
+                        offsetY={-y}
+                        width={width}
+                        height={length}
+                        freeze={isResizing}
+                        {...nativeStyle}
+                    />
+                ) : (
+                    <Rect offsetX={-x} offsetY={-y} width={width} height={length} {...style} />
+                )}
 
                 {isDragging && <Circle radius={CENTER_DOT_RADIUS} fill={style.stroke} />}
             </HideGroup>
@@ -242,7 +277,14 @@ const LineContainer: React.FC<RendererProps<LineZone>> = ({ object }) => {
                     visible={showResizer && !dragging}
                     onTransformEnd={updateObject}
                 >
-                    {(props) => <LineRenderer object={object} isDragging={dragging || resizing} {...props} />}
+                    {(props) => (
+                        <LineRenderer
+                            object={object}
+                            isDragging={dragging || resizing}
+                            isResizing={resizing}
+                            {...props}
+                        />
+                    )}
                 </LineControlPoints>
             </DraggableObject>
         </ActivePortal>

@@ -225,6 +225,7 @@
     "circle": "Circle",
     "square": "Square",
     "style": "Style",
+    "native": "Native",
     "solid": "Solid",
     "hollow": "Hollow",
     "length": "Length",
@@ -254,7 +255,9 @@
     "fourPlayers": "Four players",
     "lookTowards": "Look towards",
     "lookAway": "Look away",
-    "variant": "Variant"
+    "variant": "Variant",
+    "show": "Show",
+    "hide": "Hide"
   },
   "colors": {
     "invalidColor": "Invalid color",
@@ -465,6 +468,15 @@
     "redMage": "Red Mage",
     "pictomancer": "Pictomancer",
     "blueMage": "Blue Mage"
+  },
+  "aoe": {
+    "globalOpacity": "Global opacity",
+    "baseColor": "Base color",
+    "baseOpacity": "Base opacity",
+    "innerGlowColor": "Inner glow color",
+    "innerGlowOpacity": "Inner glow opacity",
+    "outlineColor": "Outline color",
+    "outlineOpacity": "Outline opacity"
   },
   "spin": {
     "increment": "Increment value",

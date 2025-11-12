@@ -60,7 +60,7 @@ import { ZoneLineKnockback } from '../prefabs/zone/ZoneLineKnockback';
 import { ZoneLineStack } from '../prefabs/zone/ZoneLineStack';
 import { ZonePolygon } from '../prefabs/zone/ZonePolygon';
 import { ZoneProximity } from '../prefabs/zone/ZoneProximity';
-import { ZoneSquare } from '../prefabs/zone/ZoneRectangle';
+import { ZoneRect } from '../prefabs/zone/ZoneRect';
 import { ZoneRightTriangle } from '../prefabs/zone/ZoneRightTriangle';
 import { ZoneRotateClockwise, ZoneRotateCounterClockwise } from '../prefabs/zone/ZoneRotate';
 import { ZoneStack } from '../prefabs/zone/ZoneStack';
@@ -78,30 +78,30 @@ export const PrefabsPanel: React.FC = () => {
         <div className={controlClasses.panel}>
             <Section title={t('prefabs.zones')}>
                 <ObjectGroup>
-                    <ZoneRightTriangle />
-                    <ZoneTriangle />
-                    <ZoneSquare />
+                    <ZoneRect />
                     <ZoneLine />
-                    <ZoneDonut />
                     <ZoneCircle />
-
-                    <ZoneKnockback />
-                    <ZoneProximity />
-                    <ZoneLineStack />
-                    <ZoneStack />
-                    <ZoneArc />
+                    <ZoneDonut />
                     <ZoneCone />
+                    <ZoneArc />
 
                     <ZoneLineKnockback />
                     <ZoneLineKnockAway />
+                    <ZoneKnockback />
+                    <ZoneProximity />
                     <ZoneExaflare />
                     <ZoneStarburst />
+
+                    <ZoneStack />
+                    <ZoneLineStack />
                     <ZoneRotateClockwise />
                     <ZoneRotateCounterClockwise />
-
-                    <ZonePolygon />
                     <ZoneTower />
                     <ZoneEye />
+
+                    <ZoneTriangle />
+                    <ZoneRightTriangle />
+                    <ZonePolygon />
                 </ObjectGroup>
             </Section>
 

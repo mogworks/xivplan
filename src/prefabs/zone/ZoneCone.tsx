@@ -7,6 +7,7 @@ import { useScene } from '../../SceneProvider';
 import Icon from '../../assets/zone/cone.svg?react';
 import { getPointerAngle, snapAngle } from '../../coord';
 import { getResizeCursor } from '../../cursor';
+import AoeWedge from '../../lib/aoe/AoeWedge';
 import { DetailsItem } from '../../panel/DetailsItem';
 import { ListComponentProps, registerListComponent } from '../../panel/ListComponentRegistry';
 import { RendererProps, registerRenderer } from '../../render/ObjectRegistry';
@@ -66,6 +67,7 @@ registerDropHandler<ConeZone>(ObjectType.Cone, (object, position) => {
             radius: DEFAULT_RADIUS,
             coneAngle: DEFAULT_ANGLE,
             rotation: 0,
+            native: true,
             ...object,
             ...position,
         },
@@ -121,11 +123,28 @@ interface ConeRendererProps extends RendererProps<ConeZone> {
     radius: number;
     rotation: number;
     coneAngle: number;
+    isResizing?: boolean;
 }
 
-const ConeRenderer: React.FC<ConeRendererProps> = ({ object, radius, rotation, coneAngle }) => {
+const ConeRenderer: React.FC<ConeRendererProps> = ({ object, radius, rotation, coneAngle, isResizing }) => {
     const highlightProps = useHighlightProps(object);
-    const style = getZoneStyle(object.color, object.opacity, radius * 2, object.hollow);
+
+    // 若 object 没有 native 字段，说明是原版数据，则：
+    //   - 如果是空心，则不应用原生样式，以兼容原版数据
+    //   - 否则如果是实心，则应用原生样式
+    const isNative = object.native ?? object.hollow !== true;
+    const isHollow = !isNative && (object.hollow ?? false);
+
+    const style = getZoneStyle(object.color, object.opacity, radius * 2, isHollow);
+    const nativeStyle = {
+        globalOpacity: object.globalOpacity,
+        baseColor: object.baseColor,
+        baseOpacity: object.baseOpacity,
+        innerGlowColor: object.innerGlowColor,
+        innerGlowOpacity: object.innerGlowOpacity,
+        outlineColor: object.outlineColor,
+        outlineOpacity: object.outlineOpacity,
+    };
 
     return (
         <Group rotation={rotation - 90 - coneAngle / 2}>
@@ -138,7 +157,11 @@ const ConeRenderer: React.FC<ConeRendererProps> = ({ object, radius, rotation, c
                 />
             )}
             <HideGroup>
-                <Wedge radius={radius} angle={coneAngle} {...style} />
+                {isNative ? (
+                    <AoeWedge radius={radius} angle={coneAngle} freeze={isResizing} {...nativeStyle} />
+                ) : (
+                    <Wedge radius={radius} angle={coneAngle} {...style} />
+                )}
             </HideGroup>
         </Group>
     );
@@ -174,7 +197,7 @@ const ConeContainer: React.FC<RendererProps<ConeZone>> = ({ object }) => {
                     visible={showResizer && !dragging}
                     onTransformEnd={updateObject}
                 >
-                    {(props) => <ConeRenderer object={object} {...props} />}
+                    {(props) => <ConeRenderer object={object} isResizing={resizing} {...props} />}
                 </ConeControlPoints>
             </DraggableObject>
         </ActivePortal>
@@ -185,9 +208,14 @@ registerRenderer<ConeZone>(ObjectType.Cone, LayerName.Ground, ConeContainer);
 
 const ConeDetails: React.FC<ListComponentProps<ConeZone>> = ({ object, ...props }) => {
     const { t } = useTranslation();
+    // 缩略图颜色：
+    // - 朴素样式使用 object.color
+    // - 原生样式使用 object.baseColor（若未设置则回退到 DEFAULT_AOE_COLOR）
+    const isNative = object.native ?? true;
+    const displayColor = isNative ? (object.baseColor ?? DEFAULT_AOE_COLOR) : object.color;
     return (
         <DetailsItem
-            icon={<Icon width="100%" height="100%" style={{ [panelVars.colorZoneOrange]: object.color }} />}
+            icon={<Icon width="100%" height="100%" style={{ [panelVars.colorZoneOrange]: displayColor }} />}
             name={t('objects.cone', { defaultValue: 'Cone' })}
             object={object}
             {...props}

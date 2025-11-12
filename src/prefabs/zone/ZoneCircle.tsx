@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Circle } from 'react-konva';
 import { getDragOffset, registerDropHandler } from '../../DropHandler';
 import Icon from '../../assets/zone/circle.svg?react';
+import AoeCircle from '../../lib/aoe/AoeCircle';
 import { DetailsItem } from '../../panel/DetailsItem';
 import { ListComponentProps, registerListComponent } from '../../panel/ListComponentRegistry';
 import { registerRenderer, RendererProps } from '../../render/ObjectRegistry';
@@ -47,6 +48,7 @@ registerDropHandler<CircleZone>(ObjectType.Circle, (object, position) => {
             color: DEFAULT_AOE_COLOR,
             opacity: DEFAULT_AOE_OPACITY,
             radius: DEFAULT_RADIUS,
+            native: true,
             ...object,
             ...position,
         },
@@ -56,18 +58,39 @@ registerDropHandler<CircleZone>(ObjectType.Circle, (object, position) => {
 interface CircleRendererProps extends RendererProps<CircleZone> {
     radius: number;
     isDragging?: boolean;
+    isResizing?: boolean;
 }
 
-const CircleRenderer: React.FC<CircleRendererProps> = ({ object, radius, isDragging }) => {
+const CircleRenderer: React.FC<CircleRendererProps> = ({ object, radius, isDragging, isResizing }) => {
     const highlightProps = useHighlightProps(object);
-    const style = getZoneStyle(object.color, object.opacity, radius * 2, object.hollow);
+
+    // 若 object 没有 native 字段，说明是原版数据，则：
+    //   - 如果是空心，则不应用原生样式，以兼容原版数据
+    //   - 否则如果是实心，则应用原生样式
+    const isNative = object.native ?? object.hollow !== true;
+    const isHollow = !isNative && (object.hollow ?? false);
+
+    const style = getZoneStyle(object.color, object.opacity, radius * 2, isHollow);
+    const nativeStyle = {
+        globalOpacity: object.globalOpacity,
+        baseColor: object.baseColor,
+        baseOpacity: object.baseOpacity,
+        innerGlowColor: object.innerGlowColor,
+        innerGlowOpacity: object.innerGlowOpacity,
+        outlineColor: object.outlineColor,
+        outlineOpacity: object.outlineOpacity,
+    };
 
     return (
         <>
             {highlightProps && <Circle radius={radius + style.strokeWidth / 2} {...highlightProps} />}
 
             <HideGroup>
-                <Circle radius={radius} {...style} />
+                {isNative ? (
+                    <AoeCircle radius={radius} freeze={isResizing} {...nativeStyle} />
+                ) : (
+                    <Circle radius={radius} {...style} />
+                )}
 
                 {isDragging && <Circle radius={CENTER_DOT_RADIUS} fill={style.stroke} />}
             </HideGroup>
@@ -87,9 +110,14 @@ registerRenderer<CircleZone>(ObjectType.Circle, LayerName.Ground, CircleContaine
 
 const CircleDetails: React.FC<ListComponentProps<CircleZone>> = ({ object, ...props }) => {
     const { t } = useTranslation();
+    // 缩略图颜色：
+    // - 朴素样式使用 object.color
+    // - 原生样式使用 object.baseColor（若未设置则回退到 DEFAULT_AOE_COLOR）
+    const isNative = object.native ?? true;
+    const displayColor = isNative ? (object.baseColor ?? DEFAULT_AOE_COLOR) : object.color;
     return (
         <DetailsItem
-            icon={<Icon width="100%" height="100%" style={{ [panelVars.colorZoneOrange]: object.color }} />}
+            icon={<Icon width="100%" height="100%" style={{ [panelVars.colorZoneOrange]: displayColor }} />}
             name={t('objects.circle', { defaultValue: 'Circle' })}
             object={object}
             {...props}
