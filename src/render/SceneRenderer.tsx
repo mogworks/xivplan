@@ -13,6 +13,7 @@ import { selectNewObjects, selectNone, useSelection } from '../selection';
 import { UndoContext } from '../undo/undoContext';
 import { usePanelDrag } from '../usePanelDrag';
 import { ArenaRenderer } from './ArenaRenderer';
+import { AwarenessOverlay } from '../collab/AwarenessOverlay';
 import { DrawTarget } from './DrawTarget';
 import { ObjectRenderer } from './ObjectRenderer';
 import { StageContext } from './StageContext';
@@ -151,7 +152,9 @@ const SceneContents: React.FC<SceneContentsProps> = ({ listening, simple, backgr
             <Layer name={LayerName.Active} listening={listening}>
                 <DrawTarget />
             </Layer>
-            <Layer name={LayerName.Controls} listening={listening} />
+            <Layer name={LayerName.Controls} listening={listening}>
+                <AwarenessOverlay />
+            </Layer>
         </>
     );
 };

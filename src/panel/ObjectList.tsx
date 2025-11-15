@@ -74,7 +74,7 @@ export const ObjectList: React.FC<ObjectListProps> = ({ objects, onMove }) => {
                 collisionDetection={closestCenter}
                 onDragEnd={handleDragEnd}
             >
-                <SortableContext items={reversedObjects} strategy={verticalListSortingStrategy}>
+                <SortableContext items={reversedObjects.map((o) => o.id)} strategy={verticalListSortingStrategy}>
                     {reversedObjects.map((object) => (
                         <SortableItem key={object.id} object={object} />
                     ))}

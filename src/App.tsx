@@ -8,6 +8,7 @@ import { FileOpenPage } from './FileOpenPage';
 import { HelpProvider } from './HelpProvider';
 import { MainPage } from './MainPage';
 import { SceneProvider } from './SceneProvider';
+import { CollabProvider } from './collab/CollabProvider';
 import { SiteHeader } from './SiteHeader';
 import { ThemeProvider } from './ThemeProvider';
 import { useFileLoaderDropTarget } from './useFileLoader';
@@ -55,7 +56,9 @@ const BaseProviders: React.FC<PropsWithChildren> = ({ children }) => {
         <HotkeysProvider initiallyActiveScopes={[HotkeyScopes.Default, HotkeyScopes.AlwaysEnabled]}>
             <HelpProvider>
                 <SceneProvider initialScene={sceneFromUrl}>
-                    <DirtyProvider>{children}</DirtyProvider>
+                    <CollabProvider>
+                        <DirtyProvider>{children}</DirtyProvider>
+                    </CollabProvider>
                 </SceneProvider>
             </HelpProvider>
         </HotkeysProvider>

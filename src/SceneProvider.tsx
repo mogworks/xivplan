@@ -1,6 +1,7 @@
 /* eslint-disable react-refresh/only-export-components */
 import * as React from 'react';
 import { createContext, Dispatch, PropsWithChildren, SetStateAction, useContext, useState } from 'react';
+import { useCollab } from './collab/CollabContext';
 import { copyObjects } from './copy';
 import {
     Arena,
@@ -219,6 +220,49 @@ export interface SceneContext {
 export function useScene(): SceneContext {
     const [transientPresent, present, dispatch] = usePresent();
     const [source] = useContext(SourceContext);
+    const collab = useCollab();
+
+    const proxiedDispatch: React.Dispatch<SceneAction | UndoRedoAction<EditorState>> = (action) => {
+        if (collab.active && 'type' in action) {
+            const type = (action as { type: string }).type;
+            if ((action as SceneAction).transient) {
+                dispatch(action);
+                return;
+            }
+            if (type === 'undo') {
+                collab.undo?.();
+                return;
+            }
+            if (type === 'redo') {
+                collab.redo?.();
+                return;
+            }
+            if (type === 'reset' || type === 'rollback') {
+                dispatch(action);
+                return;
+            }
+            if (type === 'commit') {
+                const transientObjects = getCurrentStep(transientPresent).objects;
+                const presentObjects = getCurrentStep(present).objects;
+                const prevMap = new Map<number, SceneObject>();
+                for (const o of presentObjects) prevMap.set(o.id, o);
+                const changed: SceneObject[] = [];
+                for (const o of transientObjects) {
+                    const p = prevMap.get(o.id);
+                    if (!p || JSON.stringify(p) !== JSON.stringify(o)) changed.push(o);
+                }
+                if (changed.length > 0) {
+                    collab.applyLocalAction({ type: 'update', value: changed } as SceneAction);
+                }
+                dispatch(action);
+                return;
+            }
+            collab.applyLocalAction(action as SceneAction);
+            dispatch(action);
+            return;
+        }
+        dispatch(action);
+    };
 
     return {
         scene: transientPresent.scene,
@@ -226,7 +270,7 @@ export function useScene(): SceneContext {
         step: getCurrentStep(transientPresent),
         stepIndex: transientPresent.currentStep,
         source: source,
-        dispatch,
+        dispatch: proxiedDispatch,
     };
 }
 
@@ -235,7 +279,14 @@ export function useCurrentStep(): SceneStep {
     return getCurrentStep(present);
 }
 
-export const useSceneUndoRedoPossible = useUndoRedoPossible;
+export function useSceneUndoRedoPossible() {
+    const collab = useCollab();
+    const base = useUndoRedoPossible();
+    if (collab.active && collab.getUndoRedoPossible) {
+        return collab.getUndoRedoPossible();
+    }
+    return base;
+}
 
 export function useLoadScene(): (scene: Scene, source?: FileSource) => void {
     const { dispatch } = useScene();
