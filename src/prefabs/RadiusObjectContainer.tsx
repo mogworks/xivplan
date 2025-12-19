@@ -8,15 +8,10 @@ import { InnerRadiusObject, RadiusObject, SceneObject, UnknownObject, isRotateab
 import { useIsDragging } from '../selection';
 import { CENTER_DOT_RADIUS } from '../theme';
 import { distance } from '../vector';
-import {
-    CONTROL_POINT_BORDER_COLOR,
-    Handle,
-    HandleFuncProps,
-    HandleStyle,
-    createControlPointManager,
-} from './ControlPoint';
+import { Handle, HandleFuncProps, HandleStyle, createControlPointManager } from './ControlPoint';
 import { DraggableObject } from './DraggableObject';
 import { MIN_RADIUS, MIN_RADIUS_GAP } from './bounds';
+import { CONTROL_POINT_BORDER_COLOR } from './control-point';
 import { useShowResizer } from './highlight';
 
 interface ControlPointProps {

@@ -7,9 +7,10 @@ import { ActivePortal } from '../../render/Portals';
 import { StarburstZone, UnknownObject } from '../../scene';
 import { useIsDragging } from '../../selection';
 import { distance } from '../../vector';
-import { CONTROL_POINT_BORDER_COLOR, HandleFuncProps, HandleStyle, createControlPointManager } from '../ControlPoint';
+import { HandleFuncProps, HandleStyle, createControlPointManager } from '../ControlPoint';
 import { DraggableObject } from '../DraggableObject';
 import { MIN_RADIUS } from '../bounds';
+import { CONTROL_POINT_BORDER_COLOR } from '../control-point';
 import { useShowResizer } from '../highlight';
 
 interface StarburstControlProps {

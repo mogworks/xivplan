@@ -9,11 +9,6 @@ import { ControlsPortal } from '../render/Portals';
 import { useStage } from '../render/stage';
 import { Handle } from './Handle';
 
-// https://github.com/ArnaudBarre/eslint-plugin-react-refresh/issues/103
-/* eslint-disable react-refresh/only-export-components */
-
-export const CONTROL_POINT_BORDER_COLOR = '#00a1ff';
-
 export enum HandleStyle {
     Square,
     Diamond,
@@ -60,14 +55,6 @@ export interface ControlPointManagerPropsBase<T, S> {
 }
 
 export type ControlPointManagerProps<T, S, P> = ControlPointManagerPropsBase<T, S> & P;
-
-export const SQUARE_FILL_COLOR = '#ffffff';
-export const SQUARE_STROKE_COLOR = CONTROL_POINT_BORDER_COLOR;
-export const DIAMOND_FILL_COLOR = '#fafa00';
-export const DIAMOND_STROKE_COLOR = '#adad00';
-
-export const CONTROL_POINT_SIZE = 10;
-export const CONTROL_POINT_OFFSET = { x: CONTROL_POINT_SIZE / 2, y: CONTROL_POINT_SIZE / 2 };
 
 interface TransformState {
     handleId: number;

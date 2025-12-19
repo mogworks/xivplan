@@ -1,15 +1,15 @@
 import Konva from 'konva';
 import React from 'react';
 import { KonvaNodeEvents, Rect } from 'react-konva';
+import { HandleStyle } from './ControlPoint';
 import {
     CONTROL_POINT_OFFSET,
     CONTROL_POINT_SIZE,
     DIAMOND_FILL_COLOR,
     DIAMOND_STROKE_COLOR,
-    HandleStyle,
     SQUARE_FILL_COLOR,
     SQUARE_STROKE_COLOR,
-} from './ControlPoint';
+} from './control-point';
 
 interface HandleProps extends Konva.NodeConfig, KonvaNodeEvents {
     style: HandleStyle;
