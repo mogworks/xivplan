@@ -19,11 +19,12 @@ import { CENTER_DOT_RADIUS, DEFAULT_AOE_COLOR, DEFAULT_AOE_OPACITY, panelVars } 
 import { usePanelDrag } from '../../usePanelDrag';
 import { clamp, degtorad, mod360 } from '../../util';
 import { VEC_ZERO, distance, getIntersectionDistance, vecAtAngle, vecNormal } from '../../vector';
-import { CONTROL_POINT_BORDER_COLOR, HandleFuncProps, HandleStyle, createControlPointManager } from '../ControlPoint';
+import { HandleFuncProps, HandleStyle, createControlPointManager } from '../ControlPoint';
 import { DraggableObject } from '../DraggableObject';
 import { HideGroup } from '../HideGroup';
 import { PrefabIcon } from '../PrefabIcon';
 import { MAX_CONE_ANGLE, MIN_CONE_ANGLE, MIN_RADIUS } from '../bounds';
+import { CONTROL_POINT_BORDER_COLOR } from '../control-point';
 import { useHighlightProps, useShowResizer } from '../highlight';
 import { getZoneStyle } from './style';
 

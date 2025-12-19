@@ -18,7 +18,8 @@ import { CENTER_DOT_RADIUS, DEFAULT_AOE_COLOR, DEFAULT_AOE_OPACITY, panelVars } 
 import { usePanelDrag } from '../../usePanelDrag';
 import { distance, getDistanceFromLine, VEC_ZERO, vecAtAngle } from '../../vector';
 import { MIN_LINE_LENGTH, MIN_LINE_WIDTH } from '../bounds';
-import { CONTROL_POINT_BORDER_COLOR, createControlPointManager, HandleFuncProps, HandleStyle } from '../ControlPoint';
+import { CONTROL_POINT_BORDER_COLOR } from '../control-point';
+import { createControlPointManager, HandleFuncProps, HandleStyle } from '../ControlPoint';
 import { DraggableObject } from '../DraggableObject';
 import { HideGroup } from '../HideGroup';
 import { useHighlightProps, useShowResizer } from '../highlight';
