@@ -1,4 +1,3 @@
-import { makeStyles, tokens } from '@fluentui/react-components';
 import React from 'react';
 import { EditModeProvider } from './EditModeProvider';
 import { RegularHotkeyHandler } from './HotkeyHandler';
@@ -11,7 +10,6 @@ import { StepSelect } from './StepSelect';
 import { DetailsPanel } from './panel/DetailsPanel';
 import { MainPanel } from './panel/MainPanel';
 import { SceneRenderer } from './render/SceneRenderer';
-import { MIN_STAGE_WIDTH } from './theme';
 import { useIsDirty } from './useIsDirty';
 import { removeFileExtension } from './util';
 
@@ -28,7 +26,6 @@ export const MainPage: React.FC = () => {
 };
 
 const MainPageContent: React.FC = () => {
-    const classes = useStyles();
     const title = usePageTitle();
 
     return (
@@ -45,9 +42,7 @@ const MainPageContent: React.FC = () => {
 
             <StepSelect />
 
-            <div className={classes.stage}>
-                <SceneRenderer />
-            </div>
+            <SceneRenderer />
 
             {/* TODO: make panel collapsable */}
             <DetailsPanel />
@@ -71,15 +66,3 @@ function usePageTitle() {
     }
     return title;
 }
-
-const useStyles = makeStyles({
-    stage: {
-        gridArea: 'content',
-        display: 'flex',
-        flexFlow: 'row',
-        justifyContent: 'center',
-        overflow: 'auto',
-        minWidth: MIN_STAGE_WIDTH,
-        backgroundColor: tokens.colorNeutralBackground1,
-    },
-});

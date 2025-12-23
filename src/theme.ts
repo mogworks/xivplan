@@ -1,7 +1,7 @@
 import { ColorSwatchProps, Theme, webDarkTheme, webLightTheme } from '@fluentui/react-components';
-import { useTranslation } from 'react-i18next';
 import { ShapeConfig } from 'konva/lib/Shape';
 import { CSSProperties, useContext } from 'react';
+import { useTranslation } from 'react-i18next';
 import { DarkModeContext } from './ThemeContext';
 import { cssPropertiesToStyleString, themeToCssProperties, themeToCssVars, themeToTokensObject } from './themeUtil';
 
