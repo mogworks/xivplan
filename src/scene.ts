@@ -123,6 +123,7 @@ export type Ticks = NoTicks | RectangularTicks | RadialTicks;
 
 export interface Arena {
     readonly shape: ArenaShape;
+    readonly color?: string;
     readonly width: number;
     readonly height: number;
     readonly padding: number;

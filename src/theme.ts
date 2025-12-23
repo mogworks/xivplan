@@ -79,7 +79,7 @@ export interface SceneTheme {
 }
 
 const sceneTheme: SceneTheme = {
-    colorBackground: '#292929',
+    colorBackground: 'rgba(0, 0, 0, 0)',
     colorArena: '#40352c', // var(--xiv-colorArena, #40352c)
     colorArenaLight: '#4c4034', // var(--xiv-colorArenaLight, #4c4034)
     colorArenaDark: '#352b21', // var(--xiv-colorArenaDark, #352b21)

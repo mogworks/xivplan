@@ -148,13 +148,14 @@ const BackgroundImageSvg: React.FC<BackgroundImageProps> = ({ url, ...props }) =
 
 const BackgroundRenderer: React.FC = () => {
     const { scene } = useScene();
+    const arenaColor = scene.arena.color;
 
     switch (scene.arena.shape) {
         case ArenaShape.Circle:
-            return <CircularBackground />;
+            return <CircularBackground arenaColor={arenaColor} />;
 
         case ArenaShape.Rectangle:
-            return <RectangularBackground />;
+            return <RectangularBackground arenaColor={arenaColor} />;
 
         case ArenaShape.None:
             return <></>;
@@ -163,20 +164,20 @@ const BackgroundRenderer: React.FC = () => {
 
 const SHADOW: ShapeConfig = {
     shadowColor: 'black',
-    shadowOpacity: 0.5,
-    shadowOffsetY: 4,
-    shadowBlur: 6,
+    // shadowOpacity: 0.5,
+    // shadowOffsetY: 4,
+    shadowBlur: 10,
 };
 
-const CircularBackground: React.FC = () => {
+const CircularBackground: React.FC<{ arenaColor?: string }> = ({ arenaColor }) => {
     const position = useCanvasArenaEllipse();
     const theme = useSceneTheme();
     const shapeConfig = getArenaShapeConfig(theme);
 
-    return <Ellipse {...position} {...shapeConfig} {...SHADOW} />;
+    return <Ellipse {...position} {...shapeConfig} fill={arenaColor ?? theme.colorArena} {...SHADOW} />;
 };
 
-const RectangularBackground: React.FC = () => {
+const RectangularBackground: React.FC<{ arenaColor?: string }> = ({ arenaColor }) => {
     const position = useCanvasArenaRect();
     const theme = useSceneTheme();
     const shapeConfig = getArenaShapeConfig(theme);
@@ -189,7 +190,15 @@ const RectangularBackground: React.FC = () => {
         height: position.height - 1,
     };
 
-    return <Rect {...alignedPosition} {...shapeConfig} {...SHADOW} {...ALIGN_TO_PIXEL} />;
+    return (
+        <Rect
+            {...alignedPosition}
+            {...shapeConfig}
+            fill={arenaColor ?? theme.colorArena}
+            {...SHADOW}
+            {...ALIGN_TO_PIXEL}
+        />
+    );
 };
 
 const GridRenderer: React.FC = () => {

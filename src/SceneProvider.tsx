@@ -30,6 +30,11 @@ export interface SetArenaShapeAction {
     value: ArenaShape;
 }
 
+export interface SetArenaColorAction {
+    type: 'arenaColor';
+    value: string;
+}
+
 export interface SetArenaWidthAction {
     type: 'arenaWidth';
     value: number;
@@ -78,6 +83,7 @@ export interface SetArenaBackgroundOpacityAction {
 export type ArenaAction =
     | SetArenaAction
     | SetArenaShapeAction
+    | SetArenaColorAction
     | SetArenaWidthAction
     | SetArenaHeightAction
     | SetArenaPaddingAction
@@ -575,6 +581,9 @@ function sceneReducer(state: Readonly<EditorState>, action: SceneAction): Editor
 
         case 'arenaShape':
             return updateArena(state, { ...state.scene.arena, shape: action.value });
+
+        case 'arenaColor':
+            return updateArena(state, { ...state.scene.arena, color: action.value });
 
         case 'arenaWidth':
             return updateArena(state, { ...state.scene.arena, width: action.value });

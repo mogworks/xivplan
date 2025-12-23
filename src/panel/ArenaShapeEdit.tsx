@@ -10,11 +10,13 @@ import {
 } from '@fluentui/react-icons';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { CompactColorPicker } from '../CompactColorPicker';
 import { useScene } from '../SceneProvider';
 import { Segment, SegmentedGroup } from '../Segmented';
 import { SpinButton } from '../SpinButton';
 import { useSpinChanged } from '../prefabs/useSpinChanged';
 import { ArenaShape } from '../scene';
+import { useSceneTheme } from '../theme';
 import { useControlStyles } from '../useControlStyles';
 
 const CircleIcon = bundleIcon(CircleFilled, CircleRegular);
@@ -23,8 +25,9 @@ const BorderNoneIcon = bundleIcon(BorderNoneFilled, BorderNoneRegular);
 
 export const ArenaShapeEdit: React.FC = () => {
     const classes = useControlStyles();
+    const theme = useSceneTheme();
     const { scene, dispatch } = useScene();
-    const { shape, width, height, padding, paddingX: px, paddingY: py } = scene.arena;
+    const { shape, color, width, height, padding, paddingX: px, paddingY: py } = scene.arena;
     const paddingX = px ?? padding;
     const paddingY = py ?? padding;
     const { t } = useTranslation();
@@ -48,10 +51,19 @@ export const ArenaShapeEdit: React.FC = () => {
                         <Segment value={ArenaShape.Rectangle} icon={<SquareIcon />} title={t('arena.rectangle')} />
                     </SegmentedGroup>
                 </Field>
-                <Field label={t('arena.paddingX')} className={classes.cell}>
+                <CompactColorPicker
+                    className={classes.cell}
+                    label={t('arena.color')}
+                    color={color ?? theme.colorArena}
+                    onChange={(data) => dispatch({ type: 'arenaColor', value: data.value })}
+                    onCommit={() => dispatch({ type: 'commit' })}
+                />
+            </div>
+            <div className={classes.row}>
+                <Field label={t('arena.paddingX')}>
                     <SpinButton min={0} max={500} step={10} value={paddingX} onChange={onPaddingXChanged} />
                 </Field>
-                <Field label={t('arena.paddingY')} className={classes.cell}>
+                <Field label={t('arena.paddingY')}>
                     <SpinButton min={0} max={500} step={10} value={paddingY} onChange={onPaddingYChanged} />
                 </Field>
             </div>
