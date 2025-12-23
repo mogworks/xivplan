@@ -24,12 +24,15 @@ const BorderNoneIcon = bundleIcon(BorderNoneFilled, BorderNoneRegular);
 export const ArenaShapeEdit: React.FC = () => {
     const classes = useControlStyles();
     const { scene, dispatch } = useScene();
-    const { shape, width, height, padding } = scene.arena;
+    const { shape, width, height, padding, paddingX: px, paddingY: py } = scene.arena;
+    const paddingX = px ?? padding;
+    const paddingY = py ?? padding;
     const { t } = useTranslation();
 
     const onWidthChanged = useSpinChanged((value) => dispatch({ type: 'arenaWidth', value }));
     const onHeightChanged = useSpinChanged((value) => dispatch({ type: 'arenaHeight', value }));
-    const onPaddingChanged = useSpinChanged((value) => dispatch({ type: 'arenaPadding', value }));
+    const onPaddingXChanged = useSpinChanged((value) => dispatch({ type: 'arenaPaddingX', value }));
+    const onPaddingYChanged = useSpinChanged((value) => dispatch({ type: 'arenaPaddingY', value }));
 
     return (
         <div className={classes.column}>
@@ -45,8 +48,11 @@ export const ArenaShapeEdit: React.FC = () => {
                         <Segment value={ArenaShape.Rectangle} icon={<SquareIcon />} title={t('arena.rectangle')} />
                     </SegmentedGroup>
                 </Field>
-                <Field label={t('arena.padding')} className={classes.cell}>
-                    <SpinButton min={0} max={500} step={10} value={padding} onChange={onPaddingChanged} />
+                <Field label={t('arena.paddingX')} className={classes.cell}>
+                    <SpinButton min={0} max={500} step={10} value={paddingX} onChange={onPaddingXChanged} />
+                </Field>
+                <Field label={t('arena.paddingY')} className={classes.cell}>
+                    <SpinButton min={0} max={500} step={10} value={paddingY} onChange={onPaddingYChanged} />
                 </Field>
             </div>
             <div className={classes.row}>

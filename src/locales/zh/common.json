@@ -352,6 +352,8 @@
     "clickToShow": "点击以显示",
     "shape": "场地形状",
     "padding": "边距",
+    "paddingX": "横边距",
+    "paddingY": "纵边距",
     "gridType": "网格类型",
     "columns": "列",
     "rows": "行",

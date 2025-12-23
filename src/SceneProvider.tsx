@@ -45,6 +45,16 @@ export interface SetArenaPaddingAction {
     value: number;
 }
 
+export interface SetArenaPaddingXAction {
+    type: 'arenaPaddingX';
+    value: number;
+}
+
+export interface SetArenaPaddingYAction {
+    type: 'arenaPaddingY';
+    value: number;
+}
+
 export interface SetArenaGridAction {
     type: 'arenaGrid';
     value: Grid;
@@ -71,6 +81,8 @@ export type ArenaAction =
     | SetArenaWidthAction
     | SetArenaHeightAction
     | SetArenaPaddingAction
+    | SetArenaPaddingXAction
+    | SetArenaPaddingYAction
     | SetArenaGridAction
     | SetArenaTicksActions
     | SetArenaBackgroundAction
@@ -572,6 +584,12 @@ function sceneReducer(state: Readonly<EditorState>, action: SceneAction): Editor
 
         case 'arenaPadding':
             return updateArena(state, { ...state.scene.arena, padding: action.value });
+
+        case 'arenaPaddingX':
+            return updateArena(state, { ...state.scene.arena, paddingX: action.value });
+
+        case 'arenaPaddingY':
+            return updateArena(state, { ...state.scene.arena, paddingY: action.value });
 
         case 'arenaGrid':
             return updateArena(state, { ...state.scene.arena, grid: action.value });

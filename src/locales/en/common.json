@@ -352,6 +352,8 @@
     "clickToShow": "Click to show",
     "shape": "Arena shape",
     "padding": "Padding",
+    "paddingX": "H.Padding",
+    "paddingY": "V.Padding",
     "gridType": "Grid type",
     "columns": "Columns",
     "rows": "Rows",

@@ -88,7 +88,10 @@ export const SceneRenderer: React.FC = () => {
     }, []);
 
     return (
-        <div className={classes.stage} style={{ maxWidth: scene.arena.width + scene.arena.padding * 2 }}>
+        <div
+            className={classes.stage}
+            style={{ maxWidth: scene.arena.width + (scene.arena.paddingX ?? scene.arena.padding) * 2 }}
+        >
             <DropTarget stage={stages.get(stepIndex) || null}>
                 <div style={{ position: 'relative', width: size.width, height: size.height }}>
                     {scene.steps.map((step, index) => {

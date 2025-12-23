@@ -126,6 +126,8 @@ export interface Arena {
     readonly width: number;
     readonly height: number;
     readonly padding: number;
+    readonly paddingX?: number;
+    readonly paddingY?: number;
     readonly grid: Grid;
     readonly ticks?: Ticks;
     readonly backgroundImage?: string;

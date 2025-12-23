@@ -48,7 +48,7 @@ export const StepSelect: React.FC = () => {
         dispatch({ type: 'setStep', index });
     };
 
-    const maxWidth = scene.arena.width + scene.arena.padding * 2;
+    const maxWidth = scene.arena.width + (scene.arena.paddingX ?? scene.arena.padding) * 2;
 
     return (
         <div className={classes.root} style={{ maxWidth }}>
