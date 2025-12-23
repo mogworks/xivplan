@@ -8,7 +8,6 @@ import {
     DialogSurface,
     DialogTitle,
     DialogTrigger,
-    Divider,
     makeStyles,
     mergeClasses,
     NavDrawer,
@@ -68,12 +67,11 @@ export const ArenaPanel: React.FC = () => {
 
     return (
         <div className={mergeClasses(classes.panel, classes.column)}>
+            <SelectPresetButton />
             <ArenaShapeEdit />
             <ArenaGridEdit />
             <ArenaTickEdit />
             <ArenaBackgroundEdit />
-            <Divider />
-            <SelectPresetButton />
         </div>
     );
 };

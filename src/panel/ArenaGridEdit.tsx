@@ -143,6 +143,9 @@ export const ArenaGridEdit: React.FC = () => {
 
     return (
         <div className={classes.column}>
+            <Divider className={classes.divider} style={{ marginBottom: '-12px' }}>
+                {t('arena.groupGrid')}
+            </Divider>
             <Field label={t('arena.gridType')}>
                 <SegmentedGroup
                     name="arena-grid"
@@ -286,7 +289,6 @@ export const ArenaGridEdit: React.FC = () => {
                     </InfoField>
                 </>
             )}
-            {grid.type !== GridType.None && <Divider />}
         </div>
     );
 };

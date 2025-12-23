@@ -49,7 +49,10 @@ export const ArenaTickEdit: React.FC = () => {
 
     return (
         <div className={classes.column}>
-            <Field label={t('arena.borderTicks')}>
+            <Divider className={classes.divider} style={{ marginBottom: '-12px' }}>
+                {t('arena.groupBorderTick')}
+            </Divider>
+            <Field label={t('arena.borderTickType')}>
                 <SegmentedGroup
                     name="arena-ticks"
                     value={ticks?.type ?? TickType.None}

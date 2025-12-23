@@ -1,15 +1,20 @@
-import { Field } from '@fluentui/react-components';
+import { Divider, Field } from '@fluentui/react-components';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { DeferredInput } from '../DeferredInput';
 import { OpacitySlider } from '../OpacitySlider';
 import { useScene } from '../SceneProvider';
-import { useTranslation } from 'react-i18next';
+import { useControlStyles } from '../useControlStyles';
 
 export const ArenaBackgroundEdit: React.FC = () => {
+    const classes = useControlStyles();
     const { scene, dispatch } = useScene();
     const { t } = useTranslation();
     return (
-        <>
+        <div className={classes.column}>
+            <Divider className={classes.divider} style={{ marginBottom: '-12px' }}>
+                {t('arena.groupImage')}
+            </Divider>
             <Field label={t('arena.backgroundImageUrl')}>
                 <DeferredInput
                     value={scene.arena.backgroundImage}
@@ -29,6 +34,6 @@ export const ArenaBackgroundEdit: React.FC = () => {
                     onCommit={() => dispatch({ type: 'commit' })}
                 />
             )}
-        </>
+        </div>
     );
 };

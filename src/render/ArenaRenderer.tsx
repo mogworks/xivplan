@@ -148,14 +148,14 @@ const BackgroundImageSvg: React.FC<BackgroundImageProps> = ({ url, ...props }) =
 
 const BackgroundRenderer: React.FC = () => {
     const { scene } = useScene();
-    const arenaColor = scene.arena.color;
+    const color = scene.arena.color;
 
     switch (scene.arena.shape) {
         case ArenaShape.Circle:
-            return <CircularBackground arenaColor={arenaColor} />;
+            return <CircularBackground color={color} />;
 
         case ArenaShape.Rectangle:
-            return <RectangularBackground arenaColor={arenaColor} />;
+            return <RectangularBackground color={color} />;
 
         case ArenaShape.None:
             return <></>;
@@ -169,15 +169,15 @@ const SHADOW: ShapeConfig = {
     shadowBlur: 10,
 };
 
-const CircularBackground: React.FC<{ arenaColor?: string }> = ({ arenaColor }) => {
+const CircularBackground: React.FC<{ color?: string }> = ({ color }) => {
     const position = useCanvasArenaEllipse();
     const theme = useSceneTheme();
     const shapeConfig = getArenaShapeConfig(theme);
 
-    return <Ellipse {...position} {...shapeConfig} fill={arenaColor ?? theme.colorArena} {...SHADOW} />;
+    return <Ellipse {...position} {...shapeConfig} fill={color ?? theme.colorArena} {...SHADOW} />;
 };
 
-const RectangularBackground: React.FC<{ arenaColor?: string }> = ({ arenaColor }) => {
+const RectangularBackground: React.FC<{ color?: string }> = ({ color }) => {
     const position = useCanvasArenaRect();
     const theme = useSceneTheme();
     const shapeConfig = getArenaShapeConfig(theme);
@@ -191,13 +191,7 @@ const RectangularBackground: React.FC<{ arenaColor?: string }> = ({ arenaColor }
     };
 
     return (
-        <Rect
-            {...alignedPosition}
-            {...shapeConfig}
-            fill={arenaColor ?? theme.colorArena}
-            {...SHADOW}
-            {...ALIGN_TO_PIXEL}
-        />
+        <Rect {...alignedPosition} {...shapeConfig} fill={color ?? theme.colorArena} {...SHADOW} {...ALIGN_TO_PIXEL} />
     );
 };
 

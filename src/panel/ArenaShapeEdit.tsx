@@ -1,4 +1,4 @@
-import { Field } from '@fluentui/react-components';
+import { Divider, Field } from '@fluentui/react-components';
 import {
     BorderNoneFilled,
     BorderNoneRegular,
@@ -39,6 +39,9 @@ export const ArenaShapeEdit: React.FC = () => {
 
     return (
         <div className={classes.column}>
+            <Divider className={classes.divider} style={{ marginBottom: '-12px' }}>
+                {t('arena.groupBase')}
+            </Divider>
             <div className={classes.row}>
                 <Field label={t('arena.shape')} className={classes.cell}>
                     <SegmentedGroup
