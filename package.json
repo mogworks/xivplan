@@ -67,14 +67,13 @@
     "globals": "16.5.0",
     "lefthook": "2.0.12",
     "prettier": "3.7.4",
-    "rimraf": "6.1.2",
     "typescript": "5.9.3",
-    "typescript-eslint": "8.50.0",
+    "typescript-eslint": "8.50.1",
     "vite": "7.3.0",
     "vite-plugin-svgr": "4.5.0"
   },
   "optionalDependencies": {
-    "@rollup/rollup-linux-x64-gnu": "4.53.5"
+    "@rollup/rollup-linux-x64-gnu": "4.54.0"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
