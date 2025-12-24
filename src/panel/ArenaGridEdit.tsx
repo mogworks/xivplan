@@ -1,4 +1,4 @@
-import { Divider, Field } from '@fluentui/react-components';
+import { Field } from '@fluentui/react-components';
 import {
     CircleFilled,
     CircleRegular,
@@ -82,7 +82,7 @@ function didCustomRadialGridChange(grid: CustomRadialGrid, ringsText: string, sp
 export const ArenaGridEdit: React.FC = () => {
     const classes = useControlStyles();
     const { scene, dispatch } = useScene();
-    const grid = scene.arena.grid;
+    const grid = scene.arena.grid ?? NO_GRID;
     const { t } = useTranslation();
 
     const setGrid = (grid: Grid, transient = false) => {
@@ -143,9 +143,6 @@ export const ArenaGridEdit: React.FC = () => {
 
     return (
         <div className={classes.column}>
-            <Divider className={classes.divider} style={{ marginBottom: '-12px' }}>
-                {t('arena.groupGrid')}
-            </Divider>
             <Field label={t('arena.gridType')}>
                 <SegmentedGroup
                     name="arena-grid"

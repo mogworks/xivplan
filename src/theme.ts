@@ -79,7 +79,7 @@ export interface SceneTheme {
 }
 
 const sceneTheme: SceneTheme = {
-    colorBackground: 'rgba(0, 0, 0, 0)',
+    colorBackground: '#292929',
     colorArena: '#40352c', // var(--xiv-colorArena, #40352c)
     colorArenaLight: '#4c4034', // var(--xiv-colorArenaLight, #4c4034)
     colorArenaDark: '#352b21', // var(--xiv-colorArenaDark, #352b21)
@@ -113,7 +113,7 @@ export function useSceneThemeHtmlStyle(selector = ':root'): string {
     return cssPropertiesToStyleString(selector, styles);
 }
 
-export function getArenaShapeConfig(theme: SceneTheme): ShapeConfig {
+export function getFloorShapeConfig(theme: SceneTheme): ShapeConfig {
     return {
         fill: theme.colorArena,
         stroke: theme.colorBorder,

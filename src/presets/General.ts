@@ -1,12 +1,13 @@
-import { ArenaPreset, ArenaShape, DEFAULT_ARENA_PADDING, GridType } from '../scene';
+import { ArenaPreset, FloorShape, GridType } from '../scene';
 
 const PRESET_3_3: ArenaPreset = {
     name: 'Square 3x3',
     isSpoilerFree: true,
-    shape: ArenaShape.Rectangle,
-    width: 600,
-    height: 600,
-    padding: DEFAULT_ARENA_PADDING,
+    floor: {
+        shape: FloorShape.Rectangle,
+        width: 600,
+        height: 600,
+    },
     grid: {
         type: GridType.Rectangular,
         rows: 3,
@@ -17,10 +18,11 @@ const PRESET_3_3: ArenaPreset = {
 const PRESET_4_4: ArenaPreset = {
     name: 'Square 4x4',
     isSpoilerFree: true,
-    shape: ArenaShape.Rectangle,
-    width: 600,
-    height: 600,
-    padding: DEFAULT_ARENA_PADDING,
+    floor: {
+        shape: FloorShape.Rectangle,
+        width: 600,
+        height: 600,
+    },
     grid: {
         type: GridType.Rectangular,
         rows: 4,
@@ -31,10 +33,11 @@ const PRESET_4_4: ArenaPreset = {
 const PRESET_5_5: ArenaPreset = {
     name: 'Square 5x5',
     isSpoilerFree: true,
-    shape: ArenaShape.Rectangle,
-    width: 600,
-    height: 600,
-    padding: DEFAULT_ARENA_PADDING,
+    floor: {
+        shape: FloorShape.Rectangle,
+        width: 600,
+        height: 600,
+    },
     grid: {
         type: GridType.Rectangular,
         rows: 5,
@@ -45,10 +48,11 @@ const PRESET_5_5: ArenaPreset = {
 const PRESET_4_4_CIRCLE: ArenaPreset = {
     name: 'Circle 4x4',
     isSpoilerFree: true,
-    shape: ArenaShape.Circle,
-    width: 600,
-    height: 600,
-    padding: DEFAULT_ARENA_PADDING,
+    floor: {
+        shape: FloorShape.Circle,
+        width: 600,
+        height: 600,
+    },
     grid: {
         type: GridType.Rectangular,
         rows: 4,
@@ -59,10 +63,11 @@ const PRESET_4_4_CIRCLE: ArenaPreset = {
 const PRESET_6_DIV_CIRCLE: ArenaPreset = {
     name: 'Circle 6 slice',
     isSpoilerFree: true,
-    shape: ArenaShape.Circle,
-    width: 600,
-    height: 600,
-    padding: DEFAULT_ARENA_PADDING,
+    floor: {
+        shape: FloorShape.Circle,
+        width: 600,
+        height: 600,
+    },
     grid: {
         type: GridType.Radial,
         angularDivs: 6,
@@ -73,10 +78,11 @@ const PRESET_6_DIV_CIRCLE: ArenaPreset = {
 const PRESET_8_DIV_CIRCLE: ArenaPreset = {
     name: 'Circle 8 slice',
     isSpoilerFree: true,
-    shape: ArenaShape.Circle,
-    width: 600,
-    height: 600,
-    padding: DEFAULT_ARENA_PADDING,
+    floor: {
+        shape: FloorShape.Circle,
+        width: 600,
+        height: 600,
+    },
     grid: {
         type: GridType.Radial,
         angularDivs: 8,

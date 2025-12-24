@@ -1,12 +1,13 @@
-import { ArenaPreset, ArenaShape, DEFAULT_ARENA_PADDING, GridType } from '../scene';
+import { ArenaPreset, FloorShape, GridType } from '../scene';
 
 const PRESET_ZELESS_GAH: ArenaPreset = {
     name: "Sil'dihn Subterrane: Shadowcaster Zeless Gah",
     spoilerFreeName: "Sil'dihn Subterrane: Final Boss",
-    shape: ArenaShape.Rectangle,
-    width: 450,
-    height: 600,
-    padding: DEFAULT_ARENA_PADDING,
+    floor: {
+        shape: FloorShape.Rectangle,
+        width: 450,
+        height: 600,
+    },
     grid: {
         type: GridType.Rectangular,
         rows: 4,

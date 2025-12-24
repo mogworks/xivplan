@@ -345,6 +345,41 @@
     }
   },
   "arena": {
+    "background": {
+      "group": "背景",
+      "color": "颜色",
+      "opacity": "不透明度",
+      "paddingTop": "上边距",
+      "paddingBottom": "下边距",
+      "paddingLeft": "左边距",
+      "paddingRight": "右边距"
+    },
+    "floor": {
+      "group": "基底",
+      "shape": "形状",
+      "color": "颜色",
+      "opacity": "不透明度",
+      "width": "宽度",
+      "height": "高度",
+      "none": "无",
+      "circle": "圆形",
+      "rectangle": "矩形"
+    },
+    "texture": {
+      "group": "贴图",
+      "url": "链接地址",
+      "opacity": "不透明度",
+      "offsetX": "横向偏移",
+      "offsetY": "纵向偏移",
+      "width": "宽度",
+      "height": "高度"
+    },
+    "grid": {
+      "group": "网格"
+    },
+    "tick": {
+      "group": "边框刻度"
+    },
     "presets": "预设",
     "showAllPresets": "显示所有预设",
     "selectPreset": "选择预设",

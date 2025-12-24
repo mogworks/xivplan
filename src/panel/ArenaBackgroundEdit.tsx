@@ -1,76 +1,77 @@
-import { Divider, Field } from '@fluentui/react-components';
-import React from 'react';
+import { Field } from '@fluentui/react-components';
 import { useTranslation } from 'react-i18next';
-import { DeferredInput } from '../DeferredInput';
+import { CompactColorPicker } from '../CompactColorPicker';
+import { CompactSwatchColorPicker } from '../CompactSwatchColorPicker';
 import { OpacitySlider } from '../OpacitySlider';
 import { useSpinChanged } from '../prefabs/useSpinChanged';
-import { useScene } from '../SceneProvider';
+import { usePadding, useScene } from '../SceneProvider';
 import { SpinButton } from '../SpinButton';
+import { useColorSwatches, useSceneTheme } from '../theme';
 import { useControlStyles } from '../useControlStyles';
 
 export const ArenaBackgroundEdit: React.FC = () => {
+    const theme = useSceneTheme();
     const classes = useControlStyles();
-    const { scene, dispatch } = useScene();
-    const { width, height, background } = scene.arena;
+    const colorSwatches = useColorSwatches();
     const { t } = useTranslation();
 
-    const onWidthChanged = useSpinChanged((value) => dispatch({ type: 'arenaBackgroundWidth', value }));
-    const onHeightChanged = useSpinChanged((value) => dispatch({ type: 'arenaBackgroundHeight', value }));
+    const { scene, dispatch } = useScene();
+    const { background } = scene.arena;
+    const padding = usePadding();
+
+    const onPaddingTopChanged = useSpinChanged((value) =>
+        dispatch({ type: 'arenaBackgroundPadding', value: { ...padding, top: value } }),
+    );
+    const onPaddingBottomChanged = useSpinChanged((value) =>
+        dispatch({ type: 'arenaBackgroundPadding', value: { ...padding, bottom: value } }),
+    );
+    const onPaddingLeftChanged = useSpinChanged((value) =>
+        dispatch({ type: 'arenaBackgroundPadding', value: { ...padding, left: value } }),
+    );
+    const onPaddingRightChanged = useSpinChanged((value) =>
+        dispatch({ type: 'arenaBackgroundPadding', value: { ...padding, right: value } }),
+    );
 
     return (
         <div className={classes.column}>
-            <Divider className={classes.divider} style={{ marginBottom: '-12px' }}>
-                {t('arena.groupImage')}
-            </Divider>
-            <Field label={t('arena.backgroundImageUrl')}>
-                <DeferredInput
-                    value={background?.url}
-                    onChange={(ev, data) => {
-                        dispatch({
-                            type: 'arenaBackgroundUrl',
-                            value: data.value,
-                            transient: true,
-                        });
-                    }}
-                    onCommit={() => dispatch({ type: 'commit' })}
-                />
-            </Field>
-            {background?.url && (
-                <>
-                    <OpacitySlider
-                        label={t('arena.backgroundImageOpacity')}
-                        value={background?.opacity ?? 100}
-                        onChange={(ev, data) => {
-                            dispatch({
-                                type: 'arenaBackgroundOpacity',
-                                value: data.value,
-                                transient: data.transient,
-                            });
-                        }}
-                        onCommit={() => dispatch({ type: 'commit' })}
-                    />
-                    <div className={classes.row}>
-                        <Field label={t('arena.backgroundWidth')}>
-                            <SpinButton
-                                min={50}
-                                max={2000}
-                                step={50}
-                                value={background?.width ?? width}
-                                onChange={onWidthChanged}
-                            />
-                        </Field>
-                        <Field label={t('arena.backgroundHeight')}>
-                            <SpinButton
-                                min={50}
-                                max={2000}
-                                step={50}
-                                value={background?.height ?? height}
-                                onChange={onHeightChanged}
-                            />
-                        </Field>
-                    </div>
-                </>
-            )}
+            <CompactColorPicker
+                label={t('arena.background.color')}
+                color={background?.color ?? theme.colorBackground}
+                onChange={(data) => dispatch({ type: 'arenaBackgroundColor', value: data.value })}
+            />
+            <CompactSwatchColorPicker
+                swatches={colorSwatches}
+                selectedValue={background?.color ?? theme.colorBackground}
+                onSelectionChange={(_, data) => dispatch({ type: 'arenaBackgroundColor', value: data.selectedSwatch })}
+            />
+            <OpacitySlider
+                label={t('arena.background.opacity')}
+                value={background?.opacity ?? 0}
+                onChange={(_, data) => {
+                    dispatch({
+                        type: 'arenaBackgroundOpacity',
+                        value: data.value,
+                        transient: data.transient,
+                    });
+                }}
+                onCommit={() => dispatch({ type: 'commit' })}
+            />
+            <div className={classes.row}>
+                <Field label={t('arena.background.paddingTop')}>
+                    <SpinButton min={0} max={500} step={10} value={padding.top} onChange={onPaddingTopChanged} />
+                </Field>
+                <Field label={t('arena.background.paddingBottom')}>
+                    <SpinButton min={0} max={500} step={10} value={padding.bottom} onChange={onPaddingBottomChanged} />
+                </Field>
+            </div>
+            <div className={classes.row}>
+                <Field label={t('arena.background.paddingLeft')}>
+                    <SpinButton min={0} max={500} step={10} value={padding.left} onChange={onPaddingLeftChanged} />
+                </Field>
+                <Field label={t('arena.background.paddingRight')}>
+                    <SpinButton min={0} max={500} step={10} value={padding.right} onChange={onPaddingRightChanged} />
+                </Field>
+            </div>
         </div>
     );
 };

@@ -88,10 +88,7 @@ export const SceneRenderer: React.FC = () => {
     }, []);
 
     return (
-        <div
-            className={classes.stage}
-            style={{ maxWidth: scene.arena.width + (scene.arena.paddingX ?? scene.arena.padding) * 2 }}
-        >
+        <div className={classes.stage} style={{ maxWidth: size.width }}>
             <DropTarget stage={stages.get(stepIndex) || null}>
                 <div style={{ position: 'relative', width: size.width, height: size.height }}>
                     {scene.steps.map((step, index) => {
@@ -138,20 +135,11 @@ export interface ScenePreviewProps extends RefAttributes<Konva.Stage> {
     stepIndex?: number;
     width?: number;
     height?: number;
-    backgroundColor?: string;
     /** Do not draw complex objects that may slow down rendering. Useful for small previews. */
     simple?: boolean;
 }
 
-export const ScenePreview: React.FC<ScenePreviewProps> = ({
-    ref,
-    scene,
-    stepIndex,
-    width,
-    height,
-    backgroundColor,
-    simple,
-}) => {
+export const ScenePreview: React.FC<ScenePreviewProps> = ({ ref, scene, stepIndex, width, height, simple }) => {
     const size = getCanvasSize(scene);
     let scale = 1;
     let x = 0;
@@ -201,7 +189,6 @@ export const ScenePreview: React.FC<ScenePreviewProps> = ({
                             <SceneContents
                                 listening={false}
                                 simple={simple}
-                                backgroundColor={backgroundColor}
                                 step={present.scene.steps[present.currentStep] || { objects: [] }}
                             />
                         </SpotlightContext>
@@ -215,11 +202,10 @@ export const ScenePreview: React.FC<ScenePreviewProps> = ({
 interface SceneContentsProps {
     listening?: boolean;
     simple?: boolean;
-    backgroundColor?: string;
     step: SceneStep;
 }
 
-const SceneContents: React.FC<SceneContentsProps> = React.memo(({ listening, simple, backgroundColor, step }) => {
+const SceneContents: React.FC<SceneContentsProps> = React.memo(({ listening, simple, step }) => {
     listening = listening ?? true;
 
     return (
@@ -227,7 +213,7 @@ const SceneContents: React.FC<SceneContentsProps> = React.memo(({ listening, sim
             {listening && <SceneHotkeyHandler />}
 
             <Layer name={LayerName.Ground} listening={listening}>
-                <ArenaRenderer backgroundColor={backgroundColor} simple={simple} />
+                <ArenaRenderer simple={simple} />
                 <ObjectRenderer objects={step.objects} layer={LayerName.Ground} />
             </Layer>
             <Layer name={LayerName.Default} listening={listening}>

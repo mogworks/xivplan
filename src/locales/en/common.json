@@ -345,6 +345,41 @@
     }
   },
   "arena": {
+    "background": {
+      "group": "Background",
+      "color": "Color",
+      "opacity": "Opacity",
+      "paddingTop": "Top Padding",
+      "paddingBottom": "Bottom Padding",
+      "paddingLeft": "Left Padding",
+      "paddingRight": "Right Padding"
+    },
+    "floor": {
+      "group": "Floor",
+      "shape": "Shape",
+      "color": "Color",
+      "opacity": "Opacity",
+      "width": "Width",
+      "height": "Height",
+      "none": "None",
+      "circle": "Circle",
+      "rectangle": "Rectangle"
+    },
+    "texture": {
+      "group": "Texture",
+      "url": "URL",
+      "opacity": "Opacity",
+      "offsetX": "Offset X",
+      "offsetY": "Offset Y",
+      "width": "Width",
+      "height": "Height"
+    },
+    "grid": {
+      "group": "Grid"
+    },
+    "tick": {
+      "group": "Border Tick"
+    },
     "presets": "Presets",
     "showAllPresets": "Show all presets",
     "selectPreset": "Select preset",

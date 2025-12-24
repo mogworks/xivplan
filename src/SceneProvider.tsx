@@ -4,10 +4,14 @@ import { createContext, Dispatch, PropsWithChildren, SetStateAction, useContext,
 import { copyObjects } from './copy';
 import {
     Arena,
-    ArenaShape,
+    DEFAULT_ARENA_PADDING,
+    DEFAULT_FLOOR,
     DEFAULT_SCENE,
+    Floor,
+    FloorShape,
     Grid,
     isTether,
+    Padding,
     Scene,
     SceneObject,
     SceneObjectWithoutId,
@@ -25,33 +29,73 @@ export interface SetArenaAction {
     value: Arena;
 }
 
-export interface SetArenaShapeAction {
-    type: 'arenaShape';
-    value: ArenaShape;
-}
-
-export interface SetArenaColorAction {
-    type: 'arenaColor';
+export interface SetArenaBackgroundColorAction {
+    type: 'arenaBackgroundColor';
     value: string;
 }
 
-export interface SetArenaWidthAction {
-    type: 'arenaWidth';
+export interface SetArenaBackgroundOpacityAction {
+    type: 'arenaBackgroundOpacity';
     value: number;
 }
 
-export interface SetArenaHeightAction {
-    type: 'arenaHeight';
+export interface SetArenaBackgroundPaddingAction {
+    type: 'arenaBackgroundPadding';
+    value: Padding;
+}
+
+export interface SetArenaFloorShapeAction {
+    type: 'arenaFloorShape';
+    value: FloorShape;
+}
+
+export interface SetArenaFloorColorAction {
+    type: 'arenaFloorColor';
+    value: string;
+}
+
+export interface SetArenaFloorOpacityAction {
+    type: 'arenaFloorOpacity';
     value: number;
 }
 
-export interface SetArenaPaddingXAction {
-    type: 'arenaPaddingX';
+export interface SetArenaFloorWidthAction {
+    type: 'arenaFloorWidth';
     value: number;
 }
 
-export interface SetArenaPaddingYAction {
-    type: 'arenaPaddingY';
+export interface SetArenaFloorHeightAction {
+    type: 'arenaFloorHeight';
+    value: number;
+}
+
+export interface SetArenaTextureUrlAction {
+    type: 'arenaTextureUrl';
+    value: string;
+}
+
+export interface SetArenaTextureOpacityAction {
+    type: 'arenaTextureOpacity';
+    value: number;
+}
+
+export interface SetArenaTextureOffsetXAction {
+    type: 'arenaTextureOffsetX';
+    value: number;
+}
+
+export interface SetArenaTextureOffsetYAction {
+    type: 'arenaTextureOffsetY';
+    value: number;
+}
+
+export interface SetArenaTextureWidthAction {
+    type: 'arenaTextureWidth';
+    value: number;
+}
+
+export interface SetArenaTextureHeightAction {
+    type: 'arenaTextureHeight';
     value: number;
 }
 
@@ -65,40 +109,24 @@ export interface SetArenaTicksActions {
     value: Ticks;
 }
 
-export interface SetArenaBackgroundUrlAction {
-    type: 'arenaBackgroundUrl';
-    value: string;
-}
-
-export interface SetArenaBackgroundOpacityAction {
-    type: 'arenaBackgroundOpacity';
-    value: number;
-}
-
-export interface SetArenaBackgroundWidthAction {
-    type: 'arenaBackgroundWidth';
-    value: number;
-}
-
-export interface SetArenaBackgroundHeightAction {
-    type: 'arenaBackgroundHeight';
-    value: number;
-}
-
 export type ArenaAction =
     | SetArenaAction
-    | SetArenaShapeAction
-    | SetArenaColorAction
-    | SetArenaWidthAction
-    | SetArenaHeightAction
-    | SetArenaPaddingXAction
-    | SetArenaPaddingYAction
-    | SetArenaGridAction
-    | SetArenaTicksActions
-    | SetArenaBackgroundUrlAction
+    | SetArenaBackgroundColorAction
     | SetArenaBackgroundOpacityAction
-    | SetArenaBackgroundWidthAction
-    | SetArenaBackgroundHeightAction;
+    | SetArenaBackgroundPaddingAction
+    | SetArenaFloorShapeAction
+    | SetArenaFloorColorAction
+    | SetArenaFloorOpacityAction
+    | SetArenaFloorWidthAction
+    | SetArenaFloorHeightAction
+    | SetArenaTextureUrlAction
+    | SetArenaTextureOpacityAction
+    | SetArenaTextureOffsetXAction
+    | SetArenaTextureOffsetYAction
+    | SetArenaTextureWidthAction
+    | SetArenaTextureHeightAction
+    | SetArenaGridAction
+    | SetArenaTicksActions;
 
 export interface ObjectUpdateAction {
     type: 'update';
@@ -257,6 +285,27 @@ export function useScene(): SceneContext {
 export function useCurrentStep(): SceneStep {
     const [present] = usePresent();
     return getCurrentStep(present);
+}
+
+export function useFloor(): Floor {
+    const { scene } = useScene();
+    return scene.arena.floor ?? DEFAULT_FLOOR;
+}
+
+export function usePadding(): Padding {
+    const { scene } = useScene();
+    const { background } = scene.arena;
+    const padding = background?.padding ?? DEFAULT_ARENA_PADDING;
+    const top = typeof padding === 'number' ? padding : padding.top;
+    const bottom = typeof padding === 'number' ? padding : padding.bottom;
+    const left = typeof padding === 'number' ? padding : padding.left;
+    const right = typeof padding === 'number' ? padding : padding.right;
+    return {
+        top,
+        bottom,
+        left,
+        right,
+    };
 }
 
 export const useSceneUndoRedoPossible = useUndoRedoPossible;
@@ -585,34 +634,10 @@ function sceneReducer(state: Readonly<EditorState>, action: SceneAction): Editor
         case 'arena':
             return updateArena(state, action.value);
 
-        case 'arenaShape':
-            return updateArena(state, { ...state.scene.arena, shape: action.value });
-
-        case 'arenaColor':
-            return updateArena(state, { ...state.scene.arena, color: action.value });
-
-        case 'arenaWidth':
-            return updateArena(state, { ...state.scene.arena, width: action.value });
-
-        case 'arenaHeight':
-            return updateArena(state, { ...state.scene.arena, height: action.value });
-
-        case 'arenaPaddingX':
-            return updateArena(state, { ...state.scene.arena, paddingX: action.value });
-
-        case 'arenaPaddingY':
-            return updateArena(state, { ...state.scene.arena, paddingY: action.value });
-
-        case 'arenaGrid':
-            return updateArena(state, { ...state.scene.arena, grid: action.value });
-
-        case 'arenaTicks':
-            return updateArena(state, { ...state.scene.arena, ticks: action.value });
-
-        case 'arenaBackgroundUrl':
+        case 'arenaBackgroundColor':
             return updateArena(state, {
                 ...state.scene.arena,
-                background: { ...state.scene.arena.background, url: action.value },
+                background: { ...state.scene.arena.background, color: action.value },
             });
 
         case 'arenaBackgroundOpacity':
@@ -621,17 +646,83 @@ function sceneReducer(state: Readonly<EditorState>, action: SceneAction): Editor
                 background: { ...state.scene.arena.background, opacity: action.value },
             });
 
-        case 'arenaBackgroundWidth':
+        case 'arenaBackgroundPadding':
             return updateArena(state, {
                 ...state.scene.arena,
-                background: { ...state.scene.arena.background, width: action.value },
+                background: { ...state.scene.arena.background, padding: action.value },
             });
 
-        case 'arenaBackgroundHeight':
+        case 'arenaFloorShape':
             return updateArena(state, {
                 ...state.scene.arena,
-                background: { ...state.scene.arena.background, height: action.value },
+                floor: { ...(state.scene.arena.floor ?? DEFAULT_FLOOR), shape: action.value },
             });
+
+        case 'arenaFloorColor':
+            return updateArena(state, {
+                ...state.scene.arena,
+                floor: { ...(state.scene.arena.floor ?? DEFAULT_FLOOR), color: action.value },
+            });
+
+        case 'arenaFloorOpacity':
+            return updateArena(state, {
+                ...state.scene.arena,
+                floor: { ...(state.scene.arena.floor ?? DEFAULT_FLOOR), opacity: action.value },
+            });
+
+        case 'arenaFloorWidth':
+            return updateArena(state, {
+                ...state.scene.arena,
+                floor: { ...(state.scene.arena.floor ?? DEFAULT_FLOOR), width: action.value },
+            });
+
+        case 'arenaFloorHeight':
+            return updateArena(state, {
+                ...state.scene.arena,
+                floor: { ...(state.scene.arena.floor ?? DEFAULT_FLOOR), height: action.value },
+            });
+
+        case 'arenaTextureUrl':
+            return updateArena(state, {
+                ...state.scene.arena,
+                texture: { ...state.scene.arena.texture, url: action.value },
+            });
+
+        case 'arenaTextureOpacity':
+            return updateArena(state, {
+                ...state.scene.arena,
+                texture: { ...state.scene.arena.texture, opacity: action.value },
+            });
+
+        case 'arenaTextureOffsetX':
+            return updateArena(state, {
+                ...state.scene.arena,
+                texture: { ...state.scene.arena.texture, offsetX: action.value },
+            });
+
+        case 'arenaTextureOffsetY':
+            return updateArena(state, {
+                ...state.scene.arena,
+                texture: { ...state.scene.arena.texture, offsetY: action.value },
+            });
+
+        case 'arenaTextureWidth':
+            return updateArena(state, {
+                ...state.scene.arena,
+                texture: { ...state.scene.arena.texture, width: action.value },
+            });
+
+        case 'arenaTextureHeight':
+            return updateArena(state, {
+                ...state.scene.arena,
+                texture: { ...state.scene.arena.texture, height: action.value },
+            });
+
+        case 'arenaGrid':
+            return updateArena(state, { ...state.scene.arena, grid: action.value });
+
+        case 'arenaTicks':
+            return updateArena(state, { ...state.scene.arena, ticks: action.value });
 
         case 'add':
             return addObjects(state, action.object);

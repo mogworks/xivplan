@@ -1,29 +1,35 @@
-import { ArenaPreset, ArenaShape, DEFAULT_ARENA_PADDING, DEFAULT_RADIAL_TICKS, GridType } from '../../scene';
+import { ArenaPreset, DEFAULT_RADIAL_TICKS, FloorShape, GridType } from '../../scene';
 
 const PRESET_1: ArenaPreset = {
     name: 'Phase 1',
     spoilerFreeName: 'Phase ██',
-    shape: ArenaShape.Circle,
-    width: 600,
-    height: 600,
-    padding: DEFAULT_ARENA_PADDING,
+    floor: {
+        shape: FloorShape.Circle,
+        width: 600,
+        height: 600,
+    },
+    texture: {
+        url: '/arena/top-p1.png',
+        opacity: 50,
+    },
     grid: { type: GridType.None },
     ticks: DEFAULT_RADIAL_TICKS,
-    backgroundImage: '/arena/top-p1.png',
-    backgroundOpacity: 50,
 };
 
 const PRESET_2: ArenaPreset = {
     name: 'Phase 2',
     spoilerFreeName: 'Phase ██',
-    shape: ArenaShape.Circle,
-    width: 600,
-    height: 600,
-    padding: DEFAULT_ARENA_PADDING,
+    floor: {
+        shape: FloorShape.Circle,
+        width: 600,
+        height: 600,
+    },
+    texture: {
+        url: '/arena/top-p2.png',
+        opacity: 35,
+    },
     grid: { type: GridType.None },
     ticks: DEFAULT_RADIAL_TICKS,
-    backgroundImage: '/arena/top-p2.png',
-    backgroundOpacity: 35,
 };
 
 export const ARENA_PRESETS_ULTIMATE_TOP = [PRESET_1, PRESET_2];

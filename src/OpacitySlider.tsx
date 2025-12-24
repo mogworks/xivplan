@@ -60,7 +60,7 @@ export const OpacitySlider: React.FC<OpacitySliderProps> = ({
             <div className={classes.wrapper}>
                 <Slider
                     value={value ?? 0}
-                    min={5}
+                    min={0}
                     max={100}
                     step={5}
                     aria-valuetext={ariaValueText}

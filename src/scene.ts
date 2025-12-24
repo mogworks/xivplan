@@ -1,6 +1,6 @@
 import type { NativeStyle } from './lib/aoe/nativeStyle';
 
-export enum ArenaShape {
+export enum FloorShape {
     None = 'none',
     Rectangle = 'rectangle',
     Circle = 'circle',
@@ -121,24 +121,37 @@ export interface RadialTicks {
 
 export type Ticks = NoTicks | RectangularTicks | RadialTicks;
 
+export type Padding = { top: number; bottom: number; left: number; right: number };
+
 export interface Background {
+    readonly color?: string;
+    readonly opacity?: number;
+    readonly padding?: number | Padding;
+}
+
+export interface Floor {
+    readonly shape: FloorShape;
+    readonly color?: string;
+    readonly opacity?: number;
+    readonly width: number;
+    readonly height: number;
+}
+
+export interface Texture {
     readonly url?: string;
     readonly opacity?: number;
+    readonly offsetX?: number;
+    readonly offsetY?: number;
     readonly width?: number;
     readonly height?: number;
 }
 
 export interface Arena {
-    readonly shape: ArenaShape;
-    readonly color?: string;
-    readonly width: number;
-    readonly height: number;
-    readonly padding: number;
-    readonly paddingX?: number;
-    readonly paddingY?: number;
-    readonly grid: Grid;
-    readonly ticks?: Ticks;
     readonly background?: Background;
+    readonly floor?: Floor;
+    readonly texture?: Texture;
+    readonly grid?: Grid;
+    readonly ticks?: Ticks;
 }
 
 export interface ArenaPreset extends Arena {
@@ -556,13 +569,20 @@ export const DEFAULT_RADIAL_TICKS: RadialTicks = {
     minorCount: 72,
 };
 
+export const DEFAULT_FLOOR: Floor = {
+    shape: FloorShape.Rectangle,
+    width: 400,
+    height: 400,
+};
+
 export const DEFAULT_ARENA_PADDING = 120;
 
 export const DEFAULT_ARENA: Arena = {
-    shape: ArenaShape.Rectangle,
-    width: 600,
-    height: 600,
-    padding: 120,
+    floor: {
+        shape: FloorShape.Rectangle,
+        width: 600,
+        height: 600,
+    },
     grid: DEFAULT_RECT_GRID,
 };
 

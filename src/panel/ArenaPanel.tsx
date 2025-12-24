@@ -1,4 +1,9 @@
 import {
+    Accordion,
+    AccordionHeader,
+    AccordionItem,
+    AccordionPanel,
+    AccordionToggleEventHandler,
     Button,
     Checkbox,
     CheckboxProps,
@@ -32,8 +37,9 @@ import { ArenaPreset, Scene } from '../scene';
 import { getRevealedArenaPresets, revealArenaPreset } from '../spoilers';
 import { useControlStyles } from '../useControlStyles';
 import { ArenaBackgroundEdit } from './ArenaBackgroundEdit';
+import { ArenaFloorEdit } from './ArenaFloorEdit';
 import { ArenaGridEdit } from './ArenaGridEdit';
-import { ArenaShapeEdit } from './ArenaShapeEdit';
+import { ArenaTextureEdit } from './ArenaTextureEdit';
 import { ArenaTickEdit } from './ArenaTickEdit';
 
 const PREVIEW_SIZE = 240;
@@ -64,14 +70,55 @@ const PRESET_CATEGORIES: PresetCategory[] = Object.entries(ARENA_PRESETS).map(([
 
 export const ArenaPanel: React.FC = () => {
     const classes = useControlStyles();
+    const styles = useStyles();
+    const { t } = useTranslation();
+
+    const [openItems, setOpenItems] = React.useState(['floor', 'texture']);
+    const handleToggle: AccordionToggleEventHandler<string> = (event, data) => {
+        setOpenItems(data.openItems);
+    };
 
     return (
         <div className={mergeClasses(classes.panel, classes.column)}>
             <SelectPresetButton />
-            <ArenaShapeEdit />
-            <ArenaGridEdit />
-            <ArenaTickEdit />
-            <ArenaBackgroundEdit />
+            <Accordion
+                style={{ marginLeft: '-12px', marginRight: '-12px' }}
+                openItems={openItems}
+                onToggle={handleToggle}
+                multiple
+                collapsible
+            >
+                <AccordionItem value="background" className={openItems.includes('background') ? styles.openItem : ''}>
+                    <AccordionHeader size="large">{t('arena.background.group')}</AccordionHeader>
+                    <AccordionPanel>
+                        <ArenaBackgroundEdit />
+                    </AccordionPanel>
+                </AccordionItem>
+                <AccordionItem value="floor" className={openItems.includes('floor') ? styles.openItem : ''}>
+                    <AccordionHeader size="large">{t('arena.floor.group')}</AccordionHeader>
+                    <AccordionPanel>
+                        <ArenaFloorEdit />
+                    </AccordionPanel>
+                </AccordionItem>
+                <AccordionItem value="texture" className={openItems.includes('texture') ? styles.openItem : ''}>
+                    <AccordionHeader size="large">{t('arena.texture.group')}</AccordionHeader>
+                    <AccordionPanel>
+                        <ArenaTextureEdit />
+                    </AccordionPanel>
+                </AccordionItem>
+                <AccordionItem value="grid" className={openItems.includes('grid') ? styles.openItem : ''}>
+                    <AccordionHeader size="large">{t('arena.grid.group')}</AccordionHeader>
+                    <AccordionPanel>
+                        <ArenaGridEdit />
+                    </AccordionPanel>
+                </AccordionItem>
+                <AccordionItem value="tick">
+                    <AccordionHeader size="large">{t('arena.tick.group')}</AccordionHeader>
+                    <AccordionPanel>
+                        <ArenaTickEdit />
+                    </AccordionPanel>
+                </AccordionItem>
+            </Accordion>
         </div>
     );
 };
@@ -285,13 +332,7 @@ const PresetItem: React.FC<PresetItemProps> = ({
             <div className={classes.presetHeader}>{name}</div>
             <div className={classes.arenaPreviewWrap}>
                 <div className={mergeClasses(classes.arenaPreview, isSpoiler && classes.blur)}>
-                    <ScenePreview
-                        scene={scene}
-                        width={PREVIEW_SIZE}
-                        height={PREVIEW_SIZE}
-                        backgroundColor="transparent"
-                        simple
-                    />
+                    <ScenePreview scene={scene} width={PREVIEW_SIZE} height={PREVIEW_SIZE} simple />
                 </div>
                 {isSpoiler && (
                     <div className={classes.spoilerNotice}>
@@ -434,5 +475,9 @@ const useStyles = makeStyles({
         color: tokens.colorNeutralForegroundStaticInverted,
         textShadow: `0 1px 2px ${tokens.colorNeutralBackgroundStatic}`,
         ...typographyStyles.subtitle2,
+    },
+
+    openItem: {
+        marginBottom: '16px',
     },
 });
