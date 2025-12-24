@@ -386,7 +386,9 @@
     "customRadial": "自定义径向",
     "customRectangular": "自定义矩形",
     "backgroundImageUrl": "链接地址",
-    "backgroundImageOpacity": "不透明度"
+    "backgroundImageOpacity": "不透明度",
+    "backgroundWidth": "宽度",
+    "backgroundHeight": "高度"
   },
   "tethers": {
     "line": "连线",

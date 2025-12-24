@@ -121,6 +121,13 @@ export interface RadialTicks {
 
 export type Ticks = NoTicks | RectangularTicks | RadialTicks;
 
+export interface Background {
+    readonly url?: string;
+    readonly opacity?: number;
+    readonly width?: number;
+    readonly height?: number;
+}
+
 export interface Arena {
     readonly shape: ArenaShape;
     readonly color?: string;
@@ -131,8 +138,7 @@ export interface Arena {
     readonly paddingY?: number;
     readonly grid: Grid;
     readonly ticks?: Ticks;
-    readonly backgroundImage?: string;
-    readonly backgroundOpacity?: number;
+    readonly background?: Background;
 }
 
 export interface ArenaPreset extends Arena {

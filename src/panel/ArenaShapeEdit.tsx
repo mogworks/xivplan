@@ -54,13 +54,15 @@ export const ArenaShapeEdit: React.FC = () => {
                         <Segment value={ArenaShape.Rectangle} icon={<SquareIcon />} title={t('arena.rectangle')} />
                     </SegmentedGroup>
                 </Field>
-                <CompactColorPicker
-                    className={classes.cell}
-                    label={t('arena.color')}
-                    color={color ?? theme.colorArena}
-                    onChange={(data) => dispatch({ type: 'arenaColor', value: data.value })}
-                    onCommit={() => dispatch({ type: 'commit' })}
-                />
+                {shape !== ArenaShape.None && (
+                    <CompactColorPicker
+                        className={classes.cell}
+                        label={t('arena.color')}
+                        color={color ?? theme.colorArena}
+                        onChange={(data) => dispatch({ type: 'arenaColor', value: data.value })}
+                        onCommit={() => dispatch({ type: 'commit' })}
+                    />
+                )}
             </div>
             <div className={classes.row}>
                 <Field label={t('arena.paddingX')}>

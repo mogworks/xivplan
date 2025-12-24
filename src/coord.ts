@@ -39,6 +39,17 @@ export function getCanvasArenaRect(scene: Scene): { x: number; y: number; width:
     return { x, y, width, height };
 }
 
+export function getCanvasArenaBackgroundRect(scene: Scene): { x: number; y: number; width: number; height: number } {
+    const { x, y } = getCanvasCoord(scene, {
+        x: -(scene.arena.background?.width ?? scene.arena.width) / 2,
+        y: (scene.arena.background?.height ?? scene.arena.height) / 2,
+    });
+    const width = scene.arena.background?.width ?? scene.arena.width;
+    const height = scene.arena.background?.height ?? scene.arena.height;
+
+    return { x, y, width, height };
+}
+
 export function getCanvasArenaEllipse(scene: Scene): { x: number; y: number; radiusX: number; radiusY: number } {
     const { x, y } = getCanvasCoord(scene, { x: 0, y: 0 });
     const radiusX = scene.arena.width / 2;

@@ -386,7 +386,9 @@
     "customRadial": "Custom radial",
     "customRectangular": "Custom rectangular",
     "backgroundImageUrl": "URL",
-    "backgroundImageOpacity": "Opacity"
+    "backgroundImageOpacity": "Opacity",
+    "backgroundWidth": "Width",
+    "backgroundHeight": "Height"
   },
   "tethers": {
     "line": "Tether",

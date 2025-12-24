@@ -45,11 +45,6 @@ export interface SetArenaHeightAction {
     value: number;
 }
 
-export interface SetArenaPaddingAction {
-    type: 'arenaPadding';
-    value: number;
-}
-
 export interface SetArenaPaddingXAction {
     type: 'arenaPaddingX';
     value: number;
@@ -70,13 +65,23 @@ export interface SetArenaTicksActions {
     value: Ticks;
 }
 
-export interface SetArenaBackgroundAction {
-    type: 'arenaBackground';
-    value: string | undefined;
+export interface SetArenaBackgroundUrlAction {
+    type: 'arenaBackgroundUrl';
+    value: string;
 }
 
 export interface SetArenaBackgroundOpacityAction {
     type: 'arenaBackgroundOpacity';
+    value: number;
+}
+
+export interface SetArenaBackgroundWidthAction {
+    type: 'arenaBackgroundWidth';
+    value: number;
+}
+
+export interface SetArenaBackgroundHeightAction {
+    type: 'arenaBackgroundHeight';
     value: number;
 }
 
@@ -86,13 +91,14 @@ export type ArenaAction =
     | SetArenaColorAction
     | SetArenaWidthAction
     | SetArenaHeightAction
-    | SetArenaPaddingAction
     | SetArenaPaddingXAction
     | SetArenaPaddingYAction
     | SetArenaGridAction
     | SetArenaTicksActions
-    | SetArenaBackgroundAction
-    | SetArenaBackgroundOpacityAction;
+    | SetArenaBackgroundUrlAction
+    | SetArenaBackgroundOpacityAction
+    | SetArenaBackgroundWidthAction
+    | SetArenaBackgroundHeightAction;
 
 export interface ObjectUpdateAction {
     type: 'update';
@@ -591,9 +597,6 @@ function sceneReducer(state: Readonly<EditorState>, action: SceneAction): Editor
         case 'arenaHeight':
             return updateArena(state, { ...state.scene.arena, height: action.value });
 
-        case 'arenaPadding':
-            return updateArena(state, { ...state.scene.arena, padding: action.value });
-
         case 'arenaPaddingX':
             return updateArena(state, { ...state.scene.arena, paddingX: action.value });
 
@@ -606,11 +609,29 @@ function sceneReducer(state: Readonly<EditorState>, action: SceneAction): Editor
         case 'arenaTicks':
             return updateArena(state, { ...state.scene.arena, ticks: action.value });
 
-        case 'arenaBackground':
-            return updateArena(state, { ...state.scene.arena, backgroundImage: action.value });
+        case 'arenaBackgroundUrl':
+            return updateArena(state, {
+                ...state.scene.arena,
+                background: { ...state.scene.arena.background, url: action.value },
+            });
 
         case 'arenaBackgroundOpacity':
-            return updateArena(state, { ...state.scene.arena, backgroundOpacity: action.value });
+            return updateArena(state, {
+                ...state.scene.arena,
+                background: { ...state.scene.arena.background, opacity: action.value },
+            });
+
+        case 'arenaBackgroundWidth':
+            return updateArena(state, {
+                ...state.scene.arena,
+                background: { ...state.scene.arena.background, width: action.value },
+            });
+
+        case 'arenaBackgroundHeight':
+            return updateArena(state, {
+                ...state.scene.arena,
+                background: { ...state.scene.arena.background, height: action.value },
+            });
 
         case 'add':
             return addObjects(state, action.object);

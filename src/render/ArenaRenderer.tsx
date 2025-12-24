@@ -6,6 +6,7 @@ import { Ellipse, Group, Image, Rect, Shape } from 'react-konva';
 import { useScene } from '../SceneProvider';
 import {
     ALIGN_TO_PIXEL,
+    getCanvasArenaBackgroundRect,
     getCanvasArenaEllipse,
     getCanvasArenaRect,
     getCanvasCoord,
@@ -101,15 +102,21 @@ const ArenaClip: React.FC<PropsWithChildren> = ({ children }) => {
 const BackgroundImage: React.FC = () => {
     const { scene } = useScene();
 
-    const url = scene.arena.backgroundImage ?? '';
+    const background = scene.arena.background;
+
+    if (!background) {
+        return null;
+    }
+
+    const url = background.url ?? '';
     const ext = getUrlFileExtension(url);
 
     if (!url) {
         return null;
     }
 
-    const opacity = (scene.arena.backgroundOpacity ?? 100) / 100;
-    const position = getCanvasArenaRect(scene);
+    const opacity = (background.opacity ?? 100) / 100;
+    const position = getCanvasArenaBackgroundRect(scene);
     const shadow = scene.arena.shape === ArenaShape.None ? SHADOW : {};
 
     switch (ext) {
