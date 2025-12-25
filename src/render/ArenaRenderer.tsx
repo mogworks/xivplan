@@ -53,19 +53,12 @@ export const ArenaRenderer: React.FC<ArenaRendererProps> = ({ simple }) => {
 };
 
 const BackgroundRenderer: React.FC = () => {
-    const theme = useSceneTheme();
     const { scene } = useScene();
     const { background } = scene.arena;
     const size = getCanvasSize(scene);
 
     return (
-        <Rect
-            fill={background?.color ?? theme.colorBackground}
-            opacity={(background?.opacity ?? 0) / 100}
-            x={0}
-            y={0}
-            {...size}
-        />
+        <Rect fill={background?.color ?? '#000000'} opacity={(background?.opacity ?? 0) / 100} x={0} y={0} {...size} />
     );
 };
 

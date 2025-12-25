@@ -6,11 +6,10 @@ import { OpacitySlider } from '../OpacitySlider';
 import { useSpinChanged } from '../prefabs/useSpinChanged';
 import { usePadding, useScene } from '../SceneProvider';
 import { SpinButton } from '../SpinButton';
-import { useColorSwatches, useSceneTheme } from '../theme';
+import { useColorSwatches } from '../theme';
 import { useControlStyles } from '../useControlStyles';
 
 export const ArenaBackgroundEdit: React.FC = () => {
-    const theme = useSceneTheme();
     const classes = useControlStyles();
     const colorSwatches = useColorSwatches();
     const { t } = useTranslation();
@@ -36,12 +35,12 @@ export const ArenaBackgroundEdit: React.FC = () => {
         <div className={classes.column}>
             <CompactColorPicker
                 label={t('arena.background.color')}
-                color={background?.color ?? theme.colorBackground}
+                color={background?.color ?? '#000000'}
                 onChange={(data) => dispatch({ type: 'arenaBackgroundColor', value: data.value })}
             />
             <CompactSwatchColorPicker
                 swatches={colorSwatches}
-                selectedValue={background?.color ?? theme.colorBackground}
+                selectedValue={background?.color ?? '#000000'}
                 onSelectionChange={(_, data) => dispatch({ type: 'arenaBackgroundColor', value: data.selectedSwatch })}
             />
             <OpacitySlider
