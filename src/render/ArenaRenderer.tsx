@@ -17,6 +17,7 @@ import {
     useCanvasArenaRect,
 } from '../coord';
 import {
+    BaseGridProps,
     CustomRadialGrid,
     CustomRectangularGrid,
     DEFAULT_FLOOR,
@@ -30,7 +31,7 @@ import {
 import { getFloorShapeConfig, getGridShapeConfig, useSceneTheme, useSceneThemeHtmlStyle } from '../theme';
 import { useImageTracked } from '../useObjectLoading';
 import { useStyledSvg } from '../useStyledSvg';
-import { degtorad, getLinearGridDivs, getUrlFileExtension } from '../util';
+import { getLinearGridDivs, getUrlFileExtension } from '../util';
 import { ArenaTickRenderer } from './ArenaTickRenderer';
 
 export interface ArenaRendererProps {
@@ -182,7 +183,15 @@ const CircularFloor: React.FC<{ color?: string; opacity?: number }> = ({ color, 
     const theme = useSceneTheme();
     const shapeConfig = getFloorShapeConfig(theme);
 
-    return <Ellipse {...position} {...shapeConfig} fill={color ?? theme.colorArena} opacity={opacity} {...SHADOW} />;
+    return (
+        <Ellipse
+            {...position}
+            {...shapeConfig}
+            fill={color ?? shapeConfig.fill ?? theme.colorArena}
+            opacity={opacity}
+            {...SHADOW}
+        />
+    );
 };
 
 const RectangularFloor: React.FC<{ color?: string; opacity?: number }> = ({ color, opacity }) => {
@@ -202,7 +211,7 @@ const RectangularFloor: React.FC<{ color?: string; opacity?: number }> = ({ colo
         <Rect
             {...alignedPosition}
             {...shapeConfig}
-            fill={color ?? theme.colorArena}
+            fill={color ?? shapeConfig.fill ?? theme.colorArena}
             opacity={opacity}
             {...SHADOW}
             {...ALIGN_TO_PIXEL}
@@ -232,7 +241,7 @@ const GridRenderer: React.FC = () => {
     }
 };
 
-interface GridProps<T> {
+interface GridProps<T extends BaseGridProps> {
     grid: T;
 }
 
@@ -307,6 +316,8 @@ const RadialGridRenderer: React.FC<GridProps<RadialGrid>> = ({ grid }) => {
                 }
             }}
             {...shapeConfig}
+            stroke={grid.stroke ?? shapeConfig.stroke ?? theme.colorGrid}
+            opacity={(grid.opacity ?? 100) / 100}
             {...ALIGN_TO_PIXEL}
         />
     );
@@ -341,6 +352,8 @@ const RectangularGridRenderer: React.FC<GridProps<RectangularGrid>> = ({ grid })
                 ctx.fillStrokeShape(shape);
             }}
             {...shapeConfig}
+            stroke={grid.stroke ?? shapeConfig.stroke ?? theme.colorGrid}
+            opacity={(grid.opacity ?? 100) / 100}
             {...ALIGN_TO_PIXEL}
         />
     );
@@ -377,6 +390,8 @@ const CustomRectangularGridRenderer: React.FC<GridProps<CustomRectangularGrid>> 
                 context.fillStrokeShape(shape);
             }}
             {...shapeConfig}
+            stroke={grid.stroke ?? shapeConfig.stroke ?? theme.colorGrid}
+            opacity={(grid.opacity ?? 100) / 100}
             {...ALIGN_TO_PIXEL}
         />
     );
@@ -390,7 +405,7 @@ const CustomRadialGridRenderer: React.FC<GridProps<CustomRadialGrid>> = ({ grid 
     const position = getCanvasArenaEllipse(scene);
     const shapeConfig = getGridShapeConfig(theme);
 
-    const spokes = grid.spokes.map((angle) => circlePointAtAngle(degtorad(angle), position.radiusX, position.radiusY));
+    const spokes = grid.spokes.map((angle) => circlePointAtAngle(degToRad(angle), position.radiusX, position.radiusY));
 
     return (
         <Shape
@@ -415,6 +430,8 @@ const CustomRadialGridRenderer: React.FC<GridProps<CustomRadialGrid>> = ({ grid 
                 }
             }}
             {...shapeConfig}
+            stroke={grid.stroke ?? shapeConfig.stroke ?? theme.colorGrid}
+            opacity={(grid.opacity ?? 100) / 100}
             {...ALIGN_TO_PIXEL}
         />
     );

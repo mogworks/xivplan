@@ -375,7 +375,9 @@
       "height": "Height"
     },
     "grid": {
-      "group": "Grid"
+      "group": "Grid",
+      "stroke": "Stroke",
+      "opacity": "Opacity"
     },
     "tick": {
       "group": "Border Tick"

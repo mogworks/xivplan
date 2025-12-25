@@ -57,17 +57,15 @@ export const ArenaFloorEdit: React.FC = () => {
                         />
                     </SegmentedGroup>
                 </Field>
-                {shape !== FloorShape.None && (
+            </div>
+            {shape !== FloorShape.None && (
+                <>
                     <CompactColorPicker
                         label={t('arena.floor.color')}
                         color={color ?? theme.colorArena}
                         onChange={(data) => dispatch({ type: 'arenaFloorColor', value: data.value })}
                         onCommit={() => dispatch({ type: 'commit' })}
                     />
-                )}
-            </div>
-            {shape !== FloorShape.None && (
-                <>
                     <CompactSwatchColorPicker
                         swatches={colorSwatches}
                         selectedValue={color ?? theme.colorArena}

@@ -12,8 +12,11 @@ import {
 } from '@fluentui/react-icons';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { CompactColorPicker } from '../CompactColorPicker';
+import { CompactSwatchColorPicker } from '../CompactSwatchColorPicker';
 import { DeferredInput } from '../DeferredInput';
 import { InfoField } from '../InfoField';
+import { OpacitySlider } from '../OpacitySlider';
 import { useScene } from '../SceneProvider';
 import { Segment, SegmentedGroup } from '../Segmented';
 import { SpinButton } from '../SpinButton';
@@ -30,6 +33,7 @@ import {
     GridType,
     NO_GRID,
 } from '../scene';
+import { useColorSwatches, useSceneTheme } from '../theme';
 import { useControlStyles } from '../useControlStyles';
 
 const SquareHintIcon = bundleIcon(SquareHintFilled, SquareHintRegular);
@@ -81,9 +85,11 @@ function didCustomRadialGridChange(grid: CustomRadialGrid, ringsText: string, sp
 
 export const ArenaGridEdit: React.FC = () => {
     const classes = useControlStyles();
+    const theme = useSceneTheme();
+    const colorSwatches = useColorSwatches();
+    const { t } = useTranslation();
     const { scene, dispatch } = useScene();
     const grid = scene.arena.grid ?? NO_GRID;
-    const { t } = useTranslation();
 
     const setGrid = (grid: Grid, transient = false) => {
         dispatch({ type: 'arenaGrid', value: grid, transient });
@@ -160,6 +166,35 @@ export const ArenaGridEdit: React.FC = () => {
                     />
                 </SegmentedGroup>
             </Field>
+            {grid.type !== GridType.None && (
+                <>
+                    <CompactColorPicker
+                        label={t('arena.grid.stroke')}
+                        color={grid.stroke ?? theme.colorGrid}
+                        onChange={(data) => dispatch({ type: 'arenaGridStroke', value: data.value })}
+                        onCommit={() => dispatch({ type: 'commit' })}
+                    />
+                    <CompactSwatchColorPicker
+                        swatches={colorSwatches}
+                        selectedValue={grid.stroke ?? theme.colorGrid}
+                        onSelectionChange={(_, data) =>
+                            dispatch({ type: 'arenaGridStroke', value: data.selectedSwatch })
+                        }
+                    />
+                    <OpacitySlider
+                        label={t('arena.grid.opacity')}
+                        value={grid.opacity ?? 100}
+                        onChange={(_, data) => {
+                            dispatch({
+                                type: 'arenaGridOpacity',
+                                value: data.value,
+                                transient: data.transient,
+                            });
+                        }}
+                        onCommit={() => dispatch({ type: 'commit' })}
+                    />
+                </>
+            )}
             {grid.type === GridType.Rectangular && (
                 <div className={classes.row}>
                     <Field label={t('arena.columns')}>

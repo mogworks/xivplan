@@ -70,30 +70,35 @@ function makeObjectTest<T extends UnknownObject>(
     return (object): object is T => types.includes(object.type);
 }
 
-export interface NoGrid {
+export interface BaseGridProps {
+    readonly stroke?: string;
+    readonly opacity?: number;
+}
+
+export interface NoGrid extends BaseGridProps {
     readonly type: GridType.None;
 }
 
-export interface RectangularGrid {
+export interface RectangularGrid extends BaseGridProps {
     readonly type: GridType.Rectangular;
     readonly rows: number;
     readonly columns: number;
 }
 
-export interface RadialGrid {
+export interface RadialGrid extends BaseGridProps {
     readonly type: GridType.Radial;
     readonly angularDivs: number;
     readonly radialDivs: number;
     readonly startAngle?: number;
 }
 
-export interface CustomRectangularGrid {
+export interface CustomRectangularGrid extends BaseGridProps {
     readonly type: GridType.CustomRectangular;
     readonly rows: number[];
     readonly columns: number[];
 }
 
-export interface CustomRadialGrid {
+export interface CustomRadialGrid extends BaseGridProps {
     readonly type: GridType.CustomRadial;
     readonly rings: number[];
     readonly spokes: number[];

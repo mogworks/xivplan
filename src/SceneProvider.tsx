@@ -11,6 +11,7 @@ import {
     FloorShape,
     Grid,
     isTether,
+    NO_GRID,
     Padding,
     Scene,
     SceneObject,
@@ -104,6 +105,16 @@ export interface SetArenaGridAction {
     value: Grid;
 }
 
+export interface SetArenaGridStrokeAction {
+    type: 'arenaGridStroke';
+    value: string;
+}
+
+export interface SetArenaGridOpacityAction {
+    type: 'arenaGridOpacity';
+    value: number;
+}
+
 export interface SetArenaTicksActions {
     type: 'arenaTicks';
     value: Ticks;
@@ -126,6 +137,8 @@ export type ArenaAction =
     | SetArenaTextureWidthAction
     | SetArenaTextureHeightAction
     | SetArenaGridAction
+    | SetArenaGridStrokeAction
+    | SetArenaGridOpacityAction
     | SetArenaTicksActions;
 
 export interface ObjectUpdateAction {
@@ -720,6 +733,18 @@ function sceneReducer(state: Readonly<EditorState>, action: SceneAction): Editor
 
         case 'arenaGrid':
             return updateArena(state, { ...state.scene.arena, grid: action.value });
+
+        case 'arenaGridStroke':
+            return updateArena(state, {
+                ...state.scene.arena,
+                grid: { ...(state.scene.arena.grid ?? NO_GRID), stroke: action.value },
+            });
+
+        case 'arenaGridOpacity':
+            return updateArena(state, {
+                ...state.scene.arena,
+                grid: { ...(state.scene.arena.grid ?? NO_GRID), opacity: action.value },
+            });
 
         case 'arenaTicks':
             return updateArena(state, { ...state.scene.arena, ticks: action.value });

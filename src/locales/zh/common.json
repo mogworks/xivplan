@@ -375,7 +375,9 @@
       "height": "高度"
     },
     "grid": {
-      "group": "网格"
+      "group": "网格",
+      "stroke": "颜色",
+      "opacity": "不透明度"
     },
     "tick": {
       "group": "边框刻度"
