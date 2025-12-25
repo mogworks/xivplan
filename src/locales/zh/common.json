@@ -12,7 +12,7 @@
     "leftPanel": "左侧面板",
     "arena": "场地",
     "arenaDescription": "在这里编辑场地的外观。",
-    "objects": "对象",
+    "objects": "元素",
     "objectsDescription": "将对象拖拽到场地上。",
     "icons": "图标",
     "iconsDescription": "将标记和状态效果图标拖拽到场地上。",
