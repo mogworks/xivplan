@@ -38,11 +38,11 @@ export const AoeEffectControls: React.FC<PropertiesControlProps<ZoneStyleObject>
     }
 
     const baseColor = commonValue(objects, (o) => o.baseColor) ?? '#fb923c';
-    const baseOpacity = commonValue(objects, (o) => o.baseOpacity) ?? 0.25;
+    const baseOpacity = commonValue(objects, (o) => o.baseOpacity) ?? 12;
     const innerGlowColor = commonValue(objects, (o) => o.innerGlowColor) ?? '#ff751f';
-    const innerGlowOpacity = commonValue(objects, (o) => o.innerGlowOpacity) ?? 1;
+    const innerGlowOpacity = commonValue(objects, (o) => o.innerGlowOpacity) ?? 100;
     const outlineColor = commonValue(objects, (o) => o.outlineColor) ?? '#fffc79';
-    const outlineOpacity = commonValue(objects, (o) => o.outlineOpacity) ?? 1;
+    const outlineOpacity = commonValue(objects, (o) => o.outlineOpacity) ?? 100;
 
     const updateStyle = (patch: Partial<ZoneStyleObject>, transient = false) =>
         dispatch({
@@ -66,9 +66,8 @@ export const AoeEffectControls: React.FC<PropertiesControlProps<ZoneStyleObject>
                 <SpinButton
                     value={baseOpacity}
                     min={0}
-                    max={1}
-                    step={0.01}
-                    fractionDigits={2}
+                    max={100}
+                    step={1}
                     onChange={(ev, data) => updateStyle({ baseOpacity: data.value ?? undefined })}
                 />
             </Field>
@@ -84,9 +83,8 @@ export const AoeEffectControls: React.FC<PropertiesControlProps<ZoneStyleObject>
                 <SpinButton
                     value={innerGlowOpacity}
                     min={0}
-                    max={1}
-                    step={0.01}
-                    fractionDigits={2}
+                    max={100}
+                    step={1}
                     onChange={(ev, data) => updateStyle({ innerGlowOpacity: data.value ?? undefined })}
                 />
             </Field>
@@ -102,9 +100,8 @@ export const AoeEffectControls: React.FC<PropertiesControlProps<ZoneStyleObject>
                 <SpinButton
                     value={outlineOpacity}
                     min={0}
-                    max={1}
-                    step={0.01}
-                    fractionDigits={2}
+                    max={100}
+                    step={1}
                     onChange={(ev, data) => updateStyle({ outlineOpacity: data.value ?? undefined })}
                 />
             </Field>

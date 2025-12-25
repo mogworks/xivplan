@@ -13,8 +13,7 @@ export const AoeGlobalOpacityControl: React.FC<PropertiesControlProps<ZoneStyleO
     const globalOpacity = commonValue(objects, (obj) => obj.globalOpacity);
     const hide = commonValue(objects, (obj) => !!obj.hide);
 
-    const setGlobalOpacity = (newPercent: number, transient: boolean) => {
-        const newOpacity = Number(((newPercent ?? 0) / 100).toFixed(2));
+    const setGlobalOpacity = (newOpacity: number, transient: boolean) => {
         if (newOpacity !== globalOpacity) {
             dispatch({
                 type: 'update',
@@ -24,13 +23,11 @@ export const AoeGlobalOpacityControl: React.FC<PropertiesControlProps<ZoneStyleO
         }
     };
 
-    const displayPercent = Math.round((globalOpacity ?? 1) * 100);
-
     return (
         <OpacitySlider
             className={className}
             label={t('aoe.globalOpacity')}
-            value={displayPercent}
+            value={globalOpacity ?? 100}
             disabled={hide}
             onChange={(ev, data) => setGlobalOpacity(data.value, data.transient)}
             onCommit={() => dispatch({ type: 'commit' })}
