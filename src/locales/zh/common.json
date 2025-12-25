@@ -404,7 +404,7 @@
     "columnStops": "列分割点",
     "rowStopsInfo": "输入以空格分隔的网格线 Y 坐标列表。",
     "columnStopsInfo": "输入以空格分隔的网格线 X 坐标列表。",
-    "ringStops": "环停靠点",
+    "ringStops": "环分割点",
     "spokeAngles": "辐条角度",
     "ringStopsInfo": "输入以空格分隔的网格环半径列表。",
     "spokeAnglesInfo": "输入以空格分隔的网格辐条角度（度）列表。",
