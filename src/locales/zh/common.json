@@ -111,12 +111,12 @@
       "title": "保存文件",
       "fileNameLabel": "文件名",
       "alreadyExistsError": "已存在同名文件",
-      "fsSaveDescription": "在下方点击“另存为”将攻略规划保存到你的电脑。"
+      "fsSaveDescription": "在下方点击“另存为”将战术板保存到你的电脑。"
     },
     "tabs": {
       "localFile": "本地文件",
       "browserStorage": "浏览器存储",
-      "import": "导入攻略规划链接"
+      "import": "导入战术板（本站）链接"
     },
     "unsavedChanges": {
       "openMessage": "确定要打开文件吗？未保存的更改将会丢失。",
@@ -164,11 +164,11 @@
   },
   "share": {
     "title": "分享",
-    "linkLabel": "此攻略规划的链接",
-    "fallbackText": "如果你的浏览器无法打开链接，请将文本粘贴到 <importLink>打开 > 导入攻略规划链接</importLink>，或者下载攻略规划并将文件拖拽到页面以重新打开。",
+    "linkLabel": "此战术板的链接",
+    "fallbackText": "如果你的浏览器无法打开链接，请将文本粘贴到 <importLink>打开 > 导入战术板（本站）链接</importLink>，或者下载战术板并将文件拖拽到页面以重新打开。",
     "copyToClipboard": "复制到剪贴板",
     "linkCopied": "链接已复制",
-    "enterLinkLabel": "输入攻略规划链接",
+    "enterLinkLabel": "输入战术板（本站）链接",
     "invalidLink": "链接无效",
     "import": "导入"
   },
