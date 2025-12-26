@@ -7,15 +7,17 @@ import {
     TextareaOnChangeData,
 } from '@fluentui/react-components';
 import React, { ChangeEvent, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { HtmlPortalNode, InPortal } from 'react-reverse-portal';
 import { useLoadScene } from '../SceneProvider';
 import { textToScene } from '../file';
+import { strategyBoardToScene } from '../lib/strategy/convert';
+import { decodeGameStrategyBoardString, isValidGameStrategyBoardString } from '../lib/strategy/decoder';
 import { Scene } from '../scene';
 import { useCloseDialog } from '../useCloseDialog';
 import { useIsDirty } from '../useIsDirty';
 import { useConfirmUnsavedChanges } from './confirm';
 import { parseSceneLink } from './share';
-import { useTranslation } from 'react-i18next';
 
 export interface ImportFromStringProps {
     actions: HtmlPortalNode;
@@ -100,12 +102,22 @@ function decodeScene(text: string): Scene | undefined {
         }
     }
 
-    // Not a URL. Try as plain data.
-    try {
-        return textToScene(decodeURIComponent(text));
-    } catch (ex) {
-        console.error('Invalid plan data', ex);
+    if (isValidGameStrategyBoardString(text.trim())) {
+        try {
+            const strategyBoardData = decodeGameStrategyBoardString(text.trim());
+            if (strategyBoardData) {
+                return strategyBoardToScene(strategyBoardData);
+            }
+        } catch (ex) {
+            console.error('Invalid game strategy board data', ex);
+        }
+    } else {
+        // Not a URL or game strategy board string. Try as plan data.
+        try {
+            return textToScene(decodeURIComponent(text));
+        } catch (ex) {
+            console.error('Invalid plan data', ex);
+        }
     }
-
     return undefined;
 }

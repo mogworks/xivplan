@@ -52,6 +52,7 @@ export enum ObjectType {
     Text = 'text',
     Tower = 'tower',
     Triangle = 'triangle',
+    BoardIcon = 'boardIcon',
 }
 
 export interface BaseObject {
@@ -209,6 +210,11 @@ export interface ResizeableObject extends MoveableObject, RotateableObject {
     readonly height: number;
 }
 
+export interface FlipableObject {
+    readonly flipHorizontal?: boolean;
+    readonly flipVertical?: boolean;
+}
+
 export interface RadiusObject extends MoveableObject {
     readonly radius: number;
 }
@@ -266,6 +272,12 @@ export interface IconObject extends ImageObject, NamedObject, BaseObject {
     readonly time?: number;
 }
 export const isIcon = makeObjectTest<IconObject>(ObjectType.Icon);
+
+export interface BoardIconObject extends ImageObject, FlipableObject, NamedObject, BaseObject {
+    readonly type: ObjectType.BoardIcon;
+    readonly iconId: number;
+}
+export const isBoardIcon = makeObjectTest<BoardIconObject>(ObjectType.BoardIcon);
 
 export interface PartyObject extends ImageObject, NamedObject, BaseObject {
     readonly type: ObjectType.Party;
@@ -514,7 +526,7 @@ export function supportsStackCount<T>(object: T): object is StackCountObject & T
     return obj && typeof obj.count === 'number';
 }
 
-export type SceneObject = UnknownObject | Zone | Marker | Actor | IconObject | Tether;
+export type SceneObject = UnknownObject | Zone | Marker | Actor | IconObject | Tether | BoardIconObject;
 
 export type SceneObjectWithoutId = Omit<SceneObject, 'id'> & { id?: number };
 

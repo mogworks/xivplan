@@ -168,7 +168,7 @@
     "fallbackText": "If your browser won't open the link, paste the text into <importLink>Open > Import Plan Link</importLink> instead, or download the plan and drag and drop the file onto the page to open it.",
     "copyToClipboard": "Copy to clipboard",
     "linkCopied": "Link copied",
-    "enterLinkLabel": "Enter plan link",
+    "enterLinkLabel": "Enter plan link (supports this site's plan links and game built-in links)",
     "invalidLink": "Invalid link",
     "import": "Import"
   },
