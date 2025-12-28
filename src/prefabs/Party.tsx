@@ -99,8 +99,7 @@ registerRenderer<PartyObject>(ObjectType.Party, LayerName.Default, PartyRenderer
 
 const PartyDetails: React.FC<ListComponentProps<PartyObject>> = ({ object, ...props }) => {
     const { t } = useTranslation();
-    const name =
-        object.name || t(`boardIcon.${object.iconId}`, { defaultValue: import.meta.env.DEV ? object.iconId : '' });
+    const name = object.name || t(`boardIcon.${object.iconId}`, { defaultValue: object.iconId });
     return <DetailsItem icon={getPartyIconUrl(object.iconId)} name={name} object={object} {...props} />;
 };
 
