@@ -3,9 +3,11 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { HotkeyName } from '../HotkeyName';
 import { MarkerArrow } from '../prefabs/Arrow';
+import '../prefabs/BoardIcon';
 import { EnemyCircle, EnemyHuge, EnemyLarge, EnemyMedium, EnemySmall } from '../prefabs/Enemies';
 import { Waymark1, Waymark2, Waymark3, Waymark4, WaymarkA, WaymarkB, WaymarkC, WaymarkD } from '../prefabs/Markers';
 import {
+    PartyAllRole,
     PartyAny,
     PartyAstrologian,
     PartyBard,
@@ -18,7 +20,7 @@ import {
     PartyGunbreaker,
     PartyHealer,
     PartyMachinist,
-    PartyMagicRanged,
+    PartyMagicalRanged,
     PartyMelee,
     PartyMonk,
     PartyNinja,
@@ -123,21 +125,13 @@ export const PrefabsPanel: React.FC = () => {
             </Section>
             <Section title={t('prefabs.party')}>
                 <ObjectGroup>
-                    <PartySupport />
-                    <PartyTank />
-                    <PartyHealer />
-                    <PartyDps />
                     <PartyAny />
+                    <PartyAllRole />
+                    <PartySupport />
                 </ObjectGroup>
 
                 <ObjectGroup>
-                    <PartyMelee />
-                    <PartyRanged />
-                    <PartyMagicRanged />
-                    <PartyPhysicalRanged />
-                </ObjectGroup>
-
-                <ObjectGroup>
+                    <PartyTank />
                     <PartyPaladin />
                     <PartyWarrior />
                     <PartyDarkKnight />
@@ -145,6 +139,7 @@ export const PrefabsPanel: React.FC = () => {
                 </ObjectGroup>
 
                 <ObjectGroup>
+                    <PartyHealer />
                     <PartyWhiteMage />
                     <PartyScholar />
                     <PartyAstrologian />
@@ -152,26 +147,34 @@ export const PrefabsPanel: React.FC = () => {
                 </ObjectGroup>
 
                 <ObjectGroup>
-                    <PartyMonk />
-                    <PartyDragoon />
-                    <PartySamurai />
-                    <PartyReaper />
-                    <PartyNinja />
-                    <PartyViper />
+                    <PartyDps />
+                    <PartyMelee />
+                    <PartyRanged />
+                    <PartyPhysicalRanged />
+                    <PartyMagicalRanged />
                 </ObjectGroup>
 
                 <ObjectGroup>
-                    <PartyBlueMage />
-                    <PartyBlackMage />
-                    <PartySummoner />
-                    <PartyRedMage />
-                    <PartyPictomancer />
+                    <PartyMonk />
+                    <PartyDragoon />
+                    <PartyNinja />
+                    <PartySamurai />
+                    <PartyReaper />
+                    <PartyViper />
                 </ObjectGroup>
 
                 <ObjectGroup>
                     <PartyBard />
                     <PartyMachinist />
                     <PartyDancer />
+                </ObjectGroup>
+
+                <ObjectGroup>
+                    <PartyBlackMage />
+                    <PartySummoner />
+                    <PartyRedMage />
+                    <PartyPictomancer />
+                    <PartyBlueMage />
                 </ObjectGroup>
             </Section>
 

@@ -273,14 +273,15 @@ export interface IconObject extends ImageObject, NamedObject, BaseObject {
 }
 export const isIcon = makeObjectTest<IconObject>(ObjectType.Icon);
 
-export interface BoardIconObject extends ImageObject, FlipableObject, NamedObject, BaseObject {
+export interface BoardIconObject extends ResizeableObject, FlipableObject, NamedObject, BaseObject {
     readonly type: ObjectType.BoardIcon;
     readonly iconId: number;
 }
 export const isBoardIcon = makeObjectTest<BoardIconObject>(ObjectType.BoardIcon);
 
-export interface PartyObject extends ImageObject, NamedObject, BaseObject {
+export interface PartyObject extends ResizeableObject, NamedObject, BaseObject {
     readonly type: ObjectType.Party;
+    readonly iconId: number;
 }
 export const isParty = makeObjectTest<PartyObject>(ObjectType.Party);
 

@@ -1,8 +1,7 @@
 import * as React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Group, Image, Rect } from 'react-konva';
 import { getDragOffset, registerDropHandler } from '../DropHandler';
-import { getJob, getJobIconUrl, Job } from '../jobs';
-import { useTranslation } from 'react-i18next';
 import { DetailsItem } from '../panel/DetailsItem';
 import { ListComponentProps, registerListComponent } from '../panel/ListComponentRegistry';
 import { LayerName } from '../render/layers';
@@ -14,19 +13,20 @@ import { usePanelDrag } from '../usePanelDrag';
 import { makeDisplayName } from '../util';
 import { HideGroup } from './HideGroup';
 import { useHighlightProps } from './highlight';
+import { getPartyIconUrl, PartyIcons } from './partyIcon';
 import { PrefabIcon } from './PrefabIcon';
 import { ResizeableObjectContainer } from './ResizeableObjectContainer';
 
 const DEFAULT_SIZE = 32;
 
-function makeIcon(job: Job) {
-    const { icon, defaultNameKey } = getJob(job);
-
+function makeIcon(iconId: number) {
+    const nameKey = `boardIcon.${iconId}`;
     const Component: React.FC = () => {
         const [, setDragObject] = usePanelDrag();
-        const iconUrl = getJobIconUrl(icon);
+
+        const iconUrl = getPartyIconUrl(iconId);
         const { t } = useTranslation();
-        const label = t(defaultNameKey);
+        const label = t(nameKey, { defaultValue: import.meta.env.DEV ? iconId : '' });
 
         return (
             <PrefabIcon
@@ -37,8 +37,7 @@ function makeIcon(job: Job) {
                     setDragObject({
                         object: {
                             type: ObjectType.Party,
-                            image: iconUrl,
-                            defaultNameKey: defaultNameKey,
+                            iconId,
                         },
                         offset: getDragOffset(e),
                     });
@@ -46,7 +45,7 @@ function makeIcon(job: Job) {
             />
         );
     };
-    Component.displayName = makeDisplayName(defaultNameKey);
+    Component.displayName = makeDisplayName(nameKey);
     return Component;
 }
 
@@ -55,8 +54,7 @@ registerDropHandler<PartyObject>(ObjectType.Party, (object, position) => {
         type: 'add',
         object: {
             type: ObjectType.Party,
-            image: '',
-            status: [],
+            name: '',
             width: DEFAULT_SIZE,
             height: DEFAULT_SIZE,
             opacity: DEFAULT_PARTY_OPACITY,
@@ -69,7 +67,7 @@ registerDropHandler<PartyObject>(ObjectType.Party, (object, position) => {
 
 const PartyRenderer: React.FC<RendererProps<PartyObject>> = ({ object }) => {
     const highlightProps = useHighlightProps(object);
-    const [image] = useImageTracked(object.image);
+    const [image] = useImageTracked(getPartyIconUrl(object.iconId));
 
     return (
         <ResizeableObjectContainer object={object} transformerProps={{ centeredScaling: true }}>
@@ -101,46 +99,48 @@ registerRenderer<PartyObject>(ObjectType.Party, LayerName.Default, PartyRenderer
 
 const PartyDetails: React.FC<ListComponentProps<PartyObject>> = ({ object, ...props }) => {
     const { t } = useTranslation();
-    const name = object.name ?? (object.defaultNameKey ? t(object.defaultNameKey) : '');
-    return <DetailsItem icon={object.image} name={name} object={object} {...props} />;
+    const name =
+        object.name || t(`boardIcon.${object.iconId}`, { defaultValue: import.meta.env.DEV ? object.iconId : '' });
+    return <DetailsItem icon={getPartyIconUrl(object.iconId)} name={name} object={object} {...props} />;
 };
 
 registerListComponent<PartyObject>(ObjectType.Party, PartyDetails);
 
-export const PartyAny = makeIcon(Job.RoleAny);
-export const PartyTank = makeIcon(Job.RoleTank);
-export const PartyHealer = makeIcon(Job.RoleHealer);
-export const PartySupport = makeIcon(Job.RoleSupport);
-export const PartyDps = makeIcon(Job.RoleDps);
+export const PartyAny = makeIcon(PartyIcons.Any);
+export const PartyAllRole = makeIcon(PartyIcons.AllRole);
+export const PartySupport = makeIcon(PartyIcons.Support);
 
-export const PartyMelee = makeIcon(Job.RoleMelee);
-export const PartyRanged = makeIcon(Job.RoleRanged);
-export const PartyMagicRanged = makeIcon(Job.RoleMagicRanged);
-export const PartyPhysicalRanged = makeIcon(Job.RolePhysicalRanged);
+export const PartyTank = makeIcon(PartyIcons.Tank);
+export const PartyPaladin = makeIcon(PartyIcons.PLD);
+export const PartyWarrior = makeIcon(PartyIcons.WAR);
+export const PartyDarkKnight = makeIcon(PartyIcons.DRK);
+export const PartyGunbreaker = makeIcon(PartyIcons.GNB);
 
-export const PartyPaladin = makeIcon(Job.Paladin);
-export const PartyWarrior = makeIcon(Job.Warrior);
-export const PartyDarkKnight = makeIcon(Job.DarkKnight);
-export const PartyGunbreaker = makeIcon(Job.Gunbreaker);
+export const PartyHealer = makeIcon(PartyIcons.Healer);
+export const PartyWhiteMage = makeIcon(PartyIcons.WHM);
+export const PartyScholar = makeIcon(PartyIcons.SCH);
+export const PartyAstrologian = makeIcon(PartyIcons.AST);
+export const PartySage = makeIcon(PartyIcons.SGE);
 
-export const PartyWhiteMage = makeIcon(Job.WhiteMage);
-export const PartyScholar = makeIcon(Job.Scholar);
-export const PartyAstrologian = makeIcon(Job.Astrologian);
-export const PartySage = makeIcon(Job.Sage);
+export const PartyDps = makeIcon(PartyIcons.DPS);
+export const PartyMelee = makeIcon(PartyIcons.Melee);
+export const PartyRanged = makeIcon(PartyIcons.Ranged);
+export const PartyPhysicalRanged = makeIcon(PartyIcons.PhysicalRanged);
+export const PartyMagicalRanged = makeIcon(PartyIcons.MagicalRanged);
 
-export const PartyMonk = makeIcon(Job.Monk);
-export const PartyDragoon = makeIcon(Job.Dragoon);
-export const PartyNinja = makeIcon(Job.Ninja);
-export const PartyViper = makeIcon(Job.Viper);
-export const PartySamurai = makeIcon(Job.Samurai);
-export const PartyReaper = makeIcon(Job.Reaper);
+export const PartyMonk = makeIcon(PartyIcons.MNK);
+export const PartyDragoon = makeIcon(PartyIcons.DRG);
+export const PartyNinja = makeIcon(PartyIcons.NIN);
+export const PartySamurai = makeIcon(PartyIcons.SAM);
+export const PartyReaper = makeIcon(PartyIcons.RPR);
+export const PartyViper = makeIcon(PartyIcons.VPR);
 
-export const PartyBard = makeIcon(Job.Bard);
-export const PartyMachinist = makeIcon(Job.Machinist);
-export const PartyDancer = makeIcon(Job.Dancer);
-export const PartyBlackMage = makeIcon(Job.BlackMage);
-export const PartySummoner = makeIcon(Job.Summoner);
-export const PartyRedMage = makeIcon(Job.RedMage);
-export const PartyPictomancer = makeIcon(Job.Pictomancer);
+export const PartyBard = makeIcon(PartyIcons.BRD);
+export const PartyMachinist = makeIcon(PartyIcons.MCH);
+export const PartyDancer = makeIcon(PartyIcons.DNC);
 
-export const PartyBlueMage = makeIcon(Job.BlueMage);
+export const PartyBlackMage = makeIcon(PartyIcons.BLM);
+export const PartySummoner = makeIcon(PartyIcons.SMN);
+export const PartyRedMage = makeIcon(PartyIcons.RDM);
+export const PartyPictomancer = makeIcon(PartyIcons.PCT);
+export const PartyBlueMage = makeIcon(PartyIcons.BLU);

@@ -92,7 +92,8 @@ export const ImportFromString: React.FC<ImportFromStringProps> = ({ actions }) =
     );
 };
 
-function decodeScene(text: string): Scene | undefined {
+function decodeScene(str: string): Scene | undefined {
+    const text = str.trim();
     try {
         return parseSceneLink(new URL(text));
     } catch (ex) {
@@ -102,9 +103,9 @@ function decodeScene(text: string): Scene | undefined {
         }
     }
 
-    if (isValidGameStrategyBoardString(text.trim())) {
+    if (isValidGameStrategyBoardString(text)) {
         try {
-            const strategyBoardData = decodeGameStrategyBoardString(text.trim());
+            const strategyBoardData = decodeGameStrategyBoardString(text);
             if (strategyBoardData) {
                 return strategyBoardToScene(strategyBoardData);
             }

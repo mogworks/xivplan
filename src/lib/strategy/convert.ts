@@ -1,6 +1,14 @@
 // copy & modify from https://github.com/Ennea/ffxiv-strategy-board-viewer/blob/master/draw.ts
 
-import { FloorShape, IconObject, ObjectType, Scene, SceneObject, SceneObjectWithoutId } from '../../scene';
+import {
+    BoardIconObject,
+    FloorShape,
+    ObjectType,
+    PartyObject,
+    Scene,
+    SceneObject,
+    SceneObjectWithoutId,
+} from '../../scene';
 import { getObjectSize, knownObjects, objectScaleFactor } from './objects';
 import { parseStrategyBoardData, SBObject } from './parser';
 
@@ -61,7 +69,30 @@ function parseObject(obj: SBObject): SceneObjectWithoutId | null {
         return null;
     }
 
+    const iconId = obj.id as keyof typeof objectScaleFactor;
+    const size = getObjectSize(iconId);
+    const scale = obj.scale * (objectScaleFactor[iconId] ?? 1);
+    const coordinates = {
+        x: obj.coordinates.x * POS_FACTOR - SCENE_WIDTH / 2,
+        y: SCENE_HEIGHT / 2 - obj.coordinates.y * POS_FACTOR,
+    };
+
     // ---------- 特殊处理 ----------
+
+    // 职业/职能图标
+    if ((18 <= obj.id && obj.id <= 57) || (101 <= obj.id && obj.id <= 102) || (118 <= obj.id && obj.id <= 123)) {
+        return {
+            type: ObjectType.Party,
+            iconId: iconId,
+            opacity: obj.color.opacity,
+            hide: !obj.flags.visible,
+            width: size * scale * SIZE_FACTOR,
+            height: size * scale * SIZE_FACTOR,
+            ...coordinates,
+            pinned: obj.flags.locked,
+            rotation: obj.angle,
+        } as Omit<PartyObject, 'id'>;
+    }
 
     switch (obj.id) {
         // line AoE
@@ -95,29 +126,20 @@ function parseObject(obj: SBObject): SceneObjectWithoutId | null {
 
     // ---------- 通用处理 ----------
 
-    const iconId = obj.id as keyof typeof objectScaleFactor;
-    const size = getObjectSize(iconId);
-    const scale = obj.scale * (objectScaleFactor[iconId] ?? 1);
-    const coordinates = {
-        x: obj.coordinates.x * POS_FACTOR - SCENE_WIDTH / 2,
-        y: SCENE_HEIGHT / 2 - obj.coordinates.y * POS_FACTOR,
-    };
-
     switch (iconId) {
         default:
             return {
-                type: ObjectType.Icon, // TODO BOARD 改为 ObjectType.BoardIcon,
+                type: ObjectType.BoardIcon,
                 iconId: iconId,
-                opacity: obj.color.opacity, // TODO BOARD 使之有效，包括IconObject的也顺便修复一下
+                opacity: obj.color.opacity,
                 hide: !obj.flags.visible,
-                image: new URL(`public/board/objects/${iconId}.webp`, BASE_URL).href,
                 width: size * scale * SIZE_FACTOR,
                 height: size * scale * SIZE_FACTOR,
                 ...coordinates,
                 pinned: obj.flags.locked,
                 rotation: obj.angle,
-                flipHorizontal: obj.flags.flipHorizontal, // TODO BOARD 使之有效
-                flipVertical: obj.flags.flipVertical, // TODO BOARD 使之有效
-            } as Omit<IconObject, 'id'>; // TODO BOARD 改为 Omit<BoardIconObject, 'id'>
+                flipHorizontal: obj.flags.flipHorizontal,
+                flipVertical: obj.flags.flipVertical,
+            } as Omit<BoardIconObject, 'id'>;
     }
 }
