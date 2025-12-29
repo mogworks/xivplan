@@ -291,7 +291,7 @@ export interface BoardIconObject extends ResizeableObject, FlipableObject, Named
 }
 export const isBoardIcon = makeObjectTest<BoardIconObject>(ObjectType.BoardIcon);
 
-export interface PartyObject extends ResizeableObject, NamedObject, BaseObject {
+export interface PartyObject extends ResizeableObject, BaseObject {
     readonly type: ObjectType.Party;
     readonly iconId: number;
 }

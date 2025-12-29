@@ -54,7 +54,6 @@ registerDropHandler<PartyObject>(ObjectType.Party, (object, position) => {
         type: 'add',
         object: {
             type: ObjectType.Party,
-            name: '',
             width: DEFAULT_SIZE,
             height: DEFAULT_SIZE,
             opacity: DEFAULT_PARTY_OPACITY,
@@ -99,7 +98,7 @@ registerRenderer<PartyObject>(ObjectType.Party, LayerName.Default, PartyRenderer
 
 const PartyDetails: React.FC<ListComponentProps<PartyObject>> = ({ object, ...props }) => {
     const { t } = useTranslation();
-    const name = object.name || t(`boardIcon.${object.iconId}`, { defaultValue: object.iconId });
+    const name = t(`boardIcon.${object.iconId}`, { defaultValue: object.iconId });
     return <DetailsItem icon={getPartyIconUrl(object.iconId)} name={name} object={object} {...props} />;
 };
 

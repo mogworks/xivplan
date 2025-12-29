@@ -59,6 +59,10 @@ export enum ExtraPartyIcon {
     TH,
     TD,
     HD,
+    DPS1 = 1000054,
+    DPS2,
+    DPS3,
+    DPS4,
 }
 
 export const PartyIcons = { ...PartyIcon, ...ExtraPartyIcon } as const;

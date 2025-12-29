@@ -85,7 +85,6 @@ function parseObject(obj: SBObject): SceneObjectWithoutId | null {
     if ((18 <= obj.id && obj.id <= 57) || (101 <= obj.id && obj.id <= 102) || (118 <= obj.id && obj.id <= 123)) {
         return {
             type: ObjectType.Party,
-            name: '',
             iconId: iconId,
             opacity: obj.color.opacity,
             hide: !obj.flags.visible,

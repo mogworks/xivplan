@@ -16,6 +16,7 @@ const icons = [
     [PartyIcons.Healer, PartyIcons.PureHealer, PartyIcons.BarrierHealer],
     [PartyIcons.WHM, PartyIcons.SCH, PartyIcons.AST, PartyIcons.SGE],
     [PartyIcons.CNJ],
+    [PartyIcons.DPS1, PartyIcons.DPS2, PartyIcons.DPS3, PartyIcons.DPS4],
     [PartyIcons.Melee1, PartyIcons.Melee2, PartyIcons.Ranged1, PartyIcons.Ranged2],
     [PartyIcons.DPS, PartyIcons.Melee, PartyIcons.Ranged, PartyIcons.PhysicalRanged, PartyIcons.MagicalRanged],
     [PartyIcons.MNK, PartyIcons.DRG, PartyIcons.NIN, PartyIcons.SAM, PartyIcons.RPR, PartyIcons.VPR],
