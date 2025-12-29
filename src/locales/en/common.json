@@ -333,7 +333,9 @@
     "edenBlue": "Blue marker"
   },
   "prefabs": {
-    "zones": "Zones",
+    "basic": "Basic",
+    "aoe": "AoE",
+    "mechanic": "Mechanic",
     "waymarks": "Waymarks",
     "party": "Party",
     "enemies": "Enemies",
@@ -342,7 +344,8 @@
       "part1": "Select a tether type, then click two objects to add a tether. Press",
       "part2": "or unselect the tether button to cancel. Use",
       "part3": "+ click to create chains."
-    }
+    },
+    "textLabel": "Text"
   },
   "arena": {
     "background": {

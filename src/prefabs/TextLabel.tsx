@@ -2,6 +2,7 @@ import { DrawTextRegular } from '@fluentui/react-icons';
 import Konva from 'konva';
 import { ShapeConfig } from 'konva/lib/Shape';
 import React, { RefObject, useLayoutEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Group, Text, Transformer } from 'react-konva';
 import { getDragOffset, registerDropHandler } from '../DropHandler';
 import { useScene } from '../SceneProvider';
@@ -23,7 +24,6 @@ import { PrefabIcon } from './PrefabIcon';
 import { GroupProps } from './ResizeableObjectContainer';
 import { useHighlightProps, useShowResizer } from './highlight';
 
-const DEFAULT_TEXT = 'Text';
 const DEFAULT_TEXT_ALIGN = 'center';
 const DEFAULT_TEXT_COLOR = '#ffffff';
 const DEFAULT_TEXT_OPACITY = 100;
@@ -34,17 +34,18 @@ const Icon = DrawTextRegular;
 export const TextLabel: React.FC = () => {
     const [, setDragObject] = usePanelDrag();
     const theme = useSceneTheme();
+    const { t } = useTranslation();
 
     return (
         <PrefabIcon
             draggable
-            name="Text"
+            name={t('prefabs.textLabel')}
             icon={<Icon />}
             onDragStart={(e) => {
                 setDragObject({
                     object: {
                         type: ObjectType.Text,
-                        text: DEFAULT_TEXT,
+                        text: t('prefabs.textLabel'),
                         stroke: theme.colorArena,
                     },
                     offset: getDragOffset(e),

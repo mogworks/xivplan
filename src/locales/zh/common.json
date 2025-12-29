@@ -333,8 +333,10 @@
     "edenBlue": "蓝色标记"
   },
   "prefabs": {
-    "zones": "机制",
-    "waymarks": "场标",
+    "basic": "基础",
+    "aoe": "AoE",
+    "mechanic": "机制",
+    "waymarks": "场景标记",
     "party": "友方",
     "enemies": "敌方",
     "tethers": "连线",
@@ -342,7 +344,8 @@
       "part1": "选择一种连线类型，然后点击两个对象以添加连线。按下",
       "part2": "或取消选择连线按钮以退出。使用",
       "part3": "+ 点击以创建链式连线。"
-    }
+    },
+    "textLabel": "文本"
   },
   "arena": {
     "background": {

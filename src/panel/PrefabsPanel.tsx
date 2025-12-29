@@ -72,7 +72,11 @@ export const PrefabsPanel: React.FC = () => {
 
     return (
         <div className={controlClasses.panel}>
-            <Section title={t('prefabs.zones')}>
+            <ObjectGroup>
+                <TextLabel />
+                <MarkerArrow />
+            </ObjectGroup>
+            <Section title={t('prefabs.aoe')}>
                 <ObjectGroup>
                     <ZoneRect />
                     <ZoneLine />
@@ -81,6 +85,13 @@ export const PrefabsPanel: React.FC = () => {
                     <ZoneCone />
                     <ZoneArc />
 
+                    <ZoneTriangle />
+                    <ZoneRightTriangle />
+                    <ZonePolygon />
+                </ObjectGroup>
+            </Section>
+            <Section title={t('prefabs.mechanic')}>
+                <ObjectGroup>
                     <ZoneLineKnockback />
                     <ZoneLineKnockAway />
                     <ZoneKnockback />
@@ -94,17 +105,11 @@ export const PrefabsPanel: React.FC = () => {
                     <ZoneRotateCounterClockwise />
                     <ZoneTower />
                     <ZoneEye />
-
-                    <ZoneTriangle />
-                    <ZoneRightTriangle />
-                    <ZonePolygon />
                 </ObjectGroup>
             </Section>
 
             <Section title={t('prefabs.waymarks')}>
                 <ObjectGroup>
-                    <TextLabel />
-                    <MarkerArrow />
                     <WaymarkA />
                     <WaymarkB />
                     <WaymarkC />
