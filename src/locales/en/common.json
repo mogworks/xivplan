@@ -485,7 +485,6 @@
     "meteorTower": "Meteor/tower"
   },
   "aoe": {
-    "globalOpacity": "Global opacity",
     "baseColor": "Base color",
     "baseOpacity": "Base opacity",
     "innerGlowColor": "Inner glow color",
