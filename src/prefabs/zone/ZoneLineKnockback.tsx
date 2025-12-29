@@ -1,5 +1,6 @@
 import Konva from 'konva';
 import React, { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Group, Rect } from 'react-konva';
 import { getDragOffset, registerDropHandler } from '../../DropHandler';
 import Icon from '../../assets/zone/line_knockback.svg?react';
@@ -8,7 +9,7 @@ import { ListComponentProps, registerListComponent } from '../../panel/ListCompo
 import { registerRenderer, RendererProps } from '../../render/ObjectRegistry';
 import { LayerName } from '../../render/layers';
 import { ObjectType, RectangleZone } from '../../scene';
-import { DEFAULT_AOE_COLOR, DEFAULT_AOE_OPACITY, panelVars } from '../../theme';
+import { DEFAULT_AOE_COLOR, DEFAULT_SHAPE_OPACITY, panelVars } from '../../theme';
 import { usePanelDrag } from '../../usePanelDrag';
 import { HideGroup } from '../HideGroup';
 import { PrefabIcon } from '../PrefabIcon';
@@ -16,7 +17,6 @@ import { ResizeableObjectContainer } from '../ResizeableObjectContainer';
 import { useHighlightProps } from '../highlight';
 import { ChevronTail } from './shapes';
 import { getArrowStyle, getZoneStyle } from './style';
-import { useTranslation } from 'react-i18next';
 
 const DEFAULT_SIZE = 150;
 
@@ -49,7 +49,7 @@ registerDropHandler<RectangleZone>(ObjectType.LineKnockback, (object, position) 
         object: {
             type: ObjectType.Rect,
             color: DEFAULT_AOE_COLOR,
-            opacity: DEFAULT_AOE_OPACITY,
+            opacity: DEFAULT_SHAPE_OPACITY,
             width: DEFAULT_SIZE,
             height: DEFAULT_SIZE,
             rotation: 0,

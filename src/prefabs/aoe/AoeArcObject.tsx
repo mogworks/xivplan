@@ -1,20 +1,22 @@
 import { ArcConfig } from 'konva/lib/shapes/Arc';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Arc, Circle, Group, Shape } from 'react-konva';
+import { Circle, Group, Shape } from 'react-konva';
 import { getDragOffset, registerDropHandler } from '../../DropHandler';
 import { useScene } from '../../SceneProvider';
 import Icon from '../../assets/zone/arc.svg?react';
 import { getPointerAngle, snapAngle } from '../../coord';
 import { getResizeCursor } from '../../cursor';
+import AoeArc from '../../lib/aoe/AoeArc';
+import { AoeProps } from '../../lib/aoe/aoeProps';
 import { DetailsItem } from '../../panel/DetailsItem';
 import { ListComponentProps, registerListComponent } from '../../panel/ListComponentRegistry';
 import { RendererProps, registerRenderer } from '../../render/ObjectRegistry';
 import { ActivePortal } from '../../render/Portals';
 import { LayerName } from '../../render/layers';
-import { ArcZone, ObjectType } from '../../scene';
+import { AoeArcObject, ObjectType } from '../../scene';
 import { useIsDragging } from '../../selection';
-import { CENTER_DOT_RADIUS, DEFAULT_AOE_COLOR, DEFAULT_SHAPE_OPACITY, panelVars } from '../../theme';
+import { CENTER_DOT_RADIUS, DEFAULT_AOE_COLOR, DEFAULT_AOE_HIGHLIGHT_COLOR, panelVars } from '../../theme';
 import { usePanelDrag } from '../../usePanelDrag';
 import { clamp, degtorad, mod360 } from '../../util';
 import { VEC_ZERO, distance, getIntersectionDistance, vecAtAngle, vecNormal } from '../../vector';
@@ -25,7 +27,7 @@ import { PrefabIcon } from '../PrefabIcon';
 import { MAX_CONE_ANGLE, MIN_CONE_ANGLE, MIN_RADIUS } from '../bounds';
 import { CONTROL_POINT_BORDER_COLOR } from '../control-point';
 import { useHighlightProps, useShowResizer } from '../highlight';
-import { getZoneStyle } from './style';
+import { getAoeStyle } from './style';
 
 const DEFAULT_RADIUS = 150;
 const DEFAULT_INNER_RADIUS = 75;
@@ -33,20 +35,21 @@ const DEFAULT_ANGLE = 90;
 
 const ICON_SIZE = 32;
 
-export const ZoneArc: React.FC = () => {
+export const AoeArcPrefab: React.FC = () => {
     const [, setDragObject] = usePanelDrag();
     const { t } = useTranslation();
+    const icon = new URL('public/prefabs/aoe/arc.webp', import.meta.env.VITE_COS_URL).href;
 
     return (
         <PrefabIcon
             draggable
-            name={t('objects.arc', { defaultValue: 'Arc' })}
-            icon={<Icon />}
+            name={t('aoe.arc')}
+            icon={icon}
             onDragStart={(e) => {
                 const offset = getDragOffset(e);
                 setDragObject({
                     object: {
-                        type: ObjectType.Arc,
+                        type: ObjectType.AoeArc,
                     },
                     offset: {
                         x: offset.x,
@@ -58,13 +61,12 @@ export const ZoneArc: React.FC = () => {
     );
 };
 
-registerDropHandler<ArcZone>(ObjectType.Arc, (object, position) => {
+registerDropHandler<AoeArcObject>(ObjectType.AoeArc, (object, position) => {
     return {
         type: 'add',
         object: {
-            type: ObjectType.Arc,
-            color: DEFAULT_AOE_COLOR,
-            opacity: DEFAULT_SHAPE_OPACITY,
+            type: ObjectType.AoeArc,
+            opacity: 100,
             radius: DEFAULT_RADIUS,
             innerRadius: DEFAULT_INNER_RADIUS,
             coneAngle: DEFAULT_ANGLE,
@@ -124,16 +126,24 @@ const OffsetArc: React.FC<OffsetArcProps> = ({ innerRadius, outerRadius, angle, 
     );
 };
 
-interface ArcRendererProps extends RendererProps<ArcZone> {
+interface AoeArcRendererProps extends RendererProps<AoeArcObject> {
     isDragging?: boolean;
+    isResizing?: boolean;
 }
 
-const ArcRenderer: React.FC<ArcRendererProps> = ({ object, isDragging }) => {
+const AoeArcRenderer: React.FC<AoeArcRendererProps> = ({ object, isDragging, isResizing }) => {
     const highlightProps = useHighlightProps(object);
 
-    const isHollow = object.hollow ?? false;
-
-    const style = getZoneStyle(object.color, object.opacity, object.radius * 2, isHollow);
+    const style = getAoeStyle(DEFAULT_AOE_HIGHLIGHT_COLOR, object.opacity, object.radius * 2);
+    const aoeProps = {
+        opacity: object.opacity,
+        baseColor: object.baseColor,
+        baseOpacity: object.baseOpacity,
+        innerGlowColor: object.innerGlowColor,
+        innerGlowOpacity: object.innerGlowOpacity,
+        outlineColor: object.outlineColor,
+        outlineOpacity: object.outlineOpacity,
+    } as AoeProps;
 
     const highlightInnerRadius = Math.min(object.radius, object.innerRadius);
     const highlightOuterRadius = Math.max(object.radius, object.innerRadius);
@@ -152,13 +162,19 @@ const ArcRenderer: React.FC<ArcRendererProps> = ({ object, isDragging }) => {
             <HideGroup>
                 {isDragging && <Circle radius={CENTER_DOT_RADIUS} fill={style.stroke} />}
 
-                <Arc outerRadius={object.radius} innerRadius={object.innerRadius} angle={object.coneAngle} {...style} />
+                <AoeArc
+                    outerRadius={object.radius}
+                    innerRadius={object.innerRadius}
+                    angle={object.coneAngle}
+                    freeze={isResizing}
+                    {...aoeProps}
+                />
             </HideGroup>
         </Group>
     );
 };
 
-function stateChanged(object: ArcZone, state: ArcState) {
+function stateChanged(object: AoeArcObject, state: ArcState) {
     return (
         state.radius !== object.innerRadius ||
         state.innerRadius !== object.innerRadius ||
@@ -167,7 +183,7 @@ function stateChanged(object: ArcZone, state: ArcState) {
     );
 }
 
-const ArcContainer: React.FC<RendererProps<ArcZone>> = ({ object }) => {
+const AoeArcContainer: React.FC<RendererProps<AoeArcObject>> = ({ object }) => {
     const { dispatch } = useScene();
     const showResizer = useShowResizer(object);
     const [resizing, setResizing] = useState(false);
@@ -193,29 +209,37 @@ const ArcContainer: React.FC<RendererProps<ArcZone>> = ({ object }) => {
                     visible={showResizer && !dragging}
                     onTransformEnd={updateObject}
                 >
-                    {(props) => <ArcRenderer object={object} isDragging={dragging} {...props} />}
+                    {(props) => (
+                        <AoeArcRenderer object={object} isDragging={dragging} isResizing={resizing} {...props} />
+                    )}
                 </ArcControlPoints>
             </DraggableObject>
         </ActivePortal>
     );
 };
 
-registerRenderer<ArcZone>(ObjectType.Arc, LayerName.Ground, ArcContainer);
+registerRenderer<AoeArcObject>(ObjectType.AoeArc, LayerName.Ground, AoeArcContainer);
 
-const ArcDetails: React.FC<ListComponentProps<ArcZone>> = ({ object, ...props }) => {
+const AoeArcDetails: React.FC<ListComponentProps<AoeArcObject>> = ({ object, ...props }) => {
     const { t } = useTranslation();
 
     return (
         <DetailsItem
-            icon={<Icon width="100%" height="100%" style={{ [panelVars.colorZoneOrange]: DEFAULT_AOE_COLOR }} />}
-            name={t('objects.arc', { defaultValue: 'Arc' })}
+            icon={
+                <Icon
+                    width="100%"
+                    height="100%"
+                    style={{ [panelVars.colorZoneOrange]: object.baseColor ?? DEFAULT_AOE_COLOR }}
+                />
+            }
+            name={t('aoe.arc')}
             object={object}
             {...props}
         />
     );
 };
 
-registerListComponent<ArcZone>(ObjectType.Arc, ArcDetails);
+registerListComponent<AoeArcObject>(ObjectType.AoeArc, AoeArcDetails);
 
 enum HandleId {
     Radius,
@@ -236,7 +260,7 @@ const OUTSET = 2;
 const ROTATE_SNAP_DIVISION = 15;
 const ROTATE_SNAP_TOLERANCE = 2;
 
-function getRadius(object: ArcZone, { pointerPos, activeHandleId }: HandleFuncProps) {
+function getRadius(object: AoeArcObject, { pointerPos, activeHandleId }: HandleFuncProps) {
     if (pointerPos && activeHandleId === HandleId.Radius) {
         return Math.max(MIN_RADIUS, Math.round(distance(pointerPos) - OUTSET));
     }
@@ -244,7 +268,7 @@ function getRadius(object: ArcZone, { pointerPos, activeHandleId }: HandleFuncPr
     return object.radius;
 }
 
-function getInnerRadius(object: ArcZone, { pointerPos, activeHandleId }: HandleFuncProps) {
+function getInnerRadius(object: AoeArcObject, { pointerPos, activeHandleId }: HandleFuncProps) {
     if (pointerPos && activeHandleId === HandleId.InnerRadius) {
         const u = vecAtAngle(object.rotation);
         const r = getIntersectionDistance(VEC_ZERO, u, pointerPos, vecNormal(u));
@@ -259,7 +283,7 @@ function getInnerRadius(object: ArcZone, { pointerPos, activeHandleId }: HandleF
     return object.innerRadius;
 }
 
-function getRotation(object: ArcZone, { pointerPos, activeHandleId }: HandleFuncProps) {
+function getRotation(object: AoeArcObject, { pointerPos, activeHandleId }: HandleFuncProps) {
     if (pointerPos && activeHandleId === HandleId.Radius) {
         const angle = getPointerAngle(pointerPos);
         return snapAngle(angle, ROTATE_SNAP_DIVISION, ROTATE_SNAP_TOLERANCE);
@@ -268,7 +292,7 @@ function getRotation(object: ArcZone, { pointerPos, activeHandleId }: HandleFunc
     return object.rotation;
 }
 
-function getConeAngle(object: ArcZone, { pointerPos, activeHandleId }: HandleFuncProps) {
+function getConeAngle(object: AoeArcObject, { pointerPos, activeHandleId }: HandleFuncProps) {
     if (pointerPos) {
         const angle = getPointerAngle(pointerPos);
 
@@ -294,7 +318,7 @@ function getConeAngle(object: ArcZone, { pointerPos, activeHandleId }: HandleFun
     return object.coneAngle;
 }
 
-const ArcControlPoints = createControlPointManager<ArcZone, ArcState>({
+const ArcControlPoints = createControlPointManager<AoeArcObject, ArcState>({
     handleFunc: (object, handle) => {
         const radius = getRadius(object, handle) + OUTSET;
         const innerRadius = getInnerRadius(object, handle) - OUTSET;

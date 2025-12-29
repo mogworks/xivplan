@@ -2,6 +2,12 @@ import { Text } from '@fluentui/react-components';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { HotkeyName } from '../HotkeyName';
+import { AoeArcPrefab } from '../prefabs/aoe/AoeArcObject';
+import { AoeCirclePrefab } from '../prefabs/aoe/AoeCircleObject';
+import { AoeConePrefab } from '../prefabs/aoe/AoeConeObject';
+import { AoeDonutPrefab } from '../prefabs/aoe/AoeDonutObject';
+import { AoeLinePrefab } from '../prefabs/aoe/AoeLineObject';
+import { AoeRectPrefab } from '../prefabs/aoe/AoeRectObject';
 import { MarkerArrow } from '../prefabs/Arrow';
 import '../prefabs/BoardIcon';
 import { EnemyCircle, EnemyHuge, EnemyLarge, EnemyMedium, EnemySmall } from '../prefabs/Enemies';
@@ -56,7 +62,7 @@ import { ZoneLineKnockback } from '../prefabs/zone/ZoneLineKnockback';
 import { ZoneLineStack } from '../prefabs/zone/ZoneLineStack';
 import { ZonePolygon } from '../prefabs/zone/ZonePolygon';
 import { ZoneProximity } from '../prefabs/zone/ZoneProximity';
-import { ZoneRect } from '../prefabs/zone/ZoneRect';
+import { ZoneRectangle } from '../prefabs/zone/ZoneRectangle';
 import { ZoneRightTriangle } from '../prefabs/zone/ZoneRightTriangle';
 import { ZoneRotateClockwise, ZoneRotateCounterClockwise } from '../prefabs/zone/ZoneRotate';
 import { ZoneStack } from '../prefabs/zone/ZoneStack';
@@ -76,9 +82,9 @@ export const PrefabsPanel: React.FC = () => {
                 <TextLabel />
                 <MarkerArrow />
             </ObjectGroup>
-            <Section title={t('prefabs.aoe')}>
+            <Section title={t('prefabs.shape')}>
                 <ObjectGroup>
-                    <ZoneRect />
+                    <ZoneRectangle />
                     <ZoneLine />
                     <ZoneCircle />
                     <ZoneDonut />
@@ -88,6 +94,16 @@ export const PrefabsPanel: React.FC = () => {
                     <ZoneTriangle />
                     <ZoneRightTriangle />
                     <ZonePolygon />
+                </ObjectGroup>
+            </Section>
+            <Section title={t('prefabs.aoe')}>
+                <ObjectGroup>
+                    <AoeRectPrefab />
+                    <AoeLinePrefab />
+                    <AoeCirclePrefab />
+                    <AoeDonutPrefab />
+                    <AoeConePrefab />
+                    <AoeArcPrefab />
                 </ObjectGroup>
             </Section>
             <Section title={t('prefabs.mechanic')}>

@@ -36,8 +36,15 @@ export const DEFAULT_PARTY_OPACITY = 100;
 
 export const DEFAULT_IMAGE_OPACITY = 100;
 
-export const DEFAULT_AOE_COLOR = COLOR_ORANGE;
-export const DEFAULT_AOE_OPACITY = 35;
+export const DEFAULT_AOE_COLOR = '#fb923c';
+export const DEFAULT_AOE_INNER_GLOW_COLOR = '#ff751f';
+export const DEFAULT_AOE_OUTLINE_COLOR = '#fffc79';
+export const DEFAULT_AOE_HIGHLIGHT_COLOR = COLOR_ORANGE;
+export const DEFAULT_AOE_OPACITY = 12;
+export const DEFAULT_AOE_INNER_GLOW_OPACITY = 100;
+export const DEFAULT_AOE_OUTLINE_OPACITY = 100;
+
+export const DEFAULT_SHAPE_OPACITY = 35;
 
 export const DEFAULT_ENEMY_COLOR = COLOR_RED;
 export const DEFAULT_ENEMY_OPACITY = 65;

@@ -225,7 +225,6 @@
     "circle": "圆形",
     "square": "方形",
     "style": "样式",
-    "native": "原生",
     "solid": "实心",
     "hollow": "空心",
     "length": "长度",
@@ -333,7 +332,7 @@
     "edenBlue": "蓝色标记"
   },
   "prefabs": {
-    "basic": "基础",
+    "shape": "形状",
     "aoe": "AoE",
     "mechanic": "机制",
     "waymarks": "场景标记",
@@ -492,7 +491,13 @@
     "innerGlowColor": "内发光颜色",
     "innerGlowOpacity": "内发光不透明度",
     "outlineColor": "外轮廓颜色",
-    "outlineOpacity": "外轮廓不透明度"
+    "outlineOpacity": "外轮廓不透明度",
+    "circle": "圆形范围攻击",
+    "donut": "环形范围攻击",
+    "rect": "矩形范围攻击",
+    "line": "直线范围攻击",
+    "cone": "扇形范围攻击",
+    "arc": "扇环范围攻击"
   },
   "spin": {
     "increment": "增加数值",

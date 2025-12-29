@@ -5,15 +5,17 @@ import Icon from '../../assets/zone/line.svg?react';
 import { getPointerAngle, snapAngle } from '../../coord';
 import { getResizeCursor } from '../../cursor';
 import { getDragOffset, registerDropHandler } from '../../DropHandler';
+import { AoeProps } from '../../lib/aoe/aoeProps';
+import AoeRect from '../../lib/aoe/AoeRect';
 import { DetailsItem } from '../../panel/DetailsItem';
 import { ListComponentProps, registerListComponent } from '../../panel/ListComponentRegistry';
 import { LayerName } from '../../render/layers';
 import { registerRenderer, RendererProps } from '../../render/ObjectRegistry';
 import { ActivePortal } from '../../render/Portals';
-import { LineZone, ObjectType } from '../../scene';
+import { AoeLineObject, ObjectType } from '../../scene';
 import { useScene } from '../../SceneProvider';
 import { useIsDragging } from '../../selection';
-import { CENTER_DOT_RADIUS, DEFAULT_AOE_COLOR, DEFAULT_SHAPE_OPACITY, panelVars } from '../../theme';
+import { CENTER_DOT_RADIUS, DEFAULT_AOE_COLOR, DEFAULT_AOE_HIGHLIGHT_COLOR, panelVars } from '../../theme';
 import { usePanelDrag } from '../../usePanelDrag';
 import { distance, getDistanceFromLine, VEC_ZERO, vecAtAngle } from '../../vector';
 import { MIN_LINE_LENGTH, MIN_LINE_WIDTH } from '../bounds';
@@ -23,26 +25,28 @@ import { DraggableObject } from '../DraggableObject';
 import { HideGroup } from '../HideGroup';
 import { useHighlightProps, useShowResizer } from '../highlight';
 import { PrefabIcon } from '../PrefabIcon';
-import { getZoneStyle } from './style';
+import { getAoeStyle } from './style';
 
 const DEFAULT_WIDTH = 100;
 const DEFAULT_LENGTH = 250;
 
 const ICON_SIZE = 32;
 
-export const ZoneLine: React.FC = () => {
+export const AoeLinePrefab: React.FC = () => {
     const [, setDragObject] = usePanelDrag();
     const { t } = useTranslation();
+    const icon = new URL('public/prefabs/aoe/line.webp', import.meta.env.VITE_COS_URL).href;
+
     return (
         <PrefabIcon
             draggable
-            name={t('objects.line', { defaultValue: 'Line' })}
-            icon={<Icon />}
+            name={t('aoe.line')}
+            icon={icon}
             onDragStart={(e) => {
                 const offset = getDragOffset(e);
                 setDragObject({
                     object: {
-                        type: ObjectType.Line,
+                        type: ObjectType.AoeLine,
                     },
                     offset: {
                         x: offset.x,
@@ -54,13 +58,12 @@ export const ZoneLine: React.FC = () => {
     );
 };
 
-registerDropHandler<LineZone>(ObjectType.Line, (object, position) => {
+registerDropHandler<AoeLineObject>(ObjectType.AoeLine, (object, position) => {
     return {
         type: 'add',
         object: {
-            type: ObjectType.Cone,
-            color: DEFAULT_AOE_COLOR,
-            opacity: DEFAULT_SHAPE_OPACITY,
+            type: ObjectType.AoeLine,
+            opacity: 100,
             width: DEFAULT_WIDTH,
             length: DEFAULT_LENGTH,
             rotation: 0,
@@ -70,20 +73,26 @@ registerDropHandler<LineZone>(ObjectType.Line, (object, position) => {
     };
 });
 
-const LineDetails: React.FC<ListComponentProps<LineZone>> = ({ object, ...props }) => {
+const AoeLineDetails: React.FC<ListComponentProps<AoeLineObject>> = ({ object, ...props }) => {
     const { t } = useTranslation();
 
     return (
         <DetailsItem
-            icon={<Icon width="100%" height="100%" style={{ [panelVars.colorZoneOrange]: DEFAULT_AOE_COLOR }} />}
-            name={t('objects.line', { defaultValue: 'Line' })}
+            icon={
+                <Icon
+                    width="100%"
+                    height="100%"
+                    style={{ [panelVars.colorZoneOrange]: object.baseColor ?? DEFAULT_AOE_COLOR }}
+                />
+            }
+            name={t('aoe.line')}
             object={object}
             {...props}
         />
     );
 };
 
-registerListComponent<LineZone>(ObjectType.Line, LineDetails);
+registerListComponent<AoeLineObject>(ObjectType.AoeLine, AoeLineDetails);
 
 enum HandleId {
     Length,
@@ -101,7 +110,7 @@ const ROTATE_SNAP_TOLERANCE = 2;
 
 const OUTSET = 2;
 
-function getLength(object: LineZone, { pointerPos, activeHandleId }: HandleFuncProps) {
+function getLength(object: AoeLineObject, { pointerPos, activeHandleId }: HandleFuncProps) {
     if (pointerPos && activeHandleId === HandleId.Length) {
         return Math.max(MIN_LINE_LENGTH, Math.round(distance(pointerPos) - OUTSET));
     }
@@ -109,7 +118,7 @@ function getLength(object: LineZone, { pointerPos, activeHandleId }: HandleFuncP
     return object.length;
 }
 
-function getRotation(object: LineZone, { pointerPos, activeHandleId }: HandleFuncProps) {
+function getRotation(object: AoeLineObject, { pointerPos, activeHandleId }: HandleFuncProps) {
     if (pointerPos && activeHandleId === HandleId.Length) {
         const angle = getPointerAngle(pointerPos);
         return snapAngle(angle, ROTATE_SNAP_DIVISION, ROTATE_SNAP_TOLERANCE);
@@ -118,7 +127,7 @@ function getRotation(object: LineZone, { pointerPos, activeHandleId }: HandleFun
     return object.rotation;
 }
 
-function getWidth(object: LineZone, { pointerPos, activeHandleId }: HandleFuncProps) {
+function getWidth(object: AoeLineObject, { pointerPos, activeHandleId }: HandleFuncProps) {
     if (pointerPos && activeHandleId == HandleId.Width) {
         const start = VEC_ZERO;
         const end = vecAtAngle(object.rotation);
@@ -130,7 +139,7 @@ function getWidth(object: LineZone, { pointerPos, activeHandleId }: HandleFuncPr
     return object.width;
 }
 
-const LineControlPoints = createControlPointManager<LineZone, LineState>({
+const LineControlPoints = createControlPointManager<AoeLineObject, LineState>({
     handleFunc: (object, handle) => {
         const length = getLength(object, handle) + OUTSET;
         const width = getWidth(object, handle);
@@ -175,16 +184,25 @@ const LineControlPoints = createControlPointManager<LineZone, LineState>({
     },
 });
 
-interface LineRendererProps extends RendererProps<LineZone> {
+interface AoeLineRendererProps extends RendererProps<AoeLineObject> {
     isDragging?: boolean;
+    isResizing?: boolean;
 }
 
-const LineRenderer: React.FC<LineRendererProps> = ({ object, isDragging }) => {
+const AoeLineRenderer: React.FC<AoeLineRendererProps> = ({ object, isDragging, isResizing }) => {
     const highlightProps = useHighlightProps(object);
 
-    const isHollow = object.hollow ?? false;
+    const style = getAoeStyle(DEFAULT_AOE_HIGHLIGHT_COLOR, object.opacity, Math.min(object.length, object.width));
+    const aoeProps = {
+        opacity: object.opacity,
+        baseColor: object.baseColor,
+        baseOpacity: object.baseOpacity,
+        innerGlowColor: object.innerGlowColor,
+        innerGlowOpacity: object.innerGlowOpacity,
+        outlineColor: object.outlineColor,
+        outlineOpacity: object.outlineOpacity,
+    } as AoeProps;
 
-    const style = getZoneStyle(object.color, object.opacity, Math.min(object.length, object.width), isHollow);
     const x = -object.width / 2;
     const y = -object.length;
     const highlightOffset = style.strokeWidth;
@@ -205,7 +223,14 @@ const LineRenderer: React.FC<LineRendererProps> = ({ object, isDragging }) => {
                 />
             )}
             <HideGroup>
-                <Rect offsetX={-x} offsetY={-y} width={object.width} height={object.length} {...style} />
+                <AoeRect
+                    offsetX={-x}
+                    offsetY={-y}
+                    width={object.width}
+                    height={object.length}
+                    freeze={isResizing}
+                    {...aoeProps}
+                />
 
                 {isDragging && <Circle radius={CENTER_DOT_RADIUS} fill={style.stroke} />}
             </HideGroup>
@@ -213,11 +238,11 @@ const LineRenderer: React.FC<LineRendererProps> = ({ object, isDragging }) => {
     );
 };
 
-function stateChanged(object: LineZone, state: LineState) {
+function stateChanged(object: AoeLineObject, state: LineState) {
     return state.length !== object.length || state.rotation !== object.rotation || state.width !== object.width;
 }
 
-const LineContainer: React.FC<RendererProps<LineZone>> = ({ object }) => {
+const AoeLineContainer: React.FC<RendererProps<AoeLineObject>> = ({ object }) => {
     const { dispatch } = useScene();
     const showResizer = useShowResizer(object);
     const [resizing, setResizing] = useState(false);
@@ -243,11 +268,18 @@ const LineContainer: React.FC<RendererProps<LineZone>> = ({ object }) => {
                     visible={showResizer && !dragging}
                     onTransformEnd={updateObject}
                 >
-                    {(props) => <LineRenderer object={object} isDragging={dragging || resizing} {...props} />}
+                    {(props) => (
+                        <AoeLineRenderer
+                            object={object}
+                            isDragging={dragging || resizing}
+                            isResizing={resizing}
+                            {...props}
+                        />
+                    )}
                 </LineControlPoints>
             </DraggableObject>
         </ActivePortal>
     );
 };
 
-registerRenderer<LineZone>(ObjectType.Line, LayerName.Ground, LineContainer);
+registerRenderer<AoeLineObject>(ObjectType.AoeLine, LayerName.Ground, AoeLineContainer);

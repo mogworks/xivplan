@@ -1,20 +1,22 @@
 import { WedgeConfig } from 'konva/lib/shapes/Wedge';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Group, Shape, Wedge } from 'react-konva';
+import { Group, Shape } from 'react-konva';
 import { getDragOffset, registerDropHandler } from '../../DropHandler';
 import { useScene } from '../../SceneProvider';
 import Icon from '../../assets/zone/cone.svg?react';
 import { getPointerAngle, snapAngle } from '../../coord';
 import { getResizeCursor } from '../../cursor';
+import AoeWedge from '../../lib/aoe/AoeWedge';
+import { AoeProps } from '../../lib/aoe/aoeProps';
 import { DetailsItem } from '../../panel/DetailsItem';
 import { ListComponentProps, registerListComponent } from '../../panel/ListComponentRegistry';
 import { RendererProps, registerRenderer } from '../../render/ObjectRegistry';
 import { ActivePortal } from '../../render/Portals';
 import { LayerName } from '../../render/layers';
-import { ConeZone, ObjectType } from '../../scene';
+import { AoeConeObject, ObjectType } from '../../scene';
 import { useIsDragging } from '../../selection';
-import { DEFAULT_AOE_COLOR, DEFAULT_SHAPE_OPACITY, panelVars } from '../../theme';
+import { DEFAULT_AOE_COLOR, DEFAULT_AOE_HIGHLIGHT_COLOR, panelVars } from '../../theme';
 import { usePanelDrag } from '../../usePanelDrag';
 import { clamp, degtorad, mod360 } from '../../util';
 import { distance } from '../../vector';
@@ -25,27 +27,28 @@ import { PrefabIcon } from '../PrefabIcon';
 import { MAX_CONE_ANGLE, MIN_CONE_ANGLE, MIN_RADIUS } from '../bounds';
 import { CONTROL_POINT_BORDER_COLOR } from '../control-point';
 import { useHighlightProps, useShowResizer } from '../highlight';
-import { getZoneStyle } from './style';
+import { getAoeStyle } from './style';
 
 const DEFAULT_RADIUS = 150;
 const DEFAULT_ANGLE = 90;
 
 const ICON_SIZE = 32;
 
-export const ZoneCone: React.FC = () => {
+export const AoeConePrefab: React.FC = () => {
     const [, setDragObject] = usePanelDrag();
     const { t } = useTranslation();
+    const icon = new URL('public/prefabs/aoe/cone.webp', import.meta.env.VITE_COS_URL).href;
 
     return (
         <PrefabIcon
             draggable
-            name={t('objects.cone')}
-            icon={<Icon />}
+            name={t('aoe.cone')}
+            icon={icon}
             onDragStart={(e) => {
                 const offset = getDragOffset(e);
                 setDragObject({
                     object: {
-                        type: ObjectType.Cone,
+                        type: ObjectType.AoeCone,
                     },
                     offset: {
                         x: offset.x,
@@ -57,13 +60,12 @@ export const ZoneCone: React.FC = () => {
     );
 };
 
-registerDropHandler<ConeZone>(ObjectType.Cone, (object, position) => {
+registerDropHandler<AoeConeObject>(ObjectType.AoeCone, (object, position) => {
     return {
         type: 'add',
         object: {
-            type: ObjectType.Cone,
-            color: DEFAULT_AOE_COLOR,
-            opacity: DEFAULT_SHAPE_OPACITY,
+            type: ObjectType.AoeCone,
+            opacity: 100,
             radius: DEFAULT_RADIUS,
             coneAngle: DEFAULT_ANGLE,
             rotation: 0,
@@ -118,12 +120,23 @@ const OffsetWedge: React.FC<OffsetWedgeProps> = ({ radius, angle, shapeOffset, .
     );
 };
 
-const ConeRenderer: React.FC<RendererProps<ConeZone>> = ({ object }) => {
+interface AoeConeRendererProps extends RendererProps<AoeConeObject> {
+    isResizing?: boolean;
+}
+
+const AoeConeRenderer: React.FC<AoeConeRendererProps> = ({ object, isResizing }) => {
     const highlightProps = useHighlightProps(object);
 
-    const isHollow = object.hollow ?? false;
-
-    const style = getZoneStyle(object.color, object.opacity, object.radius * 2, isHollow);
+    const style = getAoeStyle(DEFAULT_AOE_HIGHLIGHT_COLOR, object.opacity, object.radius * 2);
+    const aoeProps = {
+        opacity: object.opacity,
+        baseColor: object.baseColor,
+        baseOpacity: object.baseOpacity,
+        innerGlowColor: object.innerGlowColor,
+        innerGlowOpacity: object.innerGlowOpacity,
+        outlineColor: object.outlineColor,
+        outlineOpacity: object.outlineOpacity,
+    } as AoeProps;
 
     return (
         <Group rotation={object.rotation - 90 - object.coneAngle / 2}>
@@ -136,17 +149,17 @@ const ConeRenderer: React.FC<RendererProps<ConeZone>> = ({ object }) => {
                 />
             )}
             <HideGroup>
-                <Wedge radius={object.radius} angle={object.coneAngle} {...style} />
+                <AoeWedge radius={object.radius} angle={object.coneAngle} freeze={isResizing} {...aoeProps} />
             </HideGroup>
         </Group>
     );
 };
 
-function stateChanged(object: ConeZone, state: ConeState) {
+function stateChanged(object: AoeConeObject, state: ConeState) {
     return state.radius !== object.radius || state.rotation !== object.rotation || state.coneAngle !== object.coneAngle;
 }
 
-const ConeContainer: React.FC<RendererProps<ConeZone>> = ({ object }) => {
+const AoeConeContainer: React.FC<RendererProps<AoeConeObject>> = ({ object }) => {
     const { dispatch } = useScene();
     const showResizer = useShowResizer(object);
     const [resizing, setResizing] = useState(false);
@@ -172,29 +185,35 @@ const ConeContainer: React.FC<RendererProps<ConeZone>> = ({ object }) => {
                     visible={showResizer && !dragging}
                     onTransformEnd={updateObject}
                 >
-                    {(props) => <ConeRenderer object={object} {...props} />}
+                    {(props) => <AoeConeRenderer object={object} isResizing={resizing} {...props} />}
                 </ConeControlPoints>
             </DraggableObject>
         </ActivePortal>
     );
 };
 
-registerRenderer<ConeZone>(ObjectType.Cone, LayerName.Ground, ConeContainer);
+registerRenderer<AoeConeObject>(ObjectType.AoeCone, LayerName.Ground, AoeConeContainer);
 
-const ConeDetails: React.FC<ListComponentProps<ConeZone>> = ({ object, ...props }) => {
+const AoeConeDetails: React.FC<ListComponentProps<AoeConeObject>> = ({ object, ...props }) => {
     const { t } = useTranslation();
 
     return (
         <DetailsItem
-            icon={<Icon width="100%" height="100%" style={{ [panelVars.colorZoneOrange]: DEFAULT_AOE_COLOR }} />}
-            name={t('objects.cone')}
+            icon={
+                <Icon
+                    width="100%"
+                    height="100%"
+                    style={{ [panelVars.colorZoneOrange]: object.baseColor ?? DEFAULT_AOE_COLOR }}
+                />
+            }
+            name={t('aoe.cone')}
             object={object}
             {...props}
         />
     );
 };
 
-registerListComponent<ConeZone>(ObjectType.Cone, ConeDetails);
+registerListComponent<AoeConeObject>(ObjectType.AoeCone, AoeConeDetails);
 
 enum HandleId {
     Radius,
@@ -213,7 +232,7 @@ const OUTSET = 2;
 const ROTATE_SNAP_DIVISION = 15;
 const ROTATE_SNAP_TOLERANCE = 2;
 
-function getRadius(object: ConeZone, { pointerPos, activeHandleId }: HandleFuncProps) {
+function getRadius(object: AoeConeObject, { pointerPos, activeHandleId }: HandleFuncProps) {
     if (pointerPos && activeHandleId === HandleId.Radius) {
         return Math.max(MIN_RADIUS, Math.round(distance(pointerPos) - OUTSET));
     }
@@ -221,7 +240,7 @@ function getRadius(object: ConeZone, { pointerPos, activeHandleId }: HandleFuncP
     return object.radius;
 }
 
-function getRotation(object: ConeZone, { pointerPos, activeHandleId }: HandleFuncProps) {
+function getRotation(object: AoeConeObject, { pointerPos, activeHandleId }: HandleFuncProps) {
     if (pointerPos && activeHandleId === HandleId.Radius) {
         const angle = getPointerAngle(pointerPos);
         return snapAngle(angle, ROTATE_SNAP_DIVISION, ROTATE_SNAP_TOLERANCE);
@@ -230,7 +249,7 @@ function getRotation(object: ConeZone, { pointerPos, activeHandleId }: HandleFun
     return object.rotation;
 }
 
-function getConeAngle(object: ConeZone, { pointerPos, activeHandleId }: HandleFuncProps) {
+function getConeAngle(object: AoeConeObject, { pointerPos, activeHandleId }: HandleFuncProps) {
     if (pointerPos) {
         const angle = getPointerAngle(pointerPos);
 
@@ -256,7 +275,7 @@ function getConeAngle(object: ConeZone, { pointerPos, activeHandleId }: HandleFu
     return object.coneAngle;
 }
 
-const ConeControlPoints = createControlPointManager<ConeZone, ConeState>({
+const ConeControlPoints = createControlPointManager<AoeConeObject, ConeState>({
     handleFunc: (object, handle) => {
         const radius = getRadius(object, handle) + OUTSET;
         const rotation = getRotation(object, handle);

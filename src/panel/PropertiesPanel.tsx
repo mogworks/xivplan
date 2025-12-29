@@ -2,13 +2,12 @@ import { mergeClasses } from '@fluentui/react-components';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useCurrentStep } from '../SceneProvider';
-import { shouldUseNativeStyleControls } from '../lib/aoe/nativeStyleSupport';
 import {
     SceneObject,
     UnknownObject,
-    isArcZone,
     isArrow,
-    isConeZone,
+    isColored,
+    isConeLike,
     isDrawObject,
     isEnemy,
     isExaflareZone,
@@ -16,7 +15,7 @@ import {
     isIcon,
     isImageObject,
     isInnerRadiusObject,
-    isLineZone,
+    isLineLike,
     isMoveable,
     isNamed,
     isParty,
@@ -29,16 +28,15 @@ import {
     isText,
     isWaymark,
     supportsHollow,
-    supportsNativeStyle,
     supportsStackCount,
 } from '../scene';
 import { getSelectedObjects, useSelection } from '../selection';
 import { useControlStyles } from '../useControlStyles';
 import { PropertiesControlProps } from './PropertiesControl';
 import { AoeEffectControls } from './properties/AoeEffectControls';
-import { AoeGlobalOpacityControl } from './properties/AoeGlobalOpacityControl';
 import { ArrowPointersControl } from './properties/ArrowControls';
 import { DrawObjectBrushControl } from './properties/BrushControl';
+import { ColorControl, ColorSwatchControl } from './properties/ColorControl';
 import { ConeAngleControl } from './properties/ConeControls';
 import { EnemyRingControl } from './properties/EnemyControls';
 import { ExaflareLengthControl, ExaflareSpacingControl } from './properties/ExaflareControls';
@@ -55,14 +53,12 @@ import { PolygonOrientationControl, PolygonSidesControl } from './properties/Pol
 import { PositionControl } from './properties/PositionControl';
 import { InnerRadiusControl, RadiusControl } from './properties/RadiusControl';
 import { RotationControl } from './properties/RotationControl';
-import { SimpleColorControl, SimpleColorSwatchControl } from './properties/SimpleColorControls';
 import { SizeControl } from './properties/SizeControl';
 import { StackCountControl } from './properties/StackCountControl';
 import { StarburstSpokeCountControl, StarburstSpokeWidthControl } from './properties/StarburstControls';
 import { TetherTypeControl, TetherWidthControl } from './properties/TetherControls';
 import { TextLayoutControl, TextOutlineControl, TextValueControl } from './properties/TextControls';
 import { WaymarkOpacityControl, WaymarkRotationControl } from './properties/WaymarkControls';
-import { ZoneStyleTypeControl } from './properties/ZoneStyleTypeControl';
 
 export interface PropertiesPanelProps {
     className?: string;
@@ -120,21 +116,15 @@ const Controls: React.FC = () => {
             <ControlCondition objects={objects} test={isNamed} control={NameControl} />
             <ControlCondition objects={objects} test={isImageObject} control={ImageControl} />
 
-            <ControlCondition objects={objects} test={supportsNativeStyle} control={ZoneStyleTypeControl} />
-
             {/* Style */}
             <ControlCondition objects={objects} test={isTether} control={TetherTypeControl} />
             <div className={mergeClasses(classes.row, classes.alignTop)}>
-                <SimpleColorControl objects={objects} className={classes.grow} />
+                <ControlCondition objects={objects} test={isColored} control={ColorControl} className={classes.grow} />
                 <ControlCondition objects={objects} test={isArrow} control={ArrowPointersControl} />
-                <ControlCondition
-                    objects={objects}
-                    test={(obj) => supportsHollow(obj) && !supportsNativeStyle(obj)}
-                    control={HollowControl}
-                />
+                <ControlCondition objects={objects} test={supportsHollow} control={HollowControl} />
             </div>
             <ControlCondition objects={objects} test={isWaymark} control={WaymarkOpacityControl} />
-            <SimpleColorSwatchControl objects={objects} />
+            <ControlCondition objects={objects} test={isColored} control={ColorSwatchControl} />
             <ControlCondition objects={objects} test={isText} control={TextOutlineControl} />
 
             {/* 原生（仿游戏原生风格）效果：显示三组颜色与不透明度控制 */}
@@ -142,11 +132,7 @@ const Controls: React.FC = () => {
 
             {/* 原生（仿游戏原生风格）效果：整体不透明度 + 隐藏按钮 */}
             <div className={mergeClasses(classes.row)}>
-                {shouldUseNativeStyleControls(objects) ? (
-                    <AoeGlobalOpacityControl objects={objects} className={classes.grow} />
-                ) : (
-                    <OpacityControl objects={objects} className={classes.grow} />
-                )}
+                <OpacityControl objects={objects} className={classes.grow} />
                 <HideControl objects={objects} />
             </div>
 
@@ -156,7 +142,7 @@ const Controls: React.FC = () => {
             {/* Position/Size */}
             <ControlCondition objects={objects} test={isMoveable} control={PositionControl} />
             <ControlCondition objects={objects} test={isResizable} control={SizeControl} />
-            <ControlCondition objects={objects} test={isLineZone} control={LineSizeControl} />
+            <ControlCondition objects={objects} test={isLineLike} control={LineSizeControl} />
 
             {/* TODO: change this to a two-column grid? */}
             <div className={mergeClasses(classes.row, classes.rightGap)}>
@@ -172,11 +158,7 @@ const Controls: React.FC = () => {
                 <ControlCondition objects={objects} test={isExaflareZone} control={ExaflareSpacingControl} />
                 <ControlCondition objects={objects} test={isStarburstZone} control={StarburstSpokeCountControl} />
 
-                <ControlCondition
-                    objects={objects}
-                    test={(x) => isArcZone(x) || isConeZone(x)}
-                    control={ConeAngleControl}
-                />
+                <ControlCondition objects={objects} test={(x) => isConeLike(x)} control={ConeAngleControl} />
             </div>
 
             {/* Special options */}

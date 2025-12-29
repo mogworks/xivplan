@@ -1,8 +1,8 @@
 import { Rect } from 'react-konva';
 import { AoeEffect } from './AoeEffect';
-import type { NativeStyle } from './nativeStyle';
+import { AoeProps } from './aoeProps';
 
-export interface AoeRectProps extends NativeStyle {
+export interface AoeRectProps extends AoeProps {
     freeze?: boolean;
     offsetX?: number;
     offsetY?: number;

@@ -5,16 +5,17 @@ import Icon from '../../assets/zone/square.svg?react';
 import { getPointerAngle, rotateCoord, snapAngle } from '../../coord';
 import { getResizeCursor } from '../../cursor';
 import { getDragOffset, registerDropHandler } from '../../DropHandler';
+import { AoeProps } from '../../lib/aoe/aoeProps';
 import AoeRect from '../../lib/aoe/AoeRect';
 import { DetailsItem } from '../../panel/DetailsItem';
 import { ListComponentProps, registerListComponent } from '../../panel/ListComponentRegistry';
 import { LayerName } from '../../render/layers';
 import { registerRenderer, RendererProps } from '../../render/ObjectRegistry';
 import { ActivePortal } from '../../render/Portals';
-import { ObjectType, RectangleZone } from '../../scene';
+import { AoeRectObject, ObjectType } from '../../scene';
 import { useScene } from '../../SceneProvider';
 import { useIsDragging } from '../../selection';
-import { CENTER_DOT_RADIUS, DEFAULT_AOE_COLOR, DEFAULT_AOE_OPACITY, panelVars } from '../../theme';
+import { CENTER_DOT_RADIUS, DEFAULT_AOE_COLOR, DEFAULT_AOE_HIGHLIGHT_COLOR, panelVars } from '../../theme';
 import { usePanelDrag } from '../../usePanelDrag';
 import { MIN_SIZE } from '../bounds';
 import { CONTROL_POINT_BORDER_COLOR } from '../control-point';
@@ -23,24 +24,26 @@ import { DraggableObject } from '../DraggableObject';
 import { HideGroup } from '../HideGroup';
 import { useHighlightProps, useShowResizer } from '../highlight';
 import { PrefabIcon } from '../PrefabIcon';
-import { getZoneStyle } from './style';
+import { getAoeStyle } from './style';
 
 const DEFAULT_SIZE = 150;
 const ICON_SIZE = 32;
 
-export const ZoneRect: React.FC = () => {
+export const AoeRectPrefab: React.FC = () => {
     const [, setDragObject] = usePanelDrag();
     const { t } = useTranslation();
+    const icon = new URL('public/prefabs/aoe/rect.webp', import.meta.env.VITE_COS_URL).href;
+
     return (
         <PrefabIcon
             draggable
-            name={t('objects.rectangle', { defaultValue: 'Rectangle' })}
-            icon={<Icon />}
+            name={t('aoe.rect')}
+            icon={icon}
             onDragStart={(e) => {
                 const offset = getDragOffset(e);
                 setDragObject({
                     object: {
-                        type: ObjectType.Rect,
+                        type: ObjectType.AoeRect,
                     },
                     offset: {
                         x: offset.x,
@@ -52,17 +55,15 @@ export const ZoneRect: React.FC = () => {
     );
 };
 
-registerDropHandler<RectangleZone>(ObjectType.Rect, (object, position) => {
+registerDropHandler<AoeRectObject>(ObjectType.AoeRect, (object, position) => {
     return {
         type: 'add',
         object: {
-            type: ObjectType.Rect,
-            color: DEFAULT_AOE_COLOR,
-            opacity: DEFAULT_AOE_OPACITY,
+            type: ObjectType.AoeRect,
+            opacity: 100,
             width: DEFAULT_SIZE,
             height: DEFAULT_SIZE,
             rotation: 0,
-            native: true,
             ...object,
             ...position,
         },
@@ -93,7 +94,7 @@ interface RectangleState {
     dy?: number;
 }
 
-function getWidth(object: RectangleZone, { pointerPos, activeHandleId }: HandleFuncProps) {
+function getWidth(object: AoeRectObject, { pointerPos, activeHandleId }: HandleFuncProps) {
     if (pointerPos) {
         const hw0 = object.width / 2;
         const local = rotateCoord(pointerPos, -object.rotation);
@@ -115,7 +116,7 @@ function getWidth(object: RectangleZone, { pointerPos, activeHandleId }: HandleF
     return object.width;
 }
 
-function getHeight(object: RectangleZone, { pointerPos, activeHandleId }: HandleFuncProps) {
+function getHeight(object: AoeRectObject, { pointerPos, activeHandleId }: HandleFuncProps) {
     if (pointerPos) {
         const hh0 = object.height / 2;
         const local = rotateCoord(pointerPos, -object.rotation);
@@ -137,7 +138,7 @@ function getHeight(object: RectangleZone, { pointerPos, activeHandleId }: Handle
     return object.height;
 }
 
-function getRotation(object: RectangleZone, { pointerPos, activeHandleId }: HandleFuncProps) {
+function getRotation(object: AoeRectObject, { pointerPos, activeHandleId }: HandleFuncProps) {
     if (pointerPos && activeHandleId === HandleId.Rotation) {
         const angle = getPointerAngle(pointerPos);
         return snapAngle(angle, ROTATE_SNAP_DIVISION, ROTATE_SNAP_TOLERANCE);
@@ -145,7 +146,7 @@ function getRotation(object: RectangleZone, { pointerPos, activeHandleId }: Hand
     return object.rotation;
 }
 
-function getCenterOffset(object: RectangleZone, handle: HandleFuncProps) {
+function getCenterOffset(object: AoeRectObject, handle: HandleFuncProps) {
     const { pointerPos, activeHandleId } = handle;
     if (!pointerPos || activeHandleId === HandleId.Rotation) {
         return { x: 0, y: 0 };
@@ -192,7 +193,7 @@ function getCenterOffset(object: RectangleZone, handle: HandleFuncProps) {
     return local;
 }
 
-const RectangleControlPoints = createControlPointManager<RectangleZone, RectangleState>({
+const RectangleControlPoints = createControlPointManager<AoeRectObject, RectangleState>({
     handleFunc: (object, handle) => {
         const width = getWidth(object, handle);
         const height = getHeight(object, handle);
@@ -317,54 +318,36 @@ const RectangleControlPoints = createControlPointManager<RectangleZone, Rectangl
     },
 });
 
-interface RectangleRendererProps extends RendererProps<RectangleZone> {
-    width: number;
-    height: number;
-    rotation: number;
+interface AoeRectRendererProps extends RendererProps<AoeRectObject> {
     isDragging?: boolean;
     isResizing?: boolean;
     dx?: number;
     dy?: number;
 }
 
-const RectangleRenderer: React.FC<RectangleRendererProps> = ({
-    object,
-    width,
-    height,
-    rotation,
-    isDragging,
-    isResizing,
-    dx,
-    dy,
-}) => {
+const RectangleRenderer: React.FC<AoeRectRendererProps> = ({ object, isDragging, isResizing, dx, dy }) => {
     const highlightProps = useHighlightProps(object);
 
-    // 若 object 没有 native 字段，说明是原版数据，则：
-    //   - 如果是空心，则不应用原生样式，以兼容原版数据
-    //   - 否则如果是实心，则应用原生样式
-    const isNative = object.native ?? object.hollow !== true;
-    const isHollow = !isNative && (object.hollow ?? false);
-
-    const style = getZoneStyle(object.color, object.opacity, Math.min(width, height), isHollow);
-    const nativeStyle = {
-        globalOpacity: object.globalOpacity,
+    const style = getAoeStyle(DEFAULT_AOE_HIGHLIGHT_COLOR, object.opacity, Math.min(object.width, object.height));
+    const aoeProps = {
+        opacity: object.opacity,
         baseColor: object.baseColor,
         baseOpacity: object.baseOpacity,
         innerGlowColor: object.innerGlowColor,
         innerGlowOpacity: object.innerGlowOpacity,
         outlineColor: object.outlineColor,
         outlineOpacity: object.outlineOpacity,
-    };
+    } as AoeProps;
 
     const highlightOffset = style.strokeWidth;
-    const highlightWidth = width + highlightOffset;
-    const highlightHeight = height + highlightOffset;
+    const highlightWidth = object.width + highlightOffset;
+    const highlightHeight = object.height + highlightOffset;
 
     const xLocal = dx ?? 0;
     const yLocal = -(dy ?? 0);
 
     return (
-        <Group rotation={rotation}>
+        <Group rotation={object.rotation}>
             {highlightProps && (
                 <Rect
                     x={xLocal}
@@ -377,26 +360,14 @@ const RectangleRenderer: React.FC<RectangleRendererProps> = ({
                 />
             )}
             <HideGroup>
-                {isNative ? (
-                    <AoeRect
-                        width={width}
-                        height={height}
-                        offsetX={width / 2 - (dx ?? 0)}
-                        offsetY={height / 2 + (dy ?? 0)}
-                        freeze={isResizing}
-                        {...nativeStyle}
-                    />
-                ) : (
-                    <Rect
-                        x={xLocal}
-                        y={yLocal}
-                        width={width}
-                        height={height}
-                        offsetX={width / 2}
-                        offsetY={height / 2}
-                        {...style}
-                    />
-                )}
+                <AoeRect
+                    width={object.width}
+                    height={object.height}
+                    offsetX={object.width / 2 - (dx ?? 0)}
+                    offsetY={object.height / 2 + (dy ?? 0)}
+                    freeze={isResizing}
+                    {...aoeProps}
+                />
 
                 {isDragging && !isResizing && <Circle radius={CENTER_DOT_RADIUS} fill={style.stroke} />}
             </HideGroup>
@@ -404,7 +375,7 @@ const RectangleRenderer: React.FC<RectangleRendererProps> = ({
     );
 };
 
-function stateChanged(object: RectangleZone, state: RectangleState) {
+function stateChanged(object: AoeRectObject, state: RectangleState) {
     if (state.width !== object.width || state.height !== object.height || state.rotation !== object.rotation) {
         return true;
     }
@@ -413,7 +384,7 @@ function stateChanged(object: RectangleZone, state: RectangleState) {
     return offset.x !== 0 || offset.y !== 0;
 }
 
-const RectangleContainer: React.FC<RendererProps<RectangleZone>> = ({ object }) => {
+const AoeRectContainer: React.FC<RendererProps<AoeRectObject>> = ({ object }) => {
     const { dispatch } = useScene();
     const showResizer = useShowResizer(object);
     const [resizing, setResizing] = useState(false);
@@ -456,23 +427,25 @@ const RectangleContainer: React.FC<RendererProps<RectangleZone>> = ({ object }) 
     );
 };
 
-registerRenderer<RectangleZone>(ObjectType.Rect, LayerName.Ground, RectangleContainer);
+registerRenderer<AoeRectObject>(ObjectType.AoeRect, LayerName.Ground, AoeRectContainer);
 
-const RectangleDetails: React.FC<ListComponentProps<RectangleZone>> = ({ object, ...props }) => {
+const AoeRectDetails: React.FC<ListComponentProps<AoeRectObject>> = ({ object, ...props }) => {
     const { t } = useTranslation();
-    // 缩略图颜色：
-    // - 朴素样式使用 object.color
-    // - 原生样式使用 object.baseColor（若未设置则回退到 DEFAULT_AOE_COLOR）
-    const isNative = object.native ?? true;
-    const displayColor = isNative ? (object.baseColor ?? DEFAULT_AOE_COLOR) : object.color;
+
     return (
         <DetailsItem
-            icon={<Icon width="100%" height="100%" style={{ [panelVars.colorZoneOrange]: displayColor }} />}
-            name={t('objects.rectangle', { defaultValue: 'Rectangle' })}
+            icon={
+                <Icon
+                    width="100%"
+                    height="100%"
+                    style={{ [panelVars.colorZoneOrange]: object.baseColor ?? DEFAULT_AOE_COLOR }}
+                />
+            }
+            name={t('aoe.rect')}
             object={object}
             {...props}
         />
     );
 };
 
-registerListComponent<RectangleZone>(ObjectType.Rect, RectangleDetails);
+registerListComponent<AoeRectObject>(ObjectType.AoeRect, AoeRectDetails);

@@ -47,7 +47,7 @@ export const RadiusControl: React.FC<PropertiesControlProps<RadiusObject>> = ({ 
 
     return (
         <Field label={label} className={classes.cell}>
-            <SpinButton value={radius} onChange={onRadiusChanged} min={MIN_RADIUS} step={5} />
+            <SpinButton value={radius} onChange={onRadiusChanged} min={MIN_RADIUS} step={1} />
         </Field>
     );
 };
@@ -83,7 +83,7 @@ export const InnerRadiusControl: React.FC<PropertiesControlProps<RadiusObject & 
 
     return (
         <Field label={t('properties.radius2')} className={classes.cell}>
-            <SpinButton value={innerRadius} onChange={onInnerRadiusChanged} min={MIN_INNER_RADIUS} step={5} />
+            <SpinButton value={innerRadius} onChange={onInnerRadiusChanged} min={MIN_INNER_RADIUS} step={1} />
         </Field>
     );
 };

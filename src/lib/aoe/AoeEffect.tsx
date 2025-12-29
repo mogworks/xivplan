@@ -3,7 +3,8 @@ import type { ShapeConfig } from 'konva/lib/Shape';
 import React, { useEffect, useRef } from 'react';
 import { Group } from 'react-konva';
 import { useDebounceValue } from 'usehooks-ts';
-import type { NativeStyle } from './nativeStyle';
+import { DEFAULT_AOE_COLOR, DEFAULT_AOE_INNER_GLOW_COLOR, DEFAULT_AOE_OUTLINE_COLOR } from '../../theme';
+import { AoeProps } from './aoeProps';
 
 type ReactKonvaExports = typeof import('react-konva');
 type ReactKonvaShapeCtor =
@@ -72,7 +73,7 @@ function Glow({ children, color, blurRadius, shadowOpacity }: GlowProps) {
 
 function InnerGlow({
     children,
-    color = '#ff751f',
+    color = DEFAULT_AOE_INNER_GLOW_COLOR,
     opacity = 1,
 }: {
     children: ReactKonvaShapeElement;
@@ -96,7 +97,7 @@ function InnerGlow({
 
 function Outerline({
     children,
-    color = '#fffc79',
+    color = DEFAULT_AOE_OUTLINE_COLOR,
     opacity = 1,
 }: {
     children: ReactKonvaShapeElement;
@@ -118,7 +119,7 @@ function Outerline({
     );
 }
 
-interface AoeEffectProps extends NativeStyle {
+interface AoeEffectProps extends AoeProps {
     children: ReactKonvaShapeElement;
     freeze?: boolean;
 }
@@ -126,12 +127,12 @@ interface AoeEffectProps extends NativeStyle {
 export const AoeEffect = React.memo(
     function AoeEffect({
         children,
-        globalOpacity = 100,
-        baseColor = '#fb923c',
+        opacity = 100,
+        baseColor = DEFAULT_AOE_COLOR,
         baseOpacity = 12,
-        innerGlowColor = '#ff751f',
+        innerGlowColor = DEFAULT_AOE_INNER_GLOW_COLOR,
         innerGlowOpacity = 100,
-        outlineColor = '#fffc79',
+        outlineColor = DEFAULT_AOE_OUTLINE_COLOR,
         outlineOpacity = 100,
     }: AoeEffectProps) {
         // 性能优化，避免频繁渲染阴影和滤镜
@@ -144,7 +145,7 @@ export const AoeEffect = React.memo(
         const base = React.cloneElement(debouncedChildren, { fill: baseColor, opacity: baseOpacity / 100 });
 
         return (
-            <Group opacity={globalOpacity / 100}>
+            <Group opacity={opacity / 100}>
                 {base}
                 <InnerGlow color={debouncedInnerGlowColor} opacity={debouncedInnerGlowOpacity / 100}>
                     {debouncedChildren}

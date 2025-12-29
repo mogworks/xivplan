@@ -225,7 +225,6 @@
     "circle": "Circle",
     "square": "Square",
     "style": "Style",
-    "native": "Native",
     "solid": "Solid",
     "hollow": "Hollow",
     "length": "Length",
@@ -333,7 +332,7 @@
     "edenBlue": "Blue marker"
   },
   "prefabs": {
-    "basic": "Basic",
+    "shape": "Shape",
     "aoe": "AoE",
     "mechanic": "Mechanic",
     "waymarks": "Waymarks",
@@ -492,7 +491,13 @@
     "innerGlowColor": "Inner glow color",
     "innerGlowOpacity": "Inner glow opacity",
     "outlineColor": "Outline color",
-    "outlineOpacity": "Outline opacity"
+    "outlineOpacity": "Outline opacity",
+    "circle": "Circle AoE",
+    "donut": "Donut AoE",
+    "rect": "Rectangle AoE",
+    "line": "Line AoE",
+    "cone": "Cone AoE",
+    "arc": "Arc AoE"
   },
   "spin": {
     "increment": "Increment value",

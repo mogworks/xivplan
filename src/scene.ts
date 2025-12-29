@@ -1,4 +1,4 @@
-import type { NativeStyle } from './lib/aoe/nativeStyle';
+import { AoeProps } from './lib/aoe/aoeProps';
 import { WaymarkType } from './prefabs/waymarkIcon';
 
 export enum FloorShape {
@@ -55,6 +55,12 @@ export enum ObjectType {
     Triangle = 'triangle',
     BoardIcon = 'boardIcon',
     Waymark = 'waymark',
+    AoeRect = 'aoeRect',
+    AoeLine = 'aoeLine',
+    AoeCircle = 'aoeCircle',
+    AoeDonut = 'aoeDonut',
+    AoeCone = 'aoeCone',
+    AoeArc = 'aoeArc',
 }
 
 export interface BaseObject {
@@ -183,20 +189,6 @@ export interface HollowObject {
     readonly hollow?: boolean;
 }
 
-export interface ZoneStyleObject extends HollowObject, Readonly<NativeStyle> {
-    readonly native?: boolean;
-}
-
-// Objects that support the "native" zone style.
-export const supportsNativeStyle = makeObjectTest<ZoneStyleObject & UnknownObject>(
-    ObjectType.Rect,
-    ObjectType.Line,
-    ObjectType.Circle,
-    ObjectType.Donut,
-    ObjectType.Cone,
-    ObjectType.Arc,
-);
-
 export interface MoveableObject {
     readonly x: number;
     readonly y: number;
@@ -309,7 +301,43 @@ export function isActor(object: UnknownObject): object is Actor {
     return isParty(object) || isEnemy(object);
 }
 
-export interface CircleZone extends RadiusObject, ColoredObject, ZoneStyleObject, BaseObject {
+export interface AoeRectObject extends Readonly<AoeProps>, ResizeableObject, BaseObject {
+    readonly type: ObjectType.AoeRect;
+}
+
+export interface AoeLineObject extends Readonly<AoeProps>, LineProps, MoveableObject, RotateableObject, BaseObject {
+    readonly type: ObjectType.AoeLine;
+}
+
+export interface AoeCircleObject extends Readonly<AoeProps>, RadiusObject, BaseObject {
+    readonly type: ObjectType.AoeCircle;
+}
+
+export interface AoeDonutObject extends Readonly<AoeProps>, RadiusObject, InnerRadiusObject, BaseObject {
+    readonly type: ObjectType.AoeDonut;
+}
+
+export interface AoeConeObject extends Readonly<AoeProps>, ConeProps, RadiusObject, RotateableObject, BaseObject {
+    readonly type: ObjectType.AoeCone;
+}
+
+export interface AoeArcObject
+    extends Readonly<AoeProps>, ConeProps, RadiusObject, InnerRadiusObject, RotateableObject, BaseObject {
+    readonly type: ObjectType.AoeArc;
+}
+
+export type AoeObject = AoeRectObject | AoeLineObject | AoeCircleObject | AoeDonutObject | AoeConeObject | AoeArcObject;
+
+export const isAoeObject = makeObjectTest<AoeObject>(
+    ObjectType.AoeRect,
+    ObjectType.AoeLine,
+    ObjectType.AoeCircle,
+    ObjectType.AoeDonut,
+    ObjectType.AoeCone,
+    ObjectType.AoeArc,
+);
+
+export interface CircleZone extends RadiusObject, ColoredObject, HollowObject, BaseObject {
     readonly type:
         | ObjectType.Circle
         | ObjectType.Proximity
@@ -336,36 +364,37 @@ export interface EyeObject extends RadiusObject, ColoredObject, HollowObject, Ba
 }
 export const isEye = makeObjectTest<EyeObject>(ObjectType.Eye);
 
-export interface DonutZone extends RadiusObject, InnerRadiusObject, ColoredObject, ZoneStyleObject, BaseObject {
+export interface DonutZone extends RadiusObject, InnerRadiusObject, ColoredObject, HollowObject, BaseObject {
     readonly type: ObjectType.Donut;
 }
 export const isDonutZone = makeObjectTest<DonutZone>(ObjectType.Donut);
 
-export interface LineProps extends MoveableObject, ColoredObject, ZoneStyleObject, RotateableObject {
+export interface LineProps {
     readonly length: number;
     readonly width: number;
 }
 
-export interface LineZone extends LineProps, BaseObject {
+export interface LineZone extends LineProps, MoveableObject, ColoredObject, HollowObject, RotateableObject, BaseObject {
     readonly type: ObjectType.Line;
 }
 export const isLineZone = makeObjectTest<LineZone>(ObjectType.Line);
 
-export interface ConeProps extends RadiusObject, ColoredObject, ZoneStyleObject, RotateableObject {
+export interface ConeProps {
     readonly coneAngle: number;
 }
 
-export interface ConeZone extends ConeProps, BaseObject {
+export interface ConeZone extends ConeProps, RadiusObject, ColoredObject, HollowObject, RotateableObject, BaseObject {
     readonly type: ObjectType.Cone;
 }
 export const isConeZone = makeObjectTest<ConeZone>(ObjectType.Cone);
 
-export interface ArcZone extends ConeProps, InnerRadiusObject, BaseObject {
+export interface ArcZone
+    extends ConeProps, RadiusObject, ColoredObject, HollowObject, RotateableObject, InnerRadiusObject, BaseObject {
     readonly type: ObjectType.Arc;
 }
 export const isArcZone = makeObjectTest<ArcZone>(ObjectType.Arc);
 
-export interface RectangleZone extends ResizeableObject, ColoredObject, ZoneStyleObject, BaseObject {
+export interface RectangleZone extends ResizeableObject, ColoredObject, HollowObject, BaseObject {
     readonly type:
         | ObjectType.Rect
         | ObjectType.LineStack
@@ -468,6 +497,16 @@ export function isNamed<T>(object: T): object is NamedObject & T {
     return !!obj && ('name' in obj || 'defaultNameKey' in obj);
 }
 
+export function isLineLike<T>(object: T): object is LineProps & T {
+    const obj = object as LineProps & T;
+    return obj && typeof obj.length === 'number' && typeof obj.width === 'number';
+}
+
+export function isConeLike<T>(object: T): object is ConeProps & T {
+    const obj = object as ConeProps & T;
+    return obj && typeof obj.coneAngle === 'number';
+}
+
 export function isColored<T>(object: T): object is ColoredObject & T {
     const obj = object as ColoredObject & T;
     return obj && typeof obj.color === 'string';
@@ -526,6 +565,7 @@ export const supportsHollow = makeObjectTest<HollowObject & UnknownObject>(
     ObjectType.Triangle,
     ObjectType.RightTriangle,
     ObjectType.Polygon,
+    ObjectType.Donut,
 );
 
 export function supportsStackCount<T>(object: T): object is StackCountObject & T {
@@ -533,7 +573,16 @@ export function supportsStackCount<T>(object: T): object is StackCountObject & T
     return obj && typeof obj.count === 'number';
 }
 
-export type SceneObject = UnknownObject | Zone | Marker | Actor | IconObject | Tether | BoardIconObject | WaymarkObject;
+export type SceneObject =
+    | UnknownObject
+    | Zone
+    | Marker
+    | Actor
+    | IconObject
+    | Tether
+    | BoardIconObject
+    | WaymarkObject
+    | AoeObject;
 
 export type SceneObjectWithoutId = Omit<SceneObject, 'id'> & { id?: number };
 

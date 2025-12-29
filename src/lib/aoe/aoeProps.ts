@@ -1,5 +1,5 @@
-export interface NativeStyle {
-    globalOpacity?: number;
+export interface AoeProps {
+    opacity: number;
     baseColor?: string;
     baseOpacity?: number;
     innerGlowColor?: string;
