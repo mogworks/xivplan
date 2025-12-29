@@ -1,5 +1,6 @@
 // copy & modify from https://github.com/Ennea/ffxiv-strategy-board-viewer/blob/master/draw.ts
 
+import { getWaymarkTypeById } from '../../prefabs/waymarkIcon';
 import {
     BoardIconObject,
     FloorShape,
@@ -8,6 +9,7 @@ import {
     Scene,
     SceneObject,
     SceneObjectWithoutId,
+    WaymarkObject,
 } from '../../scene';
 import { getObjectSize, knownObjects, objectScaleFactor } from './objects';
 import { parseStrategyBoardData, SBObject } from './parser';
@@ -93,6 +95,23 @@ function parseObject(obj: SBObject): SceneObjectWithoutId | null {
             pinned: obj.flags.locked,
             rotation: obj.angle,
         } as Omit<PartyObject, 'id'>;
+    }
+
+    // 场景标记
+    if (79 <= obj.id && obj.id <= 86) {
+        return {
+            type: ObjectType.Waymark,
+            waymarkType: getWaymarkTypeById(obj.id),
+            bgOpacity: 0,
+            iconId: iconId,
+            opacity: obj.color.opacity,
+            hide: !obj.flags.visible,
+            width: size * scale * SIZE_FACTOR,
+            height: size * scale * SIZE_FACTOR,
+            ...coordinates,
+            pinned: obj.flags.locked,
+            rotation: obj.angle,
+        } as Omit<WaymarkObject, 'id'>;
     }
 
     switch (obj.id) {
