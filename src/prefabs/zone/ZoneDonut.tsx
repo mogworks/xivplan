@@ -62,9 +62,7 @@ interface DonutRendererProps extends RendererProps<DonutZone> {
 const DonutRenderer: React.FC<DonutRendererProps> = ({ object, isDragging }) => {
     const highlightProps = useHighlightProps(object);
 
-    const isHollow = object.hollow ?? false;
-
-    const style = getZoneStyle(object.color, object.opacity, object.radius * 2, isHollow);
+    const style = getZoneStyle(object.color, object.opacity, object.radius * 2, object.hollow);
 
     const highlightInnerRadius = Math.min(object.radius, object.innerRadius);
     const highlightOuterRadius = Math.max(object.radius, object.innerRadius);

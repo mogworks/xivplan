@@ -182,9 +182,7 @@ interface LineRendererProps extends RendererProps<LineZone> {
 const LineRenderer: React.FC<LineRendererProps> = ({ object, isDragging }) => {
     const highlightProps = useHighlightProps(object);
 
-    const isHollow = object.hollow ?? false;
-
-    const style = getZoneStyle(object.color, object.opacity, Math.min(object.length, object.width), isHollow);
+    const style = getZoneStyle(object.color, object.opacity, Math.min(object.length, object.width), object.hollow);
     const x = -object.width / 2;
     const y = -object.length;
     const highlightOffset = style.strokeWidth;

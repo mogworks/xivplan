@@ -121,9 +121,7 @@ const OffsetWedge: React.FC<OffsetWedgeProps> = ({ radius, angle, shapeOffset, .
 const ConeRenderer: React.FC<RendererProps<ConeZone>> = ({ object }) => {
     const highlightProps = useHighlightProps(object);
 
-    const isHollow = object.hollow ?? false;
-
-    const style = getZoneStyle(object.color, object.opacity, object.radius * 2, isHollow);
+    const style = getZoneStyle(object.color, object.opacity, object.radius * 2, object.hollow);
 
     return (
         <Group rotation={object.rotation - 90 - object.coneAngle / 2}>
