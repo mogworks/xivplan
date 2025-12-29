@@ -7,7 +7,7 @@ import { PartyObject } from '../../scene';
 import { PropertiesControlProps } from '../PropertiesControl';
 
 const icons = [
-    [PartyIcons.Any, PartyIcons.AllRole, PartyIcons.Support],
+    [PartyIcons.Any, PartyIcons.AllRole, PartyIcons.TH, PartyIcons.TD, PartyIcons.HD],
     [PartyIcons.Tank1, PartyIcons.Tank2],
     [PartyIcons.Tank],
     [PartyIcons.PLD, PartyIcons.WAR, PartyIcons.DRK, PartyIcons.GNB],

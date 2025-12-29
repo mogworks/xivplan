@@ -56,7 +56,9 @@ export const EXTRA_ICON_ID_BASE = 1000000;
 export enum ExtraPartyIcon {
     Any = 1000001,
     AllRole,
-    Support,
+    TH,
+    TD,
+    HD,
 }
 
 export const PartyIcons = { ...PartyIcon, ...ExtraPartyIcon } as const;

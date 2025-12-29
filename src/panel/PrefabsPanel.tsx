@@ -19,6 +19,7 @@ import {
     PartyDragoon,
     PartyGunbreaker,
     PartyHealer,
+    PartyHealerDps,
     PartyMachinist,
     PartyMagicalRanged,
     PartyMelee,
@@ -34,8 +35,9 @@ import {
     PartySamurai,
     PartyScholar,
     PartySummoner,
-    PartySupport,
     PartyTank,
+    PartyTankDps,
+    PartyTankHealer,
     PartyViper,
     PartyWarrior,
     PartyWhiteMage,
@@ -127,7 +129,9 @@ export const PrefabsPanel: React.FC = () => {
                 <ObjectGroup>
                     <PartyAny />
                     <PartyAllRole />
-                    <PartySupport />
+                    <PartyTankHealer />
+                    <PartyTankDps />
+                    <PartyHealerDps />
                 </ObjectGroup>
 
                 <ObjectGroup>

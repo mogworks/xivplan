@@ -107,7 +107,9 @@ registerListComponent<PartyObject>(ObjectType.Party, PartyDetails);
 
 export const PartyAny = makeIcon(PartyIcons.Any);
 export const PartyAllRole = makeIcon(PartyIcons.AllRole);
-export const PartySupport = makeIcon(PartyIcons.Support);
+export const PartyTankHealer = makeIcon(PartyIcons.TH);
+export const PartyTankDps = makeIcon(PartyIcons.TD);
+export const PartyHealerDps = makeIcon(PartyIcons.HD);
 
 export const PartyTank = makeIcon(PartyIcons.Tank);
 export const PartyPaladin = makeIcon(PartyIcons.PLD);
