@@ -111,36 +111,27 @@ export const PartyTankDps = makeIcon(PartyIcons.TD);
 export const PartyHealerDps = makeIcon(PartyIcons.HD);
 
 export const PartyTank = makeIcon(PartyIcons.Tank);
-export const PartyPaladin = makeIcon(PartyIcons.PLD);
-export const PartyWarrior = makeIcon(PartyIcons.WAR);
-export const PartyDarkKnight = makeIcon(PartyIcons.DRK);
-export const PartyGunbreaker = makeIcon(PartyIcons.GNB);
+export const PartyTank1 = makeIcon(PartyIcons.Tank1);
+export const PartyTank2 = makeIcon(PartyIcons.Tank2);
 
 export const PartyHealer = makeIcon(PartyIcons.Healer);
-export const PartyWhiteMage = makeIcon(PartyIcons.WHM);
-export const PartyScholar = makeIcon(PartyIcons.SCH);
-export const PartyAstrologian = makeIcon(PartyIcons.AST);
-export const PartySage = makeIcon(PartyIcons.SGE);
+export const PartyHealer1 = makeIcon(PartyIcons.Healer1);
+export const PartyHealer2 = makeIcon(PartyIcons.Healer2);
+export const PartyPureHealer = makeIcon(PartyIcons.PureHealer);
+export const PartyBarrierHealer = makeIcon(PartyIcons.BarrierHealer);
+
+export const PartyDps1 = makeIcon(PartyIcons.DPS1);
+export const PartyDps2 = makeIcon(PartyIcons.DPS2);
+export const PartyDps3 = makeIcon(PartyIcons.DPS3);
+export const PartyDps4 = makeIcon(PartyIcons.DPS4);
+
+export const PartyMelee1 = makeIcon(PartyIcons.Melee1);
+export const PartyMelee2 = makeIcon(PartyIcons.Melee2);
+export const PartyRanged1 = makeIcon(PartyIcons.Ranged1);
+export const PartyRanged2 = makeIcon(PartyIcons.Ranged2);
 
 export const PartyDps = makeIcon(PartyIcons.DPS);
 export const PartyMelee = makeIcon(PartyIcons.Melee);
 export const PartyRanged = makeIcon(PartyIcons.Ranged);
 export const PartyPhysicalRanged = makeIcon(PartyIcons.PhysicalRanged);
 export const PartyMagicalRanged = makeIcon(PartyIcons.MagicalRanged);
-
-export const PartyMonk = makeIcon(PartyIcons.MNK);
-export const PartyDragoon = makeIcon(PartyIcons.DRG);
-export const PartyNinja = makeIcon(PartyIcons.NIN);
-export const PartySamurai = makeIcon(PartyIcons.SAM);
-export const PartyReaper = makeIcon(PartyIcons.RPR);
-export const PartyViper = makeIcon(PartyIcons.VPR);
-
-export const PartyBard = makeIcon(PartyIcons.BRD);
-export const PartyMachinist = makeIcon(PartyIcons.MCH);
-export const PartyDancer = makeIcon(PartyIcons.DNC);
-
-export const PartyBlackMage = makeIcon(PartyIcons.BLM);
-export const PartySummoner = makeIcon(PartyIcons.SMN);
-export const PartyRedMage = makeIcon(PartyIcons.RDM);
-export const PartyPictomancer = makeIcon(PartyIcons.PCT);
-export const PartyBlueMage = makeIcon(PartyIcons.BLU);

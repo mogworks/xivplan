@@ -8,38 +8,30 @@ import { EnemyCircle, EnemyHuge, EnemyLarge, EnemyMedium, EnemySmall } from '../
 import {
     PartyAllRole,
     PartyAny,
-    PartyAstrologian,
-    PartyBard,
-    PartyBlackMage,
-    PartyBlueMage,
-    PartyDancer,
-    PartyDarkKnight,
+    PartyBarrierHealer,
     PartyDps,
-    PartyDragoon,
-    PartyGunbreaker,
+    PartyDps1,
+    PartyDps2,
+    PartyDps3,
+    PartyDps4,
     PartyHealer,
+    PartyHealer1,
+    PartyHealer2,
     PartyHealerDps,
-    PartyMachinist,
     PartyMagicalRanged,
     PartyMelee,
-    PartyMonk,
-    PartyNinja,
-    PartyPaladin,
+    PartyMelee1,
+    PartyMelee2,
     PartyPhysicalRanged,
-    PartyPictomancer,
+    PartyPureHealer,
     PartyRanged,
-    PartyReaper,
-    PartyRedMage,
-    PartySage,
-    PartySamurai,
-    PartyScholar,
-    PartySummoner,
+    PartyRanged1,
+    PartyRanged2,
     PartyTank,
+    PartyTank1,
+    PartyTank2,
     PartyTankDps,
     PartyTankHealer,
-    PartyViper,
-    PartyWarrior,
-    PartyWhiteMage,
 } from '../prefabs/Party';
 import {
     TetherClose,
@@ -136,18 +128,30 @@ export const PrefabsPanel: React.FC = () => {
 
                 <ObjectGroup>
                     <PartyTank />
-                    <PartyPaladin />
-                    <PartyWarrior />
-                    <PartyDarkKnight />
-                    <PartyGunbreaker />
+                    <PartyTank1 />
+                    <PartyTank2 />
                 </ObjectGroup>
 
                 <ObjectGroup>
                     <PartyHealer />
-                    <PartyWhiteMage />
-                    <PartyScholar />
-                    <PartyAstrologian />
-                    <PartySage />
+                    <PartyHealer1 />
+                    <PartyHealer2 />
+                    <PartyPureHealer />
+                    <PartyBarrierHealer />
+                </ObjectGroup>
+
+                <ObjectGroup>
+                    <PartyDps1 />
+                    <PartyDps2 />
+                    <PartyDps3 />
+                    <PartyDps4 />
+                </ObjectGroup>
+
+                <ObjectGroup>
+                    <PartyMelee1 />
+                    <PartyMelee2 />
+                    <PartyRanged1 />
+                    <PartyRanged2 />
                 </ObjectGroup>
 
                 <ObjectGroup>
@@ -156,29 +160,6 @@ export const PrefabsPanel: React.FC = () => {
                     <PartyRanged />
                     <PartyPhysicalRanged />
                     <PartyMagicalRanged />
-                </ObjectGroup>
-
-                <ObjectGroup>
-                    <PartyMonk />
-                    <PartyDragoon />
-                    <PartyNinja />
-                    <PartySamurai />
-                    <PartyReaper />
-                    <PartyViper />
-                </ObjectGroup>
-
-                <ObjectGroup>
-                    <PartyBard />
-                    <PartyMachinist />
-                    <PartyDancer />
-                </ObjectGroup>
-
-                <ObjectGroup>
-                    <PartyBlackMage />
-                    <PartySummoner />
-                    <PartyRedMage />
-                    <PartyPictomancer />
-                    <PartyBlueMage />
                 </ObjectGroup>
             </Section>
 
