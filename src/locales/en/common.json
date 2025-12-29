@@ -495,6 +495,12 @@
     "increment": "Increment value",
     "decrement": "Decrement value"
   },
+  "waymark": {
+    "fgOpacity": "Foreground opacity",
+    "bgOpacity": "Background opacity",
+    "fgRotation": "Foreground rotation",
+    "bgRotation": "Background rotation"
+  },
   "boardIcon": {
     "18": "Gladiator",
     "19": "Pugilist",
@@ -552,6 +558,16 @@
     "1000054": "DPS 1",
     "1000055": "DPS 2",
     "1000056": "DPS 3",
-    "1000057": "DPS 4"
+    "1000057": "DPS 4",
+    "waymark": {
+      "a": "Waymark A",
+      "b": "Waymark B",
+      "c": "Waymark C",
+      "d": "Waymark D",
+      "1": "Waymark 1",
+      "2": "Waymark 2",
+      "3": "Waymark 3",
+      "4": "Waymark 4"
+    }
   }
 }

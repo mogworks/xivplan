@@ -47,7 +47,7 @@ export const BoardIconRenderer: React.FC<RendererProps<BoardIconObject>> = ({ ob
 
 registerRenderer<BoardIconObject>(ObjectType.BoardIcon, LayerName.Default, BoardIconRenderer);
 
-const BoardIconDetails: React.FC<ListComponentProps<BoardIconObject>> = ({ object, ...props }) => {
+export const BoardIconDetails: React.FC<ListComponentProps<BoardIconObject>> = ({ object, ...props }) => {
     const { t } = useTranslation();
     const name = object.name || t(`boardIcon.${object.iconId}`, { defaultValue: object.iconId });
     return <DetailsItem icon={getIconUrl(object.iconId)} name={name} object={object} {...props} />;

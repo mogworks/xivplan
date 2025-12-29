@@ -17,7 +17,6 @@ import {
     isImageObject,
     isInnerRadiusObject,
     isLineZone,
-    isMarker,
     isMoveable,
     isNamed,
     isParty,
@@ -28,6 +27,7 @@ import {
     isStarburstZone,
     isTether,
     isText,
+    isWaymark,
     supportsHollow,
     supportsNativeStyle,
     supportsStackCount,
@@ -48,7 +48,6 @@ import { HollowControl } from './properties/HollowControl';
 import { IconStacksControl, IconTimeControl } from './properties/IconControls';
 import { ImageControl } from './properties/ImageControl';
 import { LineSizeControl } from './properties/LineControls';
-import { MarkerShapeControl } from './properties/MarkerControls';
 import { NameControl } from './properties/NameControl';
 import { OpacityControl } from './properties/OpacityControl';
 import { PartyIconControl } from './properties/PartyControls';
@@ -62,6 +61,7 @@ import { StackCountControl } from './properties/StackCountControl';
 import { StarburstSpokeCountControl, StarburstSpokeWidthControl } from './properties/StarburstControls';
 import { TetherTypeControl, TetherWidthControl } from './properties/TetherControls';
 import { TextLayoutControl, TextOutlineControl, TextValueControl } from './properties/TextControls';
+import { WaymarkOpacityControl, WaymarkRotationControl } from './properties/WaymarkControls';
 import { ZoneStyleTypeControl } from './properties/ZoneStyleTypeControl';
 
 export interface PropertiesPanelProps {
@@ -132,8 +132,8 @@ const Controls: React.FC = () => {
                     test={(obj) => supportsHollow(obj) && !supportsNativeStyle(obj)}
                     control={HollowControl}
                 />
-                <ControlCondition objects={objects} test={isMarker} control={MarkerShapeControl} />
             </div>
+            <ControlCondition objects={objects} test={isWaymark} control={WaymarkOpacityControl} />
             <SimpleColorSwatchControl objects={objects} />
             <ControlCondition objects={objects} test={isText} control={TextOutlineControl} />
 
@@ -195,6 +195,7 @@ const Controls: React.FC = () => {
                 <ControlCondition objects={objects} test={isIcon} control={IconStacksControl} />
                 <ControlCondition objects={objects} test={isIcon} control={IconTimeControl} />
             </div>
+            <ControlCondition objects={objects} test={isWaymark} control={WaymarkRotationControl} />
         </>
     );
 };

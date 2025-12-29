@@ -1,4 +1,5 @@
 import type { NativeStyle } from './lib/aoe/nativeStyle';
+import { WaymarkType } from './prefabs/waymarkIcon';
 
 export enum FloorShape {
     None = 'none',
@@ -53,6 +54,7 @@ export enum ObjectType {
     Tower = 'tower',
     Triangle = 'triangle',
     BoardIcon = 'boardIcon',
+    Waymark = 'waymark',
 }
 
 export interface BaseObject {
@@ -243,6 +245,16 @@ export interface MarkerObject extends NamedObject, ImageObject, ColoredObject, B
     readonly shape: 'circle' | 'square';
 }
 export const isMarker = makeObjectTest<MarkerObject>(ObjectType.Marker);
+
+export interface WaymarkObject extends ResizeableObject, BaseObject {
+    readonly type: ObjectType.Waymark;
+    readonly waymarkType: WaymarkType;
+    readonly fgOpacity?: number;
+    readonly fgRotation?: number;
+    readonly bgOpacity?: number;
+    readonly bgRotation?: number;
+}
+export const isWaymark = makeObjectTest<WaymarkObject>(ObjectType.Waymark);
 
 export interface ArrowObject extends ResizeableObject, ColoredObject, BaseObject {
     readonly type: ObjectType.Arrow;
@@ -527,7 +539,7 @@ export function supportsStackCount<T>(object: T): object is StackCountObject & T
     return obj && typeof obj.count === 'number';
 }
 
-export type SceneObject = UnknownObject | Zone | Marker | Actor | IconObject | Tether | BoardIconObject;
+export type SceneObject = UnknownObject | Zone | Marker | Actor | IconObject | Tether | BoardIconObject | WaymarkObject;
 
 export type SceneObjectWithoutId = Omit<SceneObject, 'id'> & { id?: number };
 

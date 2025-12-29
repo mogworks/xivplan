@@ -5,7 +5,6 @@ import { HotkeyName } from '../HotkeyName';
 import { MarkerArrow } from '../prefabs/Arrow';
 import '../prefabs/BoardIcon';
 import { EnemyCircle, EnemyHuge, EnemyLarge, EnemyMedium, EnemySmall } from '../prefabs/Enemies';
-import { Waymark1, Waymark2, Waymark3, Waymark4, WaymarkA, WaymarkB, WaymarkC, WaymarkD } from '../prefabs/Markers';
 import {
     PartyAllRole,
     PartyAny,
@@ -51,6 +50,7 @@ import {
     TetherPlusPlus,
 } from '../prefabs/Tethers';
 import { TextLabel } from '../prefabs/TextLabel';
+import { Waymark1, Waymark2, Waymark3, Waymark4, WaymarkA, WaymarkB, WaymarkC, WaymarkD } from '../prefabs/Waymark';
 import { ZoneArc } from '../prefabs/zone/ZoneArc';
 import { ZoneCircle } from '../prefabs/zone/ZoneCircle';
 import { ZoneCone } from '../prefabs/zone/ZoneCone';

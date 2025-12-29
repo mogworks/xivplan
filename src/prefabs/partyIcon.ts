@@ -50,7 +50,7 @@ export enum PartyIcon {
     BarrierHealer,
 }
 
-export const EXTRA_ICON_ID_BASE = 1000000;
+const EXTRA_ICON_ID_BASE = 1000000;
 
 // extra icons: `public/board/extra/party/${iconId - EXTRA_ICON_ID_BASE}.png`
 export enum ExtraPartyIcon {
@@ -66,4 +66,4 @@ export const PartyIcons = { ...PartyIcon, ...ExtraPartyIcon } as const;
 export const getPartyIconUrl = (iconId: number) =>
     iconId < EXTRA_ICON_ID_BASE
         ? new URL(`public/board/objects/${iconId}.webp`, import.meta.env.VITE_COS_URL).href
-        : new URL(`public/board/extra/party/${iconId - EXTRA_ICON_ID_BASE}.png`, import.meta.env.VITE_COS_URL).href;
+        : new URL(`public/board/extra/party/${iconId - EXTRA_ICON_ID_BASE}.webp`, import.meta.env.VITE_COS_URL).href;
