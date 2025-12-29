@@ -240,12 +240,6 @@ export interface FakeCursorObject extends MoveableObject, BaseObject {
     readonly type: ObjectType.Cursor;
 }
 
-export interface MarkerObject extends NamedObject, ImageObject, ColoredObject, BaseObject {
-    readonly type: ObjectType.Marker;
-    readonly shape: 'circle' | 'square';
-}
-export const isMarker = makeObjectTest<MarkerObject>(ObjectType.Marker);
-
 export interface WaymarkObject extends ResizeableObject, BaseObject {
     readonly type: ObjectType.Waymark;
     readonly waymarkType: WaymarkType;
@@ -275,7 +269,7 @@ export interface TextObject extends MoveableObject, RotateableObject, ColoredObj
 }
 export const isText = makeObjectTest<TextObject>(ObjectType.Text);
 
-export type Marker = MarkerObject | ArrowObject | TextObject;
+export type Marker = ArrowObject | TextObject;
 
 export interface IconObject extends ImageObject, NamedObject, BaseObject {
     readonly type: ObjectType.Icon;

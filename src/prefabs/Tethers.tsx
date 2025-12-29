@@ -1,5 +1,4 @@
 import { makeStyles } from '@fluentui/react-components';
-import { useTranslation } from 'react-i18next';
 import Konva from 'konva';
 import { NodeConfig } from 'konva/lib/Node';
 import { ShapeConfig } from 'konva/lib/Shape';
@@ -7,6 +6,7 @@ import { ArrowConfig } from 'konva/lib/shapes/Arrow';
 import { LineConfig } from 'konva/lib/shapes/Line';
 import { Vector2d } from 'konva/lib/types';
 import * as React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Arrow, Circle, Group, Line } from 'react-konva';
 import { CursorGroup } from '../CursorGroup';
 import { getObjectById, useScene } from '../SceneProvider';
@@ -26,10 +26,10 @@ import {
     Tether,
     TetherType,
     isEnemy,
-    isMarker,
     isMoveable,
     isRadiusObject,
     isResizable,
+    isWaymark,
     isZone,
 } from '../scene';
 import { selectNone, useSelection } from '../selection';
@@ -96,7 +96,7 @@ function getTargetPoints(
 }
 
 function isGroundObject(object: SceneObject) {
-    return isZone(object) || isEnemy(object) || isMarker(object);
+    return isZone(object) || isEnemy(object) || isWaymark(object);
 }
 
 function getTargetOffset(object: SceneObject | undefined): number {

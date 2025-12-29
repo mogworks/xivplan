@@ -5,7 +5,6 @@ import {
     EnemyRingStyle,
     ExaflareZone,
     ImageObject,
-    MarkerObject,
     PartyObject,
     PolygonOrientation,
     PolygonZone,
@@ -19,13 +18,12 @@ import {
     isEnemy,
     isExaflareZone,
     isImageObject,
-    isMarker,
     isParty,
     isPolygonZone,
     isStackZone,
     isText,
 } from '../scene';
-import { DEFAULT_ENEMY_OPACITY, DEFAULT_IMAGE_OPACITY, DEFAULT_MARKER_OPACITY, DEFAULT_PARTY_OPACITY } from '../theme';
+import { DEFAULT_ENEMY_OPACITY, DEFAULT_IMAGE_OPACITY, DEFAULT_PARTY_OPACITY } from '../theme';
 
 export function upgradeScene(scene: Scene): Scene {
     return {
@@ -60,10 +58,6 @@ function upgradeObject(object: SceneObject): SceneObject {
 
     if (isExaflareZone(object)) {
         object = upgradeExaflareZone(object);
-    }
-
-    if (isMarker(object)) {
-        object = upgradeMarker(object);
     }
 
     if (isText(object)) {
@@ -168,18 +162,6 @@ type LegacyExaflareZone = Omit<ExaflareZone, 'spacing'> & {
 function upgradeExaflareZone(object: LegacyExaflareZone): ExaflareZone {
     return {
         spacing: 60,
-        ...object,
-    };
-}
-
-// opacity property was added to MarkerObject
-type LegacyMarkerObject = Omit<MarkerObject, 'opacity'> & {
-    opacity?: number;
-};
-
-function upgradeMarker(object: LegacyMarkerObject): MarkerObject {
-    return {
-        opacity: DEFAULT_MARKER_OPACITY,
         ...object,
     };
 }
