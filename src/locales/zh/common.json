@@ -485,7 +485,6 @@
     "meteorTower": "陨石/塔"
   },
   "aoe": {
-    "globalOpacity": "整体不透明度",
     "baseColor": "基底颜色",
     "baseOpacity": "基底不透明度",
     "innerGlowColor": "内发光颜色",
