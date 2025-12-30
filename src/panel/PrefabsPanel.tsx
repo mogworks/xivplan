@@ -124,7 +124,7 @@ export const PrefabsPanel: React.FC = () => {
                 </ObjectGroup>
             </Section>
 
-            <Section title={t('prefabs.waymarks')}>
+            <Section title={t('prefabs.waymark')}>
                 <ObjectGroup>
                     <WaymarkA />
                     <WaymarkB />
@@ -184,7 +184,7 @@ export const PrefabsPanel: React.FC = () => {
                 </ObjectGroup>
             </Section>
 
-            <Section title={t('prefabs.enemies')}>
+            <Section title={t('prefabs.enemy')}>
                 <ObjectGroup>
                     <EnemyCircle />
                     <EnemySmall />
@@ -193,7 +193,7 @@ export const PrefabsPanel: React.FC = () => {
                     <EnemyHuge />
                 </ObjectGroup>
             </Section>
-            <Section title={t('prefabs.tethers')}>
+            <Section title={t('prefabs.tether')}>
                 <ObjectGroup>
                     <TetherLine />
                     <TetherClose />
@@ -204,8 +204,8 @@ export const PrefabsPanel: React.FC = () => {
                     <TetherMinusMinus />
                 </ObjectGroup>
                 <Text block size={200} data-nosnippet>
-                    {t('prefabs.tethersHelp.part1')} <HotkeyName keys="esc" /> {t('prefabs.tethersHelp.part2')}{' '}
-                    <HotkeyName keys="ctrl" /> {t('prefabs.tethersHelp.part3')}
+                    {t('prefabs.tetherHelp.part1')} <HotkeyName keys="esc" /> {t('prefabs.tetherHelp.part2')}{' '}
+                    <HotkeyName keys="ctrl" /> {t('prefabs.tetherHelp.part3')}
                 </Text>
             </Section>
         </div>

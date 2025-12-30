@@ -335,11 +335,11 @@
     "shape": "Shape",
     "aoe": "AoE",
     "mechanic": "Mechanic",
-    "waymarks": "Waymarks",
+    "waymark": "Waymark",
     "party": "Party",
-    "enemies": "Enemies",
-    "tethers": "Tethers",
-    "tethersHelp": {
+    "enemy": "Enemy",
+    "tether": "Tether",
+    "tetherHelp": {
       "part1": "Select a tether type, then click two objects to add a tether. Press",
       "part2": "or unselect the tether button to cancel. Use",
       "part3": "+ click to create chains."
