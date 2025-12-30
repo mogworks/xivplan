@@ -227,6 +227,7 @@ function parseObject(obj: SBObject): SceneObjectWithoutId | null {
                     width: obj.param1 * 2 * SIZE_FACTOR,
                     height: obj.param2 * 2 * SIZE_FACTOR,
                     baseColor: color,
+                    baseOpacity: 100, // 游戏里只有实心的，保持外观一致
                     innerGlowColor: color,
                     outlineColor: color,
                     ...coordinates,
