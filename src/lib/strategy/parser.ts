@@ -7,13 +7,13 @@ const DummyParser = new Parser();
 
 const StringParser = new Parser()
     .endianness('little')
-    .uint16('unk', { assert: 3 })
+    .uint16('unk')
     .uint16('length')
     .string('string', { length: 'length', stripNull: true });
 
 const ObjectParser = new Parser()
     .endianness('little')
-    .uint16('magic', { assert: 2 })
+    .uint16('magic')
     .uint16('id')
     .choice({
         tag: 'id',
@@ -38,7 +38,7 @@ const ObjectFlagParser = new Parser()
 
 const ObjectFlagSectionParser = new Parser()
     .endianness('little')
-    .uint16('section_id', { assert: 4 })
+    .uint16('section_id')
     .uint16('unk')
     .uint16('length')
     .array('values', { type: ObjectFlagParser, length: 'length' });
@@ -47,21 +47,21 @@ const CoordinatesParser = new Parser().endianness('little').uint16('x').uint16('
 
 const CoordinateSectionParser = new Parser()
     .endianness('little')
-    .uint16('section_id', { assert: 5 })
+    .uint16('section_id')
     .uint16('unk')
     .uint16('length')
     .array('values', { type: CoordinatesParser, length: 'length' });
 
 const AngleSectionParser = new Parser()
     .endianness('little')
-    .uint16('section_id', { assert: 6 })
+    .uint16('section_id')
     .uint16('unk')
     .uint16('length')
     .array('values', { type: 'int16le', length: 'length' });
 
 const ScaleSectionParser = new Parser()
     .endianness('little')
-    .uint16('section_id', { assert: 7 })
+    .uint16('section_id')
     .uint16('unk')
     .uint16('length')
     .array('values', {
@@ -76,7 +76,7 @@ const ColorParser = new Parser().endianness('little').uint8('red').uint8('green'
 
 const ColorSectionParser = new Parser()
     .endianness('little')
-    .uint16('section_id', { assert: 8 })
+    .uint16('section_id')
     .uint16('unk')
     .uint16('length')
     .array('values', { type: ColorParser, length: 'length' });
@@ -90,7 +90,7 @@ const ParamSectionParser = new Parser()
 
 const StrategyBoardParser = new Parser()
     .endianness('little')
-    .uint32('header_magic', { assert: 2 })
+    .uint32('header_magic')
     .uint16('length1')
     .uint32('header_unk1')
     .uint32('header_unk2')
@@ -98,7 +98,7 @@ const StrategyBoardParser = new Parser()
     .uint16('length2')
     .uint32('header_unk4')
 
-    .uint16('section_id', { assert: 1 })
+    .uint16('section_id')
     .uint16('board_name_length')
     .string('board_name', { length: 'board_name_length', stripNull: true })
 
@@ -149,7 +149,7 @@ const StrategyBoardParser = new Parser()
     .nest('params2', { type: ParamSectionParser })
     .nest('params3', { type: ParamSectionParser })
 
-    .uint16('footer_magic', { assert: 3 })
+    .uint16('footer_magic')
     .uint16('footer_unk1')
     .uint16('footer_unk2')
     .uint16('background');
