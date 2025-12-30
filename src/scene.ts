@@ -1,5 +1,6 @@
 import { AoeProps } from './lib/aoe/aoeProps';
 import { WaymarkType } from './prefabs/waymarkIcon';
+import { LayerName } from './render/layers';
 
 export enum FloorShape {
     None = 'none',
@@ -67,6 +68,7 @@ export interface BaseObject {
     readonly id: number;
     readonly opacity: number;
     readonly hide?: boolean;
+    readonly layer?: LayerName;
 }
 
 export interface UnknownObject extends BaseObject {

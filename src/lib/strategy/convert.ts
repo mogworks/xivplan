@@ -2,6 +2,7 @@
 
 import Color from 'colorjs.io';
 import { getWaymarkTypeById } from '../../prefabs/waymarkIcon';
+import { LayerName } from '../../render/layers';
 import {
     AoeArcObject,
     AoeCircleObject,
@@ -57,6 +58,7 @@ export function strategyBoardToScene(strategyBoardData: Uint8Array): Scene {
         if (sceneObj) {
             objects.push({
                 id: scene.nextId++,
+                layer: LayerName.Default, // 游戏内置战术板没有分层，所以导入时必须都在同一层，否则层叠关系可能会与游戏内不一致
                 ...sceneObj,
             });
         }
