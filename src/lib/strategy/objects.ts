@@ -80,6 +80,7 @@ export const objectScaleFactor = {
     15: 1 / 200,
     16: 1 / 100,
     // 17: donut
+    17: 1 / 50,
     106: 1 / 200,
     107: 1 / 200,
     108: 1 / 400,
@@ -160,6 +161,9 @@ export function getObjectSize(id: keyof typeof objectScaleFactor) {
         return 1024;
     }
     if (id === 10) {
+        return 256;
+    }
+    if (id === 17) {
         return 256;
     }
     if ((18 <= id && id <= 64) || [101, 102, 113, 114].includes(id) || (118 <= id && id <= 123)) {
