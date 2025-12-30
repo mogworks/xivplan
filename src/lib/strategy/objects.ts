@@ -73,6 +73,7 @@ export const objectScaleFactor = {
     // tab 2
     9: 1 / 100,
     // 10: fan
+    10: 1 / 50,
     // 11: line aoe
     13: 1 / 200,
     14: 1 / 200,
@@ -157,6 +158,9 @@ export function getObjectSize(id: keyof typeof objectScaleFactor) {
     }
     if (id === 9) {
         return 1024;
+    }
+    if (id === 10) {
+        return 256;
     }
     if ((18 <= id && id <= 64) || [101, 102, 113, 114].includes(id) || (118 <= id && id <= 123)) {
         return 128;
