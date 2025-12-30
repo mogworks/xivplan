@@ -11,6 +11,7 @@ import {
     AoeRectObject,
     BoardIconObject,
     FloorShape,
+    MechEyeObject,
     ObjectType,
     PartyObject,
     Scene,
@@ -236,6 +237,20 @@ function parseObject(obj: SBObject): SceneObjectWithoutId | null {
         // line
         case 12:
             return null;
+
+        // eye
+        case 13:
+            return {
+                type: ObjectType.MechEye,
+                opacity: obj.color.opacity,
+                hide: !obj.flags.visible,
+                width: size,
+                height: size,
+                ...coordinates,
+                pinned: obj.flags.locked,
+                rotation: obj.angle,
+                invert: false,
+            } as Omit<MechEyeObject, 'id'>;
 
         // line stack
         case 15:

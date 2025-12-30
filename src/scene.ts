@@ -62,6 +62,7 @@ export enum ObjectType {
     AoeDonut = 'aoeDonut',
     AoeCone = 'aoeCone',
     AoeArc = 'aoeArc',
+    MechEye = 'mechEye',
 }
 
 export interface BaseObject {
@@ -360,11 +361,18 @@ export interface StackZone extends StackCountObject, RadiusObject, ColoredObject
 }
 export const isStackZone = makeObjectTest<StackZone>(ObjectType.Stack);
 
+export interface MechEyeObject extends ResizeableObject, BaseObject {
+    readonly type: ObjectType.MechEye;
+    readonly invert?: boolean; // 是否反向
+}
+export const isMechEye = makeObjectTest<MechEyeObject>(ObjectType.MechEye);
+
+export type Mechanics = MechEyeObject;
+
 export interface EyeObject extends RadiusObject, ColoredObject, HollowObject, BaseObject {
     readonly type: ObjectType.Eye;
     readonly invert?: boolean;
 }
-export const isEye = makeObjectTest<EyeObject>(ObjectType.Eye);
 
 export interface DonutZone extends RadiusObject, InnerRadiusObject, ColoredObject, HollowObject, BaseObject {
     readonly type: ObjectType.Donut;
@@ -584,7 +592,8 @@ export type SceneObject =
     | Tether
     | BoardIconObject
     | WaymarkObject
-    | AoeObject;
+    | AoeObject
+    | Mechanics;
 
 export type SceneObjectWithoutId = Omit<SceneObject, 'id'> & { id?: number };
 

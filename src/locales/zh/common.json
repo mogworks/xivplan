@@ -346,6 +346,12 @@
     },
     "textLabel": "文本"
   },
+  "mechanic": {
+    "eye": {
+      "normal": "视线攻击：背对",
+      "invert": "视线攻击：面对"
+    }
+  },
   "arena": {
     "background": {
       "group": "背景",

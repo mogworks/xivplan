@@ -346,6 +346,12 @@
     },
     "textLabel": "Text"
   },
+  "mechanic": {
+    "eye": {
+      "normal": "Look away",
+      "invert": "Look towards"
+    }
+  },
   "arena": {
     "background": {
       "group": "Background",

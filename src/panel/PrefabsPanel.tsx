@@ -2,15 +2,17 @@ import { Text } from '@fluentui/react-components';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { HotkeyName } from '../HotkeyName';
-import { AoeArcPrefab } from '../prefabs/aoe/AoeArcObject';
-import { AoeCirclePrefab } from '../prefabs/aoe/AoeCircleObject';
-import { AoeConePrefab } from '../prefabs/aoe/AoeConeObject';
-import { AoeDonutPrefab } from '../prefabs/aoe/AoeDonutObject';
-import { AoeLinePrefab } from '../prefabs/aoe/AoeLineObject';
-import { AoeRectPrefab } from '../prefabs/aoe/AoeRectObject';
+import { AoeArcPrefab } from '../prefabs/aoe/AoeArc';
+import { AoeCirclePrefab } from '../prefabs/aoe/AoeCircle';
+import { AoeConePrefab } from '../prefabs/aoe/AoeCone';
+import { AoeDonutPrefab } from '../prefabs/aoe/AoeDonut';
+import { AoeLinePrefab } from '../prefabs/aoe/AoeLine';
+import { AoeRectPrefab } from '../prefabs/aoe/AoeRect';
 import { MarkerArrow } from '../prefabs/Arrow';
 import '../prefabs/BoardIcon';
 import { EnemyCircle, EnemyHuge, EnemyLarge, EnemyMedium, EnemySmall } from '../prefabs/Enemies';
+import '../prefabs/mechanic/MechEye';
+import { MechEyePrefab } from '../prefabs/mechanic/MechEye';
 import {
     PartyAllRole,
     PartyAny,
@@ -54,7 +56,6 @@ import { ZoneCircle } from '../prefabs/zone/ZoneCircle';
 import { ZoneCone } from '../prefabs/zone/ZoneCone';
 import { ZoneDonut } from '../prefabs/zone/ZoneDonut';
 import { ZoneExaflare } from '../prefabs/zone/ZoneExaflare';
-import { ZoneEye } from '../prefabs/zone/ZoneEye';
 import { ZoneKnockback } from '../prefabs/zone/ZoneKnockback';
 import { ZoneLine } from '../prefabs/zone/ZoneLine';
 import { ZoneLineKnockAway } from '../prefabs/zone/ZoneLineKnockAway';
@@ -120,7 +121,7 @@ export const PrefabsPanel: React.FC = () => {
                     <ZoneRotateClockwise />
                     <ZoneRotateCounterClockwise />
                     <ZoneTower />
-                    <ZoneEye />
+                    <MechEyePrefab />
                 </ObjectGroup>
             </Section>
 

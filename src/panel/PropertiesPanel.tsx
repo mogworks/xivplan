@@ -11,11 +11,11 @@ import {
     isDrawObject,
     isEnemy,
     isExaflareZone,
-    isEye,
     isIcon,
     isImageObject,
     isInnerRadiusObject,
     isLineLike,
+    isMechEye,
     isMoveable,
     isNamed,
     isParty,
@@ -171,7 +171,7 @@ const Controls: React.FC = () => {
             <div className={mergeClasses(classes.row, classes.rightGap)}>
                 <ControlCondition objects={objects} test={supportsStackCount} control={StackCountControl} />
             </div>
-            <ControlCondition objects={objects} test={isEye} control={EyeInvertControl} />
+            <ControlCondition objects={objects} test={isMechEye} control={EyeInvertControl} />
             <ControlCondition objects={objects} test={isText} control={TextValueControl} />
             <div className={mergeClasses(classes.row, classes.rightGap)}>
                 <ControlCondition objects={objects} test={isIcon} control={IconStacksControl} />
