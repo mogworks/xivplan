@@ -35,6 +35,10 @@ export const BoardIconRenderer: React.FC<RendererProps<BoardIconObject>> = ({ ob
                             width={object.width}
                             height={object.height}
                             opacity={object.opacity / 100}
+                            x={object.width / 2}
+                            y={object.height / 2}
+                            offsetX={object.width / 2}
+                            offsetY={object.height / 2}
                             scaleX={object.flipHorizontal ? -1 : 1}
                             scaleY={object.flipVertical ? -1 : 1}
                         />
