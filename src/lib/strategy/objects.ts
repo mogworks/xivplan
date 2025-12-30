@@ -152,16 +152,16 @@ export const objectScaleFactor = {
 };
 
 export function getObjectSize(id: keyof typeof objectScaleFactor) {
-    if (id in [4, 8, 13, 14, 15, 16] || (106 <= id && id <= 112) || (124 <= id && id <= 130)) {
+    if ([4, 8, 13, 14, 15, 16].includes(id) || (106 <= id && id <= 112) || (124 <= id && id <= 130)) {
         return 512;
     }
-    if (id in [9]) {
+    if (id === 9) {
         return 1024;
     }
-    if ((18 <= id && id <= 64) || id in [101, 102, 113, 114] || (118 <= id && id <= 123)) {
+    if ((18 <= id && id <= 64) || [101, 102, 113, 114].includes(id) || (118 <= id && id <= 123)) {
         return 128;
     }
-    if ((65 <= id && id <= 94) || id in [103] || (115 <= id && id <= 117) || (131 <= id && id <= 140)) {
+    if ((65 <= id && id <= 94) || id === 103 || (115 <= id && id <= 117) || (131 <= id && id <= 140)) {
         return 96;
     }
     return 0;

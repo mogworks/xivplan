@@ -2,6 +2,7 @@
 
 import { getWaymarkTypeById } from '../../prefabs/waymarkIcon';
 import {
+    AoeCircleObject,
     BoardIconObject,
     FloorShape,
     ObjectType,
@@ -72,8 +73,8 @@ function parseObject(obj: SBObject): SceneObjectWithoutId | null {
     }
 
     const iconId = obj.id as keyof typeof objectScaleFactor;
-    const size = getObjectSize(iconId);
     const scale = obj.scale * (objectScaleFactor[iconId] ?? 1);
+    const size = getObjectSize(iconId) * scale * SIZE_FACTOR;
     const coordinates = {
         x: obj.coordinates.x * POS_FACTOR - SCENE_WIDTH / 2,
         y: SCENE_HEIGHT / 2 - obj.coordinates.y * POS_FACTOR,
@@ -88,8 +89,8 @@ function parseObject(obj: SBObject): SceneObjectWithoutId | null {
             iconId: iconId,
             opacity: obj.color.opacity,
             hide: !obj.flags.visible,
-            width: size * scale * SIZE_FACTOR,
-            height: size * scale * SIZE_FACTOR,
+            width: size,
+            height: size,
             ...coordinates,
             pinned: obj.flags.locked,
             rotation: obj.angle,
@@ -105,8 +106,8 @@ function parseObject(obj: SBObject): SceneObjectWithoutId | null {
             iconId: iconId,
             opacity: obj.color.opacity,
             hide: !obj.flags.visible,
-            width: size * scale * SIZE_FACTOR,
-            height: size * scale * SIZE_FACTOR,
+            width: size,
+            height: size,
             ...coordinates,
             pinned: obj.flags.locked,
             rotation: obj.angle,
@@ -114,6 +115,22 @@ function parseObject(obj: SBObject): SceneObjectWithoutId | null {
     }
 
     switch (obj.id) {
+        // circle AoE
+        case 9:
+            return {
+                type: ObjectType.AoeCircle,
+                opacity: obj.color.opacity,
+                hide: !obj.flags.visible,
+                radius: (size * 29) / 30 / 2, // 素材图里实际圆形与整个图片尺寸的比例是 29:30（四周有空白）
+                ...coordinates,
+                pinned: obj.flags.locked,
+                rotation: obj.angle,
+            } as Omit<AoeCircleObject, 'id'>;
+
+        // cone AoE
+        case 10:
+            return null;
+
         // line AoE
         case 11:
             return null;
@@ -124,10 +141,6 @@ function parseObject(obj: SBObject): SceneObjectWithoutId | null {
 
         // line stack
         case 15:
-            return null;
-
-        // fan AoE
-        case 10:
             return null;
 
         // donut
@@ -152,8 +165,8 @@ function parseObject(obj: SBObject): SceneObjectWithoutId | null {
                 iconId: iconId,
                 opacity: obj.color.opacity,
                 hide: !obj.flags.visible,
-                width: size * scale * SIZE_FACTOR,
-                height: size * scale * SIZE_FACTOR,
+                width: size,
+                height: size,
                 ...coordinates,
                 pinned: obj.flags.locked,
                 rotation: obj.angle,
