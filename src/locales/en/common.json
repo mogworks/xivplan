@@ -350,7 +350,8 @@
     "eye": {
       "normal": "Look away",
       "invert": "Look towards"
-    }
+    },
+    "stack": "Stack"
   },
   "arena": {
     "background": {

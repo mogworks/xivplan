@@ -63,6 +63,7 @@ export enum ObjectType {
     AoeCone = 'aoeCone',
     AoeArc = 'aoeArc',
     MechEye = 'mechEye',
+    MechStack = 'mechStack',
 }
 
 export interface BaseObject {
@@ -361,18 +362,24 @@ export interface StackZone extends StackCountObject, RadiusObject, ColoredObject
 }
 export const isStackZone = makeObjectTest<StackZone>(ObjectType.Stack);
 
+export interface MechStackObject extends ResizeableObject, BaseObject {
+    readonly type: ObjectType.MechStack;
+}
+export const isMechStack = makeObjectTest<MechStackObject>(ObjectType.MechStack);
+
 export interface MechEyeObject extends ResizeableObject, BaseObject {
     readonly type: ObjectType.MechEye;
     readonly invert?: boolean; // 是否反向
 }
 export const isMechEye = makeObjectTest<MechEyeObject>(ObjectType.MechEye);
 
-export type Mechanics = MechEyeObject;
+export type Mechanics = MechEyeObject | MechStackObject;
 
 export interface EyeObject extends RadiusObject, ColoredObject, HollowObject, BaseObject {
     readonly type: ObjectType.Eye;
     readonly invert?: boolean;
 }
+export const isEye = makeObjectTest<EyeObject>(ObjectType.Eye);
 
 export interface DonutZone extends RadiusObject, InnerRadiusObject, ColoredObject, HollowObject, BaseObject {
     readonly type: ObjectType.Donut;

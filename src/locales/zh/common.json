@@ -350,7 +350,8 @@
     "eye": {
       "normal": "视线攻击：背对",
       "invert": "视线攻击：面对"
-    }
+    },
+    "stack": "分摊伤害攻击"
   },
   "arena": {
     "background": {

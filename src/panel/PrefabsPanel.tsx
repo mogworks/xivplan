@@ -13,6 +13,7 @@ import '../prefabs/BoardIcon';
 import { EnemyCircle, EnemyHuge, EnemyLarge, EnemyMedium, EnemySmall } from '../prefabs/Enemies';
 import '../prefabs/mechanic/MechEye';
 import { MechEyePrefab } from '../prefabs/mechanic/MechEye';
+import { MechStackPrefab } from '../prefabs/mechanic/MechStack';
 import {
     PartyAllRole,
     PartyAny,
@@ -66,7 +67,6 @@ import { ZoneProximity } from '../prefabs/zone/ZoneProximity';
 import { ZoneRectangle } from '../prefabs/zone/ZoneRectangle';
 import { ZoneRightTriangle } from '../prefabs/zone/ZoneRightTriangle';
 import { ZoneRotateClockwise, ZoneRotateCounterClockwise } from '../prefabs/zone/ZoneRotate';
-import { ZoneStack } from '../prefabs/zone/ZoneStack';
 import { ZoneStarburst } from '../prefabs/zone/ZoneStarburst';
 import { ZoneTower } from '../prefabs/zone/ZoneTower';
 import { ZoneTriangle } from '../prefabs/zone/ZoneTriangle';
@@ -116,7 +116,7 @@ export const PrefabsPanel: React.FC = () => {
                     <ZoneExaflare />
                     <ZoneStarburst />
 
-                    <ZoneStack />
+                    <MechStackPrefab />
                     <ZoneLineStack />
                     <ZoneRotateClockwise />
                     <ZoneRotateCounterClockwise />

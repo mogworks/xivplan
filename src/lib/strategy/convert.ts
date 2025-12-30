@@ -12,6 +12,7 @@ import {
     BoardIconObject,
     FloorShape,
     MechEyeObject,
+    MechStackObject,
     ObjectType,
     PartyObject,
     Scene,
@@ -251,6 +252,19 @@ function parseObject(obj: SBObject): SceneObjectWithoutId | null {
                 rotation: obj.angle,
                 invert: false,
             } as Omit<MechEyeObject, 'id'>;
+
+        // stack
+        case 14:
+            return {
+                type: ObjectType.MechStack,
+                opacity: obj.color.opacity,
+                hide: !obj.flags.visible,
+                width: size,
+                height: size,
+                ...coordinates,
+                pinned: obj.flags.locked,
+                rotation: obj.angle,
+            } as Omit<MechStackObject, 'id'>;
 
         // line stack
         case 15:
