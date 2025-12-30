@@ -1,9 +1,11 @@
 // copy & modify from https://github.com/Ennea/ffxiv-strategy-board-viewer/blob/master/draw.ts
 
+import Color from 'colorjs.io';
 import { getWaymarkTypeById } from '../../prefabs/waymarkIcon';
 import {
     AoeCircleObject,
     AoeConeObject,
+    AoeRectObject,
     BoardIconObject,
     FloorShape,
     ObjectType,
@@ -187,9 +189,27 @@ function parseObject(obj: SBObject): SceneObjectWithoutId | null {
                 } as Omit<AoeConeObject, 'id'>;
             })();
 
-        // line AoE
+        // rect AoE
         case 11:
-            return null;
+            return (() => {
+                const color = new Color(`rgb(${obj.color.red}, ${obj.color.green}, ${obj.color.blue})`).toString({
+                    format: 'hex',
+                    collapse: false,
+                });
+                return {
+                    type: ObjectType.AoeRect,
+                    opacity: obj.color.opacity,
+                    hide: !obj.flags.visible,
+                    width: obj.param1 * 2 * SIZE_FACTOR,
+                    height: obj.param2 * 2 * SIZE_FACTOR,
+                    baseColor: color,
+                    innerGlowColor: color,
+                    outlineColor: color,
+                    ...coordinates,
+                    pinned: obj.flags.locked,
+                    rotation: obj.angle,
+                } as Omit<AoeRectObject, 'id'>;
+            })();
 
         // line
         case 12:
