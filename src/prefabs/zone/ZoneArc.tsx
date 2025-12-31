@@ -22,7 +22,7 @@ import { HandleFuncProps, HandleStyle, createControlPointManager } from '../Cont
 import { DraggableObject } from '../DraggableObject';
 import { HideGroup } from '../HideGroup';
 import { PrefabIcon } from '../PrefabIcon';
-import { MAX_CONE_ANGLE, MIN_CONE_ANGLE, MIN_RADIUS } from '../bounds';
+import { MAX_FAN_ANGLE, MIN_FAN_ANGLE, MIN_RADIUS } from '../bounds';
 import { CONTROL_POINT_BORDER_COLOR } from '../control-point';
 import { useHighlightProps, useShowResizer } from '../highlight';
 import { getZoneStyle } from './style';
@@ -67,7 +67,7 @@ registerDropHandler<ArcZone>(ObjectType.Arc, (object, position) => {
             opacity: DEFAULT_SHAPE_OPACITY,
             radius: DEFAULT_RADIUS,
             innerRadius: DEFAULT_INNER_RADIUS,
-            coneAngle: DEFAULT_ANGLE,
+            fanAngle: DEFAULT_ANGLE,
             rotation: 0,
             ...object,
             ...position,
@@ -137,12 +137,12 @@ const ArcRenderer: React.FC<ArcRendererProps> = ({ object, isDragging }) => {
     const highlightOuterRadius = Math.max(object.radius, object.innerRadius);
 
     return (
-        <Group rotation={object.rotation - 90 - object.coneAngle / 2}>
+        <Group rotation={object.rotation - 90 - object.fanAngle / 2}>
             {highlightProps && (
                 <OffsetArc
                     outerRadius={highlightOuterRadius}
                     innerRadius={highlightInnerRadius}
-                    angle={object.coneAngle}
+                    angle={object.fanAngle}
                     shapeOffset={style.strokeWidth / 2}
                     {...highlightProps}
                 />
@@ -150,7 +150,7 @@ const ArcRenderer: React.FC<ArcRendererProps> = ({ object, isDragging }) => {
             <HideGroup>
                 {isDragging && <Circle radius={CENTER_DOT_RADIUS} fill={style.stroke} />}
 
-                <Arc outerRadius={object.radius} innerRadius={object.innerRadius} angle={object.coneAngle} {...style} />
+                <Arc outerRadius={object.radius} innerRadius={object.innerRadius} angle={object.fanAngle} {...style} />
             </HideGroup>
         </Group>
     );
@@ -161,7 +161,7 @@ function stateChanged(object: ArcZone, state: ArcState) {
         state.radius !== object.innerRadius ||
         state.innerRadius !== object.innerRadius ||
         state.rotation !== object.rotation ||
-        state.coneAngle !== object.coneAngle
+        state.fanAngle !== object.fanAngle
     );
 }
 
@@ -173,7 +173,7 @@ const ArcContainer: React.FC<RendererProps<ArcZone>> = ({ object }) => {
 
     const updateObject = (state: ArcState) => {
         state.rotation = Math.round(state.rotation);
-        state.coneAngle = Math.round(state.coneAngle);
+        state.fanAngle = Math.round(state.fanAngle);
 
         if (!stateChanged(object, state)) {
             return;
@@ -226,7 +226,7 @@ interface ArcState {
     radius: number;
     innerRadius: number;
     rotation: number;
-    coneAngle: number;
+    fanAngle: number;
 }
 
 const OUTSET = 2;
@@ -266,30 +266,30 @@ function getRotation(object: ArcZone, { pointerPos, activeHandleId }: HandleFunc
     return object.rotation;
 }
 
-function getConeAngle(object: ArcZone, { pointerPos, activeHandleId }: HandleFuncProps) {
+function getFanAngle(object: ArcZone, { pointerPos, activeHandleId }: HandleFuncProps) {
     if (pointerPos) {
         const angle = getPointerAngle(pointerPos);
 
         if (activeHandleId === HandleId.Angle1) {
-            const coneAngle = snapAngle(
+            const fanAngle = snapAngle(
                 mod360(angle - object.rotation + 90) - 90,
                 ROTATE_SNAP_DIVISION,
                 ROTATE_SNAP_TOLERANCE,
             );
-            return clamp(coneAngle * 2, MIN_CONE_ANGLE, MAX_CONE_ANGLE);
+            return clamp(fanAngle * 2, MIN_FAN_ANGLE, MAX_FAN_ANGLE);
         }
         if (activeHandleId === HandleId.Angle2) {
-            const coneAngle = snapAngle(
+            const fanAngle = snapAngle(
                 mod360(angle - object.rotation + 270) - 270,
                 ROTATE_SNAP_DIVISION,
                 ROTATE_SNAP_TOLERANCE,
             );
 
-            return clamp(-coneAngle * 2, MIN_CONE_ANGLE, MAX_CONE_ANGLE);
+            return clamp(-fanAngle * 2, MIN_FAN_ANGLE, MAX_FAN_ANGLE);
         }
     }
 
-    return object.coneAngle;
+    return object.fanAngle;
 }
 
 const ArcControlPoints = createControlPointManager<ArcZone, ArcState>({
@@ -297,10 +297,10 @@ const ArcControlPoints = createControlPointManager<ArcZone, ArcState>({
         const radius = getRadius(object, handle) + OUTSET;
         const innerRadius = getInnerRadius(object, handle) - OUTSET;
         const rotation = getRotation(object, handle);
-        const coneAngle = getConeAngle(object, handle);
+        const fanAngle = getFanAngle(object, handle);
 
-        const x = radius * Math.sin(degtorad(coneAngle / 2));
-        const y = radius * Math.cos(degtorad(coneAngle / 2));
+        const x = radius * Math.sin(degtorad(fanAngle / 2));
+        const y = radius * Math.cos(degtorad(fanAngle / 2));
 
         return [
             { id: HandleId.Radius, style: HandleStyle.Square, cursor: getResizeCursor(rotation), x: 0, y: -radius },
@@ -320,9 +320,9 @@ const ArcControlPoints = createControlPointManager<ArcZone, ArcState>({
         const radius = getRadius(object, handle);
         const innerRadius = getInnerRadius(object, handle);
         const rotation = getRotation(object, handle);
-        const coneAngle = getConeAngle(object, handle);
+        const fanAngle = getFanAngle(object, handle);
 
-        return { radius, innerRadius, rotation, coneAngle };
+        return { radius, innerRadius, rotation, fanAngle };
     },
     onRenderBorder: (object, state) => {
         const innerRadius = Math.min(state.radius, state.innerRadius);
@@ -332,10 +332,10 @@ const ArcControlPoints = createControlPointManager<ArcZone, ArcState>({
             <>
                 <Circle radius={CENTER_DOT_RADIUS} fill={CONTROL_POINT_BORDER_COLOR} />
                 <OffsetArc
-                    rotation={-90 - state.coneAngle / 2}
+                    rotation={-90 - state.fanAngle / 2}
                     outerRadius={outerRadius}
                     innerRadius={innerRadius}
-                    angle={state.coneAngle}
+                    angle={state.fanAngle}
                     shapeOffset={1}
                     stroke={CONTROL_POINT_BORDER_COLOR}
                     fillEnabled={false}

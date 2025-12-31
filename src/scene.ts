@@ -27,13 +27,13 @@ export enum ObjectType {
     Arc = 'arc',
     Arrow = 'arrow',
     Circle = 'circle',
-    Cone = 'cone',
+    Fan = 'fan',
     Cursor = 'cursor',
     Donut = 'donut',
     Draw = 'draw',
     Enemy = 'enemy',
     Exaflare = 'exaflare',
-    Eye = 'eye',
+    Gaze = 'gaze',
     Icon = 'icon',
     Knockback = 'knockback',
     Line = 'line',
@@ -60,9 +60,9 @@ export enum ObjectType {
     AoeLine = 'aoeLine',
     AoeCircle = 'aoeCircle',
     AoeDonut = 'aoeDonut',
-    AoeCone = 'aoeCone',
+    AoeFan = 'aoeFan',
     AoeArc = 'aoeArc',
-    MechEye = 'mechEye',
+    MechGaze = 'mechGaze',
     MechStack = 'mechStack',
 }
 
@@ -321,23 +321,23 @@ export interface AoeDonutObject extends Readonly<AoeProps>, RadiusObject, InnerR
     readonly type: ObjectType.AoeDonut;
 }
 
-export interface AoeConeObject extends Readonly<AoeProps>, ConeProps, RadiusObject, RotateableObject, BaseObject {
-    readonly type: ObjectType.AoeCone;
+export interface AoeFanObject extends Readonly<AoeProps>, FanProps, RadiusObject, RotateableObject, BaseObject {
+    readonly type: ObjectType.AoeFan;
 }
 
 export interface AoeArcObject
-    extends Readonly<AoeProps>, ConeProps, RadiusObject, InnerRadiusObject, RotateableObject, BaseObject {
+    extends Readonly<AoeProps>, FanProps, RadiusObject, InnerRadiusObject, RotateableObject, BaseObject {
     readonly type: ObjectType.AoeArc;
 }
 
-export type AoeObject = AoeRectObject | AoeLineObject | AoeCircleObject | AoeDonutObject | AoeConeObject | AoeArcObject;
+export type AoeObject = AoeRectObject | AoeLineObject | AoeCircleObject | AoeDonutObject | AoeFanObject | AoeArcObject;
 
 export const isAoeObject = makeObjectTest<AoeObject>(
     ObjectType.AoeRect,
     ObjectType.AoeLine,
     ObjectType.AoeCircle,
     ObjectType.AoeDonut,
-    ObjectType.AoeCone,
+    ObjectType.AoeFan,
     ObjectType.AoeArc,
 );
 
@@ -367,19 +367,19 @@ export interface MechStackObject extends ResizeableObject, BaseObject {
 }
 export const isMechStack = makeObjectTest<MechStackObject>(ObjectType.MechStack);
 
-export interface MechEyeObject extends ResizeableObject, BaseObject {
-    readonly type: ObjectType.MechEye;
+export interface MechGazeObject extends ResizeableObject, BaseObject {
+    readonly type: ObjectType.MechGaze;
     readonly invert?: boolean; // 是否反向
 }
-export const isMechEye = makeObjectTest<MechEyeObject>(ObjectType.MechEye);
+export const isMechGaze = makeObjectTest<MechGazeObject>(ObjectType.MechGaze);
 
-export type Mechanics = MechEyeObject | MechStackObject;
+export type Mechanics = MechGazeObject | MechStackObject;
 
-export interface EyeObject extends RadiusObject, ColoredObject, HollowObject, BaseObject {
-    readonly type: ObjectType.Eye;
+export interface GazeObject extends RadiusObject, ColoredObject, HollowObject, BaseObject {
+    readonly type: ObjectType.Gaze;
     readonly invert?: boolean;
 }
-export const isEye = makeObjectTest<EyeObject>(ObjectType.Eye);
+export const isGaze = makeObjectTest<GazeObject>(ObjectType.Gaze);
 
 export interface DonutZone extends RadiusObject, InnerRadiusObject, ColoredObject, HollowObject, BaseObject {
     readonly type: ObjectType.Donut;
@@ -396,17 +396,17 @@ export interface LineZone extends LineProps, MoveableObject, ColoredObject, Holl
 }
 export const isLineZone = makeObjectTest<LineZone>(ObjectType.Line);
 
-export interface ConeProps {
-    readonly coneAngle: number;
+export interface FanProps {
+    readonly fanAngle: number;
 }
 
-export interface ConeZone extends ConeProps, RadiusObject, ColoredObject, HollowObject, RotateableObject, BaseObject {
-    readonly type: ObjectType.Cone;
+export interface FanZone extends FanProps, RadiusObject, ColoredObject, HollowObject, RotateableObject, BaseObject {
+    readonly type: ObjectType.Fan;
 }
-export const isConeZone = makeObjectTest<ConeZone>(ObjectType.Cone);
+export const isFanZone = makeObjectTest<FanZone>(ObjectType.Fan);
 
 export interface ArcZone
-    extends ConeProps, RadiusObject, ColoredObject, HollowObject, RotateableObject, InnerRadiusObject, BaseObject {
+    extends FanProps, RadiusObject, ColoredObject, HollowObject, RotateableObject, InnerRadiusObject, BaseObject {
     readonly type: ObjectType.Arc;
 }
 export const isArcZone = makeObjectTest<ArcZone>(ObjectType.Arc);
@@ -461,7 +461,7 @@ export const isTowerZone = makeObjectTest<TowerZone>(ObjectType.Tower);
 export type Zone =
     | CircleZone
     | DonutZone
-    | ConeZone
+    | FanZone
     | ArcZone
     | LineZone
     | RectangleZone
@@ -472,7 +472,7 @@ export function isZone(object: UnknownObject): object is Zone {
     return (
         isCircleZone(object) ||
         isDonutZone(object) ||
-        isConeZone(object) ||
+        isFanZone(object) ||
         isArcZone(object) ||
         isLineZone(object) ||
         isRectangleZone(object) ||
@@ -519,9 +519,9 @@ export function isLineLike<T>(object: T): object is LineProps & T {
     return obj && typeof obj.length === 'number' && typeof obj.width === 'number';
 }
 
-export function isConeLike<T>(object: T): object is ConeProps & T {
-    const obj = object as ConeProps & T;
-    return obj && typeof obj.coneAngle === 'number';
+export function isFanLike<T>(object: T): object is FanProps & T {
+    const obj = object as FanProps & T;
+    return obj && typeof obj.fanAngle === 'number';
 }
 
 export function isColored<T>(object: T): object is ColoredObject & T {
@@ -575,7 +575,7 @@ export const supportsHollow = makeObjectTest<HollowObject & UnknownObject>(
     ObjectType.Circle,
     ObjectType.RotateCW,
     ObjectType.RotateCCW,
-    ObjectType.Cone,
+    ObjectType.Fan,
     ObjectType.Arc,
     ObjectType.Line,
     ObjectType.Rect,

@@ -145,7 +145,7 @@ export function getEnemyTextConfig(theme: SceneTheme): ShapeConfig {
 export interface PanelTheme {
     colorZoneOrange: string;
     colorZoneBlue: string;
-    colorZoneEye: string;
+    colorZoneGaze: string;
     colorMagnetPlus: string;
     colorMagnetPlusSymbol: string;
     colorMagnetMinus: string;
@@ -155,7 +155,7 @@ export interface PanelTheme {
 const darkPanelTheme: PanelTheme = {
     colorZoneOrange: '#ffa700',
     colorZoneBlue: '#0058ff',
-    colorZoneEye: '#ff1200',
+    colorZoneGaze: '#ff1200',
     colorMagnetPlus: '#c68200',
     colorMagnetPlusSymbol: '#000000',
     colorMagnetMinus: '#0057f8',
@@ -165,7 +165,7 @@ const darkPanelTheme: PanelTheme = {
 const lightPanelTheme: PanelTheme = {
     colorZoneOrange: '#f07900',
     colorZoneBlue: '#0046ff',
-    colorZoneEye: '#ff0000',
+    colorZoneGaze: '#ff0000',
     colorMagnetPlus: '#c06100',
     colorMagnetPlusSymbol: '#ffffff',
     colorMagnetMinus: '#0047ff',

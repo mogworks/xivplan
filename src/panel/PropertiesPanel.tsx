@@ -7,16 +7,16 @@ import {
     UnknownObject,
     isArrow,
     isColored,
-    isConeLike,
     isDrawObject,
     isEnemy,
     isExaflareZone,
-    isEye,
+    isFanLike,
+    isGaze,
     isIcon,
     isImageObject,
     isInnerRadiusObject,
     isLineLike,
-    isMechEye,
+    isMechGaze,
     isMoveable,
     isNamed,
     isParty,
@@ -38,10 +38,10 @@ import { AoeEffectControls } from './properties/AoeEffectControls';
 import { ArrowPointersControl } from './properties/ArrowControls';
 import { DrawObjectBrushControl } from './properties/BrushControl';
 import { ColorControl, ColorSwatchControl } from './properties/ColorControl';
-import { ConeAngleControl } from './properties/ConeControls';
 import { EnemyRingControl } from './properties/EnemyControls';
 import { ExaflareLengthControl, ExaflareSpacingControl } from './properties/ExaflareControls';
-import { EyeInvertControl } from './properties/EyeControls';
+import { FanAngleControl } from './properties/FanControls';
+import { GazeInvertControl } from './properties/GazeControls';
 import { HideControl } from './properties/HideControl';
 import { HollowControl } from './properties/HollowControl';
 import { IconStacksControl, IconTimeControl } from './properties/IconControls';
@@ -159,7 +159,7 @@ const Controls: React.FC = () => {
                 <ControlCondition objects={objects} test={isExaflareZone} control={ExaflareSpacingControl} />
                 <ControlCondition objects={objects} test={isStarburstZone} control={StarburstSpokeCountControl} />
 
-                <ControlCondition objects={objects} test={(x) => isConeLike(x)} control={ConeAngleControl} />
+                <ControlCondition objects={objects} test={(x) => isFanLike(x)} control={FanAngleControl} />
             </div>
 
             {/* Special options */}
@@ -172,7 +172,7 @@ const Controls: React.FC = () => {
             <div className={mergeClasses(classes.row, classes.rightGap)}>
                 <ControlCondition objects={objects} test={supportsStackCount} control={StackCountControl} />
             </div>
-            <ControlCondition objects={objects} test={(x) => isMechEye(x) || isEye(x)} control={EyeInvertControl} />
+            <ControlCondition objects={objects} test={(x) => isMechGaze(x) || isGaze(x)} control={GazeInvertControl} />
             <ControlCondition objects={objects} test={isText} control={TextValueControl} />
             <div className={mergeClasses(classes.row, classes.rightGap)}>
                 <ControlCondition objects={objects} test={isIcon} control={IconStacksControl} />

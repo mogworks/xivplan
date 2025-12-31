@@ -6,12 +6,12 @@ import { LayerName } from '../../render/layers';
 import {
     AoeArcObject,
     AoeCircleObject,
-    AoeConeObject,
     AoeDonutObject,
+    AoeFanObject,
     AoeRectObject,
     BoardIconObject,
     FloorShape,
-    MechEyeObject,
+    MechGazeObject,
     MechStackObject,
     ObjectType,
     PartyObject,
@@ -183,14 +183,14 @@ function parseObject(obj: SBObject): SceneObjectWithoutId | null {
         return obj.id === 10
             ? ({
                   ...common,
-                  type: ObjectType.AoeCone,
-                  coneAngle: θ,
-              } as Omit<AoeConeObject, 'id'>)
+                  type: ObjectType.AoeFan,
+                  fanAngle: θ,
+              } as Omit<AoeFanObject, 'id'>)
             : θ !== 360
               ? ({
                     ...common,
                     type: ObjectType.AoeArc,
-                    coneAngle: θ,
+                    fanAngle: θ,
                     innerRadius: obj.param2 * scale * SIZE_FACTOR,
                 } as Omit<AoeArcObject, 'id'>)
               : ({
@@ -240,10 +240,10 @@ function parseObject(obj: SBObject): SceneObjectWithoutId | null {
         case 12:
             return null;
 
-        // eye
+        // gaze
         case 13:
             return {
-                type: ObjectType.MechEye,
+                type: ObjectType.MechGaze,
                 opacity: obj.color.opacity,
                 hide: !obj.flags.visible,
                 width: size,
@@ -252,7 +252,7 @@ function parseObject(obj: SBObject): SceneObjectWithoutId | null {
                 pinned: obj.flags.locked,
                 rotation: obj.angle,
                 invert: false,
-            } as Omit<MechEyeObject, 'id'>;
+            } as Omit<MechGazeObject, 'id'>;
 
         // stack
         case 14:

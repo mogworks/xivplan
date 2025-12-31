@@ -4,12 +4,12 @@ import { ShapeConfig } from 'konva/lib/Shape';
 import React, { RefObject, useRef } from 'react';
 import { Circle, Group, Line, Path } from 'react-konva';
 import { getDragOffset, registerDropHandler } from '../../DropHandler';
-import Icon from '../../assets/zone/eye.svg?react';
+import Icon from '../../assets/zone/gaze.svg?react';
 import { DetailsItem } from '../../panel/DetailsItem';
 import { ListComponentProps, registerListComponent } from '../../panel/ListComponentRegistry';
 import { registerRenderer, RendererProps } from '../../render/ObjectRegistry';
 import { LayerName } from '../../render/layers';
-import { EyeObject, ObjectType } from '../../scene';
+import { GazeObject, ObjectType } from '../../scene';
 import { panelVars } from '../../theme';
 import { useKonvaCache } from '../../useKonvaCache';
 import { usePanelDrag } from '../../usePanelDrag';
@@ -22,7 +22,7 @@ const DEFAULT_RADIUS = 25;
 const DEFAULT_OPACITY = 100;
 const DEFAULT_COLOR = '#ff0000';
 
-export const ZoneEye: React.FC = () => {
+export const ZoneGaze: React.FC = () => {
     const [, setDragObject] = usePanelDrag();
     return (
         <PrefabIcon
@@ -32,7 +32,7 @@ export const ZoneEye: React.FC = () => {
             onDragStart={(e) => {
                 setDragObject({
                     object: {
-                        type: ObjectType.Eye,
+                        type: ObjectType.Gaze,
                     },
                     offset: getDragOffset(e),
                 });
@@ -41,24 +41,24 @@ export const ZoneEye: React.FC = () => {
     );
 };
 
-registerDropHandler<EyeObject>(ObjectType.Eye, (object, position) => {
+registerDropHandler<GazeObject>(ObjectType.Gaze, (object, position) => {
     return {
         type: 'add',
         object: {
-            type: ObjectType.Eye,
+            type: ObjectType.Gaze,
             color: DEFAULT_COLOR,
             opacity: DEFAULT_OPACITY,
             radius: DEFAULT_RADIUS,
             ...object,
             ...position,
-        } as EyeObject,
+        } as GazeObject,
     };
 });
 
 function getIrisGradient(color: string) {
     const c = new Color(color);
 
-    const eye = '#ffffff';
+    const gaze = '#ffffff';
 
     // TODO: update to c.set({ alpha: value }) once colorjs.io v0.6.0 is released
     const inside = c.clone();
@@ -74,10 +74,10 @@ function getIrisGradient(color: string) {
     edge.alpha = 0;
     const edgeStr = edge.display();
 
-    return [0, eye, 0.1, eye, 0.14, insideStr, 0.18, middleStr, 1, edgeStr];
+    return [0, gaze, 0.1, gaze, 0.14, insideStr, 0.18, middleStr, 1, edgeStr];
 }
 
-function getEyeGradient(color: string, invert?: boolean) {
+function getGazeGradient(color: string, invert?: boolean) {
     const c = new Color(color);
 
     const inside = c.toString();
@@ -117,19 +117,19 @@ function getStrokeColor(color: string) {
         .display();
 }
 
-const OUTER_EYE_PATH = 'M22 0Q13-9 0-9T-22 0Q-13 9 0 9T22 0Z';
-const INNER_EYE_PATH = 'M20 0Q10-9 0-9T-20 0Q-10 9 0 9T20 0Z';
+const OUTER_GAZE_PATH = 'M22 0Q13-9 0-9T-22 0Q-13 9 0 9T22 0Z';
+const INNER_GAZE_PATH = 'M20 0Q10-9 0-9T-20 0Q-10 9 0 9T20 0Z';
 
-interface EyeRendererProps extends RendererProps<EyeObject> {
+interface GazeRendererProps extends RendererProps<GazeObject> {
     radius: number;
     groupRef: RefObject<Konva.Group | null>;
 }
 
-const EyeRenderer: React.FC<EyeRendererProps> = ({ object, radius, groupRef }) => {
+const GazeRenderer: React.FC<GazeRendererProps> = ({ object, radius, groupRef }) => {
     const highlightProps = useHighlightProps(object);
     const scale = radius / 20;
-    const eyeStyle: ShapeConfig = {
-        fillRadialGradientColorStops: getEyeGradient(object.color, object.invert),
+    const gazeStyle: ShapeConfig = {
+        fillRadialGradientColorStops: getGazeGradient(object.color, object.invert),
         fillRadialGradientStartRadius: 0,
         fillRadialGradientEndRadius: 15,
     };
@@ -150,19 +150,19 @@ const EyeRenderer: React.FC<EyeRendererProps> = ({ object, radius, groupRef }) =
             <Group ref={groupRef}>
                 <Group scaleX={scale} scaleY={scale}>
                     {highlightProps && (
-                        <Path data={OUTER_EYE_PATH} scaleX={21 / 20} scaleY={22 / 20} {...highlightProps} />
+                        <Path data={OUTER_GAZE_PATH} scaleX={21 / 20} scaleY={22 / 20} {...highlightProps} />
                     )}
 
                     <HideGroup opacity={object.opacity / 100}>
                         <Path
-                            data={OUTER_EYE_PATH}
+                            data={OUTER_GAZE_PATH}
                             fill={highlightColor}
                             stroke={strokeColor}
                             strokeWidth={3}
                             fillAfterStrokeEnabled
                         />
 
-                        <Path data={INNER_EYE_PATH} {...eyeStyle} />
+                        <Path data={INNER_GAZE_PATH} {...gazeStyle} />
                         <Line
                             points={[-19, 0, 19, 0]}
                             stroke={highlightColor}
@@ -202,22 +202,22 @@ const QuestionMark: React.FC = () => {
     );
 };
 
-const EyeContainer: React.FC<RendererProps<EyeObject>> = ({ object }) => {
+const GazeContainer: React.FC<RendererProps<GazeObject>> = ({ object }) => {
     const groupRef = useRef<Konva.Group>(null);
 
     return (
         <RadiusObjectContainer object={object} onTransformEnd={() => groupRef.current?.clearCache()}>
-            {({ radius }) => <EyeRenderer object={object} radius={radius} groupRef={groupRef} />}
+            {({ radius }) => <GazeRenderer object={object} radius={radius} groupRef={groupRef} />}
         </RadiusObjectContainer>
     );
 };
 
-registerRenderer<EyeObject>(ObjectType.Eye, LayerName.Ground, EyeContainer);
+registerRenderer<GazeObject>(ObjectType.Gaze, LayerName.Ground, GazeContainer);
 
-const EyeDetails: React.FC<ListComponentProps<EyeObject>> = ({ object, ...props }) => {
+const GazeDetails: React.FC<ListComponentProps<GazeObject>> = ({ object, ...props }) => {
     return (
         <DetailsItem
-            icon={<Icon width="100%" height="100%" style={{ [panelVars.colorZoneEye]: object.color }} />}
+            icon={<Icon width="100%" height="100%" style={{ [panelVars.colorZoneGaze]: object.color }} />}
             name={object.invert ? 'Look towards' : 'Look away'}
             object={object}
             {...props}
@@ -225,4 +225,4 @@ const EyeDetails: React.FC<ListComponentProps<EyeObject>> = ({ object, ...props 
     );
 };
 
-registerListComponent<EyeObject>(ObjectType.Eye, EyeDetails);
+registerListComponent<GazeObject>(ObjectType.Gaze, GazeDetails);

@@ -1,22 +1,20 @@
 import { WedgeConfig } from 'konva/lib/shapes/Wedge';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Group, Shape } from 'react-konva';
+import { Group, Shape, Wedge } from 'react-konva';
 import { getDragOffset, registerDropHandler } from '../../DropHandler';
 import { useScene } from '../../SceneProvider';
-import Icon from '../../assets/zone/cone.svg?react';
+import Icon from '../../assets/zone/fan.svg?react';
 import { getPointerAngle, snapAngle } from '../../coord';
 import { getResizeCursor } from '../../cursor';
-import AoeWedge from '../../lib/aoe/AoeWedge';
-import { AoeProps } from '../../lib/aoe/aoeProps';
 import { DetailsItem } from '../../panel/DetailsItem';
 import { ListComponentProps, registerListComponent } from '../../panel/ListComponentRegistry';
 import { RendererProps, registerRenderer } from '../../render/ObjectRegistry';
 import { ActivePortal } from '../../render/Portals';
 import { LayerName } from '../../render/layers';
-import { AoeConeObject, ObjectType } from '../../scene';
+import { FanZone, ObjectType } from '../../scene';
 import { useIsDragging } from '../../selection';
-import { DEFAULT_AOE_COLOR, DEFAULT_AOE_HIGHLIGHT_COLOR, panelVars } from '../../theme';
+import { DEFAULT_AOE_COLOR, DEFAULT_SHAPE_OPACITY, panelVars } from '../../theme';
 import { usePanelDrag } from '../../usePanelDrag';
 import { clamp, degtorad, mod360 } from '../../util';
 import { distance } from '../../vector';
@@ -24,31 +22,30 @@ import { HandleFuncProps, HandleStyle, createControlPointManager } from '../Cont
 import { DraggableObject } from '../DraggableObject';
 import { HideGroup } from '../HideGroup';
 import { PrefabIcon } from '../PrefabIcon';
-import { MAX_CONE_ANGLE, MIN_CONE_ANGLE, MIN_RADIUS } from '../bounds';
+import { MAX_FAN_ANGLE, MIN_FAN_ANGLE, MIN_RADIUS } from '../bounds';
 import { CONTROL_POINT_BORDER_COLOR } from '../control-point';
 import { useHighlightProps, useShowResizer } from '../highlight';
-import { getAoeStyle } from './style';
+import { getZoneStyle } from './style';
 
 const DEFAULT_RADIUS = 150;
 const DEFAULT_ANGLE = 90;
 
 const ICON_SIZE = 32;
 
-export const AoeConePrefab: React.FC = () => {
+export const ZoneFan: React.FC = () => {
     const [, setDragObject] = usePanelDrag();
     const { t } = useTranslation();
-    const icon = new URL('public/prefabs/aoe/cone.webp', import.meta.env.VITE_COS_URL).href;
 
     return (
         <PrefabIcon
             draggable
-            name={t('aoe.cone')}
-            icon={icon}
+            name={t('objects.fan')}
+            icon={<Icon />}
             onDragStart={(e) => {
                 const offset = getDragOffset(e);
                 setDragObject({
                     object: {
-                        type: ObjectType.AoeCone,
+                        type: ObjectType.Fan,
                     },
                     offset: {
                         x: offset.x,
@@ -60,14 +57,15 @@ export const AoeConePrefab: React.FC = () => {
     );
 };
 
-registerDropHandler<AoeConeObject>(ObjectType.AoeCone, (object, position) => {
+registerDropHandler<FanZone>(ObjectType.Fan, (object, position) => {
     return {
         type: 'add',
         object: {
-            type: ObjectType.AoeCone,
-            opacity: 100,
+            type: ObjectType.Fan,
+            color: DEFAULT_AOE_COLOR,
+            opacity: DEFAULT_SHAPE_OPACITY,
             radius: DEFAULT_RADIUS,
-            coneAngle: DEFAULT_ANGLE,
+            fanAngle: DEFAULT_ANGLE,
             rotation: 0,
             ...object,
             ...position,
@@ -120,54 +118,41 @@ const OffsetWedge: React.FC<OffsetWedgeProps> = ({ radius, angle, shapeOffset, .
     );
 };
 
-interface AoeConeRendererProps extends RendererProps<AoeConeObject> {
-    isResizing?: boolean;
-}
-
-const AoeConeRenderer: React.FC<AoeConeRendererProps> = ({ object, isResizing }) => {
+const FanRenderer: React.FC<RendererProps<FanZone>> = ({ object }) => {
     const highlightProps = useHighlightProps(object);
 
-    const style = getAoeStyle(DEFAULT_AOE_HIGHLIGHT_COLOR, object.opacity, object.radius * 2);
-    const aoeProps = {
-        opacity: object.opacity,
-        baseColor: object.baseColor,
-        baseOpacity: object.baseOpacity,
-        innerGlowColor: object.innerGlowColor,
-        innerGlowOpacity: object.innerGlowOpacity,
-        outlineColor: object.outlineColor,
-        outlineOpacity: object.outlineOpacity,
-    } as AoeProps;
+    const style = getZoneStyle(object.color, object.opacity, object.radius * 2, object.hollow);
 
     return (
-        <Group rotation={object.rotation - 90 - object.coneAngle / 2}>
+        <Group rotation={object.rotation - 90 - object.fanAngle / 2}>
             {highlightProps && (
                 <OffsetWedge
                     radius={object.radius}
-                    angle={object.coneAngle}
+                    angle={object.fanAngle}
                     shapeOffset={style.strokeWidth / 2}
                     {...highlightProps}
                 />
             )}
             <HideGroup>
-                <AoeWedge radius={object.radius} angle={object.coneAngle} freeze={isResizing} {...aoeProps} />
+                <Wedge radius={object.radius} angle={object.fanAngle} {...style} />
             </HideGroup>
         </Group>
     );
 };
 
-function stateChanged(object: AoeConeObject, state: ConeState) {
-    return state.radius !== object.radius || state.rotation !== object.rotation || state.coneAngle !== object.coneAngle;
+function stateChanged(object: FanZone, state: FanState) {
+    return state.radius !== object.radius || state.rotation !== object.rotation || state.fanAngle !== object.fanAngle;
 }
 
-const AoeConeContainer: React.FC<RendererProps<AoeConeObject>> = ({ object }) => {
+const FanContainer: React.FC<RendererProps<FanZone>> = ({ object }) => {
     const { dispatch } = useScene();
     const showResizer = useShowResizer(object);
     const [resizing, setResizing] = useState(false);
     const dragging = useIsDragging(object);
 
-    const updateObject = (state: ConeState) => {
+    const updateObject = (state: FanState) => {
         state.rotation = Math.round(state.rotation);
-        state.coneAngle = Math.round(state.coneAngle);
+        state.fanAngle = Math.round(state.fanAngle);
 
         if (!stateChanged(object, state)) {
             return;
@@ -179,41 +164,35 @@ const AoeConeContainer: React.FC<RendererProps<AoeConeObject>> = ({ object }) =>
     return (
         <ActivePortal isActive={dragging || resizing}>
             <DraggableObject object={object}>
-                <ConeControlPoints
+                <FanControlPoints
                     object={object}
                     onActive={setResizing}
                     visible={showResizer && !dragging}
                     onTransformEnd={updateObject}
                 >
-                    {(props) => <AoeConeRenderer object={object} isResizing={resizing} {...props} />}
-                </ConeControlPoints>
+                    {(props) => <FanRenderer object={object} {...props} />}
+                </FanControlPoints>
             </DraggableObject>
         </ActivePortal>
     );
 };
 
-registerRenderer<AoeConeObject>(ObjectType.AoeCone, LayerName.Ground, AoeConeContainer);
+registerRenderer<FanZone>(ObjectType.Fan, LayerName.Ground, FanContainer);
 
-const AoeConeDetails: React.FC<ListComponentProps<AoeConeObject>> = ({ object, ...props }) => {
+const FanDetails: React.FC<ListComponentProps<FanZone>> = ({ object, ...props }) => {
     const { t } = useTranslation();
 
     return (
         <DetailsItem
-            icon={
-                <Icon
-                    width="100%"
-                    height="100%"
-                    style={{ [panelVars.colorZoneOrange]: object.baseColor ?? DEFAULT_AOE_COLOR }}
-                />
-            }
-            name={t('aoe.cone')}
+            icon={<Icon width="100%" height="100%" style={{ [panelVars.colorZoneOrange]: DEFAULT_AOE_COLOR }} />}
+            name={t('objects.fan')}
             object={object}
             {...props}
         />
     );
 };
 
-registerListComponent<AoeConeObject>(ObjectType.AoeCone, AoeConeDetails);
+registerListComponent<FanZone>(ObjectType.Fan, FanDetails);
 
 enum HandleId {
     Radius,
@@ -221,10 +200,10 @@ enum HandleId {
     Angle2,
 }
 
-interface ConeState {
+interface FanState {
     radius: number;
     rotation: number;
-    coneAngle: number;
+    fanAngle: number;
 }
 
 const OUTSET = 2;
@@ -232,7 +211,7 @@ const OUTSET = 2;
 const ROTATE_SNAP_DIVISION = 15;
 const ROTATE_SNAP_TOLERANCE = 2;
 
-function getRadius(object: AoeConeObject, { pointerPos, activeHandleId }: HandleFuncProps) {
+function getRadius(object: FanZone, { pointerPos, activeHandleId }: HandleFuncProps) {
     if (pointerPos && activeHandleId === HandleId.Radius) {
         return Math.max(MIN_RADIUS, Math.round(distance(pointerPos) - OUTSET));
     }
@@ -240,7 +219,7 @@ function getRadius(object: AoeConeObject, { pointerPos, activeHandleId }: Handle
     return object.radius;
 }
 
-function getRotation(object: AoeConeObject, { pointerPos, activeHandleId }: HandleFuncProps) {
+function getRotation(object: FanZone, { pointerPos, activeHandleId }: HandleFuncProps) {
     if (pointerPos && activeHandleId === HandleId.Radius) {
         const angle = getPointerAngle(pointerPos);
         return snapAngle(angle, ROTATE_SNAP_DIVISION, ROTATE_SNAP_TOLERANCE);
@@ -249,40 +228,40 @@ function getRotation(object: AoeConeObject, { pointerPos, activeHandleId }: Hand
     return object.rotation;
 }
 
-function getConeAngle(object: AoeConeObject, { pointerPos, activeHandleId }: HandleFuncProps) {
+function getFanAngle(object: FanZone, { pointerPos, activeHandleId }: HandleFuncProps) {
     if (pointerPos) {
         const angle = getPointerAngle(pointerPos);
 
         if (activeHandleId === HandleId.Angle1) {
-            const coneAngle = snapAngle(
+            const fanAngle = snapAngle(
                 mod360(angle - object.rotation + 90) - 90,
                 ROTATE_SNAP_DIVISION,
                 ROTATE_SNAP_TOLERANCE,
             );
-            return clamp(coneAngle * 2, MIN_CONE_ANGLE, MAX_CONE_ANGLE);
+            return clamp(fanAngle * 2, MIN_FAN_ANGLE, MAX_FAN_ANGLE);
         }
         if (activeHandleId === HandleId.Angle2) {
-            const coneAngle = snapAngle(
+            const fanAngle = snapAngle(
                 mod360(angle - object.rotation + 270) - 270,
                 ROTATE_SNAP_DIVISION,
                 ROTATE_SNAP_TOLERANCE,
             );
 
-            return clamp(-coneAngle * 2, MIN_CONE_ANGLE, MAX_CONE_ANGLE);
+            return clamp(-fanAngle * 2, MIN_FAN_ANGLE, MAX_FAN_ANGLE);
         }
     }
 
-    return object.coneAngle;
+    return object.fanAngle;
 }
 
-const ConeControlPoints = createControlPointManager<AoeConeObject, ConeState>({
+const FanControlPoints = createControlPointManager<FanZone, FanState>({
     handleFunc: (object, handle) => {
         const radius = getRadius(object, handle) + OUTSET;
         const rotation = getRotation(object, handle);
-        const coneAngle = getConeAngle(object, handle);
+        const fanAngle = getFanAngle(object, handle);
 
-        const x = radius * Math.sin(degtorad(coneAngle / 2));
-        const y = radius * Math.cos(degtorad(coneAngle / 2));
+        const x = radius * Math.sin(degtorad(fanAngle / 2));
+        const y = radius * Math.cos(degtorad(fanAngle / 2));
 
         return [
             { id: HandleId.Radius, style: HandleStyle.Square, cursor: getResizeCursor(rotation), x: 0, y: -radius },
@@ -294,16 +273,16 @@ const ConeControlPoints = createControlPointManager<AoeConeObject, ConeState>({
     stateFunc: (object, handle) => {
         const radius = getRadius(object, handle);
         const rotation = getRotation(object, handle);
-        const coneAngle = getConeAngle(object, handle);
+        const fanAngle = getFanAngle(object, handle);
 
-        return { radius, rotation, coneAngle };
+        return { radius, rotation, fanAngle };
     },
     onRenderBorder: (object, state) => {
         return (
             <OffsetWedge
-                rotation={-90 - state.coneAngle / 2}
+                rotation={-90 - state.fanAngle / 2}
                 radius={state.radius}
-                angle={state.coneAngle}
+                angle={state.fanAngle}
                 shapeOffset={1}
                 stroke={CONTROL_POINT_BORDER_COLOR}
                 fillEnabled={false}

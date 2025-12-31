@@ -5,7 +5,7 @@ import { DetailsItem } from '../../panel/DetailsItem';
 import { ListComponentProps, registerListComponent } from '../../panel/ListComponentRegistry';
 import { LayerName } from '../../render/layers';
 import { registerRenderer, RendererProps } from '../../render/ObjectRegistry';
-import { MechEyeObject, ObjectType } from '../../scene';
+import { MechGazeObject, ObjectType } from '../../scene';
 import { useImageTracked } from '../../useObjectLoading';
 import { usePanelDrag } from '../../usePanelDrag';
 import { HideGroup } from '../HideGroup';
@@ -16,18 +16,18 @@ import { ResizeableObjectContainer } from '../ResizeableObjectContainer';
 const icon = new URL(`public/board/objects/13.webp`, import.meta.env.VITE_COS_URL).href;
 const DEFAULT_SIZE = 100;
 
-export const MechEyePrefab: React.FC = () => {
+export const MechGazePrefab: React.FC = () => {
     const [, setDragObject] = usePanelDrag();
     const { t } = useTranslation();
     return (
         <PrefabIcon
             draggable
-            name={t('mechanic.eye')}
+            name={t('mechanic.gaze')}
             icon={icon}
             onDragStart={(e) => {
                 setDragObject({
                     object: {
-                        type: ObjectType.MechEye,
+                        type: ObjectType.MechGaze,
                     },
                     offset: getDragOffset(e),
                 });
@@ -36,11 +36,11 @@ export const MechEyePrefab: React.FC = () => {
     );
 };
 
-registerDropHandler<MechEyeObject>(ObjectType.MechEye, (object, position) => {
+registerDropHandler<MechGazeObject>(ObjectType.MechGaze, (object, position) => {
     return {
         type: 'add',
         object: {
-            type: ObjectType.MechEye,
+            type: ObjectType.MechGaze,
             invert: false,
             width: DEFAULT_SIZE,
             height: DEFAULT_SIZE,
@@ -48,7 +48,7 @@ registerDropHandler<MechEyeObject>(ObjectType.MechEye, (object, position) => {
             opacity: 100,
             ...object,
             ...position,
-        } as MechEyeObject,
+        } as MechGazeObject,
     };
 });
 
@@ -77,7 +77,7 @@ const QuestionMark: React.FC<{ x: number; y: number; scaleX: number; scaleY: num
     );
 };
 
-export const MechEyeRenderer: React.FC<RendererProps<MechEyeObject>> = ({ object }) => {
+export const MechGazeRenderer: React.FC<RendererProps<MechGazeObject>> = ({ object }) => {
     const highlightProps = useHighlightProps(object);
     const [image] = useImageTracked(icon);
 
@@ -115,12 +115,12 @@ export const MechEyeRenderer: React.FC<RendererProps<MechEyeObject>> = ({ object
     );
 };
 
-registerRenderer<MechEyeObject>(ObjectType.MechEye, LayerName.Default, MechEyeRenderer);
+registerRenderer<MechGazeObject>(ObjectType.MechGaze, LayerName.Default, MechGazeRenderer);
 
-export const MechEyeDetails: React.FC<ListComponentProps<MechEyeObject>> = ({ object, ...props }) => {
+export const MechGazeDetails: React.FC<ListComponentProps<MechGazeObject>> = ({ object, ...props }) => {
     const { t } = useTranslation();
-    const name = t(`mechanic.eye.${object.invert ? 'invert' : 'normal'}`);
+    const name = t(`mechanic.gaze.${object.invert ? 'invert' : 'normal'}`);
     return <DetailsItem icon={icon} name={name} object={object} {...props} />;
 };
 
-registerListComponent<MechEyeObject>(ObjectType.MechEye, MechEyeDetails);
+registerListComponent<MechGazeObject>(ObjectType.MechGaze, MechGazeDetails);

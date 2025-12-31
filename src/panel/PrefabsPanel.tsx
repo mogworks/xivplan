@@ -4,15 +4,15 @@ import { useTranslation } from 'react-i18next';
 import { HotkeyName } from '../HotkeyName';
 import { AoeArcPrefab } from '../prefabs/aoe/AoeArc';
 import { AoeCirclePrefab } from '../prefabs/aoe/AoeCircle';
-import { AoeConePrefab } from '../prefabs/aoe/AoeCone';
 import { AoeDonutPrefab } from '../prefabs/aoe/AoeDonut';
+import { AoeFanPrefab } from '../prefabs/aoe/AoeFan';
 import { AoeLinePrefab } from '../prefabs/aoe/AoeLine';
 import { AoeRectPrefab } from '../prefabs/aoe/AoeRect';
 import { MarkerArrow } from '../prefabs/Arrow';
 import '../prefabs/BoardIcon';
 import { EnemyCircle, EnemyHuge, EnemyLarge, EnemyMedium, EnemySmall } from '../prefabs/Enemies';
-import '../prefabs/mechanic/MechEye';
-import { MechEyePrefab } from '../prefabs/mechanic/MechEye';
+import '../prefabs/mechanic/MechGaze';
+import { MechGazePrefab } from '../prefabs/mechanic/MechGaze';
 import { MechStackPrefab } from '../prefabs/mechanic/MechStack';
 import {
     PartyAllRole,
@@ -54,9 +54,9 @@ import { TextLabel } from '../prefabs/TextLabel';
 import { Waymark1, Waymark2, Waymark3, Waymark4, WaymarkA, WaymarkB, WaymarkC, WaymarkD } from '../prefabs/Waymark';
 import { ZoneArc } from '../prefabs/zone/ZoneArc';
 import { ZoneCircle } from '../prefabs/zone/ZoneCircle';
-import { ZoneCone } from '../prefabs/zone/ZoneCone';
 import { ZoneDonut } from '../prefabs/zone/ZoneDonut';
 import { ZoneExaflare } from '../prefabs/zone/ZoneExaflare';
+import { ZoneFan } from '../prefabs/zone/ZoneFan';
 import { ZoneKnockback } from '../prefabs/zone/ZoneKnockback';
 import { ZoneLine } from '../prefabs/zone/ZoneLine';
 import { ZoneLineKnockAway } from '../prefabs/zone/ZoneLineKnockAway';
@@ -89,7 +89,7 @@ export const PrefabsPanel: React.FC = () => {
                     <ZoneLine />
                     <ZoneCircle />
                     <ZoneDonut />
-                    <ZoneCone />
+                    <ZoneFan />
                     <ZoneArc />
 
                     <ZoneTriangle />
@@ -103,7 +103,7 @@ export const PrefabsPanel: React.FC = () => {
                     <AoeLinePrefab />
                     <AoeCirclePrefab />
                     <AoeDonutPrefab />
-                    <AoeConePrefab />
+                    <AoeFanPrefab />
                     <AoeArcPrefab />
                 </ObjectGroup>
             </Section>
@@ -121,7 +121,7 @@ export const PrefabsPanel: React.FC = () => {
                     <ZoneRotateClockwise />
                     <ZoneRotateCounterClockwise />
                     <ZoneTower />
-                    <MechEyePrefab />
+                    <MechGazePrefab />
                 </ObjectGroup>
             </Section>
 

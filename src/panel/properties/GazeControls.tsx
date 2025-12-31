@@ -2,11 +2,11 @@ import { Switch } from '@fluentui/react-components';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useScene } from '../../SceneProvider';
-import { EyeObject, MechEyeObject } from '../../scene';
+import { GazeObject, MechGazeObject } from '../../scene';
 import { commonValue, setOrOmit } from '../../util';
 import { PropertiesControlProps } from '../PropertiesControl';
 
-export const EyeInvertControl: React.FC<PropertiesControlProps<MechEyeObject | EyeObject>> = ({ objects }) => {
+export const GazeInvertControl: React.FC<PropertiesControlProps<MechGazeObject | GazeObject>> = ({ objects }) => {
     const { dispatch } = useScene();
     const { t } = useTranslation();
 

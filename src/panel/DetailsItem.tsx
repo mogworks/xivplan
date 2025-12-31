@@ -66,8 +66,8 @@ interface DetailsItemHideButtonProps {
     className?: string;
 }
 
-const EyeOffIcon = bundleIcon(EyeOffFilled, EyeOffRegular);
-const EyeIcon = bundleIcon(EyeFilled, EyeRegular);
+const GazeOffIcon = bundleIcon(EyeOffFilled, EyeOffRegular);
+const GazeIcon = bundleIcon(EyeFilled, EyeRegular);
 
 const DetailsItemHideButton: React.FC<DetailsItemHideButtonProps> = ({ object, className }) => {
     const classes = useStyles();
@@ -78,7 +78,7 @@ const DetailsItemHideButton: React.FC<DetailsItemHideButtonProps> = ({ object, c
         e.stopPropagation();
     };
 
-    const Icon = object.hide ? EyeOffIcon : EyeIcon;
+    const Icon = object.hide ? GazeOffIcon : GazeIcon;
     const tooltip = object.hide ? t('properties.show') : t('properties.hide');
 
     return (

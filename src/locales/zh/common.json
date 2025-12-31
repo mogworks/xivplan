@@ -347,7 +347,7 @@
     "textLabel": "文本"
   },
   "mechanic": {
-    "eye": {
+    "gaze": {
       "normal": "视线攻击：背对",
       "invert": "视线攻击：面对"
     },
@@ -459,7 +459,7 @@
     "donut": "环形",
     "rectangle": "矩形",
     "line": "直线",
-    "cone": "扇形",
+    "fan": "扇形",
     "triangle": "三角形",
     "rightTriangle": "直角三角形",
     "starburst": "放射形",
@@ -502,7 +502,7 @@
     "donut": "环形范围攻击",
     "rect": "矩形范围攻击",
     "line": "直线范围攻击",
-    "cone": "扇形范围攻击",
+    "fan": "扇形范围攻击",
     "arc": "扇环范围攻击"
   },
   "spin": {

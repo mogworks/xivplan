@@ -3,8 +3,8 @@ export const MIN_INNER_RADIUS = 5; // 内半径的最小值
 export const MIN_SIZE = 10;
 export const MIN_RADIUS_GAP = 10; // 内外径的最小间距
 
-export const MIN_CONE_ANGLE = 5;
-export const MAX_CONE_ANGLE = 360;
+export const MIN_FAN_ANGLE = 5;
+export const MAX_FAN_ANGLE = 360;
 
 export const MIN_LINE_LENGTH = 10;
 export const MIN_LINE_WIDTH = 10;

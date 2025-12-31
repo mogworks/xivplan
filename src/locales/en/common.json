@@ -347,9 +347,9 @@
     "textLabel": "Text"
   },
   "mechanic": {
-    "eye": {
-      "normal": "Look away",
-      "invert": "Look towards"
+    "gaze": {
+      "normal": "Gaze",
+      "invert": "Gaze (Fake)"
     },
     "stack": "Stack"
   },
@@ -459,7 +459,7 @@
     "donut": "Donut",
     "rectangle": "Rectangle",
     "line": "Line",
-    "cone": "Cone",
+    "fan": "Fan",
     "triangle": "Triangle",
     "rightTriangle": "Right triangle",
     "starburst": "Starburst",
@@ -499,10 +499,10 @@
     "outlineColor": "Outline color",
     "outlineOpacity": "Outline opacity",
     "circle": "Circle AoE",
-    "donut": "Donut AoE",
+    "donut": "Donut",
     "rect": "Rectangle AoE",
     "line": "Line AoE",
-    "cone": "Cone AoE",
+    "fan": "Fan AoE",
     "arc": "Arc AoE"
   },
   "spin": {

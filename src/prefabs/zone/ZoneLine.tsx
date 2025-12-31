@@ -58,7 +58,7 @@ registerDropHandler<LineZone>(ObjectType.Line, (object, position) => {
     return {
         type: 'add',
         object: {
-            type: ObjectType.Cone,
+            type: ObjectType.Fan,
             color: DEFAULT_AOE_COLOR,
             opacity: DEFAULT_SHAPE_OPACITY,
             width: DEFAULT_WIDTH,

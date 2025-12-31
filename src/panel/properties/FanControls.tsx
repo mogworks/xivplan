@@ -3,31 +3,31 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useScene } from '../../SceneProvider';
 import { SpinButtonUnits } from '../../SpinButtonUnits';
-import { MAX_CONE_ANGLE, MIN_CONE_ANGLE } from '../../prefabs/bounds';
+import { MAX_FAN_ANGLE, MIN_FAN_ANGLE } from '../../prefabs/bounds';
 import { useSpinChanged } from '../../prefabs/useSpinChanged';
-import { ConeProps } from '../../scene';
+import { FanProps } from '../../scene';
 import { useControlStyles } from '../../useControlStyles';
 import { commonValue } from '../../util';
 import { PropertiesControlProps } from '../PropertiesControl';
 
-export const ConeAngleControl: React.FC<PropertiesControlProps<ConeProps>> = ({ objects }) => {
+export const FanAngleControl: React.FC<PropertiesControlProps<FanProps>> = ({ objects }) => {
     const classes = useControlStyles();
     const { dispatch } = useScene();
     const { t } = useTranslation();
 
-    const coneAngle = commonValue(objects, (obj) => obj.coneAngle);
+    const fanAngle = commonValue(objects, (obj) => obj.fanAngle);
 
-    const onAngleChanged = useSpinChanged((coneAngle: number) =>
-        dispatch({ type: 'update', value: objects.map((obj) => ({ ...obj, coneAngle })) }),
+    const onAngleChanged = useSpinChanged((fanAngle: number) =>
+        dispatch({ type: 'update', value: objects.map((obj) => ({ ...obj, fanAngle })) }),
     );
 
     return (
         <Field label={t('properties.angle')} className={classes.cell}>
             <SpinButtonUnits
-                value={coneAngle}
+                value={fanAngle}
                 onChange={onAngleChanged}
-                min={MIN_CONE_ANGLE}
-                max={MAX_CONE_ANGLE}
+                min={MIN_FAN_ANGLE}
+                max={MAX_FAN_ANGLE}
                 step={5}
                 fractionDigits={1}
                 suffix="°"
