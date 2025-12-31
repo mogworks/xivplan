@@ -256,6 +256,7 @@ function parseObject(obj: SBObject): SceneObjectWithoutId | null {
 
         // stack
         case 14:
+        case 106:
             return {
                 type: ObjectType.MechStack,
                 opacity: obj.color.opacity,
@@ -265,6 +266,7 @@ function parseObject(obj: SBObject): SceneObjectWithoutId | null {
                 ...coordinates,
                 pinned: obj.flags.locked,
                 rotation: obj.angle,
+                multiHit: obj.id === 106 ? true : undefined, // 105 是连续型
             } as Omit<MechStackObject, 'id'>;
 
         // line stack

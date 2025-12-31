@@ -256,7 +256,8 @@
     "lookAway": "背对",
     "variant": "变体",
     "show": "显示",
-    "hide": "隐藏"
+    "hide": "隐藏",
+    "multiHit": "连续型"
   },
   "colors": {
     "invalidColor": "无效的颜色",
@@ -351,7 +352,10 @@
       "normal": "视线攻击：背对",
       "invert": "视线攻击：面对"
     },
-    "stack": "分摊伤害攻击"
+    "stack": {
+      "normal": "分摊伤害攻击",
+      "multiHit": "分摊伤害攻击：连续型"
+    }
   },
   "arena": {
     "background": {

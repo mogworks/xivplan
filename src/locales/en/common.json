@@ -256,7 +256,8 @@
     "lookAway": "Look away",
     "variant": "Variant",
     "show": "Show",
-    "hide": "Hide"
+    "hide": "Hide",
+    "multiHit": "Multi-hit"
   },
   "colors": {
     "invalidColor": "Invalid color",
@@ -351,7 +352,10 @@
       "normal": "Gaze",
       "invert": "Gaze (Fake)"
     },
-    "stack": "Stack"
+    "stack": {
+      "normal": "Stack",
+      "multiHit": "Stack (Multi-Hit)"
+    }
   },
   "arena": {
     "background": {

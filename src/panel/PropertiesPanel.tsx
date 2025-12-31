@@ -17,6 +17,7 @@ import {
     isInnerRadiusObject,
     isLineLike,
     isMechGaze,
+    isMechStack,
     isMoveable,
     isNamed,
     isParty,
@@ -55,6 +56,7 @@ import { PositionControl } from './properties/PositionControl';
 import { InnerRadiusControl, RadiusControl } from './properties/RadiusControl';
 import { RotationControl } from './properties/RotationControl';
 import { SizeControl } from './properties/SizeControl';
+import { StackMultiHitControl } from './properties/StackControls';
 import { StackCountControl } from './properties/StackCountControl';
 import { StarburstSpokeCountControl, StarburstSpokeWidthControl } from './properties/StarburstControls';
 import { TetherTypeControl, TetherWidthControl } from './properties/TetherControls';
@@ -173,6 +175,7 @@ const Controls: React.FC = () => {
                 <ControlCondition objects={objects} test={supportsStackCount} control={StackCountControl} />
             </div>
             <ControlCondition objects={objects} test={(x) => isMechGaze(x) || isGaze(x)} control={GazeInvertControl} />
+            <ControlCondition objects={objects} test={isMechStack} control={StackMultiHitControl} />
             <ControlCondition objects={objects} test={isText} control={TextValueControl} />
             <div className={mergeClasses(classes.row, classes.rightGap)}>
                 <ControlCondition objects={objects} test={isIcon} control={IconStacksControl} />

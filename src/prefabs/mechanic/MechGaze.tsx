@@ -115,7 +115,7 @@ export const MechGazeRenderer: React.FC<RendererProps<MechGazeObject>> = ({ obje
     );
 };
 
-registerRenderer<MechGazeObject>(ObjectType.MechGaze, LayerName.Default, MechGazeRenderer);
+registerRenderer<MechGazeObject>(ObjectType.MechGaze, LayerName.Ground, MechGazeRenderer);
 
 export const MechGazeDetails: React.FC<ListComponentProps<MechGazeObject>> = ({ object, ...props }) => {
     const { t } = useTranslation();

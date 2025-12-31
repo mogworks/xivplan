@@ -13,8 +13,11 @@ import { useHighlightProps } from '../highlight';
 import { PrefabIcon } from '../PrefabIcon';
 import { ResizeableObjectContainer } from '../ResizeableObjectContainer';
 
-const icon = new URL(`public/board/objects/14.webp`, import.meta.env.VITE_COS_URL).href;
-const DEFAULT_SIZE = 100;
+const prefabIcon = new URL(`public/board/objects/14.webp`, import.meta.env.VITE_COS_URL).href;
+const getIconUrl = (multiHit?: boolean) =>
+    new URL(`public/board/objects/${multiHit ? 106 : 14}.webp`, import.meta.env.VITE_COS_URL).href;
+
+const DEFAULT_SIZE = 120;
 
 export const MechStackPrefab: React.FC = () => {
     const [, setDragObject] = usePanelDrag();
@@ -22,8 +25,8 @@ export const MechStackPrefab: React.FC = () => {
     return (
         <PrefabIcon
             draggable
-            name={t('mechanic.stack')}
-            icon={icon}
+            name={t('mechanic.stack.normal')}
+            icon={prefabIcon}
             onDragStart={(e) => {
                 setDragObject({
                     object: {
@@ -53,7 +56,7 @@ registerDropHandler<MechStackObject>(ObjectType.MechStack, (object, position) =>
 
 export const MechStackRenderer: React.FC<RendererProps<MechStackObject>> = ({ object }) => {
     const highlightProps = useHighlightProps(object);
-    const [image] = useImageTracked(icon);
+    const [image] = useImageTracked(getIconUrl(object.multiHit));
 
     return (
         <ResizeableObjectContainer object={object} transformerProps={{ centeredScaling: true }}>
@@ -81,12 +84,12 @@ export const MechStackRenderer: React.FC<RendererProps<MechStackObject>> = ({ ob
     );
 };
 
-registerRenderer<MechStackObject>(ObjectType.MechStack, LayerName.Default, MechStackRenderer);
+registerRenderer<MechStackObject>(ObjectType.MechStack, LayerName.Ground, MechStackRenderer);
 
 export const MechStackDetails: React.FC<ListComponentProps<MechStackObject>> = ({ object, ...props }) => {
     const { t } = useTranslation();
-    const name = t(`mechanic.stack`);
-    return <DetailsItem icon={icon} name={name} object={object} {...props} />;
+    const name = t(`mechanic.stack.${object.multiHit ? 'multiHit' : 'normal'}`);
+    return <DetailsItem icon={getIconUrl(object.multiHit)} name={name} object={object} {...props} />;
 };
 
 registerListComponent<MechStackObject>(ObjectType.MechStack, MechStackDetails);

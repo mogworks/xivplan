@@ -364,6 +364,7 @@ export const isStackZone = makeObjectTest<StackZone>(ObjectType.Stack);
 
 export interface MechStackObject extends ResizeableObject, BaseObject {
     readonly type: ObjectType.MechStack;
+    readonly multiHit?: boolean;
 }
 export const isMechStack = makeObjectTest<MechStackObject>(ObjectType.MechStack);
 
