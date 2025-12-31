@@ -181,7 +181,9 @@ const Controls: React.FC = () => {
                 <ControlCondition objects={objects} test={isIcon} control={IconStacksControl} />
                 <ControlCondition objects={objects} test={isIcon} control={IconTimeControl} />
             </div>
-            <ControlCondition objects={objects} test={isWaymark} control={WaymarkRotationControl} />
+            <div className={mergeClasses(classes.row)}>
+                <ControlCondition objects={objects} test={isWaymark} control={WaymarkRotationControl} />
+            </div>
         </>
     );
 };

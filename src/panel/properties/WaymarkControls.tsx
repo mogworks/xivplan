@@ -6,7 +6,6 @@ import { useScene } from '../../SceneProvider';
 import { SpinButtonUnits } from '../../SpinButtonUnits';
 import { useSpinChanged } from '../../prefabs/useSpinChanged';
 import { WaymarkObject } from '../../scene';
-import { useControlStyles } from '../../useControlStyles';
 import { commonValue } from '../../util';
 import { PropertiesControlProps } from '../PropertiesControl';
 
@@ -59,41 +58,24 @@ export const WaymarkOpacityControl: React.FC<PropertiesControlProps<WaymarkObjec
 };
 
 export const WaymarkRotationControl: React.FC<PropertiesControlProps<WaymarkObject>> = ({ objects }) => {
-    const classes = useControlStyles();
     const { dispatch } = useScene();
     const { t } = useTranslation();
 
     const fgRotation = commonValue(objects, (obj) => obj.fgRotation);
-    const bgRotation = commonValue(objects, (obj) => obj.bgRotation);
 
     const onFgRotationChanged = useSpinChanged((fgRotation: number) =>
         dispatch({ type: 'update', value: objects.map((obj) => ({ ...obj, fgRotation })) }),
     );
 
-    const onBgRotationChanged = useSpinChanged((bgRotation: number) =>
-        dispatch({ type: 'update', value: objects.map((obj) => ({ ...obj, bgRotation })) }),
-    );
-
     return (
-        <div className={classes.row}>
-            <Field label={t('waymark.fgRotation')} className={classes.cell}>
-                <SpinButtonUnits
-                    value={fgRotation ?? 0}
-                    onChange={onFgRotationChanged}
-                    step={5}
-                    fractionDigits={1}
-                    suffix="°"
-                />
-            </Field>
-            <Field label={t('waymark.bgRotation')} className={classes.cell}>
-                <SpinButtonUnits
-                    value={bgRotation ?? 0}
-                    onChange={onBgRotationChanged}
-                    step={5}
-                    fractionDigits={1}
-                    suffix="°"
-                />
-            </Field>
-        </div>
+        <Field label={t('waymark.fgRotation')}>
+            <SpinButtonUnits
+                value={fgRotation ?? 0}
+                onChange={onFgRotationChanged}
+                step={5}
+                fractionDigits={1}
+                suffix="°"
+            />
+        </Field>
     );
 };

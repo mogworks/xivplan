@@ -118,7 +118,10 @@ export const WaymarkRenderer: React.FC<RendererProps<WaymarkObject>> = ({ object
     const highlightHeight = object.height + highlightOffset;
 
     return (
-        <ResizeableObjectContainer object={object} transformerProps={{ centeredScaling: true }}>
+        <ResizeableObjectContainer
+            object={object}
+            transformerProps={{ centeredScaling: true, padding: -Math.min(object.width * 0.3, object.height * 0.3) }}
+        >
             {(groupProps) => (
                 <Group {...groupProps}>
                     {getWaymarkShape(object.waymarkType) === WaymarkShape.Circle && (
@@ -141,7 +144,30 @@ export const WaymarkRenderer: React.FC<RendererProps<WaymarkObject>> = ({ object
                             highlightOffset={highlightOffset}
                         />
                     )}
-                    <HideGroup opacity={(object.opacity ?? 100) / 100}>
+                    <HideGroup
+                        opacity={(object.opacity ?? 100) / 100}
+                        clipFunc={function (ctx) {
+                            const shape = getWaymarkShape(object.waymarkType);
+                            if (shape === WaymarkShape.Circle) {
+                                ctx.ellipse(
+                                    object.width * 0.5,
+                                    object.height * 0.5,
+                                    object.width * 0.8,
+                                    object.height * 0.8,
+                                    0,
+                                    0,
+                                    2 * Math.PI,
+                                );
+                            } else {
+                                ctx.rect(
+                                    -object.width * 0.2,
+                                    -object.height * 0.2,
+                                    object.width * 1.4,
+                                    object.height * 1.4,
+                                );
+                            }
+                        }}
+                    >
                         <Image
                             image={bgImage}
                             x={object.width / 2}
@@ -151,7 +177,6 @@ export const WaymarkRenderer: React.FC<RendererProps<WaymarkObject>> = ({ object
                             opacity={(object.bgOpacity ?? 100) / 100}
                             offsetX={object.width}
                             offsetY={object.height}
-                            rotation={object.bgRotation ?? 0}
                         />
                         <Image
                             image={fgImage}

@@ -242,7 +242,6 @@ export interface WaymarkObject extends ResizeableObject, BaseObject {
     readonly fgOpacity?: number;
     readonly fgRotation?: number;
     readonly bgOpacity?: number;
-    readonly bgRotation?: number;
 }
 export const isWaymark = makeObjectTest<WaymarkObject>(ObjectType.Waymark);
 

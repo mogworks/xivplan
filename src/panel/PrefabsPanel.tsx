@@ -95,6 +95,7 @@ export const PrefabsPanel: React.FC = () => {
                     <ZoneTriangle />
                     <ZoneRightTriangle />
                     <ZonePolygon />
+                    <ZoneStarburst />
                 </ObjectGroup>
             </Section>
             <Section title={t('prefabs.aoe')}>
@@ -114,7 +115,6 @@ export const PrefabsPanel: React.FC = () => {
                     <ZoneKnockback />
                     <ZoneProximity />
                     <ZoneExaflare />
-                    <ZoneStarburst />
 
                     <MechStackPrefab />
                     <ZoneLineStack />
