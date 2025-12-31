@@ -14,6 +14,6 @@ export const MIN_FONT_SIZE = 15;
 export const MIN_TETHER_WIDTH = 2;
 
 export const MIN_POLYGON_SIDES = 3;
-export const MAX_POLYGON_SIDES = 32;
+export const MAX_POLYGON_SIDES = 16;
 
 export const MIN_STARBURST_SPOKE_WIDTH = 10;

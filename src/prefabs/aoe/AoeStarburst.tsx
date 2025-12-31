@@ -5,36 +5,40 @@ import { useTranslation } from 'react-i18next';
 import { Circle, Group, Rect } from 'react-konva';
 import { getDragOffset, registerDropHandler } from '../../DropHandler';
 import Icon from '../../assets/zone/starburst.svg?react';
+import AoeRect from '../../lib/aoe/AoeRect';
+import { AoeProps } from '../../lib/aoe/aoeProps';
 import { DetailsItem } from '../../panel/DetailsItem';
 import { ListComponentProps, registerListComponent } from '../../panel/ListComponentRegistry';
 import { registerRenderer, RendererProps } from '../../render/ObjectRegistry';
 import { LayerName } from '../../render/layers';
-import { ObjectType, StarburstZone } from '../../scene';
-import { CENTER_DOT_RADIUS, DEFAULT_AOE_COLOR, DEFAULT_SHAPE_OPACITY, panelVars } from '../../theme';
+import { AoeStarburstObject, ObjectType } from '../../scene';
+import { CENTER_DOT_RADIUS, DEFAULT_AOE_COLOR, DEFAULT_AOE_HIGHLIGHT_COLOR, panelVars } from '../../theme';
 import { usePanelDrag } from '../../usePanelDrag';
 import { HideGroup } from '../HideGroup';
 import { PrefabIcon } from '../PrefabIcon';
 import { MIN_STARBURST_SPOKE_WIDTH } from '../bounds';
 import { useHighlightProps } from '../highlight';
-import { StarburstControlContainer } from './StarburstContainer';
-import { getZoneStyle } from './style';
+import { StarburstControlContainer } from '../zone/StarburstContainer';
+import { getAoeStyle } from './style';
 
 const DEFAULT_RADIUS = 200;
 const DEFAULT_SPOKE_WIDTH = 50;
 const DEFAULT_SPOKE_COUNT = 8;
 
-export const ZoneStarburst: React.FC = () => {
+export const AoeStarburstPrefab: React.FC = () => {
     const [, setDragObject] = usePanelDrag();
     const { t } = useTranslation();
+    const icon = new URL('public/prefabs/aoe/starburst.webp', import.meta.env.VITE_COS_URL).href;
+
     return (
         <PrefabIcon
             draggable
-            name={t('objects.starburst', { defaultValue: 'Starburst' })}
-            icon={<Icon />}
+            name={t('aoe.starburst')}
+            icon={icon}
             onDragStart={(e) => {
                 setDragObject({
                     object: {
-                        type: ObjectType.Starburst,
+                        type: ObjectType.AoeStarburst,
                     },
                     offset: getDragOffset(e),
                 });
@@ -43,20 +47,19 @@ export const ZoneStarburst: React.FC = () => {
     );
 };
 
-registerDropHandler<StarburstZone>(ObjectType.Starburst, (object, position) => {
+registerDropHandler<AoeStarburstObject>(ObjectType.AoeStarburst, (object, position) => {
     return {
         type: 'add',
         object: {
-            type: ObjectType.Starburst,
-            color: DEFAULT_AOE_COLOR,
-            opacity: DEFAULT_SHAPE_OPACITY,
+            type: ObjectType.AoeStarburst,
+            opacity: 100,
             radius: DEFAULT_RADIUS,
             spokes: DEFAULT_SPOKE_COUNT,
             spokeWidth: DEFAULT_SPOKE_WIDTH,
             rotation: 0,
             ...object,
             ...position,
-        },
+        } as AoeStarburstObject,
     };
 });
 
@@ -65,6 +68,8 @@ interface StarburstConfig extends CircleConfig {
     spokes: number;
     spokeWidth: number;
     highlightProps?: ShapeConfig;
+    freeze?: boolean;
+    aoeProps: AoeProps;
 }
 
 function getOddRotations(spokes: number) {
@@ -77,6 +82,8 @@ const StarburstOdd: React.FC<StarburstConfig> = ({
     spokes,
     spokeWidth,
     highlightProps,
+    freeze,
+    aoeProps,
     ...props
 }) => {
     const items = getOddRotations(spokes);
@@ -108,7 +115,7 @@ const StarburstOdd: React.FC<StarburstConfig> = ({
 
             <HideGroup>
                 {items.map((r, i) => (
-                    <Rect key={i} rotation={r} {...rect} />
+                    <AoeRect key={i} rotation={r} {...rect} freeze={freeze} {...aoeProps} />
                 ))}
             </HideGroup>
         </Group>
@@ -126,6 +133,8 @@ const StarburstEven: React.FC<StarburstConfig> = ({
     spokes,
     spokeWidth,
     highlightProps,
+    freeze,
+    aoeProps,
     ...props
 }) => {
     const items = getEvenRotations(spokes);
@@ -159,29 +168,39 @@ const StarburstEven: React.FC<StarburstConfig> = ({
 
             <HideGroup>
                 {items.map((r, i) => (
-                    <Rect key={i} rotation={r} {...rect} />
+                    <AoeRect key={i} rotation={r} {...rect} freeze={freeze} {...aoeProps} />
                 ))}
             </HideGroup>
         </Group>
     );
 };
 
-interface StarburstRendererProps extends RendererProps<StarburstZone> {
-    radius: number;
-    rotation: number;
-    spokeWidth: number;
+interface AoeStarburstRendererProps extends RendererProps<AoeStarburstObject> {
     isDragging?: boolean;
+    isResizing?: boolean;
 }
 
-const StarburstRenderer: React.FC<StarburstRendererProps> = ({ object, radius, rotation, spokeWidth, isDragging }) => {
+const AoeStarburstRenderer: React.FC<AoeStarburstRendererProps> = ({ object, isDragging, isResizing }) => {
     const highlightProps = useHighlightProps(object);
-    const style = getZoneStyle(object.color, object.opacity, object.spokeWidth * 2);
+
+    const style = getAoeStyle(DEFAULT_AOE_HIGHLIGHT_COLOR, object.opacity, object.spokeWidth * 2);
+    const aoeProps = {
+        opacity: object.opacity,
+        baseColor: object.baseColor,
+        baseOpacity: object.baseOpacity,
+        innerGlowColor: object.innerGlowColor,
+        innerGlowOpacity: object.innerGlowOpacity,
+        outlineColor: object.outlineColor,
+        outlineOpacity: object.outlineOpacity,
+    } as AoeProps;
 
     const config: StarburstConfig = {
+        freeze: isResizing,
+        aoeProps,
         ...style,
-        radius,
-        rotation,
-        spokeWidth,
+        radius: object.radius,
+        rotation: object.rotation,
+        spokeWidth: object.spokeWidth,
         spokes: object.spokes,
         highlightProps,
     };
@@ -195,26 +214,32 @@ const StarburstRenderer: React.FC<StarburstRendererProps> = ({ object, radius, r
     );
 };
 
-const StarburstContainer: React.FC<RendererProps<StarburstZone>> = ({ object }) => {
+const AoeStarburstContainer: React.FC<RendererProps<AoeStarburstObject>> = ({ object }) => {
     return (
         <StarburstControlContainer object={object} minSpokeWidth={MIN_STARBURST_SPOKE_WIDTH}>
-            {(props) => <StarburstRenderer object={object} {...props} />}
+            {(props) => <AoeStarburstRenderer object={object} {...props} />}
         </StarburstControlContainer>
     );
 };
 
-registerRenderer<StarburstZone>(ObjectType.Starburst, LayerName.Ground, StarburstContainer);
+registerRenderer<AoeStarburstObject>(ObjectType.AoeStarburst, LayerName.Ground, AoeStarburstContainer);
 
-const StarburstDetails: React.FC<ListComponentProps<StarburstZone>> = ({ object, ...props }) => {
+const AoeStarburstDetails: React.FC<ListComponentProps<AoeStarburstObject>> = ({ object, ...props }) => {
     const { t } = useTranslation();
     return (
         <DetailsItem
-            icon={<Icon width="100%" height="100%" style={{ [panelVars.colorZoneOrange]: object.color }} />}
-            name={t('objects.starburst', { defaultValue: 'Starburst' })}
+            icon={
+                <Icon
+                    width="100%"
+                    height="100%"
+                    style={{ [panelVars.colorZoneOrange]: object.baseColor ?? DEFAULT_AOE_COLOR }}
+                />
+            }
+            name={t('aoe.starburst')}
             object={object}
             {...props}
         />
     );
 };
 
-registerListComponent<StarburstZone>(ObjectType.Starburst, StarburstDetails);
+registerListComponent<AoeStarburstObject>(ObjectType.AoeStarburst, AoeStarburstDetails);

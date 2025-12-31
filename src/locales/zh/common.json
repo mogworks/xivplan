@@ -507,7 +507,17 @@
     "rect": "矩形范围攻击",
     "line": "直线范围攻击",
     "fan": "扇形范围攻击",
-    "arc": "扇环范围攻击"
+    "arc": "扇环范围攻击",
+    "starburst": "放射形范围攻击",
+    "polygon": {
+      "triangle": "三角形范围攻击",
+      "square": "方形范围攻击",
+      "pentagon": "五边形范围攻击",
+      "hexagon": "六边形范围攻击",
+      "septagon": "七边形范围攻击",
+      "octagon": "八边形范围攻击",
+      "default": "多边形范围攻击"
+    }
   },
   "spin": {
     "increment": "增加数值",

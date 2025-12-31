@@ -7,7 +7,9 @@ import { AoeCirclePrefab } from '../prefabs/aoe/AoeCircle';
 import { AoeDonutPrefab } from '../prefabs/aoe/AoeDonut';
 import { AoeFanPrefab } from '../prefabs/aoe/AoeFan';
 import { AoeLinePrefab } from '../prefabs/aoe/AoeLine';
+import { AoePolygonPrefab } from '../prefabs/aoe/AoePolygon';
 import { AoeRectPrefab } from '../prefabs/aoe/AoeRect';
+import { AoeStarburstPrefab } from '../prefabs/aoe/AoeStarburst';
 import { MarkerArrow } from '../prefabs/Arrow';
 import '../prefabs/BoardIcon';
 import { EnemyCircle, EnemyHuge, EnemyLarge, EnemyMedium, EnemySmall } from '../prefabs/Enemies';
@@ -106,6 +108,9 @@ export const PrefabsPanel: React.FC = () => {
                     <AoeDonutPrefab />
                     <AoeFanPrefab />
                     <AoeArcPrefab />
+
+                    <AoePolygonPrefab />
+                    <AoeStarburstPrefab />
                 </ObjectGroup>
             </Section>
             <Section title={t('prefabs.mechanic')}>

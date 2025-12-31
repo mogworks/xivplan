@@ -62,6 +62,8 @@ export enum ObjectType {
     AoeDonut = 'aoeDonut',
     AoeFan = 'aoeFan',
     AoeArc = 'aoeArc',
+    AoePolygon = 'aoePolygon',
+    AoeStarburst = 'aoeStarburst',
     MechGaze = 'mechGaze',
     MechStack = 'mechStack',
 }
@@ -312,6 +314,15 @@ export interface AoeLineObject extends Readonly<AoeProps>, LineProps, MoveableOb
     readonly type: ObjectType.AoeLine;
 }
 
+export interface AoePolygonObject extends Readonly<AoeProps>, PolygonProps, RadiusObject, RotateableObject, BaseObject {
+    readonly type: ObjectType.AoePolygon;
+}
+
+export interface AoeStarburstObject
+    extends Readonly<AoeProps>, StarburstProps, RadiusObject, RotateableObject, BaseObject {
+    readonly type: ObjectType.AoeStarburst;
+}
+
 export interface AoeCircleObject extends Readonly<AoeProps>, RadiusObject, BaseObject {
     readonly type: ObjectType.AoeCircle;
 }
@@ -329,7 +340,15 @@ export interface AoeArcObject
     readonly type: ObjectType.AoeArc;
 }
 
-export type AoeObject = AoeRectObject | AoeLineObject | AoeCircleObject | AoeDonutObject | AoeFanObject | AoeArcObject;
+export type AoeObject =
+    | AoeRectObject
+    | AoeLineObject
+    | AoeCircleObject
+    | AoeDonutObject
+    | AoeFanObject
+    | AoeArcObject
+    | AoePolygonObject
+    | AoeStarburstObject;
 
 export const isAoeObject = makeObjectTest<AoeObject>(
     ObjectType.AoeRect,
@@ -338,6 +357,8 @@ export const isAoeObject = makeObjectTest<AoeObject>(
     ObjectType.AoeDonut,
     ObjectType.AoeFan,
     ObjectType.AoeArc,
+    ObjectType.AoePolygon,
+    ObjectType.AoeStarburst,
 );
 
 export interface CircleZone extends RadiusObject, ColoredObject, HollowObject, BaseObject {
@@ -432,10 +453,14 @@ export const isRectangleZone = makeObjectTest<RectangleZone>(
 
 export type PolygonOrientation = 'point' | 'side';
 
-export interface PolygonZone extends RadiusObject, ColoredObject, HollowObject, RotateableObject, BaseObject {
-    readonly type: ObjectType.Polygon;
+export interface PolygonProps {
     readonly sides: number;
     readonly orient: PolygonOrientation;
+}
+
+export interface PolygonZone
+    extends PolygonProps, RadiusObject, ColoredObject, HollowObject, RotateableObject, BaseObject {
+    readonly type: ObjectType.Polygon;
 }
 export const isPolygonZone = makeObjectTest<PolygonZone>(ObjectType.Polygon);
 
@@ -446,10 +471,13 @@ export interface ExaflareZone extends RadiusObject, RotateableObject, ColoredObj
 }
 export const isExaflareZone = makeObjectTest<ExaflareZone>(ObjectType.Exaflare);
 
-export interface StarburstZone extends RadiusObject, RotateableObject, ColoredObject, BaseObject {
-    readonly type: ObjectType.Starburst;
+export interface StarburstProps {
     readonly spokes: number;
     readonly spokeWidth: number;
+}
+
+export interface StarburstZone extends StarburstProps, RadiusObject, RotateableObject, ColoredObject, BaseObject {
+    readonly type: ObjectType.Starburst;
 }
 export const isStarburstZone = makeObjectTest<StarburstZone>(ObjectType.Starburst);
 
@@ -517,6 +545,16 @@ export function isNamed<T>(object: T): object is NamedObject & T {
 export function isLineLike<T>(object: T): object is LineProps & T {
     const obj = object as LineProps & T;
     return obj && typeof obj.length === 'number' && typeof obj.width === 'number';
+}
+
+export function isPolygonLike<T>(object: T): object is PolygonProps & T {
+    const obj = object as PolygonProps & T;
+    return obj && typeof obj.sides === 'number' && (obj.orient === 'point' || obj.orient === 'side');
+}
+
+export function isStarburstLike<T>(object: T): object is StarburstProps & T {
+    const obj = object as StarburstProps & T;
+    return obj && typeof obj.spokes === 'number' && typeof obj.spokeWidth === 'number';
 }
 
 export function isFanLike<T>(object: T): object is FanProps & T {

@@ -21,11 +21,11 @@ import {
     isMoveable,
     isNamed,
     isParty,
-    isPolygonZone,
+    isPolygonLike,
     isRadiusObject,
     isResizable,
     isRotateable,
-    isStarburstZone,
+    isStarburstLike,
     isTether,
     isText,
     isWaymark,
@@ -152,22 +152,22 @@ const Controls: React.FC = () => {
                 <ControlCondition objects={objects} test={isRadiusObject} control={RadiusControl} />
                 <ControlCondition objects={objects} test={isInnerRadiusObject} control={InnerRadiusControl} />
                 <ControlCondition objects={objects} test={isExaflareZone} control={ExaflareLengthControl} />
-                <ControlCondition objects={objects} test={isStarburstZone} control={StarburstSpokeWidthControl} />
+                <ControlCondition objects={objects} test={isStarburstLike} control={StarburstSpokeWidthControl} />
             </div>
 
             <div className={mergeClasses(classes.row, classes.rightGap)}>
                 <ControlCondition objects={objects} test={isRotateable} control={RotationControl} />
                 <ControlCondition objects={objects} test={isEnemy} control={EnemyRingControl} />
                 <ControlCondition objects={objects} test={isExaflareZone} control={ExaflareSpacingControl} />
-                <ControlCondition objects={objects} test={isStarburstZone} control={StarburstSpokeCountControl} />
+                <ControlCondition objects={objects} test={isStarburstLike} control={StarburstSpokeCountControl} />
 
                 <ControlCondition objects={objects} test={(x) => isFanLike(x)} control={FanAngleControl} />
             </div>
 
             {/* Special options */}
             <div className={mergeClasses(classes.row, classes.rightGap)}>
-                <ControlCondition objects={objects} test={isPolygonZone} control={PolygonSidesControl} />
-                <ControlCondition objects={objects} test={isPolygonZone} control={PolygonOrientationControl} />
+                <ControlCondition objects={objects} test={isPolygonLike} control={PolygonSidesControl} />
+                <ControlCondition objects={objects} test={isPolygonLike} control={PolygonOrientationControl} />
             </div>
             <ControlCondition objects={objects} test={isParty} control={PartyIconControl} />
             <ControlCondition objects={objects} test={isTether} control={TetherWidthControl} />

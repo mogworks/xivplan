@@ -507,7 +507,17 @@
     "rect": "Rectangle AoE",
     "line": "Line AoE",
     "fan": "Fan AoE",
-    "arc": "Arc AoE"
+    "arc": "Arc AoE",
+    "starburst": "Starburst AoE",
+    "polygon": {
+      "triangle": "Triangle AoE",
+      "square": "Square AoE",
+      "pentagon": "Pentagon AoE",
+      "hexagon": "Hexagon AoE",
+      "septagon": "Septagon AoE",
+      "octagon": "Octagon AoE",
+      "default": "Polygon AoE"
+    }
   },
   "spin": {
     "increment": "Increment value",

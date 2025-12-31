@@ -7,14 +7,14 @@ import { Segment, SegmentedGroup } from '../../Segmented';
 import { SpinButton } from '../../SpinButton';
 import { MAX_POLYGON_SIDES, MIN_POLYGON_SIDES } from '../../prefabs/bounds';
 import { useSpinChanged } from '../../prefabs/useSpinChanged';
-import { PolygonOrientation, PolygonZone } from '../../scene';
+import { PolygonOrientation, PolygonProps } from '../../scene';
 import { useControlStyles } from '../../useControlStyles';
 import { commonValue } from '../../util';
 import { PropertiesControlProps } from '../PropertiesControl';
 
 const Square = bundleIcon(SquareFilled, SquareRegular);
 
-export const PolygonSidesControl: React.FC<PropertiesControlProps<PolygonZone>> = ({ objects }) => {
+export const PolygonSidesControl: React.FC<PropertiesControlProps<PolygonProps>> = ({ objects }) => {
     const classes = useControlStyles();
     const { dispatch } = useScene();
     const { t } = useTranslation();
@@ -38,7 +38,7 @@ export const PolygonSidesControl: React.FC<PropertiesControlProps<PolygonZone>> 
     );
 };
 
-export const PolygonOrientationControl: React.FC<PropertiesControlProps<PolygonZone>> = ({ objects }) => {
+export const PolygonOrientationControl: React.FC<PropertiesControlProps<PolygonProps>> = ({ objects }) => {
     const classes = useStyles();
     const controlClasses = useControlStyles();
     const { dispatch } = useScene();
@@ -56,8 +56,8 @@ export const PolygonOrientationControl: React.FC<PropertiesControlProps<PolygonZ
                 value={orient ?? ''}
                 onChange={(ev, data) => handleChanged(data.value as PolygonOrientation)}
             >
-                <Segment value="point" icon={<Square className={classes.point} />} title={t('properties.pointUp')} />
                 <Segment value="side" icon={<Square />} title={t('properties.sideUp')} />
+                <Segment value="point" icon={<Square className={classes.point} />} title={t('properties.pointUp')} />
             </SegmentedGroup>
         </Field>
     );

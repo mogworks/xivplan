@@ -21,7 +21,7 @@ import { RadiusObjectContainer } from '../RadiusObjectContainer';
 import { useHighlightProps } from '../highlight';
 import { getZoneStyle } from './style';
 
-const DEFAULT_RADIUS = 50;
+const DEFAULT_RADIUS = 80;
 const DEFAULT_SIDES = 6;
 
 export const ZonePolygon: React.FC = () => {
@@ -53,7 +53,7 @@ registerDropHandler<PolygonZone>(ObjectType.Polygon, (object, position) => {
             opacity: DEFAULT_SHAPE_OPACITY,
             radius: DEFAULT_RADIUS,
             sides: DEFAULT_SIDES,
-            orient: 'point',
+            orient: 'side',
             rotation: 0,
             ...object,
             ...position,
