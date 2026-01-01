@@ -1,6 +1,6 @@
 import { ShapeConfig } from 'konva/lib/Shape';
 import { useTranslation } from 'react-i18next';
-import { Ellipse, Group, Image, Rect } from 'react-konva';
+import { Circle, Ellipse, Group, Image, Rect } from 'react-konva';
 import { ALIGN_TO_PIXEL } from '../coord';
 import { getDragOffset, registerDropHandler } from '../DropHandler';
 import { DetailsItem } from '../panel/DetailsItem';
@@ -14,10 +14,10 @@ import { makeDisplayName } from '../util';
 import { HideGroup } from './HideGroup';
 import { useHighlightProps } from './highlight';
 import { PrefabIcon } from './PrefabIcon';
-import { ResizeableObjectContainer } from './ResizeableObjectContainer';
+import { RegularResizableObjectContainer } from './ResizableObjectContainer';
 import { getWaymarkIconUrl, getWaymarkShape, WaymarkShape, WaymarkType } from './waymarkIcon';
 
-const DEFAULT_SIZE = 32;
+const DEFAULT_SIZE = 31;
 
 function makeIcon(type: WaymarkType) {
     const Component: React.FC = () => {
@@ -49,8 +49,7 @@ registerDropHandler<WaymarkObject>(ObjectType.Waymark, (object, position) => {
         type: 'add',
         object: {
             type: ObjectType.Waymark,
-            width: DEFAULT_SIZE,
-            height: DEFAULT_SIZE,
+            size: DEFAULT_SIZE,
             opacity: 100,
             rotation: 0,
             ...object,
@@ -114,85 +113,81 @@ export const WaymarkRenderer: React.FC<RendererProps<WaymarkObject>> = ({ object
     const strokeWidth = 1;
 
     const highlightOffset = strokeWidth * 4;
-    const highlightWidth = object.width + highlightOffset;
-    const highlightHeight = object.height + highlightOffset;
+    const highlightWidth = object.size + highlightOffset;
+    const highlightHeight = object.size + highlightOffset;
+    const shape = getWaymarkShape(object.waymarkType);
 
     return (
-        <ResizeableObjectContainer
+        <RegularResizableObjectContainer
             object={object}
-            transformerProps={{ centeredScaling: true, padding: -Math.min(object.width * 0.3, object.height * 0.3) }}
+            transformerProps={{
+                centeredScaling: true,
+                padding: -object.size * 0.5 + 3,
+                enabledAnchors: ['rotater', 'top-left', 'top-right', 'bottom-right', 'bottom-left'],
+            }}
         >
             {(groupProps) => (
                 <Group {...groupProps}>
-                    {getWaymarkShape(object.waymarkType) === WaymarkShape.Circle && (
+                    {shape === WaymarkShape.Circle && (
                         <EllipseOutline
-                            width={object.width}
-                            height={object.height}
+                            width={object.size}
+                            height={object.size}
                             highlightProps={highlightProps}
                             highlightWidth={highlightWidth}
                             highlightHeight={highlightHeight}
                             highlightOffset={highlightOffset}
                         />
                     )}
-                    {getWaymarkShape(object.waymarkType) === WaymarkShape.Square && (
+                    {shape === WaymarkShape.Square && (
                         <RectangleOutline
-                            width={object.width}
-                            height={object.height}
+                            width={object.size}
+                            height={object.size}
                             highlightProps={highlightProps}
                             highlightWidth={highlightWidth}
                             highlightHeight={highlightHeight}
                             highlightOffset={highlightOffset}
                         />
                     )}
-                    <HideGroup
-                        opacity={(object.opacity ?? 100) / 100}
-                        clipFunc={function (ctx) {
-                            const shape = getWaymarkShape(object.waymarkType);
-                            if (shape === WaymarkShape.Circle) {
-                                ctx.ellipse(
-                                    object.width * 0.5,
-                                    object.height * 0.5,
-                                    object.width * 0.8,
-                                    object.height * 0.8,
-                                    0,
-                                    0,
-                                    2 * Math.PI,
-                                );
-                            } else {
-                                ctx.rect(
-                                    -object.width * 0.2,
-                                    -object.height * 0.2,
-                                    object.width * 1.4,
-                                    object.height * 1.4,
-                                );
-                            }
-                        }}
-                    >
+                    <HideGroup opacity={(object.opacity ?? 100) / 100}>
                         <Image
                             image={bgImage}
-                            x={object.width / 2}
-                            y={object.height / 2}
-                            width={object.width * 2}
-                            height={object.height * 2}
+                            x={object.size / 2}
+                            y={object.size / 2}
+                            width={object.size * 2}
+                            height={object.size * 2}
                             opacity={(object.bgOpacity ?? 100) / 100}
-                            offsetX={object.width}
-                            offsetY={object.height}
+                            offsetX={object.size}
+                            offsetY={object.size}
+                            listening={false}
                         />
                         <Image
                             image={fgImage}
-                            x={object.width / 2}
-                            y={object.height / 2}
-                            width={object.width}
-                            height={object.height}
+                            x={object.size / 2}
+                            y={object.size / 2}
+                            width={object.size}
+                            height={object.size}
                             opacity={(object.fgOpacity ?? 100) / 100}
-                            offsetX={object.width / 2}
-                            offsetY={object.height / 2}
+                            offsetX={object.size / 2}
+                            offsetY={object.size / 2}
                             rotation={object.fgRotation ?? 0}
+                            listening={false}
                         />
+                        {shape === WaymarkShape.Circle && (
+                            <Circle x={object.size / 2} y={object.size / 2} radius={object.size * 0.5} opacity={0} />
+                        )}
+                        {shape === WaymarkShape.Square && (
+                            <Rect
+                                x={object.size * 0.07}
+                                y={object.size * 0.07}
+                                width={object.size * 0.86}
+                                height={object.size * 0.86}
+                                opacity={0}
+                            />
+                        )}
                     </HideGroup>
                 </Group>
             )}
-        </ResizeableObjectContainer>
+        </RegularResizableObjectContainer>
     );
 };
 

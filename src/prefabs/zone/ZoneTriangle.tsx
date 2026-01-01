@@ -13,7 +13,7 @@ import { DEFAULT_AOE_COLOR, DEFAULT_SHAPE_OPACITY, panelVars } from '../../theme
 import { usePanelDrag } from '../../usePanelDrag';
 import { HideGroup } from '../HideGroup';
 import { PrefabIcon } from '../PrefabIcon';
-import { ResizeableObjectContainer } from '../ResizeableObjectContainer';
+import { ResizableObjectContainer } from '../ResizableObjectContainer';
 import { useHighlightProps } from '../highlight';
 import { getZoneStyle } from './style';
 
@@ -82,7 +82,7 @@ const TriangleRenderer: React.FC<RendererProps<RectangleZone>> = ({ object }) =>
     const offsetY = (object.height * 2) / 3;
 
     return (
-        <ResizeableObjectContainer object={object} transformerProps={{ centeredScaling: true }}>
+        <ResizableObjectContainer object={object} transformerProps={{ centeredScaling: true }}>
             {(groupProps) => (
                 <Group {...groupProps} offsetY={offsetY}>
                     {highlightProps && (
@@ -99,7 +99,7 @@ const TriangleRenderer: React.FC<RendererProps<RectangleZone>> = ({ object }) =>
                     </HideGroup>
                 </Group>
             )}
-        </ResizeableObjectContainer>
+        </ResizableObjectContainer>
     );
 };
 

@@ -14,7 +14,7 @@ import { useImageTracked } from '../useObjectLoading';
 import { usePanelDrag } from '../usePanelDrag';
 import { HideGroup } from './HideGroup';
 import { PrefabIcon } from './PrefabIcon';
-import { ResizeableObjectContainer } from './ResizeableObjectContainer';
+import { ResizableObjectContainer } from './ResizableObjectContainer';
 import { useHighlightProps } from './highlight';
 
 const DEFAULT_SIZE = 32;
@@ -95,7 +95,7 @@ const IconRenderer: React.FC<RendererProps<IconObject>> = ({ object }) => {
     const [image] = useImageTracked(object.image);
 
     return (
-        <ResizeableObjectContainer object={object} transformerProps={{ centeredScaling: true }}>
+        <ResizableObjectContainer object={object} transformerProps={{ centeredScaling: true }}>
             {(groupProps) => (
                 <Group {...groupProps}>
                     {highlightProps && (
@@ -122,7 +122,7 @@ const IconRenderer: React.FC<RendererProps<IconObject>> = ({ object }) => {
                     </HideGroup>
                 </Group>
             )}
-        </ResizeableObjectContainer>
+        </ResizableObjectContainer>
     );
 };
 

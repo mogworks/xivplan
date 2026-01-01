@@ -13,7 +13,7 @@ import { DEFAULT_AOE_COLOR, DEFAULT_SHAPE_OPACITY, panelVars } from '../../theme
 import { usePanelDrag } from '../../usePanelDrag';
 import { HideGroup } from '../HideGroup';
 import { PrefabIcon } from '../PrefabIcon';
-import { ResizeableObjectContainer } from '../ResizeableObjectContainer';
+import { ResizableObjectContainer } from '../ResizableObjectContainer';
 import { useHighlightProps } from '../highlight';
 import { ChevronTail } from './shapes';
 import { getArrowStyle, getZoneStyle } from './style';
@@ -93,7 +93,7 @@ const LineKnockbackRenderer: React.FC<RendererProps<RectangleZone>> = ({ object 
 
     return (
         <>
-            <ResizeableObjectContainer object={object} transformerProps={{ keepRatio: false }}>
+            <ResizableObjectContainer object={object} transformerProps={{ keepRatio: false }}>
                 {(groupProps) => (
                     <Group {...groupProps}>
                         {highlightProps && (
@@ -120,7 +120,7 @@ const LineKnockbackRenderer: React.FC<RendererProps<RectangleZone>> = ({ object 
                         </HideGroup>
                     </Group>
                 )}
-            </ResizeableObjectContainer>
+            </ResizableObjectContainer>
 
             <Group ref={arrowRef} x={OFFSCREEN_X} y={OFFSCREEN_Y}>
                 <Rect width={PATTERN_W} height={PATTERN_H} fill={fill} />

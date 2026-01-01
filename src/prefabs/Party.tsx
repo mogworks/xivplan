@@ -15,9 +15,11 @@ import { HideGroup } from './HideGroup';
 import { useHighlightProps } from './highlight';
 import { getPartyIconUrl, PartyIcons } from './partyIcon';
 import { PrefabIcon } from './PrefabIcon';
-import { ResizeableObjectContainer } from './ResizeableObjectContainer';
+import { RegularResizableObjectContainer } from './ResizableObjectContainer';
 
-const DEFAULT_SIZE = 32;
+const DEFAULT_SIZE = 28;
+
+const RESPONSIVE_SIZE_SCALE = 0.9;
 
 function makeIcon(iconId: number) {
     const nameKey = `boardIcon.${iconId}`;
@@ -54,8 +56,7 @@ registerDropHandler<PartyObject>(ObjectType.Party, (object, position) => {
         type: 'add',
         object: {
             type: ObjectType.Party,
-            width: DEFAULT_SIZE,
-            height: DEFAULT_SIZE,
+            size: DEFAULT_SIZE,
             opacity: DEFAULT_PARTY_OPACITY,
             rotation: 0,
             ...object,
@@ -68,29 +69,49 @@ const PartyRenderer: React.FC<RendererProps<PartyObject>> = ({ object }) => {
     const highlightProps = useHighlightProps(object);
     const [image] = useImageTracked(getPartyIconUrl(object.iconId));
 
+    const responsiveSize = object.size * RESPONSIVE_SIZE_SCALE;
+    const responsiveOffset = (object.size - responsiveSize) / 2;
+
     return (
-        <ResizeableObjectContainer object={object} transformerProps={{ centeredScaling: true }}>
+        <RegularResizableObjectContainer
+            object={object}
+            transformerProps={{
+                centeredScaling: true,
+                padding: 3,
+                enabledAnchors: ['rotater', 'top-left', 'top-right', 'bottom-right', 'bottom-left'],
+            }}
+        >
             {(groupProps) => (
                 <Group {...groupProps}>
                     {highlightProps && (
                         <Rect
-                            width={object.width}
-                            height={object.height}
-                            cornerRadius={(object.width + object.height) / 2 / 5}
+                            x={responsiveOffset}
+                            y={responsiveOffset}
+                            width={responsiveSize}
+                            height={responsiveSize}
+                            cornerRadius={responsiveSize / 5}
                             {...highlightProps}
                         />
                     )}
                     <HideGroup>
                         <Image
                             image={image}
-                            width={object.width}
-                            height={object.height}
+                            width={object.size}
+                            height={object.size}
                             opacity={object.opacity / 100}
+                            listening={false}
+                        />
+                        <Rect
+                            x={responsiveOffset}
+                            y={responsiveOffset}
+                            width={responsiveSize}
+                            height={responsiveSize}
+                            opacity={0}
                         />
                     </HideGroup>
                 </Group>
             )}
-        </ResizeableObjectContainer>
+        </RegularResizableObjectContainer>
     );
 };
 

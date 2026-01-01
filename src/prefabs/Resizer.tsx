@@ -4,7 +4,7 @@ import React, { RefObject, useLayoutEffect, useRef } from 'react';
 import { Transformer } from 'react-konva';
 import { useScene } from '../SceneProvider';
 import { ControlsPortal } from '../render/Portals';
-import { ResizeableObject, SceneObject, UnknownObject } from '../scene';
+import { ResizableObject, SceneObject, UnknownObject } from '../scene';
 import { clamp } from '../util';
 import { useShowResizer } from './highlight';
 
@@ -17,12 +17,13 @@ const MIN_ANCHOR_SIZE = 6;
 const MAX_ANCHOR_SIZE = 10;
 
 export interface ResizerProps {
-    object: ResizeableObject & UnknownObject;
+    object: ResizableObject & UnknownObject;
     nodeRef: RefObject<Konva.Group | null>;
     dragging?: boolean;
     minWidth?: number;
     minHeight?: number;
     transformerProps?: Konva.TransformerConfig;
+    regular?: boolean;
     children: (onTransformEnd: (evt: Konva.KonvaEventObject<Event>) => void) => React.ReactElement;
 }
 
@@ -33,6 +34,7 @@ export const Resizer: React.FC<ResizerProps> = ({
     minWidth,
     minHeight,
     transformerProps,
+    regular,
     children,
 }) => {
     const { dispatch } = useScene();
@@ -57,13 +59,20 @@ export const Resizer: React.FC<ResizerProps> = ({
             return;
         }
 
-        const newProps = {
-            x: Math.round(object.x + node.x()),
-            y: Math.round(object.y - node.y()),
-            rotation: Math.round(node.rotation()),
-            width: Math.round(Math.max(minWidthRequired, object.width * node.scaleX())),
-            height: Math.round(Math.max(minHeightRequired, object.height * node.scaleY())),
-        };
+        const newProps = regular
+            ? {
+                  x: Math.round(object.x + node.x()),
+                  y: Math.round(object.y - node.y()),
+                  rotation: Math.round(node.rotation()),
+                  size: Math.round(Math.max(minWidthRequired, object.width * node.scaleX())),
+              }
+            : {
+                  x: Math.round(object.x + node.x()),
+                  y: Math.round(object.y - node.y()),
+                  rotation: Math.round(node.rotation()),
+                  width: Math.round(Math.max(minWidthRequired, object.width * node.scaleX())),
+                  height: Math.round(Math.max(minHeightRequired, object.height * node.scaleY())),
+              };
 
         node.scaleX(1);
         node.scaleY(1);
@@ -71,7 +80,13 @@ export const Resizer: React.FC<ResizerProps> = ({
         node.y(0);
         node.clearCache();
 
-        dispatch({ type: 'update', value: { ...object, ...newProps } as SceneObject });
+        if (regular) {
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            const { width, height, ...newValue } = { ...object, ...newProps };
+            dispatch({ type: 'update', value: newValue as SceneObject });
+        } else {
+            dispatch({ type: 'update', value: { ...object, ...newProps } as SceneObject });
+        }
     };
 
     const boundBoxFunc = (oldBox: Box, newBox: Box) => {

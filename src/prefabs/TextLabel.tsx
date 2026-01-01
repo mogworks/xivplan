@@ -21,7 +21,7 @@ import { CompositeReplaceGroup } from './CompositeReplaceGroup';
 import { DraggableObject } from './DraggableObject';
 import { HideCutoutGroup } from './HideGroup';
 import { PrefabIcon } from './PrefabIcon';
-import { GroupProps } from './ResizeableObjectContainer';
+import { GroupProps } from './ResizableObjectContainer';
 import { useHighlightProps, useShowResizer } from './highlight';
 
 const DEFAULT_TEXT_ALIGN = 'center';

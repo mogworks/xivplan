@@ -8,7 +8,7 @@ import { BoardIconObject, ObjectType } from '../scene';
 import { useImageTracked } from '../useObjectLoading';
 import { HideGroup } from './HideGroup';
 import { useHighlightProps } from './highlight';
-import { ResizeableObjectContainer } from './ResizeableObjectContainer';
+import { RegularResizableObjectContainer } from './ResizableObjectContainer';
 
 const getIconUrl = (iconId: number) =>
     new URL(`public/board/objects/${iconId}.webp`, import.meta.env.VITE_COS_URL).href;
@@ -18,34 +18,40 @@ export const BoardIconRenderer: React.FC<RendererProps<BoardIconObject>> = ({ ob
     const [image] = useImageTracked(getIconUrl(object.iconId));
 
     return (
-        <ResizeableObjectContainer object={object} transformerProps={{ centeredScaling: true }}>
+        <RegularResizableObjectContainer
+            object={object}
+            transformerProps={{
+                centeredScaling: true,
+                enabledAnchors: ['rotater', 'top-left', 'top-right', 'bottom-right', 'bottom-left'],
+            }}
+        >
             {(groupProps) => (
                 <Group {...groupProps}>
                     {highlightProps && (
                         <Rect
-                            width={object.width}
-                            height={object.height}
-                            cornerRadius={(object.width + object.height) / 2 / 5}
+                            width={object.size}
+                            height={object.size}
+                            cornerRadius={object.size / 5}
                             {...highlightProps}
                         />
                     )}
                     <HideGroup>
                         <Image
                             image={image}
-                            width={object.width}
-                            height={object.height}
+                            width={object.size}
+                            height={object.size}
                             opacity={object.opacity / 100}
-                            x={object.width / 2}
-                            y={object.height / 2}
-                            offsetX={object.width / 2}
-                            offsetY={object.height / 2}
+                            x={object.size / 2}
+                            y={object.size / 2}
+                            offsetX={object.size / 2}
+                            offsetY={object.size / 2}
                             scaleX={object.flipHorizontal ? -1 : 1}
                             scaleY={object.flipVertical ? -1 : 1}
                         />
                     </HideGroup>
                 </Group>
             )}
-        </ResizeableObjectContainer>
+        </RegularResizableObjectContainer>
     );
 };
 

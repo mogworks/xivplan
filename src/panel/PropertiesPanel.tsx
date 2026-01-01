@@ -18,13 +18,14 @@ import {
     isLineLike,
     isMechGaze,
     isMechStack,
-    isMoveable,
+    isMovable,
     isNamed,
     isParty,
     isPolygonLike,
     isRadiusObject,
+    isRegularResizable,
     isResizable,
-    isRotateable,
+    isRotatable,
     isStarburstLike,
     isTether,
     isText,
@@ -55,7 +56,7 @@ import { PolygonOrientationControl, PolygonSidesControl } from './properties/Pol
 import { PositionControl } from './properties/PositionControl';
 import { InnerRadiusControl, RadiusControl } from './properties/RadiusControl';
 import { RotationControl } from './properties/RotationControl';
-import { SizeControl } from './properties/SizeControl';
+import { RegularSizeControl, SizeControl } from './properties/SizeControl';
 import { StackMultiHitControl } from './properties/StackControls';
 import { StackCountControl } from './properties/StackCountControl';
 import { StarburstSpokeCountControl, StarburstSpokeWidthControl } from './properties/StarburstControls';
@@ -143,8 +144,9 @@ const Controls: React.FC = () => {
             <ControlCondition objects={objects} test={isText} control={TextLayoutControl} />
 
             {/* Position/Size */}
-            <ControlCondition objects={objects} test={isMoveable} control={PositionControl} />
+            <ControlCondition objects={objects} test={isMovable} control={PositionControl} />
             <ControlCondition objects={objects} test={isResizable} control={SizeControl} />
+            <ControlCondition objects={objects} test={isRegularResizable} control={RegularSizeControl} />
             <ControlCondition objects={objects} test={isLineLike} control={LineSizeControl} />
 
             {/* TODO: change this to a two-column grid? */}
@@ -156,7 +158,7 @@ const Controls: React.FC = () => {
             </div>
 
             <div className={mergeClasses(classes.row, classes.rightGap)}>
-                <ControlCondition objects={objects} test={isRotateable} control={RotationControl} />
+                <ControlCondition objects={objects} test={isRotatable} control={RotationControl} />
                 <ControlCondition objects={objects} test={isEnemy} control={EnemyRingControl} />
                 <ControlCondition objects={objects} test={isExaflareZone} control={ExaflareSpacingControl} />
                 <ControlCondition objects={objects} test={isStarburstLike} control={StarburstSpokeCountControl} />

@@ -1,20 +1,23 @@
 import { useTranslation } from 'react-i18next';
-import { Group, Image, Path, Rect } from 'react-konva';
+import { Circle, Group, Image, Path } from 'react-konva';
 import { getDragOffset, registerDropHandler } from '../../DropHandler';
 import { DetailsItem } from '../../panel/DetailsItem';
 import { ListComponentProps, registerListComponent } from '../../panel/ListComponentRegistry';
 import { LayerName } from '../../render/layers';
 import { registerRenderer, RendererProps } from '../../render/ObjectRegistry';
 import { MechGazeObject, ObjectType } from '../../scene';
+import { CENTER_DOT_RADIUS, SPOTLIGHT_COLOR } from '../../theme';
 import { useImageTracked } from '../../useObjectLoading';
 import { usePanelDrag } from '../../usePanelDrag';
 import { HideGroup } from '../HideGroup';
 import { useHighlightProps } from '../highlight';
 import { PrefabIcon } from '../PrefabIcon';
-import { ResizeableObjectContainer } from '../ResizeableObjectContainer';
+import { RadiusObjectContainer } from '../RadiusObjectContainer';
 
 const icon = new URL(`public/board/objects/13.webp`, import.meta.env.VITE_COS_URL).href;
-const DEFAULT_SIZE = 100;
+const DEFAULT_SIZE = 60;
+
+const RESPONSIVE_SIZE_SCALE = 0.75;
 
 export const MechGazePrefab: React.FC = () => {
     const [, setDragObject] = usePanelDrag();
@@ -42,8 +45,7 @@ registerDropHandler<MechGazeObject>(ObjectType.MechGaze, (object, position) => {
         object: {
             type: ObjectType.MechGaze,
             invert: false,
-            width: DEFAULT_SIZE,
-            height: DEFAULT_SIZE,
+            radius: DEFAULT_SIZE,
             rotation: 0,
             opacity: 100,
             ...object,
@@ -73,6 +75,7 @@ const QuestionMark: React.FC<{ x: number; y: number; scaleX: number; scaleY: num
             shadowBlur={4}
             shadowForStrokeEnabled
             fill="#ffffff"
+            listening={false}
         />
     );
 };
@@ -81,37 +84,34 @@ export const MechGazeRenderer: React.FC<RendererProps<MechGazeObject>> = ({ obje
     const highlightProps = useHighlightProps(object);
     const [image] = useImageTracked(icon);
 
+    // 调整一下显示比例，使尺寸数值更加符合视觉效果
+    const responsiveSize = object.radius * RESPONSIVE_SIZE_SCALE;
+    const strokeWidth = Math.max(2, Math.min(4, responsiveSize / 100));
+
     return (
-        <ResizeableObjectContainer object={object} transformerProps={{ centeredScaling: true }}>
+        <RadiusObjectContainer object={object} allowRotate>
             {(groupProps) => (
                 <Group {...groupProps}>
-                    {highlightProps && (
-                        <Rect
-                            width={object.width}
-                            height={object.height}
-                            cornerRadius={(object.width + object.height) / 2 / 5}
-                            {...highlightProps}
-                        />
-                    )}
+                    {highlightProps && <Circle radius={responsiveSize + strokeWidth / 2} {...highlightProps} />}
                     <HideGroup>
                         <Image
                             image={image}
-                            width={object.width}
-                            height={object.height}
+                            x={-object.radius}
+                            y={-object.radius}
+                            width={object.radius * 2}
+                            height={object.radius * 2}
                             opacity={object.opacity / 100}
+                            listening={false}
                         />
+                        <Circle radius={responsiveSize} opacity={0} />
                         {object.invert && (
-                            <QuestionMark
-                                x={object.width / 2}
-                                y={object.height / 2}
-                                scaleX={object.width / 160}
-                                scaleY={object.height / 160}
-                            />
+                            <QuestionMark x={0} y={0} scaleX={object.radius / 80} scaleY={object.radius / 80} />
                         )}
+                        {groupProps.isDragging && <Circle radius={CENTER_DOT_RADIUS} fill={SPOTLIGHT_COLOR} />}
                     </HideGroup>
                 </Group>
             )}
-        </ResizeableObjectContainer>
+        </RadiusObjectContainer>
     );
 };
 

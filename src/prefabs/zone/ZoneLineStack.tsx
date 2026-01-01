@@ -13,7 +13,7 @@ import { DEFAULT_AOE_COLOR, DEFAULT_SHAPE_OPACITY, panelVars } from '../../theme
 import { usePanelDrag } from '../../usePanelDrag';
 import { HideGroup } from '../HideGroup';
 import { PrefabIcon } from '../PrefabIcon';
-import { ResizeableObjectContainer } from '../ResizeableObjectContainer';
+import { ResizableObjectContainer } from '../ResizableObjectContainer';
 import { useHighlightProps } from '../highlight';
 import { ChevronConfig, ChevronTail } from './shapes';
 import { getArrowStyle } from './style';
@@ -101,7 +101,7 @@ const LineStackRenderer: React.FC<RendererProps<RectangleZone>> = ({ object }) =
 
     return (
         <>
-            <ResizeableObjectContainer object={object} transformerProps={{ centeredScaling: true, keepRatio: false }}>
+            <ResizableObjectContainer object={object} transformerProps={{ centeredScaling: true, keepRatio: false }}>
                 {(groupProps) => (
                     <Group {...groupProps}>
                         {highlightProps && <Rect width={object.width} height={object.height} {...highlightProps} />}
@@ -128,7 +128,7 @@ const LineStackRenderer: React.FC<RendererProps<RectangleZone>> = ({ object }) =
                         </HideGroup>
                     </Group>
                 )}
-            </ResizeableObjectContainer>
+            </ResizableObjectContainer>
 
             <Group ref={arrowRef} x={OFFSCREEN_X} y={OFFSCREEN_Y}>
                 <ChevronTail x={patternWidth * ARROW_PAD} rotation={90} {...arrow} />

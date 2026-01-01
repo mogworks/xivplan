@@ -195,19 +195,23 @@ export interface HollowObject {
     readonly hollow?: boolean;
 }
 
-export interface MoveableObject {
+export interface MovableObject {
     readonly x: number;
     readonly y: number;
     readonly pinned?: boolean;
 }
 
-export interface RotateableObject {
+export interface RotatableObject {
     readonly rotation: number;
 }
 
-export interface ResizeableObject extends MoveableObject, RotateableObject {
+export interface ResizableObject extends MovableObject, RotatableObject {
     readonly width: number;
     readonly height: number;
+}
+
+export interface RegularResizableObject extends MovableObject, RotatableObject {
+    readonly size: number;
 }
 
 export interface FlipableObject {
@@ -215,15 +219,15 @@ export interface FlipableObject {
     readonly flipVertical?: boolean;
 }
 
-export interface RadiusObject extends MoveableObject {
+export interface RadiusObject extends MovableObject {
     readonly radius: number;
 }
 
-export interface InnerRadiusObject extends MoveableObject {
+export interface InnerRadiusObject extends MovableObject {
     readonly innerRadius: number;
 }
 
-export interface ImageObject extends ResizeableObject {
+export interface ImageObject extends ResizableObject {
     readonly image: string;
 }
 
@@ -234,11 +238,11 @@ export interface StackCountObject {
 /**
  * Special object for treating the cursor location as a tether target.
  */
-export interface FakeCursorObject extends MoveableObject, BaseObject {
+export interface FakeCursorObject extends MovableObject, BaseObject {
     readonly type: ObjectType.Cursor;
 }
 
-export interface WaymarkObject extends ResizeableObject, BaseObject {
+export interface WaymarkObject extends RegularResizableObject, BaseObject {
     readonly type: ObjectType.Waymark;
     readonly waymarkType: WaymarkType;
     readonly fgOpacity?: number;
@@ -247,7 +251,7 @@ export interface WaymarkObject extends ResizeableObject, BaseObject {
 }
 export const isWaymark = makeObjectTest<WaymarkObject>(ObjectType.Waymark);
 
-export interface ArrowObject extends ResizeableObject, ColoredObject, BaseObject {
+export interface ArrowObject extends ResizableObject, ColoredObject, BaseObject {
     readonly type: ObjectType.Arrow;
     readonly arrowBegin?: boolean;
     readonly arrowEnd?: boolean;
@@ -256,7 +260,7 @@ export const isArrow = makeObjectTest<ArrowObject>(ObjectType.Arrow);
 
 export type TextStyle = 'outline' | 'shadow' | 'plain';
 
-export interface TextObject extends MoveableObject, RotateableObject, ColoredObject, BaseObject {
+export interface TextObject extends MovableObject, RotatableObject, ColoredObject, BaseObject {
     readonly type: ObjectType.Text;
     readonly text: string;
     readonly style: TextStyle;
@@ -276,13 +280,13 @@ export interface IconObject extends ImageObject, NamedObject, BaseObject {
 }
 export const isIcon = makeObjectTest<IconObject>(ObjectType.Icon);
 
-export interface BoardIconObject extends ResizeableObject, FlipableObject, NamedObject, BaseObject {
+export interface BoardIconObject extends RegularResizableObject, FlipableObject, NamedObject, BaseObject {
     readonly type: ObjectType.BoardIcon;
     readonly iconId: number;
 }
 export const isBoardIcon = makeObjectTest<BoardIconObject>(ObjectType.BoardIcon);
 
-export interface PartyObject extends ResizeableObject, BaseObject {
+export interface PartyObject extends RegularResizableObject, BaseObject {
     readonly type: ObjectType.Party;
     readonly iconId: number;
 }
@@ -294,7 +298,7 @@ export enum EnemyRingStyle {
     Omnidirectional = 'omni',
 }
 
-export interface EnemyObject extends RadiusObject, RotateableObject, NamedObject, ColoredObject, BaseObject {
+export interface EnemyObject extends RadiusObject, RotatableObject, NamedObject, ColoredObject, BaseObject {
     readonly type: ObjectType.Enemy;
     readonly icon: string;
     readonly ring: EnemyRingStyle;
@@ -306,20 +310,20 @@ export function isActor(object: UnknownObject): object is Actor {
     return isParty(object) || isEnemy(object);
 }
 
-export interface AoeRectObject extends Readonly<AoeProps>, ResizeableObject, BaseObject {
+export interface AoeRectObject extends Readonly<AoeProps>, ResizableObject, BaseObject {
     readonly type: ObjectType.AoeRect;
 }
 
-export interface AoeLineObject extends Readonly<AoeProps>, LineProps, MoveableObject, RotateableObject, BaseObject {
+export interface AoeLineObject extends Readonly<AoeProps>, LineProps, MovableObject, RotatableObject, BaseObject {
     readonly type: ObjectType.AoeLine;
 }
 
-export interface AoePolygonObject extends Readonly<AoeProps>, PolygonProps, RadiusObject, RotateableObject, BaseObject {
+export interface AoePolygonObject extends Readonly<AoeProps>, PolygonProps, RadiusObject, RotatableObject, BaseObject {
     readonly type: ObjectType.AoePolygon;
 }
 
 export interface AoeStarburstObject
-    extends Readonly<AoeProps>, StarburstProps, RadiusObject, RotateableObject, BaseObject {
+    extends Readonly<AoeProps>, StarburstProps, RadiusObject, RotatableObject, BaseObject {
     readonly type: ObjectType.AoeStarburst;
 }
 
@@ -331,12 +335,12 @@ export interface AoeDonutObject extends Readonly<AoeProps>, RadiusObject, InnerR
     readonly type: ObjectType.AoeDonut;
 }
 
-export interface AoeFanObject extends Readonly<AoeProps>, FanProps, RadiusObject, RotateableObject, BaseObject {
+export interface AoeFanObject extends Readonly<AoeProps>, FanProps, RadiusObject, RotatableObject, BaseObject {
     readonly type: ObjectType.AoeFan;
 }
 
 export interface AoeArcObject
-    extends Readonly<AoeProps>, FanProps, RadiusObject, InnerRadiusObject, RotateableObject, BaseObject {
+    extends Readonly<AoeProps>, FanProps, RadiusObject, InnerRadiusObject, RotatableObject, BaseObject {
     readonly type: ObjectType.AoeArc;
 }
 
@@ -382,13 +386,13 @@ export interface StackZone extends StackCountObject, RadiusObject, ColoredObject
 }
 export const isStackZone = makeObjectTest<StackZone>(ObjectType.Stack);
 
-export interface MechStackObject extends ResizeableObject, BaseObject {
+export interface MechStackObject extends RadiusObject, RotatableObject, BaseObject {
     readonly type: ObjectType.MechStack;
     readonly multiHit?: boolean;
 }
 export const isMechStack = makeObjectTest<MechStackObject>(ObjectType.MechStack);
 
-export interface MechGazeObject extends ResizeableObject, BaseObject {
+export interface MechGazeObject extends RadiusObject, RotatableObject, BaseObject {
     readonly type: ObjectType.MechGaze;
     readonly invert?: boolean; // 是否反向
 }
@@ -412,7 +416,7 @@ export interface LineProps {
     readonly width: number;
 }
 
-export interface LineZone extends LineProps, MoveableObject, ColoredObject, HollowObject, RotateableObject, BaseObject {
+export interface LineZone extends LineProps, MovableObject, ColoredObject, HollowObject, RotatableObject, BaseObject {
     readonly type: ObjectType.Line;
 }
 export const isLineZone = makeObjectTest<LineZone>(ObjectType.Line);
@@ -421,18 +425,18 @@ export interface FanProps {
     readonly fanAngle: number;
 }
 
-export interface FanZone extends FanProps, RadiusObject, ColoredObject, HollowObject, RotateableObject, BaseObject {
+export interface FanZone extends FanProps, RadiusObject, ColoredObject, HollowObject, RotatableObject, BaseObject {
     readonly type: ObjectType.Fan;
 }
 export const isFanZone = makeObjectTest<FanZone>(ObjectType.Fan);
 
 export interface ArcZone
-    extends FanProps, RadiusObject, ColoredObject, HollowObject, RotateableObject, InnerRadiusObject, BaseObject {
+    extends FanProps, RadiusObject, ColoredObject, HollowObject, RotatableObject, InnerRadiusObject, BaseObject {
     readonly type: ObjectType.Arc;
 }
 export const isArcZone = makeObjectTest<ArcZone>(ObjectType.Arc);
 
-export interface RectangleZone extends ResizeableObject, ColoredObject, HollowObject, BaseObject {
+export interface RectangleZone extends ResizableObject, ColoredObject, HollowObject, BaseObject {
     readonly type:
         | ObjectType.Rect
         | ObjectType.LineStack
@@ -459,12 +463,12 @@ export interface PolygonProps {
 }
 
 export interface PolygonZone
-    extends PolygonProps, RadiusObject, ColoredObject, HollowObject, RotateableObject, BaseObject {
+    extends PolygonProps, RadiusObject, ColoredObject, HollowObject, RotatableObject, BaseObject {
     readonly type: ObjectType.Polygon;
 }
 export const isPolygonZone = makeObjectTest<PolygonZone>(ObjectType.Polygon);
 
-export interface ExaflareZone extends RadiusObject, RotateableObject, ColoredObject, BaseObject {
+export interface ExaflareZone extends RadiusObject, RotatableObject, ColoredObject, BaseObject {
     readonly type: ObjectType.Exaflare;
     readonly length: number;
     readonly spacing: number;
@@ -476,7 +480,7 @@ export interface StarburstProps {
     readonly spokeWidth: number;
 }
 
-export interface StarburstZone extends StarburstProps, RadiusObject, RotateableObject, ColoredObject, BaseObject {
+export interface StarburstZone extends StarburstProps, RadiusObject, RotatableObject, ColoredObject, BaseObject {
     readonly type: ObjectType.Starburst;
 }
 export const isStarburstZone = makeObjectTest<StarburstZone>(ObjectType.Starburst);
@@ -528,7 +532,7 @@ export interface Tether extends BaseObject, ColoredObject {
 }
 export const isTether = makeObjectTest<Tether>(ObjectType.Tether);
 
-export interface DrawObject extends ResizeableObject, RotateableObject, ColoredObject, BaseObject {
+export interface DrawObject extends ResizableObject, RotatableObject, ColoredObject, BaseObject {
     readonly type: ObjectType.Draw;
     readonly points: readonly number[];
     readonly brushSize: number;
@@ -567,27 +571,36 @@ export function isColored<T>(object: T): object is ColoredObject & T {
     return obj && typeof obj.color === 'string';
 }
 
-export function isMoveable<T>(object: T): object is MoveableObject & T {
-    const obj = object as MoveableObject & T;
+export function isMovable<T>(object: T): object is MovableObject & T {
+    const obj = object as MovableObject & T;
     return obj && typeof obj.x === 'number' && typeof obj.y === 'number';
 }
 
-export function isRotateable<T>(object: T): object is RotateableObject & T {
-    const obj = object as RotateableObject & T;
+export function isRotatable<T>(object: T): object is RotatableObject & T {
+    const obj = object as RotatableObject & T;
     return obj && typeof obj.rotation === 'number';
 }
 
-export function isResizable<T>(object: T): object is ResizeableObject & T {
-    if (!isMoveable(object) || !isRotateable(object)) {
+export function isResizable<T>(object: T): object is ResizableObject & T {
+    if (!isMovable(object) || !isRotatable(object)) {
         return false;
     }
 
-    const obj = object as ResizeableObject & T;
+    const obj = object as ResizableObject & T;
     return obj && typeof obj.width === 'number' && typeof obj.height === 'number';
 }
 
+export function isRegularResizable<T>(object: T): object is RegularResizableObject & T {
+    if (!isMovable(object) || !isRotatable(object)) {
+        return false;
+    }
+
+    const obj = object as RegularResizableObject & T;
+    return obj && typeof obj.size === 'number';
+}
+
 export function isRadiusObject<T>(object: T): object is RadiusObject & T {
-    if (!isMoveable(object)) {
+    if (!isMovable(object)) {
         return false;
     }
 
@@ -596,7 +609,7 @@ export function isRadiusObject<T>(object: T): object is RadiusObject & T {
 }
 
 export function isInnerRadiusObject<T>(object: T): object is InnerRadiusObject & T {
-    if (!isMoveable(object)) {
+    if (!isMovable(object)) {
         return false;
     }
 

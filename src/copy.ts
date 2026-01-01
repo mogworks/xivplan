@@ -1,8 +1,8 @@
 import { Vector2d } from 'konva/lib/types';
 import {
-    isMoveable,
+    isMovable,
     isTether,
-    MoveableObject,
+    MovableObject,
     Scene,
     SceneObject,
     SceneObjectWithoutId,
@@ -10,16 +10,16 @@ import {
     UnknownObject,
 } from './scene';
 import { isNotNull } from './util';
-import { vecAdd, vecSub, VEC_ZERO } from './vector';
+import { VEC_ZERO, vecAdd, vecSub } from './vector';
 
-export function getGroupCenter(objects: readonly MoveableObject[]): Vector2d {
-    const moveable = objects.filter(isMoveable);
-    if (!moveable.length) {
+export function getGroupCenter(objects: readonly MovableObject[]): Vector2d {
+    const movable = objects.filter(isMovable);
+    if (!movable.length) {
         return { x: 0, y: 0 };
     }
 
-    const x = moveable.reduce((result, obj) => result + obj.x, 0) / moveable.length;
-    const y = moveable.reduce((result, obj) => result + obj.y, 0) / moveable.length;
+    const x = movable.reduce((result, obj) => result + obj.x, 0) / movable.length;
+    const y = movable.reduce((result, obj) => result + obj.y, 0) / movable.length;
 
     return { x, y };
 }
@@ -38,7 +38,7 @@ function retargetTether(scene: Scene, originalTargets: readonly UnknownObject[],
 
 function getOffset(objects: readonly SceneObject[], newCenter?: Vector2d) {
     if (newCenter) {
-        const currentCenter = getGroupCenter(objects.filter(isMoveable));
+        const currentCenter = getGroupCenter(objects.filter(isMovable));
         return vecSub(newCenter, currentCenter);
     }
 
@@ -46,7 +46,7 @@ function getOffset(objects: readonly SceneObject[], newCenter?: Vector2d) {
 }
 
 function isCopyable(object: Readonly<SceneObject>, objects: readonly SceneObject[]) {
-    if (isMoveable(object)) {
+    if (isMovable(object)) {
         return true;
     }
 
@@ -57,7 +57,7 @@ function isCopyable(object: Readonly<SceneObject>, objects: readonly SceneObject
     return false;
 }
 
-function copyObject(object: Readonly<MoveableObject & UnknownObject>, offset: Vector2d): SceneObjectWithoutId {
+function copyObject(object: Readonly<MovableObject & UnknownObject>, offset: Vector2d): SceneObjectWithoutId {
     const pos = vecAdd(object, offset);
     return { ...object, ...pos, id: undefined };
 }
@@ -91,7 +91,7 @@ export function copyObjects(
 
     return objects
         .map((obj) => {
-            if (isMoveable(obj)) {
+            if (isMovable(obj)) {
                 return copyObject(obj, offset);
             }
 

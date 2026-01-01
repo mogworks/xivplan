@@ -27,7 +27,7 @@ import {
     TetherType,
     isAoeObject,
     isEnemy,
-    isMoveable,
+    isMovable,
     isRadiusObject,
     isResizable,
     isWaymark,
@@ -90,8 +90,8 @@ function getTargetPoints(
     startObject: SceneObject | undefined,
     endObject: SceneObject | undefined,
 ): [Vector2d, Vector2d] {
-    const startPos = isMoveable(startObject) ? startObject : INVALID_START_POS;
-    const endPos = isMoveable(endObject) ? endObject : INVALID_END_POS;
+    const startPos = isMovable(startObject) ? startObject : INVALID_START_POS;
+    const endPos = isMovable(endObject) ? endObject : INVALID_END_POS;
 
     return [getCanvasCoord(scene, startPos), getCanvasCoord(scene, endPos)];
 }

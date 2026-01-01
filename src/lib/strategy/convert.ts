@@ -98,8 +98,7 @@ function parseObject(obj: SBObject): SceneObjectWithoutId | null {
             iconId: iconId,
             opacity: obj.color.opacity,
             hide: !obj.flags.visible,
-            width: size,
-            height: size,
+            size,
             ...coordinates,
             pinned: obj.flags.locked,
             rotation: obj.angle,
@@ -115,8 +114,7 @@ function parseObject(obj: SBObject): SceneObjectWithoutId | null {
             iconId: iconId,
             opacity: obj.color.opacity,
             hide: !obj.flags.visible,
-            width: size,
-            height: size,
+            size,
             ...coordinates,
             pinned: obj.flags.locked,
             rotation: obj.angle,
@@ -246,8 +244,7 @@ function parseObject(obj: SBObject): SceneObjectWithoutId | null {
                 type: ObjectType.MechGaze,
                 opacity: obj.color.opacity,
                 hide: !obj.flags.visible,
-                width: size,
-                height: size,
+                radius: size / 2,
                 ...coordinates,
                 pinned: obj.flags.locked,
                 rotation: obj.angle,
@@ -257,17 +254,25 @@ function parseObject(obj: SBObject): SceneObjectWithoutId | null {
         // stack
         case 14:
         case 106:
-            return {
-                type: ObjectType.MechStack,
-                opacity: obj.color.opacity,
-                hide: !obj.flags.visible,
-                width: size,
-                height: size,
-                ...coordinates,
-                pinned: obj.flags.locked,
-                rotation: obj.angle,
-                multiHit: obj.id === 106 ? true : undefined, // 105 是连续型
-            } as Omit<MechStackObject, 'id'>;
+            return (() => {
+                const common = {
+                    type: ObjectType.MechStack,
+                    opacity: obj.color.opacity,
+                    hide: !obj.flags.visible,
+                    radius: size / 2,
+                    ...coordinates,
+                    pinned: obj.flags.locked,
+                    rotation: obj.angle,
+                };
+                return (
+                    obj.id === 106
+                        ? {
+                              ...common,
+                              multiHit: true, // 106 是连续型
+                          }
+                        : common
+                ) as Omit<MechStackObject, 'id'>;
+            })();
 
         // line stack
         case 15:
@@ -289,8 +294,7 @@ function parseObject(obj: SBObject): SceneObjectWithoutId | null {
         iconId: iconId,
         opacity: obj.color.opacity,
         hide: !obj.flags.visible,
-        width: size,
-        height: size,
+        size: size,
         ...coordinates,
         pinned: obj.flags.locked,
         rotation: obj.angle,

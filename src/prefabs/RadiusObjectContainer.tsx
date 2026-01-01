@@ -4,7 +4,7 @@ import { useScene } from '../SceneProvider';
 import { getPointerAngle, snapAngle } from '../coord';
 import { getResizeCursor } from '../cursor';
 import { ActivePortal } from '../render/Portals';
-import { InnerRadiusObject, RadiusObject, SceneObject, UnknownObject, isRotateable } from '../scene';
+import { InnerRadiusObject, RadiusObject, SceneObject, UnknownObject, isRotatable } from '../scene';
 import { useIsDragging } from '../selection';
 import { CENTER_DOT_RADIUS } from '../theme';
 import { distance } from '../vector';
@@ -57,7 +57,7 @@ export const RadiusObjectContainer: React.FC<RadiusObjectContainerProps> = ({
 
         const update: Partial<RadiusObjectState> = { radius: state.radius };
 
-        if (isRotateable(object)) {
+        if (isRotatable(object)) {
             update.rotation = state.rotation;
         }
         if (isInnerRadiusObject(object)) {
@@ -91,7 +91,7 @@ function stateChanged(object: RadiusObject, state: RadiusObjectState) {
         return true;
     }
 
-    if (isRotateable(object) && state.rotation !== object.rotation) {
+    if (isRotatable(object) && state.rotation !== object.rotation) {
         return true;
     }
 
@@ -148,7 +148,7 @@ function getRotation(
     { pointerPos, activeHandleId }: HandleFuncProps,
     { allowRotate }: ControlPointProps,
 ) {
-    if (!allowRotate || !isRotateable(object)) {
+    if (!allowRotate || !isRotatable(object)) {
         return 0;
     }
 
@@ -197,7 +197,7 @@ const RadiusControlPoints = createControlPointManager<RadiusObject, RadiusObject
                 innerRadius = Math.min(innerRadius, radius - MIN_RADIUS_GAP);
             }
 
-            const rotation = isRotateable(object) ? object.rotation : 0;
+            const rotation = isRotatable(object) ? object.rotation : 0;
             const handles = getNormalHandles(radius, rotation);
 
             if (props.allowRotate) {
@@ -209,7 +209,7 @@ const RadiusControlPoints = createControlPointManager<RadiusObject, RadiusObject
             return handles;
         } else {
             const radius = getRadius(object, handle) + OUTSET;
-            const rotation = isRotateable(object) ? object.rotation : 0;
+            const rotation = isRotatable(object) ? object.rotation : 0;
             const handles = getNormalHandles(radius, rotation);
 
             if (props.allowRotate) {

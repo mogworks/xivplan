@@ -215,6 +215,7 @@
     "color": "Color",
     "width": "Width",
     "height": "Height",
+    "size": "Size",
     "rotation": "Rotation",
     "name": "Name",
     "x": "X",
