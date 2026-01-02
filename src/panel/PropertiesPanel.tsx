@@ -10,13 +10,14 @@ import {
     isDrawObject,
     isEnemy,
     isExaflareZone,
+    isExtendable,
     isFanLike,
     isGaze,
     isIcon,
     isImageObject,
     isInnerRadiusObject,
     isLineLike,
-    isMechExaflareCircle,
+    isMechCircleExaflare,
     isMechGaze,
     isMechStack,
     isMovable,
@@ -43,6 +44,7 @@ import { DrawObjectBrushControl } from './properties/BrushControl';
 import { ColorControl, ColorSwatchControl } from './properties/ColorControl';
 import { EnemyRingControl } from './properties/EnemyControls';
 import { ExaflareLengthControl, ExaflareSpacingControl } from './properties/ExaflareControls';
+import { ExtendableControl } from './properties/ExtendableControls';
 import { FanAngleControl } from './properties/FanControls';
 import { GazeInvertControl } from './properties/GazeControls';
 import { HideControl } from './properties/HideControl';
@@ -149,6 +151,7 @@ const Controls: React.FC = () => {
             <ControlCondition objects={objects} test={isResizable} control={SizeControl} />
             <ControlCondition objects={objects} test={isRegularResizable} control={RegularSizeControl} />
             <ControlCondition objects={objects} test={isLineLike} control={LineSizeControl} />
+            <ControlCondition objects={objects} test={isExtendable} control={ExtendableControl} />
 
             {/* TODO: change this to a two-column grid? */}
             <div className={mergeClasses(classes.row, classes.rightGap)}>
@@ -156,7 +159,7 @@ const Controls: React.FC = () => {
                 <ControlCondition objects={objects} test={isInnerRadiusObject} control={InnerRadiusControl} />
                 <ControlCondition
                     objects={objects}
-                    test={(x) => isExaflareZone(x) || isMechExaflareCircle(x)}
+                    test={(x) => isExaflareZone(x) || isMechCircleExaflare(x)}
                     control={ExaflareLengthControl}
                 />
                 <ControlCondition objects={objects} test={isStarburstLike} control={StarburstSpokeWidthControl} />
@@ -167,7 +170,7 @@ const Controls: React.FC = () => {
                 <ControlCondition objects={objects} test={isEnemy} control={EnemyRingControl} />
                 <ControlCondition
                     objects={objects}
-                    test={(x) => isExaflareZone(x) || isMechExaflareCircle(x)}
+                    test={(x) => isExaflareZone(x) || isMechCircleExaflare(x)}
                     control={ExaflareSpacingControl}
                 />
                 <ControlCondition objects={objects} test={isStarburstLike} control={StarburstSpokeCountControl} />

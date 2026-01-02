@@ -66,11 +66,13 @@ export enum ObjectType {
     AoeStarburst = 'aoeStarburst',
     MechGaze = 'mechGaze',
     MechStack = 'mechStack',
+    MechLineStack = 'mechLineStack',
     MechProximity = 'mechProximity',
     MechRadialKnockback = 'mechRadialKnockback',
+    MechLinearKnockback = 'mechLinearKnockback',
     MechTower = 'mechTower',
     MechCounterTower = 'mechCounterTower',
-    MechExaflareCircle = 'mechExaflareCircle',
+    MechCircleExaflare = 'mechCircleExaflare',
 }
 
 export interface BaseObject {
@@ -286,7 +288,13 @@ export interface IconObject extends ImageObject, NamedObject, BaseObject {
 }
 export const isIcon = makeObjectTest<IconObject>(ObjectType.Icon);
 
-export interface BoardIconObject extends RegularResizableObject, FlipableObject, NamedObject, BaseObject {
+export interface ExtendableObject {
+    readonly hNum?: number; // Horizontal number of icons
+    readonly vNum?: number; // Vertical number of icons
+}
+
+export interface BoardIconObject
+    extends RegularResizableObject, ExtendableObject, FlipableObject, NamedObject, BaseObject {
     readonly type: ObjectType.BoardIcon;
     readonly iconId: number;
 }
@@ -398,12 +406,22 @@ export interface MechStackObject extends RadiusObject, RotatableObject, BaseObje
 }
 export const isMechStack = makeObjectTest<MechStackObject>(ObjectType.MechStack);
 
-export interface MechExaflareCircleObject extends RadiusObject, RotatableObject, BaseObject {
-    readonly type: ObjectType.MechExaflareCircle;
+export interface MechLineStackObject extends RegularResizableObject, ExtendableObject, BaseObject {
+    readonly type: ObjectType.MechLineStack;
+}
+export const isMechLineStack = makeObjectTest<MechLineStackObject>(ObjectType.MechLineStack);
+
+export interface MechLinearKnockbackObject extends RegularResizableObject, ExtendableObject, BaseObject {
+    readonly type: ObjectType.MechLinearKnockback;
+}
+export const isMechLinearKnockback = makeObjectTest<MechLinearKnockbackObject>(ObjectType.MechLinearKnockback);
+
+export interface MechCircleExaflareObject extends RadiusObject, RotatableObject, BaseObject {
+    readonly type: ObjectType.MechCircleExaflare;
     readonly length: number;
     readonly spacing: number;
 }
-export const isMechExaflareCircle = makeObjectTest<MechExaflareCircleObject>(ObjectType.MechExaflareCircle);
+export const isMechCircleExaflare = makeObjectTest<MechCircleExaflareObject>(ObjectType.MechCircleExaflare);
 
 export interface MechCounterTowerObject extends StackCountObject, RadiusObject, RotatableObject, BaseObject {
     readonly type: ObjectType.MechCounterTower;
@@ -583,6 +601,11 @@ export function isNamed<T>(object: T): object is NamedObject & T {
     // Show NameControl if the object supports naming: either a user-defined name exists
     // or a defaultNameKey is present (new plans). Use property existence check instead of typeof string.
     return !!obj && ('name' in obj || 'defaultNameKey' in obj);
+}
+
+export function isExtendable<T>(object: T): object is ExtendableObject & T {
+    const obj = object as ExtendableObject & T;
+    return obj && (typeof obj.hNum === 'number' || typeof obj.vNum === 'number');
 }
 
 export function isLineLike<T>(object: T): object is LineProps & T {

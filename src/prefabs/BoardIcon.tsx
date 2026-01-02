@@ -17,37 +17,49 @@ export const BoardIconRenderer: React.FC<RendererProps<BoardIconObject>> = ({ ob
     const highlightProps = useHighlightProps(object);
     const [image] = useImageTracked(getIconUrl(object.iconId));
 
+    const hNum = object.hNum || 1;
+    const vNum = object.vNum || 1;
+
     return (
         <RegularResizableObjectContainer
             object={object}
             transformerProps={{
                 centeredScaling: true,
-                enabledAnchors: ['rotater', 'top-left', 'top-right', 'bottom-right', 'bottom-left'],
+                enabledAnchors: ['top-left', 'top-right', 'bottom-right', 'bottom-left'],
             }}
         >
             {(groupProps) => (
                 <Group {...groupProps}>
                     {highlightProps && (
                         <Rect
-                            width={object.size}
-                            height={object.size}
+                            x={(-object.size * (hNum - 1)) / 2}
+                            y={(-object.size * (vNum - 1)) / 2}
+                            width={object.size * hNum}
+                            height={object.size * vNum}
                             cornerRadius={object.size / 5}
                             {...highlightProps}
                         />
                     )}
                     <HideGroup>
-                        <Image
-                            image={image}
-                            width={object.size}
-                            height={object.size}
-                            opacity={object.opacity / 100}
-                            x={object.size / 2}
-                            y={object.size / 2}
-                            offsetX={object.size / 2}
-                            offsetY={object.size / 2}
-                            scaleX={object.flipHorizontal ? -1 : 1}
-                            scaleY={object.flipVertical ? -1 : 1}
-                        />
+                        {Array.from({ length: hNum * vNum }).map((_, i) => (
+                            <Image
+                                key={i}
+                                image={image}
+                                width={object.size}
+                                height={object.size}
+                                opacity={object.opacity / 100}
+                                x={object.size / 2 + (i % hNum) * object.size - ((hNum - 1) * object.size) / 2}
+                                y={
+                                    object.size / 2 +
+                                    Math.floor(i / hNum) * object.size -
+                                    ((vNum - 1) * object.size) / 2
+                                }
+                                offsetX={object.size / 2}
+                                offsetY={object.size / 2}
+                                scaleX={object.flipHorizontal ? -1 : 1}
+                                scaleY={object.flipVertical ? -1 : 1}
+                            />
+                        ))}
                     </HideGroup>
                 </Group>
             )}

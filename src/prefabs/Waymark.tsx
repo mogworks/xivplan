@@ -123,7 +123,7 @@ export const WaymarkRenderer: React.FC<RendererProps<WaymarkObject>> = ({ object
             transformerProps={{
                 centeredScaling: true,
                 padding: -object.size * 0.5 + 3,
-                enabledAnchors: ['rotater', 'top-left', 'top-right', 'bottom-right', 'bottom-left'],
+                enabledAnchors: ['top-left', 'top-right', 'bottom-right', 'bottom-left'],
             }}
         >
             {(groupProps) => (

@@ -258,7 +258,9 @@
     "variant": "Variant",
     "show": "Show",
     "hide": "Hide",
-    "multiHit": "Multi-hit"
+    "multiHit": "Multi-hit",
+    "hNum": "H. num",
+    "vNum": "V. num"
   },
   "colors": {
     "invalidColor": "Invalid color",
@@ -355,13 +357,15 @@
     },
     "stack": {
       "normal": "Stack",
-      "multiHit": "Stack (Multi-Hit)"
+      "multiHit": "Stack (Multi-Hit)",
+      "line": "Line Stack"
     },
     "proximity": "Proximity",
     "radialKnockback": "Radial Knockback",
+    "linearKnockback": "Linear Knockback",
     "tower": "Tower",
     "counterTower": "Counter Tower",
-    "exaflareCircle": "Moving Circle AoE"
+    "circleExaflare": "Moving Circle AoE"
   },
   "arena": {
     "background": {

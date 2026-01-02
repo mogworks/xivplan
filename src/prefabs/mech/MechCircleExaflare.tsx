@@ -6,7 +6,7 @@ import { DetailsItem } from '../../panel/DetailsItem';
 import { ListComponentProps, registerListComponent } from '../../panel/ListComponentRegistry';
 import { LayerName } from '../../render/layers';
 import { registerRenderer, RendererProps } from '../../render/ObjectRegistry';
-import { MechExaflareCircleObject, ObjectType } from '../../scene';
+import { MechCircleExaflareObject, ObjectType } from '../../scene';
 import { CENTER_DOT_RADIUS, DEFAULT_AOE_COLOR, SPOTLIGHT_COLOR } from '../../theme';
 import { useImageTracked } from '../../useObjectLoading';
 import { usePanelDrag } from '../../usePanelDrag';
@@ -22,18 +22,18 @@ const DEFAULT_SIZE = 50;
 
 const RESPONSIVE_SIZE_SCALE = 0.96;
 
-export const MechExaflareCirclePrefab: React.FC = () => {
+export const MechCircleExaflarePrefab: React.FC = () => {
     const [, setDragObject] = usePanelDrag();
     const { t } = useTranslation();
     return (
         <PrefabIcon
             draggable
-            name={t('mechanic.exaflareCircle')}
+            name={t('mechanic.circleExaflare')}
             icon={icon}
             onDragStart={(e) => {
                 setDragObject({
                     object: {
-                        type: ObjectType.MechExaflareCircle,
+                        type: ObjectType.MechCircleExaflare,
                     },
                     offset: getDragOffset(e),
                 });
@@ -42,11 +42,11 @@ export const MechExaflareCirclePrefab: React.FC = () => {
     );
 };
 
-registerDropHandler<MechExaflareCircleObject>(ObjectType.MechExaflareCircle, (object, position) => {
+registerDropHandler<MechCircleExaflareObject>(ObjectType.MechCircleExaflare, (object, position) => {
     return {
         type: 'add',
         object: {
-            type: ObjectType.MechExaflareCircle,
+            type: ObjectType.MechCircleExaflare,
             radius: DEFAULT_SIZE,
             opacity: 100,
             rotation: 0,
@@ -54,7 +54,7 @@ registerDropHandler<MechExaflareCircleObject>(ObjectType.MechExaflareCircle, (ob
             spacing: EXAFLARE_SPACING_DEFAULT,
             ...object,
             ...position,
-        } as MechExaflareCircleObject,
+        } as MechCircleExaflareObject,
     };
 });
 
@@ -69,7 +69,7 @@ function getDashSize(radius: number) {
     return (2 * Math.PI * radius) / 32;
 }
 
-export const MechExaflareCircleRenderer: React.FC<RendererProps<MechExaflareCircleObject>> = ({ object }) => {
+export const MechCircleExaflareRenderer: React.FC<RendererProps<MechCircleExaflareObject>> = ({ object }) => {
     const highlightProps = useHighlightProps(object);
     const [image] = useImageTracked(icon);
 
@@ -122,15 +122,15 @@ export const MechExaflareCircleRenderer: React.FC<RendererProps<MechExaflareCirc
     );
 };
 
-registerRenderer<MechExaflareCircleObject>(ObjectType.MechExaflareCircle, LayerName.Ground, MechExaflareCircleRenderer);
+registerRenderer<MechCircleExaflareObject>(ObjectType.MechCircleExaflare, LayerName.Ground, MechCircleExaflareRenderer);
 
-export const MechExaflareCircleDetails: React.FC<ListComponentProps<MechExaflareCircleObject>> = ({
+export const MechCircleExaflareDetails: React.FC<ListComponentProps<MechCircleExaflareObject>> = ({
     object,
     ...props
 }) => {
     const { t } = useTranslation();
-    const name = t(`mechanic.exaflareCircle`);
+    const name = t(`mechanic.circleExaflare`);
     return <DetailsItem icon={icon} name={name} object={object} {...props} />;
 };
 
-registerListComponent<MechExaflareCircleObject>(ObjectType.MechExaflareCircle, MechExaflareCircleDetails);
+registerListComponent<MechCircleExaflareObject>(ObjectType.MechCircleExaflare, MechCircleExaflareDetails);

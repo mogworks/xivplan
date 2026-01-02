@@ -78,7 +78,7 @@ const PartyRenderer: React.FC<RendererProps<PartyObject>> = ({ object }) => {
             transformerProps={{
                 centeredScaling: true,
                 padding: 3,
-                enabledAnchors: ['rotater', 'top-left', 'top-right', 'bottom-right', 'bottom-left'],
+                enabledAnchors: ['top-left', 'top-right', 'bottom-right', 'bottom-left'],
             }}
         >
             {(groupProps) => (

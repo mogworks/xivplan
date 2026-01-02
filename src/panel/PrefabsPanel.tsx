@@ -13,10 +13,12 @@ import { AoeStarburstPrefab } from '../prefabs/aoe/AoeStarburst';
 import { MarkerArrow } from '../prefabs/Arrow';
 import '../prefabs/BoardIcon';
 import { EnemyCircle, EnemyHuge, EnemyLarge, EnemyMedium, EnemySmall } from '../prefabs/Enemies';
+import { MechCircleExaflarePrefab } from '../prefabs/mech/MechCircleExaflare';
 import { MechCounterTowerPrefab } from '../prefabs/mech/MechCounterTower';
-import { MechExaflareCirclePrefab } from '../prefabs/mech/MechExaflareCircle';
 import '../prefabs/mech/MechGaze';
 import { MechGazePrefab } from '../prefabs/mech/MechGaze';
+import { MechLinearKnockbackPrefab } from '../prefabs/mech/MechLinearKnockback';
+import { MechLineStackPrefab } from '../prefabs/mech/MechLineStack';
 import { MechProximityPrefab } from '../prefabs/mech/MechProximity';
 import { MechRadialKnockbackPrefab } from '../prefabs/mech/MechRadialKnockback';
 import { MechStackPrefab } from '../prefabs/mech/MechStack';
@@ -64,9 +66,6 @@ import { ZoneCircle } from '../prefabs/zone/ZoneCircle';
 import { ZoneDonut } from '../prefabs/zone/ZoneDonut';
 import { ZoneFan } from '../prefabs/zone/ZoneFan';
 import { ZoneLine } from '../prefabs/zone/ZoneLine';
-import { ZoneLineKnockAway } from '../prefabs/zone/ZoneLineKnockAway';
-import { ZoneLineKnockback } from '../prefabs/zone/ZoneLineKnockback';
-import { ZoneLineStack } from '../prefabs/zone/ZoneLineStack';
 import { ZonePolygon } from '../prefabs/zone/ZonePolygon';
 import { ZoneProximity } from '../prefabs/zone/ZoneProximity';
 import { ZoneRectangle } from '../prefabs/zone/ZoneRectangle';
@@ -117,19 +116,18 @@ export const PrefabsPanel: React.FC = () => {
             </Section>
             <Section title={t('prefabs.mechanic')}>
                 <ObjectGroup>
-                    <ZoneLineKnockback />
-                    <ZoneLineKnockAway />
                     <ZoneProximity />
 
-                    <ZoneLineStack />
                     <ZoneRotateClockwise />
                     <ZoneRotateCounterClockwise />
+                    <MechLineStackPrefab />
                     <MechStackPrefab />
                     <MechProximityPrefab />
                     <MechTowerPrefab />
                     <MechCounterTowerPrefab />
-                    <MechExaflareCirclePrefab />
+                    <MechCircleExaflarePrefab />
                     <MechRadialKnockbackPrefab />
+                    <MechLinearKnockbackPrefab />
                     <MechGazePrefab />
                 </ObjectGroup>
             </Section>

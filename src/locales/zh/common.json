@@ -258,7 +258,9 @@
     "variant": "变体",
     "show": "显示",
     "hide": "隐藏",
-    "multiHit": "连续型"
+    "multiHit": "连续型",
+    "hNum": "横向数量",
+    "vNum": "纵向数量"
   },
   "colors": {
     "invalidColor": "无效的颜色",
@@ -355,13 +357,15 @@
     },
     "stack": {
       "normal": "分摊伤害攻击",
-      "multiHit": "分摊伤害攻击：连续型"
+      "multiHit": "分摊伤害攻击：连续型",
+      "line": "分摊伤害攻击：直线型"
     },
     "proximity": "距离衰减攻击",
     "radialKnockback": "击退攻击：放射型",
+    "linearKnockback": "击退攻击：直线型",
     "tower": "踩塔机制",
     "counterTower": "踩塔机制：计数型",
-    "exaflareCircle": "圆形范围攻击：移动型"
+    "circleExaflare": "圆形范围攻击：移动型"
   },
   "arena": {
     "background": {
