@@ -62,9 +62,7 @@ import { Waymark1, Waymark2, Waymark3, Waymark4, WaymarkA, WaymarkB, WaymarkC, W
 import { ZoneArc } from '../prefabs/zone/ZoneArc';
 import { ZoneCircle } from '../prefabs/zone/ZoneCircle';
 import { ZoneDonut } from '../prefabs/zone/ZoneDonut';
-import { ZoneExaflare } from '../prefabs/zone/ZoneExaflare';
 import { ZoneFan } from '../prefabs/zone/ZoneFan';
-import { ZoneKnockback } from '../prefabs/zone/ZoneKnockback';
 import { ZoneLine } from '../prefabs/zone/ZoneLine';
 import { ZoneLineKnockAway } from '../prefabs/zone/ZoneLineKnockAway';
 import { ZoneLineKnockback } from '../prefabs/zone/ZoneLineKnockback';
@@ -121,9 +119,7 @@ export const PrefabsPanel: React.FC = () => {
                 <ObjectGroup>
                     <ZoneLineKnockback />
                     <ZoneLineKnockAway />
-                    <ZoneKnockback />
                     <ZoneProximity />
-                    <ZoneExaflare />
 
                     <ZoneLineStack />
                     <ZoneRotateClockwise />
