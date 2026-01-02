@@ -18,7 +18,7 @@ const icon = new URL(`public/board/objects/111.webp`, import.meta.env.VITE_COS_U
 
 const DEFAULT_SIZE = 40;
 
-const RESPONSIVE_SIZE_SCALE = 0.98;
+const RESPONSIVE_SIZE_SCALE = 0.96;
 
 export const MechTowerPrefab: React.FC = () => {
     const [, setDragObject] = usePanelDrag();

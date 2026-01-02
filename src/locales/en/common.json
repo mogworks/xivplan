@@ -360,7 +360,8 @@
     "proximity": "Proximity",
     "radialKnockback": "Radial Knockback",
     "tower": "Tower",
-    "counterTower": "Counter Tower"
+    "counterTower": "Counter Tower",
+    "exaflareCircle": "Moving Circle AoE"
   },
   "arena": {
     "background": {

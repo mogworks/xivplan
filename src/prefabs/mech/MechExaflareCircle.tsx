@@ -1,3 +1,4 @@
+import { Vector2d } from 'konva/lib/types';
 import { useTranslation } from 'react-i18next';
 import { Circle, Group, Image } from 'react-konva';
 import { getDragOffset, registerDropHandler } from '../../DropHandler';
@@ -5,33 +6,34 @@ import { DetailsItem } from '../../panel/DetailsItem';
 import { ListComponentProps, registerListComponent } from '../../panel/ListComponentRegistry';
 import { LayerName } from '../../render/layers';
 import { registerRenderer, RendererProps } from '../../render/ObjectRegistry';
-import { MechProximityObject, ObjectType } from '../../scene';
-import { CENTER_DOT_RADIUS, SPOTLIGHT_COLOR } from '../../theme';
+import { MechExaflareCircleObject, ObjectType } from '../../scene';
+import { CENTER_DOT_RADIUS, DEFAULT_AOE_COLOR, SPOTLIGHT_COLOR } from '../../theme';
 import { useImageTracked } from '../../useObjectLoading';
 import { usePanelDrag } from '../../usePanelDrag';
 import { HideGroup } from '../HideGroup';
 import { useHighlightProps } from '../highlight';
 import { PrefabIcon } from '../PrefabIcon';
 import { RadiusObjectContainer } from '../RadiusObjectContainer';
+import { EXAFLARE_SPACING_DEFAULT } from '../zone/constants';
 
-const icon = new URL(`public/board/objects/16.webp`, import.meta.env.VITE_COS_URL).href;
+const icon = new URL(`public/board/objects/126.webp`, import.meta.env.VITE_COS_URL).href;
 
-const DEFAULT_SIZE = 160;
+const DEFAULT_SIZE = 50;
 
 const RESPONSIVE_SIZE_SCALE = 0.96;
 
-export const MechProximityPrefab: React.FC = () => {
+export const MechExaflareCirclePrefab: React.FC = () => {
     const [, setDragObject] = usePanelDrag();
     const { t } = useTranslation();
     return (
         <PrefabIcon
             draggable
-            name={t('mechanic.proximity')}
+            name={t('mechanic.exaflareCircle')}
             icon={icon}
             onDragStart={(e) => {
                 setDragObject({
                     object: {
-                        type: ObjectType.MechProximity,
+                        type: ObjectType.MechExaflareCircle,
                     },
                     offset: getDragOffset(e),
                 });
@@ -40,21 +42,34 @@ export const MechProximityPrefab: React.FC = () => {
     );
 };
 
-registerDropHandler<MechProximityObject>(ObjectType.MechProximity, (object, position) => {
+registerDropHandler<MechExaflareCircleObject>(ObjectType.MechExaflareCircle, (object, position) => {
     return {
         type: 'add',
         object: {
-            type: ObjectType.MechProximity,
+            type: ObjectType.MechExaflareCircle,
             radius: DEFAULT_SIZE,
             opacity: 100,
             rotation: 0,
+            length: 6,
+            spacing: EXAFLARE_SPACING_DEFAULT,
             ...object,
             ...position,
-        } as MechProximityObject,
+        } as MechExaflareCircleObject,
     };
 });
 
-export const MechProximityRenderer: React.FC<RendererProps<MechProximityObject>> = ({ object }) => {
+function getTrailPositions(radius: number, length: number, spacing: number): Vector2d[] {
+    return Array.from({ length }).map((_, i) => ({
+        x: 0,
+        y: ((radius * 2 * spacing) / 100) * i,
+    }));
+}
+
+function getDashSize(radius: number) {
+    return (2 * Math.PI * radius) / 32;
+}
+
+export const MechExaflareCircleRenderer: React.FC<RendererProps<MechExaflareCircleObject>> = ({ object }) => {
     const highlightProps = useHighlightProps(object);
     const [image] = useImageTracked(icon);
 
@@ -62,11 +77,32 @@ export const MechProximityRenderer: React.FC<RendererProps<MechProximityObject>>
     const responsiveSize = object.radius * RESPONSIVE_SIZE_SCALE;
     const strokeWidth = Math.max(2, Math.min(4, responsiveSize / 100));
 
+    const trail = getTrailPositions(responsiveSize, object.length, object.spacing);
+    const dashSize = getDashSize(responsiveSize);
+
     return (
         <RadiusObjectContainer object={object} allowRotate>
             {(groupProps) => (
                 <Group {...groupProps}>
+                    <HideGroup>
+                        {trail.map((point, i) => (
+                            <Circle
+                                key={i}
+                                listening={false}
+                                radius={responsiveSize}
+                                {...point}
+                                stroke={DEFAULT_AOE_COLOR}
+                                strokeWidth={strokeWidth}
+                                fillEnabled={false}
+                                dash={[dashSize, dashSize]}
+                                dashOffset={dashSize / 2}
+                                opacity={0.5}
+                            />
+                        ))}
+                    </HideGroup>
+
                     {highlightProps && <Circle radius={responsiveSize + strokeWidth / 2} {...highlightProps} />}
+
                     <HideGroup>
                         <Image
                             image={image}
@@ -86,12 +122,15 @@ export const MechProximityRenderer: React.FC<RendererProps<MechProximityObject>>
     );
 };
 
-registerRenderer<MechProximityObject>(ObjectType.MechProximity, LayerName.Ground, MechProximityRenderer);
+registerRenderer<MechExaflareCircleObject>(ObjectType.MechExaflareCircle, LayerName.Ground, MechExaflareCircleRenderer);
 
-export const MechProximityDetails: React.FC<ListComponentProps<MechProximityObject>> = ({ object, ...props }) => {
+export const MechExaflareCircleDetails: React.FC<ListComponentProps<MechExaflareCircleObject>> = ({
+    object,
+    ...props
+}) => {
     const { t } = useTranslation();
-    const name = t(`mechanic.proximity`);
+    const name = t(`mechanic.exaflareCircle`);
     return <DetailsItem icon={icon} name={name} object={object} {...props} />;
 };
 
-registerListComponent<MechProximityObject>(ObjectType.MechProximity, MechProximityDetails);
+registerListComponent<MechExaflareCircleObject>(ObjectType.MechExaflareCircle, MechExaflareCircleDetails);

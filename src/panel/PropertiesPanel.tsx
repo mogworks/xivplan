@@ -16,6 +16,7 @@ import {
     isImageObject,
     isInnerRadiusObject,
     isLineLike,
+    isMechExaflareCircle,
     isMechGaze,
     isMechStack,
     isMovable,
@@ -153,14 +154,22 @@ const Controls: React.FC = () => {
             <div className={mergeClasses(classes.row, classes.rightGap)}>
                 <ControlCondition objects={objects} test={isRadiusObject} control={RadiusControl} />
                 <ControlCondition objects={objects} test={isInnerRadiusObject} control={InnerRadiusControl} />
-                <ControlCondition objects={objects} test={isExaflareZone} control={ExaflareLengthControl} />
+                <ControlCondition
+                    objects={objects}
+                    test={(x) => isExaflareZone(x) || isMechExaflareCircle(x)}
+                    control={ExaflareLengthControl}
+                />
                 <ControlCondition objects={objects} test={isStarburstLike} control={StarburstSpokeWidthControl} />
             </div>
 
             <div className={mergeClasses(classes.row, classes.rightGap)}>
                 <ControlCondition objects={objects} test={isRotatable} control={RotationControl} />
                 <ControlCondition objects={objects} test={isEnemy} control={EnemyRingControl} />
-                <ControlCondition objects={objects} test={isExaflareZone} control={ExaflareSpacingControl} />
+                <ControlCondition
+                    objects={objects}
+                    test={(x) => isExaflareZone(x) || isMechExaflareCircle(x)}
+                    control={ExaflareSpacingControl}
+                />
                 <ControlCondition objects={objects} test={isStarburstLike} control={StarburstSpokeCountControl} />
 
                 <ControlCondition objects={objects} test={(x) => isFanLike(x)} control={FanAngleControl} />

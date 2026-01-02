@@ -18,7 +18,7 @@ const icon = new URL(`public/board/objects/109.webp`, import.meta.env.VITE_COS_U
 
 const DEFAULT_SIZE = 160;
 
-const RESPONSIVE_SIZE_SCALE = 0.98;
+const RESPONSIVE_SIZE_SCALE = 0.96;
 
 export const MechRadialKnockbackPrefab: React.FC = () => {
     const [, setDragObject] = usePanelDrag();

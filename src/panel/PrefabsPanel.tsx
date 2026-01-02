@@ -14,6 +14,7 @@ import { MarkerArrow } from '../prefabs/Arrow';
 import '../prefabs/BoardIcon';
 import { EnemyCircle, EnemyHuge, EnemyLarge, EnemyMedium, EnemySmall } from '../prefabs/Enemies';
 import { MechCounterTowerPrefab } from '../prefabs/mech/MechCounterTower';
+import { MechExaflareCirclePrefab } from '../prefabs/mech/MechExaflareCircle';
 import '../prefabs/mech/MechGaze';
 import { MechGazePrefab } from '../prefabs/mech/MechGaze';
 import { MechProximityPrefab } from '../prefabs/mech/MechProximity';
@@ -131,6 +132,7 @@ export const PrefabsPanel: React.FC = () => {
                     <MechProximityPrefab />
                     <MechTowerPrefab />
                     <MechCounterTowerPrefab />
+                    <MechExaflareCirclePrefab />
                     <MechRadialKnockbackPrefab />
                     <MechGazePrefab />
                 </ObjectGroup>

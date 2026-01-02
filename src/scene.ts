@@ -70,6 +70,7 @@ export enum ObjectType {
     MechRadialKnockback = 'mechRadialKnockback',
     MechTower = 'mechTower',
     MechCounterTower = 'mechCounterTower',
+    MechExaflareCircle = 'mechExaflareCircle',
 }
 
 export interface BaseObject {
@@ -396,6 +397,13 @@ export interface MechStackObject extends RadiusObject, RotatableObject, BaseObje
     readonly multiHit?: boolean;
 }
 export const isMechStack = makeObjectTest<MechStackObject>(ObjectType.MechStack);
+
+export interface MechExaflareCircleObject extends RadiusObject, RotatableObject, BaseObject {
+    readonly type: ObjectType.MechExaflareCircle;
+    readonly length: number;
+    readonly spacing: number;
+}
+export const isMechExaflareCircle = makeObjectTest<MechExaflareCircleObject>(ObjectType.MechExaflareCircle);
 
 export interface MechCounterTowerObject extends StackCountObject, RadiusObject, RotatableObject, BaseObject {
     readonly type: ObjectType.MechCounterTower;

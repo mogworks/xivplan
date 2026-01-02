@@ -12,6 +12,7 @@ import {
     BoardIconObject,
     FloorShape,
     MechCounterTowerObject,
+    MechExaflareCircleObject,
     MechGazeObject,
     MechProximityObject,
     MechRadialKnockbackObject,
@@ -326,6 +327,19 @@ function parseObject(obj: SBObject): SceneObjectWithoutId | null {
                 pinned: obj.flags.locked,
                 rotation: obj.angle,
             } as Omit<MechTowerObject, 'id'>;
+
+        case 126:
+            return {
+                type: ObjectType.MechExaflareCircle,
+                opacity: obj.color.opacity,
+                hide: !obj.flags.visible,
+                radius: size / 2,
+                length: 1,
+                spacing: 50,
+                ...coordinates,
+                pinned: obj.flags.locked,
+                rotation: (obj.angle + (obj.flags.flipVertical ? 180 : 0)) % 360,
+            } as Omit<MechExaflareCircleObject, 'id'>;
 
         // counter tower
         case 127:
