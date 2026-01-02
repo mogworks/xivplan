@@ -13,9 +13,13 @@ import { AoeStarburstPrefab } from '../prefabs/aoe/AoeStarburst';
 import { MarkerArrow } from '../prefabs/Arrow';
 import '../prefabs/BoardIcon';
 import { EnemyCircle, EnemyHuge, EnemyLarge, EnemyMedium, EnemySmall } from '../prefabs/Enemies';
-import '../prefabs/mechanic/MechGaze';
-import { MechGazePrefab } from '../prefabs/mechanic/MechGaze';
-import { MechStackPrefab } from '../prefabs/mechanic/MechStack';
+import { MechCounterTowerPrefab } from '../prefabs/mech/MechCounterTower';
+import '../prefabs/mech/MechGaze';
+import { MechGazePrefab } from '../prefabs/mech/MechGaze';
+import { MechProximityPrefab } from '../prefabs/mech/MechProximity';
+import { MechRadialKnockbackPrefab } from '../prefabs/mech/MechRadialKnockback';
+import { MechStackPrefab } from '../prefabs/mech/MechStack';
+import { MechTowerPrefab } from '../prefabs/mech/MechTower';
 import {
     PartyAllRole,
     PartyAny,
@@ -70,7 +74,6 @@ import { ZoneRectangle } from '../prefabs/zone/ZoneRectangle';
 import { ZoneRightTriangle } from '../prefabs/zone/ZoneRightTriangle';
 import { ZoneRotateClockwise, ZoneRotateCounterClockwise } from '../prefabs/zone/ZoneRotate';
 import { ZoneStarburst } from '../prefabs/zone/ZoneStarburst';
-import { ZoneTower } from '../prefabs/zone/ZoneTower';
 import { ZoneTriangle } from '../prefabs/zone/ZoneTriangle';
 import { useControlStyles } from '../useControlStyles';
 import { ObjectGroup, Section } from './Section';
@@ -121,11 +124,14 @@ export const PrefabsPanel: React.FC = () => {
                     <ZoneProximity />
                     <ZoneExaflare />
 
-                    <MechStackPrefab />
                     <ZoneLineStack />
                     <ZoneRotateClockwise />
                     <ZoneRotateCounterClockwise />
-                    <ZoneTower />
+                    <MechStackPrefab />
+                    <MechProximityPrefab />
+                    <MechTowerPrefab />
+                    <MechCounterTowerPrefab />
+                    <MechRadialKnockbackPrefab />
                     <MechGazePrefab />
                 </ObjectGroup>
             </Section>

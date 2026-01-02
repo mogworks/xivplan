@@ -356,7 +356,11 @@
     "stack": {
       "normal": "Stack",
       "multiHit": "Stack (Multi-Hit)"
-    }
+    },
+    "proximity": "Proximity",
+    "radialKnockback": "Radial Knockback",
+    "tower": "Tower",
+    "counterTower": "Counter Tower"
   },
   "arena": {
     "background": {

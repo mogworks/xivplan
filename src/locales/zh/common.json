@@ -356,7 +356,11 @@
     "stack": {
       "normal": "分摊伤害攻击",
       "multiHit": "分摊伤害攻击：连续型"
-    }
+    },
+    "proximity": "距离衰减攻击",
+    "radialKnockback": "击退攻击：放射型",
+    "tower": "踩塔机制",
+    "counterTower": "踩塔机制：计数型"
   },
   "arena": {
     "background": {

@@ -66,6 +66,10 @@ export enum ObjectType {
     AoeStarburst = 'aoeStarburst',
     MechGaze = 'mechGaze',
     MechStack = 'mechStack',
+    MechProximity = 'mechProximity',
+    MechRadialKnockback = 'mechRadialKnockback',
+    MechTower = 'mechTower',
+    MechCounterTower = 'mechCounterTower',
 }
 
 export interface BaseObject {
@@ -233,6 +237,7 @@ export interface ImageObject extends ResizableObject {
 
 export interface StackCountObject {
     readonly count: number;
+    readonly countValues?: number[];
 }
 
 /**
@@ -392,13 +397,39 @@ export interface MechStackObject extends RadiusObject, RotatableObject, BaseObje
 }
 export const isMechStack = makeObjectTest<MechStackObject>(ObjectType.MechStack);
 
+export interface MechCounterTowerObject extends StackCountObject, RadiusObject, RotatableObject, BaseObject {
+    readonly type: ObjectType.MechCounterTower;
+}
+export const isMechCounterTower = makeObjectTest<MechCounterTowerObject>(ObjectType.MechCounterTower);
+
+export interface MechTowerObject extends StackCountObject, RadiusObject, RotatableObject, BaseObject {
+    readonly type: ObjectType.MechTower;
+}
+export const isMechTower = makeObjectTest<MechTowerObject>(ObjectType.MechTower);
+
+export interface MechProximityObject extends RadiusObject, RotatableObject, BaseObject {
+    readonly type: ObjectType.MechProximity;
+}
+export const isMechProximity = makeObjectTest<MechProximityObject>(ObjectType.MechProximity);
+
+export interface MechRadialKnockbackObject extends RadiusObject, RotatableObject, BaseObject {
+    readonly type: ObjectType.MechRadialKnockback;
+}
+export const isMechRadialKnockback = makeObjectTest<MechRadialKnockbackObject>(ObjectType.MechRadialKnockback);
+
 export interface MechGazeObject extends RadiusObject, RotatableObject, BaseObject {
     readonly type: ObjectType.MechGaze;
     readonly invert?: boolean; // 是否反向
 }
 export const isMechGaze = makeObjectTest<MechGazeObject>(ObjectType.MechGaze);
 
-export type Mechanics = MechGazeObject | MechStackObject;
+export type Mechanics =
+    | MechGazeObject
+    | MechStackObject
+    | MechProximityObject
+    | MechRadialKnockbackObject
+    | MechTowerObject
+    | MechCounterTowerObject;
 
 export interface GazeObject extends RadiusObject, ColoredObject, HollowObject, BaseObject {
     readonly type: ObjectType.Gaze;

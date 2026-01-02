@@ -11,8 +11,12 @@ import {
     AoeRectObject,
     BoardIconObject,
     FloorShape,
+    MechCounterTowerObject,
     MechGazeObject,
+    MechProximityObject,
+    MechRadialKnockbackObject,
     MechStackObject,
+    MechTowerObject,
     ObjectType,
     PartyObject,
     Scene,
@@ -278,13 +282,67 @@ function parseObject(obj: SBObject): SceneObjectWithoutId | null {
         case 15:
             return null;
 
+        // proximity
+        case 16:
+            return {
+                type: ObjectType.MechProximity,
+                opacity: obj.color.opacity,
+                hide: !obj.flags.visible,
+                radius: size / 2,
+                ...coordinates,
+                pinned: obj.flags.locked,
+                rotation: obj.angle,
+            } as Omit<MechProximityObject, 'id'>;
+
         // text
         case 100:
             return null;
 
+        case 109:
+            return {
+                type: ObjectType.MechRadialKnockback,
+                opacity: obj.color.opacity,
+                hide: !obj.flags.visible,
+                radius: size / 2,
+                ...coordinates,
+                pinned: obj.flags.locked,
+                rotation: obj.angle,
+            } as Omit<MechRadialKnockbackObject, 'id'>;
+
         // linear knockback
         case 110:
             return null;
+
+        // tower
+        case 111:
+            return {
+                type: ObjectType.MechTower,
+                opacity: obj.color.opacity,
+                hide: !obj.flags.visible,
+                radius: size / 2,
+                count: 1,
+                countValues: [1],
+                ...coordinates,
+                pinned: obj.flags.locked,
+                rotation: obj.angle,
+            } as Omit<MechTowerObject, 'id'>;
+
+        // counter tower
+        case 127:
+        case 128:
+        case 129:
+        case 130:
+            return {
+                type: ObjectType.MechCounterTower,
+                opacity: obj.color.opacity,
+                hide: !obj.flags.visible,
+                radius: size / 2,
+                count: obj.id - 126,
+                countValues: [1, 2, 3, 4],
+                ...coordinates,
+                pinned: obj.flags.locked,
+                rotation: obj.angle,
+            } as Omit<MechCounterTowerObject, 'id'>;
     }
 
     // ---------- 通用处理 ----------
