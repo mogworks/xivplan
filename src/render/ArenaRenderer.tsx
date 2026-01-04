@@ -16,7 +16,7 @@ import {
     useCanvasArenaEllipse,
     useCanvasArenaRect,
 } from '../coord';
-import { getProxiedImageUrl } from '../lib/image-proxy';
+import { getProxyImageUrl } from '../lib/image-proxy';
 import {
     BaseGridProps,
     CustomRadialGrid,
@@ -116,7 +116,7 @@ const TextureRenderer: React.FC = () => {
         return null;
     }
 
-    const proxyUrl = getProxiedImageUrl(url);
+    const proxyUrl = getProxyImageUrl(url);
 
     const opacity = (texture.opacity ?? 100) / 100;
     const position = getCanvasArenaTextureRect(scene);
