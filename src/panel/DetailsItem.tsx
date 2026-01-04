@@ -7,12 +7,14 @@ import {
     EyeOffFilled,
     EyeOffRegular,
     EyeRegular,
+    LockClosedRegular,
+    LockOpenRegular,
 } from '@fluentui/react-icons';
 import React, { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useScene } from '../SceneProvider';
 import { PrefabIcon } from '../prefabs/PrefabIcon';
-import { SceneObject } from '../scene';
+import { isMovable, MovableObject, SceneObject } from '../scene';
 import { setOrOmit } from '../util';
 import { detailsItemClassNames } from './detailsItemStyles';
 
@@ -47,6 +49,12 @@ export const DetailsItem: React.FC<DetailsItemProps> = ({
             {children ? children : <div className={classes.name}>{name}</div>}
             {!isNested && (
                 <div className={classes.buttons}>
+                    {isMovable(object) && (
+                        <DetailsItemPinnedButton
+                            object={object}
+                            className={mergeClasses(isSelected && classes.selectedButton)}
+                        />
+                    )}
                     <DetailsItemHideButton
                         object={object}
                         className={mergeClasses(isSelected && classes.selectedButton, isDragging && classes.visible)}
@@ -58,6 +66,34 @@ export const DetailsItem: React.FC<DetailsItemProps> = ({
                 </div>
             )}
         </div>
+    );
+};
+
+interface DetailsItemPinnedButtonProps {
+    object: SceneObject & MovableObject;
+    className?: string;
+}
+
+const DetailsItemPinnedButton: React.FC<DetailsItemPinnedButtonProps> = ({ object, className }) => {
+    const classes = useStyles();
+    const { dispatch } = useScene();
+    const { t } = useTranslation();
+    const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+        dispatch({ type: 'update', value: setOrOmit(object, 'pinned', !object.pinned) });
+        e.stopPropagation();
+    };
+
+    const Icon = object.pinned ? <LockClosedRegular /> : <LockOpenRegular />;
+    const tooltip = object.pinned ? t('properties.unlockPosition') : t('properties.lockPosition');
+
+    return (
+        <Button
+            appearance="transparent"
+            className={mergeClasses(classes.button, className)}
+            icon={Icon}
+            onClick={handleClick}
+            title={tooltip}
+        />
     );
 };
 
@@ -87,6 +123,7 @@ const DetailsItemHideButton: React.FC<DetailsItemHideButtonProps> = ({ object, c
             className={mergeClasses(
                 detailsItemClassNames.hideButton,
                 classes.hideButton,
+                classes.button,
                 object.hide && classes.visible,
                 className,
             )}
@@ -105,13 +142,14 @@ interface DetailsItemDeleteButtonProps {
 const DeleteIcon = bundleIcon(DismissFilled, DismissRegular);
 
 const DetailsItemDeleteButton: React.FC<DetailsItemDeleteButtonProps> = ({ object, className }) => {
+    const classes = useStyles();
     const { dispatch } = useScene();
     const deleteObject = () => dispatch({ type: 'remove', ids: object.id });
 
     return (
         <Button
             appearance="transparent"
-            className={className}
+            className={mergeClasses(classes.button, className)}
             icon={<DeleteIcon />}
             onClick={deleteObject}
             title="Delete object"
@@ -147,10 +185,16 @@ const useStyles = makeStyles({
     buttons: {
         display: 'flex',
         flexFlow: 'row',
+        gap: tokens.spacingHorizontalXXS,
+    },
+
+    button: {
+        padding: '0 0',
+        minWidth: 'unset',
     },
 
     hideButton: {
-        opacity: 0,
+        opacity: 1,
         transitionProperty: 'opacity',
         transitionDuration: tokens.durationFaster,
         transitionTimingFunction: tokens.curveEasyEase,
