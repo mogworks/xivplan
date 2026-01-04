@@ -62,6 +62,9 @@ export const BoardIconSquareGridBottomPrefab = makeIcon(8, { size: 320 });
 export const BoardIconCircleGrayBottomPrefab = makeIcon(124, { size: 320 });
 export const BoardIconSquareGrayBottomPrefab = makeIcon(125, { size: 320 });
 
+export const BoardIconBuffPrefab = makeIcon(113, { size: 40 });
+export const BoardIconDebuffPrefab = makeIcon(114, { size: 40 });
+
 registerDropHandler<BoardIconObject>(ObjectType.BoardIcon, (object, position) => {
     return {
         type: 'add',

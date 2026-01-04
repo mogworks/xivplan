@@ -675,6 +675,9 @@
     "4": "Circle Grid Floor",
     "8": "Square Grid Floor",
     "124": "Circle Gray Floor",
-    "125": "Square Gray Floor"
+    "125": "Square Gray Floor",
+
+    "113": "Buff",
+    "114": "Debuff"
   }
 }

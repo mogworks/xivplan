@@ -177,6 +177,7 @@ export const StatusIcon: React.FC<StatusIconProps> = ({ name, defaultNameKey, ic
                         height,
                         iconId,
                         maxStacks,
+                        name,
                     },
                     offset: getDragOffset(e),
                 });
