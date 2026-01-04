@@ -375,7 +375,17 @@
     },
     "tankbuster": "Tankbuster (Single Target)",
     "proximity": "Proximity (Player-targeted)",
-    "targeting": "Targeting Indicator"
+    "targeting": "Targeting Indicator",
+    "marker": {
+      "131": "Targeting Indicator (Red)",
+      "132": "Targeting Indicator (Blue)",
+      "133": "Targeting Indicator (Purple)",
+      "134": "Targeting Indicator (Green)",
+      "135": "Highlight Circle",
+      "136": "Highlight Cross",
+      "137": "Highlight Square",
+      "138": "Highlight Triangle"
+    }
   },
   "arena": {
     "background": {

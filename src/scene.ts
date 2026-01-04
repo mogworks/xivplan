@@ -77,6 +77,7 @@ export enum ObjectType {
     IndicatorTargeting = 'indicatorTargeting',
     IndicatorTankbuster = 'indicatorTankbuster',
     IndicatorProximity = 'indicatorProximity',
+    IndicatorMarker = 'indicatorMarker',
 }
 
 export interface BaseObject {
@@ -430,6 +431,12 @@ export interface IndicatorProximityObject extends RadiusObject, RotatableObject,
 }
 export const isIndicatorProximity = makeObjectTest<IndicatorProximityObject>(ObjectType.IndicatorProximity);
 
+export interface IndicatorMarkerObject extends RegularResizableObject, BaseObject {
+    readonly type: ObjectType.IndicatorMarker;
+    readonly iconId: number;
+}
+export const isIndicatorMarker = makeObjectTest<IndicatorMarkerObject>(ObjectType.IndicatorMarker);
+
 export interface MechLinearKnockbackObject extends RegularResizableObject, ExtendableObject, BaseObject {
     readonly type: ObjectType.MechLinearKnockback;
 }
@@ -489,7 +496,8 @@ export type Indicators =
     | IndicatorLineStackObject
     | IndicatorTargetingObject
     | IndicatorTankbusterObject
-    | IndicatorProximityObject;
+    | IndicatorProximityObject
+    | IndicatorMarkerObject;
 
 export interface GazeObject extends RadiusObject, ColoredObject, HollowObject, BaseObject {
     readonly type: ObjectType.Gaze;

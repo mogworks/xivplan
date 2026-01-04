@@ -14,6 +14,16 @@ import { MarkerArrow } from '../prefabs/Arrow';
 import '../prefabs/BoardIcon';
 import { EnemyCircle, EnemyHuge, EnemyLarge, EnemyMedium, EnemySmall } from '../prefabs/Enemies';
 import { IndicatorLineStackPrefab } from '../prefabs/indicator/IndicatorLineStack';
+import {
+    MarkerHighlightCirclePrefab,
+    MarkerHighlightCrossPrefab,
+    MarkerHighlightSquarePrefab,
+    MarkerHighlightTrianglePrefab,
+    MarkerTargetingBluePrefab,
+    MarkerTargetingGreenPrefab,
+    MarkerTargetingPurplePrefab,
+    MarkerTargetingRedPrefab,
+} from '../prefabs/indicator/IndicatorMarker';
 import { IndicatorProximityPrefab } from '../prefabs/indicator/IndicatorProximity';
 import { IndicatorStackPrefab } from '../prefabs/indicator/IndicatorStack';
 import { IndicatorTankbusterPrefab } from '../prefabs/indicator/IndicatorTankbuster';
@@ -136,6 +146,18 @@ export const PrefabsPanel: React.FC = () => {
                     <IndicatorProximityPrefab />
                     <IndicatorTankbusterPrefab />
                     <IndicatorTargetingPrefab />
+                </ObjectGroup>
+                <ObjectGroup>
+                    <MarkerTargetingRedPrefab />
+                    <MarkerTargetingBluePrefab />
+                    <MarkerTargetingPurplePrefab />
+                    <MarkerTargetingGreenPrefab />
+                </ObjectGroup>
+                <ObjectGroup>
+                    <MarkerHighlightCirclePrefab />
+                    <MarkerHighlightCrossPrefab />
+                    <MarkerHighlightSquarePrefab />
+                    <MarkerHighlightTrianglePrefab />
                 </ObjectGroup>
             </Section>
             <Section title={t('prefabs.waymark')}>
