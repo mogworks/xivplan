@@ -11,14 +11,18 @@ import {
     AoeRectObject,
     BoardIconObject,
     FloorShape,
+    IndicatorLineStackObject,
+    IndicatorProximityObject,
+    IndicatorStackObject,
+    IndicatorTankbusterObject,
+    IndicatorTargetingObject,
     MechCircleExaflareObject,
     MechCounterTowerObject,
     MechGazeObject,
     MechLinearKnockbackObject,
-    MechLineStackObject,
     MechProximityObject,
     MechRadialKnockbackObject,
-    MechStackObject,
+    MechRotationObject,
     MechTowerObject,
     ObjectType,
     PartyObject,
@@ -265,7 +269,7 @@ function parseObject(obj: SBObject): SceneObjectWithoutId | null {
         case 106:
             return (() => {
                 const common = {
-                    type: ObjectType.MechStack,
+                    type: ObjectType.IndicatorStack,
                     opacity: obj.color.opacity,
                     hide: !obj.flags.visible,
                     radius: size / 2,
@@ -280,13 +284,13 @@ function parseObject(obj: SBObject): SceneObjectWithoutId | null {
                               multiHit: true, // 106 是连续型
                           }
                         : common
-                ) as Omit<MechStackObject, 'id'>;
+                ) as Omit<IndicatorStackObject, 'id'>;
             })();
 
         // line stack
         case 15:
             return {
-                type: ObjectType.MechLineStack,
+                type: ObjectType.IndicatorLineStack,
                 opacity: obj.color.opacity,
                 hide: !obj.flags.visible,
                 size,
@@ -294,7 +298,7 @@ function parseObject(obj: SBObject): SceneObjectWithoutId | null {
                 pinned: obj.flags.locked,
                 rotation: (obj.angle + (obj.flags.flipVertical ? 180 : 0)) % 360,
                 vNum: obj.param2,
-            } as Omit<MechLineStackObject, 'id'>;
+            } as Omit<IndicatorLineStackObject, 'id'>;
 
         // proximity
         case 16:
@@ -311,6 +315,30 @@ function parseObject(obj: SBObject): SceneObjectWithoutId | null {
         // text
         case 100:
             return null;
+
+        // proximity indicator
+        case 107:
+            return {
+                type: ObjectType.IndicatorProximity,
+                opacity: obj.color.opacity,
+                hide: !obj.flags.visible,
+                radius: size / 2,
+                ...coordinates,
+                pinned: obj.flags.locked,
+                rotation: obj.angle,
+            } as Omit<IndicatorProximityObject, 'id'>;
+
+        // tankbuster indicator
+        case 108:
+            return {
+                type: ObjectType.IndicatorTankbuster,
+                opacity: obj.color.opacity,
+                hide: !obj.flags.visible,
+                radius: size / 2,
+                ...coordinates,
+                pinned: obj.flags.locked,
+                rotation: obj.angle,
+            } as Omit<IndicatorTankbusterObject, 'id'>;
 
         case 109:
             return {
@@ -351,6 +379,18 @@ function parseObject(obj: SBObject): SceneObjectWithoutId | null {
                 rotation: obj.angle,
             } as Omit<MechTowerObject, 'id'>;
 
+        // targeting indicator
+        case 112:
+            return {
+                type: ObjectType.IndicatorTargeting,
+                opacity: obj.color.opacity,
+                hide: !obj.flags.visible,
+                radius: size / 2,
+                ...coordinates,
+                pinned: obj.flags.locked,
+                rotation: obj.angle,
+            } as Omit<IndicatorTargetingObject, 'id'>;
+
         // circle exaflare
         case 126:
             return {
@@ -381,6 +421,20 @@ function parseObject(obj: SBObject): SceneObjectWithoutId | null {
                 pinned: obj.flags.locked,
                 rotation: obj.angle,
             } as Omit<MechCounterTowerObject, 'id'>;
+
+        // rotation
+        case 139:
+        case 140:
+            return {
+                type: ObjectType.MechRotation,
+                anticlockwise: obj.id === 140,
+                opacity: obj.color.opacity,
+                hide: !obj.flags.visible,
+                radius: size / 2,
+                ...coordinates,
+                pinned: obj.flags.locked,
+                rotation: obj.angle,
+            } as Omit<MechRotationObject, 'id'>;
     }
 
     // ---------- 通用处理 ----------

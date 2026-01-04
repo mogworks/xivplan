@@ -2,11 +2,11 @@ import { Switch } from '@fluentui/react-components';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useScene } from '../../SceneProvider';
-import { MechStackObject } from '../../scene';
+import { IndicatorStackObject } from '../../scene';
 import { commonValue, setOrOmit } from '../../util';
 import { PropertiesControlProps } from '../PropertiesControl';
 
-export const StackMultiHitControl: React.FC<PropertiesControlProps<MechStackObject>> = ({ objects }) => {
+export const StackMultiHitControl: React.FC<PropertiesControlProps<IndicatorStackObject>> = ({ objects }) => {
     const { dispatch } = useScene();
     const { t } = useTranslation();
 

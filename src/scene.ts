@@ -65,14 +65,18 @@ export enum ObjectType {
     AoePolygon = 'aoePolygon',
     AoeStarburst = 'aoeStarburst',
     MechGaze = 'mechGaze',
-    MechStack = 'mechStack',
-    MechLineStack = 'mechLineStack',
     MechProximity = 'mechProximity',
     MechRadialKnockback = 'mechRadialKnockback',
     MechLinearKnockback = 'mechLinearKnockback',
     MechTower = 'mechTower',
     MechCounterTower = 'mechCounterTower',
     MechCircleExaflare = 'mechCircleExaflare',
+    MechRotation = 'mechRotation',
+    IndicatorStack = 'indicatorStack',
+    IndicatorLineStack = 'indicatorLineStack',
+    IndicatorTargeting = 'indicatorTargeting',
+    IndicatorTankbuster = 'indicatorTankbuster',
+    IndicatorProximity = 'indicatorProximity',
 }
 
 export interface BaseObject {
@@ -358,7 +362,7 @@ export interface AoeArcObject
     readonly type: ObjectType.AoeArc;
 }
 
-export type AoeObject =
+export type Aoe =
     | AoeRectObject
     | AoeLineObject
     | AoeCircleObject
@@ -368,7 +372,7 @@ export type AoeObject =
     | AoePolygonObject
     | AoeStarburstObject;
 
-export const isAoeObject = makeObjectTest<AoeObject>(
+export const isAoeObject = makeObjectTest<Aoe>(
     ObjectType.AoeRect,
     ObjectType.AoeLine,
     ObjectType.AoeCircle,
@@ -400,16 +404,31 @@ export interface StackZone extends StackCountObject, RadiusObject, ColoredObject
 }
 export const isStackZone = makeObjectTest<StackZone>(ObjectType.Stack);
 
-export interface MechStackObject extends RadiusObject, RotatableObject, BaseObject {
-    readonly type: ObjectType.MechStack;
+export interface IndicatorStackObject extends RadiusObject, RotatableObject, BaseObject {
+    readonly type: ObjectType.IndicatorStack;
     readonly multiHit?: boolean;
 }
-export const isMechStack = makeObjectTest<MechStackObject>(ObjectType.MechStack);
+export const isIndicatorStack = makeObjectTest<IndicatorStackObject>(ObjectType.IndicatorStack);
 
-export interface MechLineStackObject extends RegularResizableObject, ExtendableObject, BaseObject {
-    readonly type: ObjectType.MechLineStack;
+export interface IndicatorLineStackObject extends RegularResizableObject, ExtendableObject, BaseObject {
+    readonly type: ObjectType.IndicatorLineStack;
 }
-export const isMechLineStack = makeObjectTest<MechLineStackObject>(ObjectType.MechLineStack);
+export const isIndicatorLineStack = makeObjectTest<IndicatorLineStackObject>(ObjectType.IndicatorLineStack);
+
+export interface IndicatorTargetingObject extends RadiusObject, RotatableObject, BaseObject {
+    readonly type: ObjectType.IndicatorTargeting;
+}
+export const isIndicatorTargeting = makeObjectTest<IndicatorTargetingObject>(ObjectType.IndicatorTargeting);
+
+export interface IndicatorTankbusterObject extends RadiusObject, RotatableObject, BaseObject {
+    readonly type: ObjectType.IndicatorTankbuster;
+}
+export const isIndicatorTankbuster = makeObjectTest<IndicatorTankbusterObject>(ObjectType.IndicatorTankbuster);
+
+export interface IndicatorProximityObject extends RadiusObject, RotatableObject, BaseObject {
+    readonly type: ObjectType.IndicatorProximity;
+}
+export const isIndicatorProximity = makeObjectTest<IndicatorProximityObject>(ObjectType.IndicatorProximity);
 
 export interface MechLinearKnockbackObject extends RegularResizableObject, ExtendableObject, BaseObject {
     readonly type: ObjectType.MechLinearKnockback;
@@ -438,6 +457,12 @@ export interface MechProximityObject extends RadiusObject, RotatableObject, Base
 }
 export const isMechProximity = makeObjectTest<MechProximityObject>(ObjectType.MechProximity);
 
+export interface MechRotationObject extends RadiusObject, RotatableObject, BaseObject {
+    readonly type: ObjectType.MechRotation;
+    readonly anticlockwise?: boolean;
+}
+export const isMechRotation = makeObjectTest<MechRotationObject>(ObjectType.MechRotation);
+
 export interface MechRadialKnockbackObject extends RadiusObject, RotatableObject, BaseObject {
     readonly type: ObjectType.MechRadialKnockback;
 }
@@ -451,11 +476,20 @@ export const isMechGaze = makeObjectTest<MechGazeObject>(ObjectType.MechGaze);
 
 export type Mechanics =
     | MechGazeObject
-    | MechStackObject
     | MechProximityObject
     | MechRadialKnockbackObject
+    | MechLinearKnockbackObject
     | MechTowerObject
-    | MechCounterTowerObject;
+    | MechCounterTowerObject
+    | MechCircleExaflareObject
+    | MechRotationObject;
+
+export type Indicators =
+    | IndicatorStackObject
+    | IndicatorLineStackObject
+    | IndicatorTargetingObject
+    | IndicatorTankbusterObject
+    | IndicatorProximityObject;
 
 export interface GazeObject extends RadiusObject, ColoredObject, HollowObject, BaseObject {
     readonly type: ObjectType.Gaze;
@@ -712,8 +746,9 @@ export type SceneObject =
     | Tether
     | BoardIconObject
     | WaymarkObject
-    | AoeObject
-    | Mechanics;
+    | Aoe
+    | Mechanics
+    | Indicators;
 
 export type SceneObjectWithoutId = Omit<SceneObject, 'id'> & { id?: number };
 

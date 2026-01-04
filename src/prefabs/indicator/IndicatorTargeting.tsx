@@ -5,7 +5,7 @@ import { DetailsItem } from '../../panel/DetailsItem';
 import { ListComponentProps, registerListComponent } from '../../panel/ListComponentRegistry';
 import { LayerName } from '../../render/layers';
 import { registerRenderer, RendererProps } from '../../render/ObjectRegistry';
-import { MechStackObject, ObjectType } from '../../scene';
+import { IndicatorTargetingObject, ObjectType } from '../../scene';
 import { CENTER_DOT_RADIUS, SPOTLIGHT_COLOR } from '../../theme';
 import { useImageTracked } from '../../useObjectLoading';
 import { usePanelDrag } from '../../usePanelDrag';
@@ -14,26 +14,24 @@ import { useHighlightProps } from '../highlight';
 import { PrefabIcon } from '../PrefabIcon';
 import { RadiusObjectContainer } from '../RadiusObjectContainer';
 
-const prefabIcon = new URL(`public/board/objects/14.webp`, import.meta.env.VITE_COS_URL).href;
-const getIconUrl = (multiHit?: boolean) =>
-    new URL(`public/board/objects/${multiHit ? 106 : 14}.webp`, import.meta.env.VITE_COS_URL).href;
+const icon = new URL(`public/board/objects/112.webp`, import.meta.env.VITE_COS_URL).href;
 
-const DEFAULT_SIZE = 60;
+const DEFAULT_SIZE = 40;
 
-const RESPONSIVE_SIZE_SCALE = 1;
+const RESPONSIVE_SIZE_SCALE = 0.9;
 
-export const MechStackPrefab: React.FC = () => {
+export const IndicatorTargetingPrefab: React.FC = () => {
     const [, setDragObject] = usePanelDrag();
     const { t } = useTranslation();
     return (
         <PrefabIcon
             draggable
-            name={t('mechanic.stack.normal')}
-            icon={prefabIcon}
+            name={t('indicator.targeting')}
+            icon={icon}
             onDragStart={(e) => {
                 setDragObject({
                     object: {
-                        type: ObjectType.MechStack,
+                        type: ObjectType.IndicatorTargeting,
                     },
                     offset: getDragOffset(e),
                 });
@@ -42,23 +40,23 @@ export const MechStackPrefab: React.FC = () => {
     );
 };
 
-registerDropHandler<MechStackObject>(ObjectType.MechStack, (object, position) => {
+registerDropHandler<IndicatorTargetingObject>(ObjectType.IndicatorTargeting, (object, position) => {
     return {
         type: 'add',
         object: {
-            type: ObjectType.MechStack,
+            type: ObjectType.IndicatorTargeting,
             radius: DEFAULT_SIZE,
-            rotation: 0,
             opacity: 100,
+            rotation: 0,
             ...object,
             ...position,
-        } as MechStackObject,
+        } as IndicatorTargetingObject,
     };
 });
 
-export const MechStackRenderer: React.FC<RendererProps<MechStackObject>> = ({ object }) => {
+export const IndicatorTargetingRenderer: React.FC<RendererProps<IndicatorTargetingObject>> = ({ object }) => {
     const highlightProps = useHighlightProps(object);
-    const [image] = useImageTracked(getIconUrl(object.multiHit));
+    const [image] = useImageTracked(icon);
 
     // 调整一下显示比例，使尺寸数值更加符合视觉效果
     const responsiveSize = object.radius * RESPONSIVE_SIZE_SCALE;
@@ -88,12 +86,15 @@ export const MechStackRenderer: React.FC<RendererProps<MechStackObject>> = ({ ob
     );
 };
 
-registerRenderer<MechStackObject>(ObjectType.MechStack, LayerName.Ground, MechStackRenderer);
+registerRenderer<IndicatorTargetingObject>(ObjectType.IndicatorTargeting, LayerName.Ground, IndicatorTargetingRenderer);
 
-export const MechStackDetails: React.FC<ListComponentProps<MechStackObject>> = ({ object, ...props }) => {
+export const IndicatorTargetingDetails: React.FC<ListComponentProps<IndicatorTargetingObject>> = ({
+    object,
+    ...props
+}) => {
     const { t } = useTranslation();
-    const name = t(`mechanic.stack.${object.multiHit ? 'multiHit' : 'normal'}`);
-    return <DetailsItem icon={getIconUrl(object.multiHit)} name={name} object={object} {...props} />;
+    const name = t(`indicator.targeting`);
+    return <DetailsItem icon={icon} name={name} object={object} {...props} />;
 };
 
-registerListComponent<MechStackObject>(ObjectType.MechStack, MechStackDetails);
+registerListComponent<IndicatorTargetingObject>(ObjectType.IndicatorTargeting, IndicatorTargetingDetails);

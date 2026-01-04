@@ -5,7 +5,7 @@ import { DetailsItem } from '../../panel/DetailsItem';
 import { ListComponentProps, registerListComponent } from '../../panel/ListComponentRegistry';
 import { LayerName } from '../../render/layers';
 import { registerRenderer, RendererProps } from '../../render/ObjectRegistry';
-import { MechLineStackObject, ObjectType } from '../../scene';
+import { IndicatorLineStackObject, ObjectType } from '../../scene';
 import { useImageTracked } from '../../useObjectLoading';
 import { usePanelDrag } from '../../usePanelDrag';
 import { HideGroup } from '../HideGroup';
@@ -16,18 +16,18 @@ import { RegularResizableObjectContainer } from '../ResizableObjectContainer';
 const DEFAULT_SIZE = 80;
 const icon = new URL(`public/board/objects/15.webp`, import.meta.env.VITE_COS_URL).href;
 
-export const MechLineStackPrefab: React.FC = () => {
+export const IndicatorLineStackPrefab: React.FC = () => {
     const [, setDragObject] = usePanelDrag();
     const { t } = useTranslation();
     return (
         <PrefabIcon
             draggable
-            name={t('mechanic.stack.line')}
+            name={t('indicator.stack.line')}
             icon={icon}
             onDragStart={(e) => {
                 setDragObject({
                     object: {
-                        type: ObjectType.MechLineStack,
+                        type: ObjectType.IndicatorLineStack,
                     },
                     offset: getDragOffset(e),
                 });
@@ -36,22 +36,22 @@ export const MechLineStackPrefab: React.FC = () => {
     );
 };
 
-registerDropHandler<MechLineStackObject>(ObjectType.MechLineStack, (object, position) => {
+registerDropHandler<IndicatorLineStackObject>(ObjectType.IndicatorLineStack, (object, position) => {
     return {
         type: 'add',
         object: {
-            type: ObjectType.MechLineStack,
+            type: ObjectType.IndicatorLineStack,
             opacity: 100,
             size: DEFAULT_SIZE,
             vNum: 1,
             rotation: 0,
             ...object,
             ...position,
-        } as MechLineStackObject,
+        } as IndicatorLineStackObject,
     };
 });
 
-export const MechLineStackRenderer: React.FC<RendererProps<MechLineStackObject>> = ({ object }) => {
+export const IndicatorLineStackRenderer: React.FC<RendererProps<IndicatorLineStackObject>> = ({ object }) => {
     const highlightProps = useHighlightProps(object);
     const [image] = useImageTracked(icon);
 
@@ -103,12 +103,15 @@ export const MechLineStackRenderer: React.FC<RendererProps<MechLineStackObject>>
     );
 };
 
-registerRenderer<MechLineStackObject>(ObjectType.MechLineStack, LayerName.Ground, MechLineStackRenderer);
+registerRenderer<IndicatorLineStackObject>(ObjectType.IndicatorLineStack, LayerName.Ground, IndicatorLineStackRenderer);
 
-export const MechLineStackDetails: React.FC<ListComponentProps<MechLineStackObject>> = ({ object, ...props }) => {
+export const IndicatorLineStackDetails: React.FC<ListComponentProps<IndicatorLineStackObject>> = ({
+    object,
+    ...props
+}) => {
     const { t } = useTranslation();
-    const name = t(`mechanic.stack.line`);
+    const name = t(`indicator.stack.line`);
     return <DetailsItem icon={icon} name={name} object={object} {...props} />;
 };
 
-registerListComponent<MechLineStackObject>(ObjectType.MechLineStack, MechLineStackDetails);
+registerListComponent<IndicatorLineStackObject>(ObjectType.IndicatorLineStack, IndicatorLineStackDetails);

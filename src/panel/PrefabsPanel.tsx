@@ -13,15 +13,19 @@ import { AoeStarburstPrefab } from '../prefabs/aoe/AoeStarburst';
 import { MarkerArrow } from '../prefabs/Arrow';
 import '../prefabs/BoardIcon';
 import { EnemyCircle, EnemyHuge, EnemyLarge, EnemyMedium, EnemySmall } from '../prefabs/Enemies';
+import { IndicatorLineStackPrefab } from '../prefabs/indicator/IndicatorLineStack';
+import { IndicatorProximityPrefab } from '../prefabs/indicator/IndicatorProximity';
+import { IndicatorStackPrefab } from '../prefabs/indicator/IndicatorStack';
+import { IndicatorTankbusterPrefab } from '../prefabs/indicator/IndicatorTankbuster';
+import { IndicatorTargetingPrefab } from '../prefabs/indicator/IndicatorTargeting';
 import { MechCircleExaflarePrefab } from '../prefabs/mech/MechCircleExaflare';
 import { MechCounterTowerPrefab } from '../prefabs/mech/MechCounterTower';
 import '../prefabs/mech/MechGaze';
 import { MechGazePrefab } from '../prefabs/mech/MechGaze';
 import { MechLinearKnockbackPrefab } from '../prefabs/mech/MechLinearKnockback';
-import { MechLineStackPrefab } from '../prefabs/mech/MechLineStack';
 import { MechProximityPrefab } from '../prefabs/mech/MechProximity';
 import { MechRadialKnockbackPrefab } from '../prefabs/mech/MechRadialKnockback';
-import { MechStackPrefab } from '../prefabs/mech/MechStack';
+import { MechAnticlockwiseRotationPrefab, MechClockwiseRotationPrefab } from '../prefabs/mech/MechRotation';
 import { MechTowerPrefab } from '../prefabs/mech/MechTower';
 import {
     PartyAllRole,
@@ -67,10 +71,8 @@ import { ZoneDonut } from '../prefabs/zone/ZoneDonut';
 import { ZoneFan } from '../prefabs/zone/ZoneFan';
 import { ZoneLine } from '../prefabs/zone/ZoneLine';
 import { ZonePolygon } from '../prefabs/zone/ZonePolygon';
-import { ZoneProximity } from '../prefabs/zone/ZoneProximity';
 import { ZoneRectangle } from '../prefabs/zone/ZoneRectangle';
 import { ZoneRightTriangle } from '../prefabs/zone/ZoneRightTriangle';
-import { ZoneRotateClockwise, ZoneRotateCounterClockwise } from '../prefabs/zone/ZoneRotate';
 import { ZoneStarburst } from '../prefabs/zone/ZoneStarburst';
 import { ZoneTriangle } from '../prefabs/zone/ZoneTriangle';
 import { useControlStyles } from '../useControlStyles';
@@ -116,22 +118,26 @@ export const PrefabsPanel: React.FC = () => {
             </Section>
             <Section title={t('prefabs.mechanic')}>
                 <ObjectGroup>
-                    <ZoneProximity />
-
-                    <ZoneRotateClockwise />
-                    <ZoneRotateCounterClockwise />
-                    <MechLineStackPrefab />
-                    <MechStackPrefab />
+                    <MechGazePrefab />
                     <MechProximityPrefab />
+                    <MechRadialKnockbackPrefab />
+                    <MechLinearKnockbackPrefab />
                     <MechTowerPrefab />
                     <MechCounterTowerPrefab />
                     <MechCircleExaflarePrefab />
-                    <MechRadialKnockbackPrefab />
-                    <MechLinearKnockbackPrefab />
-                    <MechGazePrefab />
+                    <MechClockwiseRotationPrefab />
+                    <MechAnticlockwiseRotationPrefab />
                 </ObjectGroup>
             </Section>
-
+            <Section title={t('prefabs.indicator')}>
+                <ObjectGroup>
+                    <IndicatorStackPrefab />
+                    <IndicatorLineStackPrefab />
+                    <IndicatorProximityPrefab />
+                    <IndicatorTankbusterPrefab />
+                    <IndicatorTargetingPrefab />
+                </ObjectGroup>
+            </Section>
             <Section title={t('prefabs.waymark')}>
                 <ObjectGroup>
                     <WaymarkA />

@@ -15,11 +15,11 @@ import {
     isGaze,
     isIcon,
     isImageObject,
+    isIndicatorStack,
     isInnerRadiusObject,
     isLineLike,
     isMechCircleExaflare,
     isMechGaze,
-    isMechStack,
     isMovable,
     isNamed,
     isParty,
@@ -189,7 +189,7 @@ const Controls: React.FC = () => {
                 <ControlCondition objects={objects} test={supportsStackCount} control={StackCountControl} />
             </div>
             <ControlCondition objects={objects} test={(x) => isMechGaze(x) || isGaze(x)} control={GazeInvertControl} />
-            <ControlCondition objects={objects} test={isMechStack} control={StackMultiHitControl} />
+            <ControlCondition objects={objects} test={isIndicatorStack} control={StackMultiHitControl} />
             <ControlCondition objects={objects} test={isText} control={TextValueControl} />
             <div className={mergeClasses(classes.row, classes.rightGap)}>
                 <ControlCondition objects={objects} test={isIcon} control={IconStacksControl} />

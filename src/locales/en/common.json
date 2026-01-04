@@ -339,6 +339,7 @@
     "shape": "Shape",
     "aoe": "AoE",
     "mechanic": "Mechanic",
+    "indicator": "Indicator",
     "waymark": "Waymark",
     "party": "Party",
     "enemy": "Enemy",
@@ -355,17 +356,26 @@
       "normal": "Gaze",
       "invert": "Gaze (Fake)"
     },
-    "stack": {
-      "normal": "Stack",
-      "multiHit": "Stack (Multi-Hit)",
-      "line": "Line Stack"
-    },
     "proximity": "Proximity",
     "radialKnockback": "Radial Knockback",
     "linearKnockback": "Linear Knockback",
     "tower": "Tower",
     "counterTower": "Counter Tower",
-    "circleExaflare": "Moving Circle AoE"
+    "circleExaflare": "Moving Circle AoE",
+    "rotation": {
+      "clockwise": "Clockwise Rotation",
+      "anticlockwise": "Anticlockwise Rotation"
+    }
+  },
+  "indicator": {
+    "stack": {
+      "normal": "Stack",
+      "multiHit": "Stack (Multi-Hit)",
+      "line": "Line Stack"
+    },
+    "tankbuster": "Tankbuster (Single Target)",
+    "proximity": "Proximity (Player-targeted)",
+    "targeting": "Targeting Indicator"
   },
   "arena": {
     "background": {
