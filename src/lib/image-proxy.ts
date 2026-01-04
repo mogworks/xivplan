@@ -1,11 +1,11 @@
 // src/lib/image-proxy.ts
-const PROXY_DOMAIN = 'https://proxy.xivstrat.cn';
+const PROXY_DOMAIN = 'proxy.xivstrat.cn';
 
 export function getProxiedImageUrl(originalUrl: string): string {
     if (!originalUrl) return '';
 
     // 如果已经是代理地址，直接返回
-    if (originalUrl.includes(PROXY_DOMAIN)) {
+    if (originalUrl.includes('xivstrat.cn')) {
         return originalUrl;
     }
 
@@ -15,5 +15,5 @@ export function getProxiedImageUrl(originalUrl: string): string {
     }
 
     // 返回代理地址（使用自定义域名）
-    return `${PROXY_DOMAIN}/?url=${encodeURIComponent(originalUrl)}`;
+    return `https://${PROXY_DOMAIN}/?url=${encodeURIComponent(originalUrl)}`;
 }
