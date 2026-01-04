@@ -9,6 +9,7 @@ import {
     AoeDonutObject,
     AoeFanObject,
     AoeRectObject,
+    ArrowObject,
     BoardIconObject,
     EnemyObject,
     FloorShape,
@@ -31,6 +32,7 @@ import {
     Scene,
     SceneObject,
     SceneObjectWithoutId,
+    TextObject,
     WaymarkObject,
 } from '../../scene';
 import { getObjectSize, knownObjects, objectScaleFactor } from './objects';
@@ -312,7 +314,39 @@ function parseObject(obj: SBObject): SceneObjectWithoutId | null {
 
         // line
         case 12:
-            return null;
+            return (() => {
+                const { x: x1, y: y1 } = coordinates;
+                const { x: x2, y: y2 } = (() => {
+                    return {
+                        x: obj.param1 * POS_FACTOR - SCENE_WIDTH / 2,
+                        y: SCENE_HEIGHT / 2 - obj.param2 * POS_FACTOR,
+                    };
+                })();
+                const { x, y } = (() => {
+                    return {
+                        x: (x1 + x2) / 2,
+                        y: (y1 + y2) / 2,
+                    };
+                })();
+                const distance = Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2);
+                return {
+                    type: ObjectType.Arrow,
+                    color: new Color(`rgb(${obj.color.red}, ${obj.color.green}, ${obj.color.blue})`).toString({
+                        format: 'hex',
+                        collapse: false,
+                    }),
+                    arrowBegin: false,
+                    arrowEnd: false,
+                    width: obj.param3 * 2 * SIZE_FACTOR * 5,
+                    height: distance,
+                    x,
+                    y,
+                    opacity: obj.color.opacity,
+                    hide: !obj.flags.visible,
+                    pinned: obj.flags.locked,
+                    rotation: obj.angle + 90,
+                } as Omit<ArrowObject, 'id'>;
+            })();
 
         // gaze
         case 13:
@@ -392,7 +426,23 @@ function parseObject(obj: SBObject): SceneObjectWithoutId | null {
 
         // text
         case 100:
-            return null;
+            return {
+                type: ObjectType.Text,
+                text: obj.string ?? '',
+                style: 'outline',
+                stroke: '#000000',
+                fontSize: 30 * SIZE_FACTOR,
+                align: 'center',
+                ...coordinates,
+                pinned: obj.flags.locked,
+                rotation: obj.angle,
+                color: new Color(`rgb(${obj.color.red}, ${obj.color.green}, ${obj.color.blue})`).toString({
+                    format: 'hex',
+                    collapse: false,
+                }),
+                opacity: obj.color.opacity,
+                hide: !obj.flags.visible,
+            } as Omit<TextObject, 'id'>;
 
         // proximity indicator
         case 107:
