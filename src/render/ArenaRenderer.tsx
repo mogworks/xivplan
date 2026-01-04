@@ -16,6 +16,7 @@ import {
     useCanvasArenaEllipse,
     useCanvasArenaRect,
 } from '../coord';
+import { getProxiedImageUrl } from '../lib/image-proxy';
 import {
     BaseGridProps,
     CustomRadialGrid,
@@ -115,16 +116,18 @@ const TextureRenderer: React.FC = () => {
         return null;
     }
 
+    const proxyUrl = getProxiedImageUrl(url);
+
     const opacity = (texture.opacity ?? 100) / 100;
     const position = getCanvasArenaTextureRect(scene);
     const shadow = floor.shape === FloorShape.None ? SHADOW : {};
 
     switch (ext) {
         case '.svg':
-            return <BackgroundImageSvg url={url} opacity={opacity} {...position} {...shadow} />;
+            return <BackgroundImageSvg url={proxyUrl} opacity={opacity} {...position} {...shadow} />;
 
         default:
-            return <BackgroundImageBitmap url={url} opacity={opacity} {...position} {...shadow} />;
+            return <BackgroundImageBitmap url={proxyUrl} opacity={opacity} {...position} {...shadow} />;
     }
 };
 
