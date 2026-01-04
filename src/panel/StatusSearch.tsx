@@ -64,7 +64,7 @@ export const StatusSearch: React.FC = () => {
     const classes = useStyles();
     const [controller, setController] = useState<AbortController>();
     const [debouncedFilter, setDebouncedFilter] = useState('');
-    const [language, setLanguage] = useLocalStorage<Language>('language', 'chs');
+    const [language, setLanguage] = useLocalStorage<Language>('xivapiLanguage', 'chs');
     const { dispatchToast } = useToastController();
     const { t } = useTranslation();
 
