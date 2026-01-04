@@ -470,6 +470,20 @@ function parseObject(obj: SBObject): SceneObjectWithoutId | null {
                 rotation: obj.angle,
             } as Omit<IndicatorTargetingObject, 'id'>;
 
+        // Buff/Debuff
+        case 113:
+        case 114:
+            return {
+                type: ObjectType.BoardIcon,
+                iconId: iconId,
+                opacity: obj.color.opacity,
+                hide: !obj.flags.visible,
+                size,
+                ...coordinates,
+                pinned: obj.flags.locked,
+                rotation: obj.angle,
+            } as Omit<BoardIconObject, 'id'>;
+
         // circle exaflare
         case 126:
             return {
