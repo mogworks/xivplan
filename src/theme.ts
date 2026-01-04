@@ -46,8 +46,8 @@ export const DEFAULT_AOE_OUTLINE_OPACITY = 100;
 
 export const DEFAULT_SHAPE_OPACITY = 35;
 
-export const DEFAULT_ENEMY_COLOR = COLOR_RED;
-export const DEFAULT_ENEMY_OPACITY = 65;
+export const DEFAULT_TARGET_COLOR = COLOR_RED;
+export const DEFAULT_TARGET_OPACITY = 65;
 
 export const HIGHLIGHT_COLOR = '#ffffff';
 export const SPOTLIGHT_COLOR = '#ffc800';
@@ -82,7 +82,7 @@ export interface SceneTheme {
     colorBorder: string;
     colorBorderTickMajor: string;
     colorBorderTickMinor: string;
-    colorEnemyText: string;
+    colorTargetText: string;
 }
 
 const sceneTheme: SceneTheme = {
@@ -94,7 +94,7 @@ const sceneTheme: SceneTheme = {
     colorBorder: '#6f5a48', // var(--xiv-colorBorder, #6f5a48)
     colorBorderTickMajor: 'rgb(186 227 255)',
     colorBorderTickMinor: 'rgb(186 227 255 / 67%)',
-    colorEnemyText: '#ffffff',
+    colorTargetText: '#ffffff',
 };
 
 export const sceneVars = themeToCssVars(sceneTheme);
@@ -135,9 +135,9 @@ export function getGridShapeConfig(theme: SceneTheme): ShapeConfig {
     };
 }
 
-export function getEnemyTextConfig(theme: SceneTheme): ShapeConfig {
+export function getTargetTextConfig(theme: SceneTheme): ShapeConfig {
     return {
-        fill: theme.colorEnemyText,
+        fill: theme.colorTargetText,
         stroke: theme.colorArena,
     };
 }

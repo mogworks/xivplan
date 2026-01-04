@@ -206,7 +206,10 @@
     "color": "颜色",
     "brushColor": "画笔颜色",
     "opacity": "不透明度",
-    "brushSize": "画笔大小"
+    "brushSize": "画笔大小",
+    "shape": "形状",
+    "brush": "画笔",
+    "tools": "工具"
   },
   "panel": {
     "noSelection": "未选择任何元素。"
@@ -349,7 +352,16 @@
       "part2": "或取消选择连线按钮以退出。使用",
       "part3": "+ 点击以创建链式连线。"
     },
-    "textLabel": "文本"
+    "textLabel": "文本",
+    "targetRing": "目标环"
+  },
+  "icons": {
+    "target": "目标标记"
+  },
+  "enemy": {
+    "60": "小型敌人",
+    "62": "中型敌人",
+    "64": "大型敌人"
   },
   "mechanic": {
     "gaze": {
@@ -377,6 +389,23 @@
     "proximity": "距离衰减攻击：特定对象型",
     "targeting": "针对目标的预兆",
     "marker": {
+      "65": "攻击1",
+      "66": "攻击2",
+      "67": "攻击3",
+      "68": "攻击4",
+      "69": "攻击5",
+      "70": "止步1",
+      "71": "止步2",
+      "72": "止步3",
+      "73": "禁止1",
+      "74": "禁止2",
+      "75": "方块",
+      "76": "圆圈",
+      "77": "十字",
+      "78": "三角",
+      "115": "攻击6",
+      "116": "攻击7",
+      "117": "攻击8",
       "131": "瞄准标记（红色）",
       "132": "瞄准标记（蓝色）",
       "133": "瞄准标记（紫色）",
@@ -416,6 +445,9 @@
       "offsetY": "纵向偏移",
       "width": "宽度",
       "height": "高度"
+    },
+    "waymark": {
+      "group": "场景标记"
     },
     "grid": {
       "group": "网格",
@@ -504,12 +536,12 @@
     "septagon": "七边形",
     "octagon": "八边形",
     "square": "方形",
-    "enemy": "敌人",
-    "enemyCircle": "圆形敌人",
-    "enemySmall": "小型敌人",
-    "enemyMedium": "中型敌人",
-    "enemyLarge": "大型敌人",
-    "enemyHuge": "巨型敌人",
+    "target": "敌人",
+    "targetCircle": "圆形敌人",
+    "targetSmall": "小型敌人",
+    "targetMedium": "中型敌人",
+    "targetLarge": "大型敌人",
+    "targetHuge": "巨型敌人",
     "waymarkA": "场标 A",
     "waymarkB": "场标 B",
     "waymarkC": "场标 C",

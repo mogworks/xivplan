@@ -58,6 +58,24 @@ export const MarkerHighlightCrossPrefab = makeIcon(136);
 export const MarkerHighlightSquarePrefab = makeIcon(137);
 export const MarkerHighlightTrianglePrefab = makeIcon(138);
 
+export const MarkerAttack1Prefab = makeIcon(65);
+export const MarkerAttack2Prefab = makeIcon(66);
+export const MarkerAttack3Prefab = makeIcon(67);
+export const MarkerAttack4Prefab = makeIcon(68);
+export const MarkerAttack5Prefab = makeIcon(69);
+export const MarkerAttack6Prefab = makeIcon(115);
+export const MarkerAttack7Prefab = makeIcon(116);
+export const MarkerAttack8Prefab = makeIcon(117);
+export const MarkerBind1Prefab = makeIcon(70);
+export const MarkerBind2Prefab = makeIcon(71);
+export const MarkerBind3Prefab = makeIcon(72);
+export const MarkerIgnore1Prefab = makeIcon(73);
+export const MarkerIgnore2Prefab = makeIcon(74);
+export const MarkerSquarePrefab = makeIcon(75);
+export const MarkerCirclePrefab = makeIcon(76);
+export const MarkerCrossPrefab = makeIcon(77);
+export const MarkerTrianglePrefab = makeIcon(78);
+
 registerDropHandler<IndicatorMarkerObject>(ObjectType.IndicatorMarker, (object, position) => {
     return {
         type: 'add',

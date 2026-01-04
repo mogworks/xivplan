@@ -8,7 +8,6 @@ import {
     isArrow,
     isColored,
     isDrawObject,
-    isEnemy,
     isExaflareZone,
     isExtendable,
     isFanLike,
@@ -29,6 +28,7 @@ import {
     isResizable,
     isRotatable,
     isStarburstLike,
+    isTarget,
     isTether,
     isText,
     isWaymark,
@@ -42,7 +42,6 @@ import { AoeEffectControls } from './properties/AoeEffectControls';
 import { ArrowPointersControl } from './properties/ArrowControls';
 import { DrawObjectBrushControl } from './properties/BrushControl';
 import { ColorControl, ColorSwatchControl } from './properties/ColorControl';
-import { EnemyRingControl } from './properties/EnemyControls';
 import { ExaflareLengthControl, ExaflareSpacingControl } from './properties/ExaflareControls';
 import { ExtendableControl } from './properties/ExtendableControls';
 import { FanAngleControl } from './properties/FanControls';
@@ -63,6 +62,7 @@ import { RegularSizeControl, SizeControl } from './properties/SizeControl';
 import { StackMultiHitControl } from './properties/StackControls';
 import { StackCountControl } from './properties/StackCountControl';
 import { StarburstSpokeCountControl, StarburstSpokeWidthControl } from './properties/StarburstControls';
+import { TargetRingControl } from './properties/TargetControls';
 import { TetherTypeControl, TetherWidthControl } from './properties/TetherControls';
 import { TextLayoutControl, TextOutlineControl, TextValueControl } from './properties/TextControls';
 import { WaymarkOpacityControl, WaymarkRotationControl } from './properties/WaymarkControls';
@@ -167,7 +167,7 @@ const Controls: React.FC = () => {
 
             <div className={mergeClasses(classes.row, classes.rightGap)}>
                 <ControlCondition objects={objects} test={isRotatable} control={RotationControl} />
-                <ControlCondition objects={objects} test={isEnemy} control={EnemyRingControl} />
+                <ControlCondition objects={objects} test={isTarget} control={TargetRingControl} />
                 <ControlCondition
                     objects={objects}
                     test={(x) => isExaflareZone(x) || isMechCircleExaflare(x)}

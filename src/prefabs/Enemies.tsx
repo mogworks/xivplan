@@ -1,68 +1,43 @@
-import Konva from 'konva';
-import { ShapeConfig } from 'konva/lib/Shape';
-import { TextConfig } from 'konva/lib/shapes/Text';
-import * as React from 'react';
-import { RefObject, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Arc, Circle, Path, Text } from 'react-konva';
+import { Group, Image, Rect } from 'react-konva';
 import { getDragOffset, registerDropHandler } from '../DropHandler';
 import { DetailsItem } from '../panel/DetailsItem';
 import { ListComponentProps, registerListComponent } from '../panel/ListComponentRegistry';
-import { registerRenderer, RendererProps } from '../render/ObjectRegistry';
 import { LayerName } from '../render/layers';
-import { EnemyObject, EnemyRingStyle, ObjectType } from '../scene';
-import {
-    CENTER_DOT_RADIUS,
-    DEFAULT_ENEMY_COLOR,
-    DEFAULT_ENEMY_OPACITY,
-    getEnemyTextConfig,
-    useSceneTheme,
-} from '../theme';
-import { useKonvaCache } from '../useKonvaCache';
+import { registerRenderer, RendererProps } from '../render/ObjectRegistry';
+import { EnemyObject, ObjectType } from '../scene';
+import { useImageTracked } from '../useObjectLoading';
 import { usePanelDrag } from '../usePanelDrag';
 import { makeDisplayName } from '../util';
 import { HideGroup } from './HideGroup';
-import { PrefabIcon } from './PrefabIcon';
-import { RadiusObjectContainer } from './RadiusObjectContainer';
 import { useHighlightProps } from './highlight';
+import { PrefabIcon } from './PrefabIcon';
+import { RegularResizableObjectContainer } from './ResizableObjectContainer';
 
-const DEFAULT_SIZE = 32;
+const DEFAULT_SIZE = 60;
+const getIconUrl = (iconId: number) =>
+    new URL(`public/board/objects/${iconId}.webp`, import.meta.env.VITE_COS_URL).href;
+const getNameKey = (iconId: number) => `enemy.${iconId}`;
 
-const SIZE_SMALL = 20;
-const SIZE_MEDIUM = 50;
-const SIZE_LARGE = 80;
-const SIZE_HUGE = 300;
-
-const RING_ANGLE = 270;
-const RING_ROTATION = 135;
-const OUTER_STROKE_RATIO = 1 / 32;
-const OUTER_STROKE_MIN = 2;
-const INNER_RADIUS_RATIO = 0.85;
-const INNER_STROKE_MIN = 1;
-const INNER_STROKE_RATIO = 1 / 64;
-const SHADOW_BLUR_RATIO = 1 / 10;
-const SHADOW_BLUR_MIN = 2;
-
-function makeIcon(defaultNameKey: string, icon: string, radius: number, hasDirection = true) {
+function makeIcon(iconId: number) {
+    const nameKey = getNameKey(iconId);
     const Component: React.FC = () => {
         const [, setDragObject] = usePanelDrag();
-        const iconUrl = `/actor/${icon}`;
+
+        const iconUrl = getIconUrl(iconId);
         const { t } = useTranslation();
+        const label = t(nameKey);
 
         return (
             <PrefabIcon
                 draggable
-                name={t(defaultNameKey)}
+                name={label}
                 icon={iconUrl}
                 onDragStart={(e) => {
                     setDragObject({
                         object: {
                             type: ObjectType.Enemy,
-                            icon: iconUrl,
-                            radius: radius,
-                            rotation: 0,
-                            ring: hasDirection ? EnemyRingStyle.Directional : EnemyRingStyle.NoDirection,
-                            defaultNameKey,
+                            iconId,
                         },
                         offset: getDragOffset(e),
                     });
@@ -70,305 +45,74 @@ function makeIcon(defaultNameKey: string, icon: string, radius: number, hasDirec
             />
         );
     };
-    Component.displayName = makeDisplayName(defaultNameKey);
+    Component.displayName = makeDisplayName(nameKey);
     return Component;
 }
+
+export const EnemySmall = makeIcon(60);
+export const EnemyMedium = makeIcon(62);
+export const EnemyLarge = makeIcon(64);
 
 registerDropHandler<EnemyObject>(ObjectType.Enemy, (object, position) => {
     return {
         type: 'add',
         object: {
             type: ObjectType.Enemy,
-            icon: '',
-            color: DEFAULT_ENEMY_COLOR,
-            opacity: DEFAULT_ENEMY_OPACITY,
-            radius: DEFAULT_SIZE,
-            status: [],
+            opacity: 100,
+            size: DEFAULT_SIZE,
+            rotation: 0,
             ...object,
             ...position,
-        },
+        } as EnemyObject,
     };
 });
 
-interface RingProps extends ShapeConfig {
-    name?: string;
-    radius: number;
-    color: string;
-    highlightProps?: ShapeConfig;
-}
-
-interface EnemyLabelProps extends TextConfig {
-    name?: string;
-    radius: number;
-}
-
-const EnemyLabel: React.FC<EnemyLabelProps> = ({ name, radius, ...props }) => {
-    if (radius < 32) {
-        return null;
-    }
-
-    const fontSize = Math.max(10, Math.min(24, radius / 6));
-    const strokeWidth = Math.max(1, fontSize / 8);
-
-    return (
-        <Text
-            text={name}
-            width={radius * 2}
-            height={radius * 2}
-            offsetX={radius}
-            offsetY={radius}
-            fontSize={fontSize}
-            strokeWidth={strokeWidth}
-            align="center"
-            verticalAlign="middle"
-            fillAfterStrokeEnabled
-            listening={false}
-            {...props}
-        />
-    );
-};
-
-function getInnerRadius(radius: number) {
-    return Math.min(radius - 4, radius * INNER_RADIUS_RATIO);
-}
-
-function getOuterRadius(radius: number, strokeWidth: number) {
-    return radius - strokeWidth / 2;
-}
-
-function getShapeProps(color: string, radius: number, strokeRatio: number, minStroke: number) {
-    const strokeWidth = Math.max(minStroke, radius * strokeRatio);
-    const shadowBlur = Math.max(SHADOW_BLUR_MIN, radius * SHADOW_BLUR_RATIO);
-
-    return {
-        stroke: color,
-        strokeWidth: strokeWidth,
-        shadowColor: color,
-        shadowBlur: shadowBlur,
-        shadowOpacity: 0.5,
-    };
-}
-
-const CircleRing: React.FC<RingProps> = ({ radius, color, highlightProps, opacity, ...props }) => {
-    const outerProps = getShapeProps(color, radius, OUTER_STROKE_RATIO, OUTER_STROKE_MIN);
-    const innerProps = getShapeProps(color, radius, INNER_STROKE_RATIO, INNER_STROKE_MIN);
-    const innerRadius = getInnerRadius(radius);
-    const outerRadius = getOuterRadius(radius, outerProps.strokeWidth);
-
-    return (
-        <>
-            {highlightProps && <Circle radius={radius} {...highlightProps} />}
-
-            <HideGroup opacity={opacity} {...props}>
-                <Circle {...outerProps} radius={outerRadius} />
-                <Circle {...innerProps} radius={innerRadius} />
-            </HideGroup>
-        </>
-    );
-};
-
-interface DirectionalRingProps extends RingProps {
-    rotation: number;
-    groupRef: RefObject<Konva.Group | null>;
-}
-
-const DirectionalRing: React.FC<DirectionalRingProps> = ({
-    radius,
-    color,
-    opacity,
-    rotation,
-    highlightProps,
-    groupRef,
-    ...props
-}) => {
-    const outerProps = getShapeProps(color, radius, OUTER_STROKE_RATIO, OUTER_STROKE_MIN);
-    const innerProps = getShapeProps(color, radius, INNER_STROKE_RATIO, INNER_STROKE_MIN);
-    const innerRadius = getInnerRadius(radius);
-    const outerRadius = getOuterRadius(radius, outerProps.strokeWidth);
-    const arrowScale = radius / 32;
-
-    // Cache so overlapping shapes with opacity appear as one object.
-    useKonvaCache(groupRef, [radius, color]);
-
-    return (
-        <>
-            {highlightProps && <Circle radius={radius} {...highlightProps} />}
-
-            <HideGroup opacity={opacity} ref={groupRef} rotation={rotation} {...props}>
-                <Circle radius={radius} fill="transparent" />
-                <Arc
-                    {...outerProps}
-                    rotation={RING_ROTATION}
-                    angle={RING_ANGLE}
-                    innerRadius={outerRadius}
-                    outerRadius={outerRadius}
-                />
-                <Arc
-                    {...innerProps}
-                    rotation={RING_ROTATION}
-                    angle={RING_ANGLE}
-                    innerRadius={innerRadius}
-                    outerRadius={innerRadius}
-                />
-                <Path
-                    data="M0-41c-2 2-4 7-4 10 4 0 4 0 8 0 0-3-2-8-4-10"
-                    scaleX={arrowScale}
-                    scaleY={arrowScale}
-                    strokeEnabled={false}
-                    fill={color}
-                />
-            </HideGroup>
-        </>
-    );
-};
-
-const OmnidirectionalRing: React.FC<DirectionalRingProps> = ({
-    radius,
-    color,
-    opacity,
-    rotation,
-    highlightProps,
-    groupRef,
-    ...props
-}) => {
-    const outerProps = getShapeProps(color, radius, OUTER_STROKE_RATIO, OUTER_STROKE_MIN);
-    const innerProps = getShapeProps(color, radius, INNER_STROKE_RATIO, INNER_STROKE_MIN);
-    const innerRadius = getInnerRadius(radius);
-    const outerRadius = getOuterRadius(radius, outerProps.strokeWidth);
-    const arrowScale = radius / 42;
-
-    // Cache so overlapping shapes with opacity appear as one object.
-    useKonvaCache(groupRef, [radius, color]);
-
-    return (
-        <>
-            {highlightProps && <Circle radius={radius} {...highlightProps} />}
-
-            <HideGroup opacity={opacity} ref={groupRef} rotation={rotation} {...props}>
-                <Circle radius={radius} fill="transparent" />
-
-                <Circle {...outerProps} radius={outerRadius} />
-                <Circle {...innerProps} radius={innerRadius} />
-
-                <Path
-                    data="M0-40c-2 2-4 7-4 10l4-2L4-30c0-3-2-8-4-10"
-                    scaleX={arrowScale}
-                    scaleY={arrowScale}
-                    strokeEnabled={false}
-                    fill={color}
-                />
-            </HideGroup>
-        </>
-    );
-};
-
-interface EnemyRendererProps extends RendererProps<EnemyObject> {
-    radius: number;
-    rotation: number;
-    groupRef: RefObject<Konva.Group | null>;
-    isDragging?: boolean;
-}
-
-function renderRing(
-    object: EnemyObject,
-    radius: number,
-    rotation: number,
-    groupRef: RefObject<Konva.Group | null>,
-    highlightProps?: ShapeConfig,
-) {
-    switch (object.ring) {
-        case EnemyRingStyle.NoDirection:
-            return (
-                <CircleRing
-                    radius={radius}
-                    color={object.color}
-                    opacity={object.opacity / 100}
-                    highlightProps={highlightProps}
-                />
-            );
-
-        case EnemyRingStyle.Directional:
-            return (
-                <DirectionalRing
-                    radius={radius}
-                    rotation={rotation}
-                    color={object.color}
-                    opacity={object.opacity / 100}
-                    highlightProps={highlightProps}
-                    groupRef={groupRef}
-                />
-            );
-
-        case EnemyRingStyle.Omnidirectional:
-            return (
-                <OmnidirectionalRing
-                    radius={radius}
-                    rotation={rotation}
-                    color={object.color}
-                    opacity={object.opacity / 100}
-                    highlightProps={highlightProps}
-                    groupRef={groupRef}
-                />
-            );
-    }
-}
-
-const EnemyRenderer: React.FC<EnemyRendererProps> = ({ object, radius, rotation, groupRef, isDragging }) => {
+export const EnemyRenderer: React.FC<RendererProps<EnemyObject>> = ({ object }) => {
     const highlightProps = useHighlightProps(object);
-    const theme = useSceneTheme();
-    const textConfig = getEnemyTextConfig(theme);
-    // Enemies ring center should only show the user-defined name; ignore nameKey here.
-    const displayName = object.name ?? '';
+    const [image] = useImageTracked(getIconUrl(object.iconId));
 
     return (
-        <>
-            <HideGroup>
-                {isDragging && <Circle radius={CENTER_DOT_RADIUS} fill={object.color} />}
-
-                <EnemyLabel name={displayName} radius={radius} color={object.color} {...textConfig} />
-            </HideGroup>
-
-            {renderRing(object, radius, rotation, groupRef, highlightProps)}
-        </>
-    );
-};
-
-const EnemyContainer: React.FC<RendererProps<EnemyObject>> = ({ object }) => {
-    const groupRef = useRef<Konva.Group>(null);
-
-    return (
-        <RadiusObjectContainer
+        <RegularResizableObjectContainer
             object={object}
-            allowRotate={object.rotation !== undefined}
-            onTransformEnd={() => {
-                groupRef.current?.clearCache();
+            transformerProps={{
+                centeredScaling: true,
+                enabledAnchors: ['top-left', 'top-right', 'bottom-right', 'bottom-left'],
             }}
         >
-            {({ radius, rotation, isDragging }) => (
-                <EnemyRenderer
-                    object={object}
-                    radius={radius}
-                    rotation={rotation}
-                    groupRef={groupRef}
-                    isDragging={isDragging}
-                />
+            {(groupProps) => (
+                <Group {...groupProps}>
+                    {highlightProps && (
+                        <Rect
+                            width={object.size}
+                            height={object.size}
+                            cornerRadius={object.size / 5}
+                            {...highlightProps}
+                        />
+                    )}
+                    <HideGroup>
+                        <Image
+                            image={image}
+                            width={object.size}
+                            height={object.size}
+                            opacity={object.opacity / 100}
+                            x={object.size / 2}
+                            y={object.size / 2}
+                            offsetX={object.size / 2}
+                            offsetY={object.size / 2}
+                        />
+                    </HideGroup>
+                </Group>
             )}
-        </RadiusObjectContainer>
+        </RegularResizableObjectContainer>
     );
 };
 
-registerRenderer<EnemyObject>(ObjectType.Enemy, LayerName.Ground, EnemyContainer);
+registerRenderer<EnemyObject>(ObjectType.Enemy, LayerName.Default, EnemyRenderer);
 
-const EnemyDetails: React.FC<ListComponentProps<EnemyObject>> = ({ object, ...props }) => {
+export const EnemyDetails: React.FC<ListComponentProps<EnemyObject>> = ({ object, ...props }) => {
     const { t } = useTranslation();
-    const name = object.name ?? (object.defaultNameKey ? t(object.defaultNameKey) : '');
-    return <DetailsItem icon={object.icon} name={name} object={object} {...props} />;
+    const name = t(getNameKey(object.iconId));
+    return <DetailsItem icon={getIconUrl(object.iconId)} name={name} object={object} {...props} />;
 };
 
 registerListComponent<EnemyObject>(ObjectType.Enemy, EnemyDetails);
-
-export const EnemyCircle = makeIcon('objects.enemyCircle', 'enemy_circle.png', SIZE_SMALL, false);
-export const EnemySmall = makeIcon('objects.enemySmall', 'enemy_small.png', SIZE_SMALL);
-export const EnemyMedium = makeIcon('objects.enemyMedium', 'enemy_medium.png', SIZE_MEDIUM);
-export const EnemyLarge = makeIcon('objects.enemyLarge', 'enemy_large.png', SIZE_LARGE);
-export const EnemyHuge = makeIcon('objects.enemyHuge', 'enemy_huge.png', SIZE_HUGE, false);

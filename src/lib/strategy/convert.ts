@@ -10,8 +10,10 @@ import {
     AoeFanObject,
     AoeRectObject,
     BoardIconObject,
+    EnemyObject,
     FloorShape,
     IndicatorLineStackObject,
+    IndicatorMarkerObject,
     IndicatorProximityObject,
     IndicatorStackObject,
     IndicatorTankbusterObject,
@@ -130,6 +132,20 @@ function parseObject(obj: SBObject): SceneObjectWithoutId | null {
             pinned: obj.flags.locked,
             rotation: obj.angle,
         } as Omit<WaymarkObject, 'id'>;
+    }
+
+    // 点名标记、目标标记
+    if ((65 <= obj.id && obj.id <= 78) || (115 <= obj.id && obj.id <= 117) || (131 <= obj.id && obj.id <= 138)) {
+        return {
+            type: ObjectType.IndicatorMarker,
+            iconId: iconId,
+            opacity: obj.color.opacity,
+            hide: !obj.flags.visible,
+            size,
+            ...coordinates,
+            pinned: obj.flags.locked,
+            rotation: obj.angle,
+        } as Omit<IndicatorMarkerObject, 'id'>;
     }
 
     switch (obj.id) {
@@ -312,6 +328,21 @@ function parseObject(obj: SBObject): SceneObjectWithoutId | null {
                 rotation: obj.angle,
             } as Omit<MechProximityObject, 'id'>;
 
+        // enemy
+        case 60:
+        case 62:
+        case 64:
+            return {
+                type: ObjectType.Enemy,
+                iconId: iconId,
+                opacity: obj.color.opacity,
+                hide: !obj.flags.visible,
+                size,
+                ...coordinates,
+                pinned: obj.flags.locked,
+                rotation: obj.angle,
+            } as Omit<EnemyObject, 'id'>;
+
         // text
         case 100:
             return null;
@@ -340,6 +371,7 @@ function parseObject(obj: SBObject): SceneObjectWithoutId | null {
                 rotation: obj.angle,
             } as Omit<IndicatorTankbusterObject, 'id'>;
 
+        // radial knockback
         case 109:
             return {
                 type: ObjectType.MechRadialKnockback,

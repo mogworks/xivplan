@@ -31,7 +31,7 @@ export enum ObjectType {
     Cursor = 'cursor',
     Donut = 'donut',
     Draw = 'draw',
-    Enemy = 'enemy',
+    Target = 'target',
     Exaflare = 'exaflare',
     Gaze = 'gaze',
     Icon = 'icon',
@@ -78,6 +78,7 @@ export enum ObjectType {
     IndicatorTankbuster = 'indicatorTankbuster',
     IndicatorProximity = 'indicatorProximity',
     IndicatorMarker = 'indicatorMarker',
+    Enemy = 'enemy',
 }
 
 export interface BaseObject {
@@ -305,28 +306,34 @@ export interface BoardIconObject
 }
 export const isBoardIcon = makeObjectTest<BoardIconObject>(ObjectType.BoardIcon);
 
+export interface EnemyObject extends RegularResizableObject, BaseObject {
+    readonly type: ObjectType.Enemy;
+    readonly iconId: number;
+}
+export const isEnemy = makeObjectTest<EnemyObject>(ObjectType.Enemy);
+
 export interface PartyObject extends RegularResizableObject, BaseObject {
     readonly type: ObjectType.Party;
     readonly iconId: number;
 }
 export const isParty = makeObjectTest<PartyObject>(ObjectType.Party);
 
-export enum EnemyRingStyle {
+export enum TargetRingStyle {
     NoDirection = 'none',
     Directional = 'dir',
     Omnidirectional = 'omni',
 }
 
-export interface EnemyObject extends RadiusObject, RotatableObject, NamedObject, ColoredObject, BaseObject {
-    readonly type: ObjectType.Enemy;
+export interface TargetObject extends RadiusObject, RotatableObject, NamedObject, ColoredObject, BaseObject {
+    readonly type: ObjectType.Target;
     readonly icon: string;
-    readonly ring: EnemyRingStyle;
+    readonly ring: TargetRingStyle;
 }
-export const isEnemy = makeObjectTest<EnemyObject>(ObjectType.Enemy);
+export const isTarget = makeObjectTest<TargetObject>(ObjectType.Target);
 
-export type Actor = PartyObject | EnemyObject;
+export type Actor = PartyObject | TargetObject;
 export function isActor(object: UnknownObject): object is Actor {
-    return isParty(object) || isEnemy(object);
+    return isParty(object) || isTarget(object);
 }
 
 export interface AoeRectObject extends Readonly<AoeProps>, ResizableObject, BaseObject {
@@ -756,7 +763,8 @@ export type SceneObject =
     | WaymarkObject
     | Aoe
     | Mechanics
-    | Indicators;
+    | Indicators
+    | EnemyObject;
 
 export type SceneObjectWithoutId = Omit<SceneObject, 'id'> & { id?: number };
 

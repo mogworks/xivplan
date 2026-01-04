@@ -10,9 +10,8 @@ import { AoeLinePrefab } from '../prefabs/aoe/AoeLine';
 import { AoePolygonPrefab } from '../prefabs/aoe/AoePolygon';
 import { AoeRectPrefab } from '../prefabs/aoe/AoeRect';
 import { AoeStarburstPrefab } from '../prefabs/aoe/AoeStarburst';
-import { MarkerArrow } from '../prefabs/Arrow';
 import '../prefabs/BoardIcon';
-import { EnemyCircle, EnemyHuge, EnemyLarge, EnemyMedium, EnemySmall } from '../prefabs/Enemies';
+import { EnemyLarge, EnemyMedium, EnemySmall } from '../prefabs/Enemies';
 import { IndicatorLineStackPrefab } from '../prefabs/indicator/IndicatorLineStack';
 import {
     MarkerHighlightCirclePrefab,
@@ -65,6 +64,7 @@ import {
     PartyTankDps,
     PartyTankHealer,
 } from '../prefabs/Party';
+import { TargetCircle, TargetHuge, TargetLarge, TargetMedium, TargetSmall } from '../prefabs/Targets';
 import {
     TetherClose,
     TetherFar,
@@ -73,18 +73,6 @@ import {
     TetherPlusMinus,
     TetherPlusPlus,
 } from '../prefabs/Tethers';
-import { TextLabel } from '../prefabs/TextLabel';
-import { Waymark1, Waymark2, Waymark3, Waymark4, WaymarkA, WaymarkB, WaymarkC, WaymarkD } from '../prefabs/Waymark';
-import { ZoneArc } from '../prefabs/zone/ZoneArc';
-import { ZoneCircle } from '../prefabs/zone/ZoneCircle';
-import { ZoneDonut } from '../prefabs/zone/ZoneDonut';
-import { ZoneFan } from '../prefabs/zone/ZoneFan';
-import { ZoneLine } from '../prefabs/zone/ZoneLine';
-import { ZonePolygon } from '../prefabs/zone/ZonePolygon';
-import { ZoneRectangle } from '../prefabs/zone/ZoneRectangle';
-import { ZoneRightTriangle } from '../prefabs/zone/ZoneRightTriangle';
-import { ZoneStarburst } from '../prefabs/zone/ZoneStarburst';
-import { ZoneTriangle } from '../prefabs/zone/ZoneTriangle';
 import { useControlStyles } from '../useControlStyles';
 import { ObjectGroup, Section } from './Section';
 
@@ -94,25 +82,6 @@ export const PrefabsPanel: React.FC = () => {
 
     return (
         <div className={controlClasses.panel}>
-            <ObjectGroup>
-                <TextLabel />
-                <MarkerArrow />
-            </ObjectGroup>
-            <Section title={t('prefabs.shape')}>
-                <ObjectGroup>
-                    <ZoneRectangle />
-                    <ZoneLine />
-                    <ZoneCircle />
-                    <ZoneDonut />
-                    <ZoneFan />
-                    <ZoneArc />
-
-                    <ZoneTriangle />
-                    <ZoneRightTriangle />
-                    <ZonePolygon />
-                    <ZoneStarburst />
-                </ObjectGroup>
-            </Section>
             <Section title={t('prefabs.aoe')}>
                 <ObjectGroup>
                     <AoeRectPrefab />
@@ -158,20 +127,6 @@ export const PrefabsPanel: React.FC = () => {
                     <MarkerHighlightCrossPrefab />
                     <MarkerHighlightSquarePrefab />
                     <MarkerHighlightTrianglePrefab />
-                </ObjectGroup>
-            </Section>
-            <Section title={t('prefabs.waymark')}>
-                <ObjectGroup>
-                    <WaymarkA />
-                    <WaymarkB />
-                    <WaymarkC />
-                    <WaymarkD />
-                </ObjectGroup>
-                <ObjectGroup>
-                    <Waymark1 />
-                    <Waymark2 />
-                    <Waymark3 />
-                    <Waymark4 />
                 </ObjectGroup>
             </Section>
             <Section title={t('prefabs.party')}>
@@ -222,11 +177,19 @@ export const PrefabsPanel: React.FC = () => {
 
             <Section title={t('prefabs.enemy')}>
                 <ObjectGroup>
-                    <EnemyCircle />
                     <EnemySmall />
                     <EnemyMedium />
                     <EnemyLarge />
-                    <EnemyHuge />
+                </ObjectGroup>
+            </Section>
+
+            <Section title={t('prefabs.targetRing')}>
+                <ObjectGroup>
+                    <TargetCircle />
+                    <TargetSmall />
+                    <TargetMedium />
+                    <TargetLarge />
+                    <TargetHuge />
                 </ObjectGroup>
             </Section>
             <Section title={t('prefabs.tether')}>

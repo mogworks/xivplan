@@ -11,7 +11,7 @@ import { useTranslation } from 'react-i18next';
 import { useScene } from '../../SceneProvider';
 import { Segment, SegmentedGroup } from '../../Segmented';
 import { ThreeQuarterCircleFilled, ThreeQuarterCircleRegular } from '../../icon/ThreeQuarterCircle';
-import { EnemyObject, EnemyRingStyle } from '../../scene';
+import { TargetObject, TargetRingStyle } from '../../scene';
 import { useControlStyles } from '../../useControlStyles';
 import { commonValue } from '../../util';
 import { PropertiesControlProps } from '../PropertiesControl';
@@ -25,35 +25,39 @@ const DirectionalIcon: React.FC = () => {
     return <ThreeQuarterCircleIcon className={classes.directional} />;
 };
 
-export const EnemyRingControl: React.FC<PropertiesControlProps<EnemyObject>> = ({ objects }) => {
+export const TargetRingControl: React.FC<PropertiesControlProps<TargetObject>> = ({ objects }) => {
     const classes = useControlStyles();
     const { dispatch } = useScene();
     const { t } = useTranslation();
 
     const ring = commonValue(objects, (obj) => obj.ring);
 
-    const onDirectionalChanged = (ring: EnemyRingStyle) => {
+    const onDirectionalChanged = (ring: TargetRingStyle) => {
         dispatch({ type: 'update', value: objects.map((obj) => ({ ...obj, ring })) });
     };
 
     return (
         <Field label={t('properties.ringStyle')} className={classes.cell}>
             <SegmentedGroup
-                name="enemy-ring"
+                name="target-ring"
                 value={ring}
-                onChange={(ev, data) => onDirectionalChanged(data.value as EnemyRingStyle)}
+                onChange={(ev, data) => onDirectionalChanged(data.value as TargetRingStyle)}
             >
                 <Segment
-                    value={EnemyRingStyle.Directional}
+                    value={TargetRingStyle.Directional}
                     icon={<DirectionalIcon />}
                     title={t('properties.directional')}
                 />
                 <Segment
-                    value={EnemyRingStyle.Omnidirectional}
+                    value={TargetRingStyle.Omnidirectional}
                     icon={<ChevronCircleUpIcon />}
                     title={t('properties.omnidirectional')}
                 />
-                <Segment value={EnemyRingStyle.NoDirection} icon={<CircleIcon />} title={t('properties.noDirection')} />
+                <Segment
+                    value={TargetRingStyle.NoDirection}
+                    icon={<CircleIcon />}
+                    title={t('properties.noDirection')}
+                />
             </SegmentedGroup>
         </Field>
     );

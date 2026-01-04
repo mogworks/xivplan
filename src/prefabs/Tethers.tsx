@@ -26,10 +26,10 @@ import {
     Tether,
     TetherType,
     isAoeObject,
-    isEnemy,
     isMovable,
     isRadiusObject,
     isResizable,
+    isTarget,
     isWaymark,
     isZone,
 } from '../scene';
@@ -97,7 +97,7 @@ function getTargetPoints(
 }
 
 function isGroundObject(object: SceneObject) {
-    return isZone(object) || isEnemy(object) || isWaymark(object) || isAoeObject(object);
+    return isZone(object) || isTarget(object) || isWaymark(object) || isAoeObject(object);
 }
 
 function getTargetOffset(object: SceneObject | undefined): number {

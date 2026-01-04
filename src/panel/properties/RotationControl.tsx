@@ -4,18 +4,18 @@ import { useTranslation } from 'react-i18next';
 import { useScene } from '../../SceneProvider';
 import { SpinButtonUnits } from '../../SpinButtonUnits';
 import { useSpinChanged } from '../../prefabs/useSpinChanged';
-import { EnemyObject, EnemyRingStyle, RotatableObject, isEnemy } from '../../scene';
+import { RotatableObject, TargetObject, TargetRingStyle, isTarget } from '../../scene';
 import { useControlStyles } from '../../useControlStyles';
 import { commonValue } from '../../util';
 import { PropertiesControlProps } from '../PropertiesControl';
 
-export const RotationControl: React.FC<PropertiesControlProps<RotatableObject | EnemyObject>> = ({ objects }) => {
+export const RotationControl: React.FC<PropertiesControlProps<RotatableObject | TargetObject>> = ({ objects }) => {
     const classes = useControlStyles();
     const { dispatch } = useScene();
     const { t } = useTranslation();
 
     const rotation = commonValue(objects, (obj) => obj.rotation);
-    const noDirection = commonValue(objects, (obj) => isEnemy(obj) && obj.ring == EnemyRingStyle.NoDirection);
+    const noDirection = commonValue(objects, (obj) => isTarget(obj) && obj.ring == TargetRingStyle.NoDirection);
 
     const onRotationChanged = useSpinChanged((rotation: number) =>
         dispatch({ type: 'update', value: objects.map((obj) => ({ ...obj, rotation })) }),

@@ -206,7 +206,10 @@
     "color": "Color",
     "brushColor": "Brush color",
     "opacity": "Opacity",
-    "brushSize": "Brush size"
+    "brushSize": "Brush size",
+    "shape": "Shape",
+    "brush": "Brush",
+    "tools": "Tools"
   },
   "panel": {
     "noSelection": "No objects selected."
@@ -349,7 +352,16 @@
       "part2": "or unselect the tether button to cancel. Use",
       "part3": "+ click to create chains."
     },
-    "textLabel": "Text"
+    "textLabel": "Text",
+    "targetRing": "Target Ring"
+  },
+  "icons": {
+    "target": "Target Marker"
+  },
+  "enemy": {
+    "60": "Enemy (Small)",
+    "62": "Enemy (Medium)",
+    "64": "Enemy (Large)"
   },
   "mechanic": {
     "gaze": {
@@ -377,6 +389,23 @@
     "proximity": "Proximity (Player-targeted)",
     "targeting": "Targeting Indicator",
     "marker": {
+      "65": "Attack 1",
+      "66": "Attack 2",
+      "67": "Attack 3",
+      "68": "Attack 4",
+      "69": "Attack 5",
+      "70": "Bind 1",
+      "71": "Bind 2",
+      "72": "Bind 3",
+      "73": "Ignore 1",
+      "74": "Ignore 2",
+      "75": "Square",
+      "76": "Circle",
+      "77": "Cross",
+      "78": "Triangle",
+      "115": "Attack 6",
+      "116": "Attack 7",
+      "117": "Attack 8",
       "131": "Targeting Indicator (Red)",
       "132": "Targeting Indicator (Blue)",
       "133": "Targeting Indicator (Purple)",
@@ -416,6 +445,9 @@
       "offsetY": "Offset Y",
       "width": "Width",
       "height": "Height"
+    },
+    "waymark": {
+      "group": "Waymark"
     },
     "grid": {
       "group": "Grid",
@@ -504,12 +536,12 @@
     "septagon": "Septagon",
     "octagon": "Octagon",
     "square": "Square",
-    "enemy": "Enemy",
-    "enemyCircle": "Enemy circle",
-    "enemySmall": "Small enemy",
-    "enemyMedium": "Medium enemy",
-    "enemyLarge": "Large enemy",
-    "enemyHuge": "Huge enemy",
+    "target": "Target",
+    "targetCircle": "Target circle",
+    "targetSmall": "Small target",
+    "targetMedium": "Medium target",
+    "targetLarge": "Large target",
+    "targetHuge": "Huge target",
     "waymarkA": "Waymark A",
     "waymarkB": "Waymark B",
     "waymarkC": "Waymark C",

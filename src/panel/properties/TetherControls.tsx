@@ -1,6 +1,6 @@
 import { Field } from '@fluentui/react-components';
-import { useTranslation } from 'react-i18next';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { useScene } from '../../SceneProvider';
 import { Segment, SegmentedGroup } from '../../Segmented';
 import { SpinButton } from '../../SpinButton';
@@ -64,8 +64,10 @@ export const TetherWidthControl: React.FC<PropertiesControlProps<Tether>> = ({ o
     );
 
     return (
-        <Field label={t('properties.width')} className={classes.cell}>
-            <SpinButton value={width} onChange={onWidthChanged} min={MIN_TETHER_WIDTH} step={2} />
-        </Field>
+        <div className={classes.row}>
+            <Field label={t('properties.width')} className={classes.cell}>
+                <SpinButton value={width} onChange={onWidthChanged} min={MIN_TETHER_WIDTH} step={2} />
+            </Field>
+        </div>
     );
 };

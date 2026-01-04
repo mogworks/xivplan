@@ -31,6 +31,7 @@ import { useTranslation } from 'react-i18next';
 import { useAsync, useCounter, useLocalStorage, useSessionStorage } from 'react-use';
 import { HotkeyBlockingDialogBody } from '../HotkeyBlockingDialogBody';
 import { useScene } from '../SceneProvider';
+import { Waymark1, Waymark2, Waymark3, Waymark4, WaymarkA, WaymarkB, WaymarkC, WaymarkD } from '../prefabs/Waymark';
 import { ARENA_PRESETS } from '../presets/ArenaPresets';
 import { ScenePreview } from '../render/SceneRenderer';
 import { ArenaPreset, Scene } from '../scene';
@@ -41,6 +42,7 @@ import { ArenaFloorEdit } from './ArenaFloorEdit';
 import { ArenaGridEdit } from './ArenaGridEdit';
 import { ArenaTextureEdit } from './ArenaTextureEdit';
 import { ArenaTickEdit } from './ArenaTickEdit';
+import { ObjectGroup } from './Section';
 
 const PREVIEW_SIZE = 240;
 
@@ -73,7 +75,7 @@ export const ArenaPanel: React.FC = () => {
     const styles = useStyles();
     const { t } = useTranslation();
 
-    const [openItems, setOpenItems] = React.useState(['floor', 'texture']);
+    const [openItems, setOpenItems] = React.useState(['floor', 'texture', 'waymark']);
     const handleToggle: AccordionToggleEventHandler<string> = (event, data) => {
         setOpenItems(data.openItems);
     };
@@ -104,6 +106,25 @@ export const ArenaPanel: React.FC = () => {
                     <AccordionHeader size="large">{t('arena.texture.group')}</AccordionHeader>
                     <AccordionPanel>
                         <ArenaTextureEdit />
+                    </AccordionPanel>
+                </AccordionItem>
+                <AccordionItem value="waymark" className={openItems.includes('waymark') ? styles.openItem : ''}>
+                    <AccordionHeader size="large">{t('arena.waymark.group')}</AccordionHeader>
+                    <AccordionPanel>
+                        <>
+                            <ObjectGroup>
+                                <WaymarkA />
+                                <WaymarkB />
+                                <WaymarkC />
+                                <WaymarkD />
+                            </ObjectGroup>
+                            <ObjectGroup>
+                                <Waymark1 />
+                                <Waymark2 />
+                                <Waymark3 />
+                                <Waymark4 />
+                            </ObjectGroup>
+                        </>
                     </AccordionPanel>
                 </AccordionItem>
                 <AccordionItem value="grid" className={openItems.includes('grid') ? styles.openItem : ''}>
