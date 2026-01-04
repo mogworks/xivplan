@@ -22,6 +22,14 @@ import { CompactSwatchColorPicker } from '../CompactSwatchColorPicker';
 import { OpacitySlider } from '../OpacitySlider';
 import { EditMode } from '../editMode';
 import { MarkerArrow } from '../prefabs/Arrow';
+import {
+    BoardIconArrowPrefab,
+    BoardIconCirclePrefab,
+    BoardIconCrossPrefab,
+    BoardIconRotationPrefab,
+    BoardIconSquarePrefab,
+    BoardIconTrianglePrefab,
+} from '../prefabs/BoardIcon';
 import '../prefabs/DrawObjectRenderer';
 import { TextLabel } from '../prefabs/TextLabel';
 import { useSpinChanged } from '../prefabs/useSpinChanged';
@@ -89,6 +97,14 @@ export const DrawPanel: React.FC = () => {
                     <TextLabel />
                     <MarkerArrow />
                 </ObjectGroup>
+                <ObjectGroup>
+                    <BoardIconCirclePrefab />
+                    <BoardIconCrossPrefab />
+                    <BoardIconTrianglePrefab />
+                    <BoardIconSquarePrefab />
+                    <BoardIconArrowPrefab />
+                    <BoardIconRotationPrefab />
+                </ObjectGroup>
             </Section>
             <Section title={t('draw.shape')}>
                 <ObjectGroup>
@@ -98,7 +114,8 @@ export const DrawPanel: React.FC = () => {
                     <ZoneDonut />
                     <ZoneFan />
                     <ZoneArc />
-
+                </ObjectGroup>
+                <ObjectGroup>
                     <ZoneTriangle />
                     <ZoneRightTriangle />
                     <ZonePolygon />

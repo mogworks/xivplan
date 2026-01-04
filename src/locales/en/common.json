@@ -263,7 +263,9 @@
     "hide": "Hide",
     "multiHit": "Multi-hit",
     "hNum": "H. num",
-    "vNum": "V. num"
+    "vNum": "V. num",
+    "flipHorizontal": "H. Flip",
+    "flipVertical": "V. Flip"
   },
   "colors": {
     "invalidColor": "Invalid color",
@@ -448,6 +450,9 @@
     },
     "waymark": {
       "group": "Waymark"
+    },
+    "scene": {
+      "group": "Game Built-in Scenes"
     },
     "grid": {
       "group": "Grid",
@@ -648,6 +653,14 @@
     "1000055": "DPS 2",
     "1000056": "DPS 3",
     "1000057": "DPS 4",
+
+    "87": "Circle",
+    "88": "Cross",
+    "89": "Triangle",
+    "90": "Square",
+    "94": "Arrow",
+    "103": "Rotation",
+
     "waymark": {
       "a": "Waymark A",
       "b": "Waymark B",
@@ -657,6 +670,11 @@
       "2": "Waymark 2",
       "3": "Waymark 3",
       "4": "Waymark 4"
-    }
+    },
+
+    "4": "Circle Grid Floor",
+    "8": "Square Grid Floor",
+    "124": "Circle Gray Floor",
+    "125": "Square Gray Floor"
   }
 }

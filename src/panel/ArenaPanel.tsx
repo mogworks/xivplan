@@ -31,6 +31,12 @@ import { useTranslation } from 'react-i18next';
 import { useAsync, useCounter, useLocalStorage, useSessionStorage } from 'react-use';
 import { HotkeyBlockingDialogBody } from '../HotkeyBlockingDialogBody';
 import { useScene } from '../SceneProvider';
+import {
+    BoardIconCircleGrayBottomPrefab,
+    BoardIconCircleGridBottomPrefab,
+    BoardIconSquareGrayBottomPrefab,
+    BoardIconSquareGridBottomPrefab,
+} from '../prefabs/BoardIcon';
 import { Waymark1, Waymark2, Waymark3, Waymark4, WaymarkA, WaymarkB, WaymarkC, WaymarkD } from '../prefabs/Waymark';
 import { ARENA_PRESETS } from '../presets/ArenaPresets';
 import { ScenePreview } from '../render/SceneRenderer';
@@ -75,7 +81,7 @@ export const ArenaPanel: React.FC = () => {
     const styles = useStyles();
     const { t } = useTranslation();
 
-    const [openItems, setOpenItems] = React.useState(['floor', 'texture', 'waymark']);
+    const [openItems, setOpenItems] = React.useState(['floor', 'texture', 'waymark', 'scene']);
     const handleToggle: AccordionToggleEventHandler<string> = (event, data) => {
         setOpenItems(data.openItems);
     };
@@ -125,6 +131,17 @@ export const ArenaPanel: React.FC = () => {
                                 <Waymark4 />
                             </ObjectGroup>
                         </>
+                    </AccordionPanel>
+                </AccordionItem>
+                <AccordionItem value="scene" className={openItems.includes('scene') ? styles.openItem : ''}>
+                    <AccordionHeader size="large">{t('arena.scene.group')}</AccordionHeader>
+                    <AccordionPanel>
+                        <ObjectGroup>
+                            <BoardIconCircleGridBottomPrefab />
+                            <BoardIconSquareGridBottomPrefab />
+                            <BoardIconCircleGrayBottomPrefab />
+                            <BoardIconSquareGrayBottomPrefab />
+                        </ObjectGroup>
                     </AccordionPanel>
                 </AccordionItem>
                 <AccordionItem value="grid" className={openItems.includes('grid') ? styles.openItem : ''}>

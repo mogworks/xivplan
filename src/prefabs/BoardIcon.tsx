@@ -1,17 +1,80 @@
 import { useTranslation } from 'react-i18next';
 import { Group, Image, Rect } from 'react-konva';
+import { getDragOffset, registerDropHandler } from '../DropHandler';
 import { DetailsItem } from '../panel/DetailsItem';
 import { ListComponentProps, registerListComponent } from '../panel/ListComponentRegistry';
 import { LayerName } from '../render/layers';
 import { registerRenderer, RendererProps } from '../render/ObjectRegistry';
 import { BoardIconObject, ObjectType } from '../scene';
 import { useImageTracked } from '../useObjectLoading';
+import { usePanelDrag } from '../usePanelDrag';
+import { makeDisplayName } from '../util';
 import { HideGroup } from './HideGroup';
 import { useHighlightProps } from './highlight';
+import { PrefabIcon } from './PrefabIcon';
 import { RegularResizableObjectContainer } from './ResizableObjectContainer';
 
 const getIconUrl = (iconId: number) =>
     new URL(`public/board/objects/${iconId}.webp`, import.meta.env.VITE_COS_URL).href;
+
+const getNameKey = (iconId: number) => `boardIcon.${iconId}`;
+
+function makeIcon(iconId: number, extra?: Record<string, unknown>) {
+    const nameKey = getNameKey(iconId);
+    const Component: React.FC = () => {
+        const [, setDragObject] = usePanelDrag();
+
+        const iconUrl = getIconUrl(iconId);
+        const { t } = useTranslation();
+        const label = t(nameKey);
+
+        return (
+            <PrefabIcon
+                draggable
+                name={label}
+                icon={iconUrl}
+                onDragStart={(e) => {
+                    setDragObject({
+                        object: {
+                            type: ObjectType.BoardIcon,
+                            iconId,
+                            ...extra,
+                        },
+                        offset: getDragOffset(e),
+                    });
+                }}
+            />
+        );
+    };
+    Component.displayName = makeDisplayName(nameKey);
+    return Component;
+}
+
+export const BoardIconCirclePrefab = makeIcon(87);
+export const BoardIconCrossPrefab = makeIcon(88);
+export const BoardIconTrianglePrefab = makeIcon(89, { flipVertical: false });
+export const BoardIconSquarePrefab = makeIcon(90);
+export const BoardIconArrowPrefab = makeIcon(94, { flipVertical: false });
+export const BoardIconRotationPrefab = makeIcon(103, { flipHorizontal: false, flipVertical: false });
+
+export const BoardIconCircleGridBottomPrefab = makeIcon(4, { size: 320 });
+export const BoardIconSquareGridBottomPrefab = makeIcon(8, { size: 320 });
+export const BoardIconCircleGrayBottomPrefab = makeIcon(124, { size: 320 });
+export const BoardIconSquareGrayBottomPrefab = makeIcon(125, { size: 320 });
+
+registerDropHandler<BoardIconObject>(ObjectType.BoardIcon, (object, position) => {
+    return {
+        type: 'add',
+        object: {
+            type: ObjectType.BoardIcon,
+            opacity: 100,
+            size: 60,
+            rotation: 0,
+            ...object,
+            ...position,
+        } as BoardIconObject,
+    };
+});
 
 export const BoardIconRenderer: React.FC<RendererProps<BoardIconObject>> = ({ object }) => {
     const highlightProps = useHighlightProps(object);
@@ -71,7 +134,7 @@ registerRenderer<BoardIconObject>(ObjectType.BoardIcon, LayerName.Default, Board
 
 export const BoardIconDetails: React.FC<ListComponentProps<BoardIconObject>> = ({ object, ...props }) => {
     const { t } = useTranslation();
-    const name = object.name || t(`boardIcon.${object.iconId}`, { defaultValue: object.iconId });
+    const name = object.name || t(getNameKey(object.iconId), { defaultValue: object.iconId });
     return <DetailsItem icon={getIconUrl(object.iconId)} name={name} object={object} {...props} />;
 };
 

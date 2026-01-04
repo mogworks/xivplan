@@ -148,7 +148,54 @@ function parseObject(obj: SBObject): SceneObjectWithoutId | null {
         } as Omit<IndicatorMarkerObject, 'id'>;
     }
 
+    // 白色标记
+    if ((87 <= obj.id && obj.id <= 90) || obj.id === 94 || obj.id === 103) {
+        const common = {
+            type: ObjectType.BoardIcon,
+            iconId: iconId,
+            opacity: obj.color.opacity,
+            hide: !obj.flags.visible,
+            size,
+            ...coordinates,
+            pinned: obj.flags.locked,
+            rotation: obj.angle,
+        };
+        const flipV =
+            obj.id === 89 || obj.id === 94 || obj.id === 103
+                ? {
+                      flipVertical: obj.flags.flipVertical,
+                  }
+                : {};
+        const flipH =
+            obj.id === 103
+                ? {
+                      flipHorizontal: obj.flags.flipHorizontal,
+                  }
+                : {};
+        return {
+            ...common,
+            ...flipV,
+            ...flipH,
+        } as Omit<BoardIconObject, 'id'>;
+    }
+
     switch (obj.id) {
+        // 内置场景
+        case 4:
+        case 8:
+        case 124:
+        case 125:
+            return {
+                type: ObjectType.BoardIcon,
+                iconId: iconId,
+                opacity: obj.color.opacity,
+                hide: !obj.flags.visible,
+                size,
+                ...coordinates,
+                pinned: obj.flags.locked,
+                rotation: obj.angle,
+            } as Omit<BoardIconObject, 'id'>;
+
         // circle AoE
         case 9:
             return {

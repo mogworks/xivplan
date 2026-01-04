@@ -6,6 +6,7 @@ import {
     SceneObject,
     UnknownObject,
     isArrow,
+    isBoardIcon,
     isColored,
     isDrawObject,
     isExaflareZone,
@@ -40,6 +41,7 @@ import { useControlStyles } from '../useControlStyles';
 import { PropertiesControlProps } from './PropertiesControl';
 import { AoeEffectControls } from './properties/AoeEffectControls';
 import { ArrowPointersControl } from './properties/ArrowControls';
+import { FlipControl } from './properties/BoardIconControls';
 import { DrawObjectBrushControl } from './properties/BrushControl';
 import { ColorControl, ColorSwatchControl } from './properties/ColorControl';
 import { ExaflareLengthControl, ExaflareSpacingControl } from './properties/ExaflareControls';
@@ -198,6 +200,7 @@ const Controls: React.FC = () => {
             <div className={mergeClasses(classes.row)}>
                 <ControlCondition objects={objects} test={isWaymark} control={WaymarkRotationControl} />
             </div>
+            <ControlCondition objects={objects} test={isBoardIcon} control={FlipControl} />
         </>
     );
 };
