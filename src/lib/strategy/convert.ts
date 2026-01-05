@@ -160,9 +160,6 @@ export function strategyBoardToScene(strategyBoardData: Uint8Array): Scene {
     console.log('scene:');
     console.log(scene);
 
-    console.log('scene to string:');
-    console.log(sceneToStrategyBoard(scene, 0));
-
     return scene;
 }
 
@@ -705,6 +702,38 @@ export function sceneToStrategyBoard(scene: Scene, stepIndex: number): string {
 
 function encodeObject(sceneObj: SceneObject): SBObject | null {
     switch (sceneObj.type) {
+        case ObjectType.AoeCircle:
+            return (() => {
+                const obj = sceneObj as AoeCircleObject;
+                const color = new Color(obj.baseColor ?? DEFAULT_AOE_COLOR);
+
+                return {
+                    id: 9,
+                    string: undefined,
+                    flags: {
+                        visible: !obj.hide,
+                        flipHorizontal: false,
+                        flipVertical: false,
+                        locked: !!obj.pinned,
+                    },
+                    coordinates: {
+                        x: (obj.x + SCENE_WIDTH / 2) / POS_FACTOR,
+                        y: (SCENE_HEIGHT / 2 - obj.y) / POS_FACTOR,
+                    },
+                    angle: 0,
+                    scale: (obj.radius * 2 * 30) / 29 / SIZE_FACTOR / getObjectSize(9) / objectScaleFactor[9],
+                    color: {
+                        red: Math.round(color.r * 255),
+                        green: Math.round(color.g * 255),
+                        blue: Math.round(color.b * 255),
+                        opacity: obj.opacity,
+                    },
+                    param1: 0,
+                    param2: 0,
+                    param3: 0,
+                } as SBObject;
+            })();
+
         case ObjectType.Rect:
         case ObjectType.AoeRect:
             return (() => {
