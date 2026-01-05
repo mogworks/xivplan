@@ -36,8 +36,10 @@ import {
     WaymarkObject,
 } from '../../scene';
 import { SBObject } from './common';
+import { encodeShareString } from './encoder';
 import { getObjectSize, knownObjects, objectScaleFactor } from './objects';
 import { parseStrategyBoardData } from './parser';
+import { buildStrategyBoardData } from './serializer';
 
 const BASE_URL = 'https://cos.xivstrat.cn';
 const CANVAS_DESIGN_WIDTH = 5120; // game strategy board canvas design width
@@ -87,6 +89,9 @@ export function strategyBoardToScene(strategyBoardData: Uint8Array): Scene {
     // TODO BOARD remove console.log
     console.log('scene:');
     console.log(scene);
+
+    console.log('scene to string:');
+    console.log(sceneToStrategyBoard(scene, 0));
 
     return scene;
 }
@@ -597,4 +602,87 @@ function parseObject(obj: SBObject): SceneObjectWithoutId | null {
         hNum: obj.param1,
         vNum: obj.param2,
     } as Omit<BoardIconObject, 'id'>;
+}
+
+export function sceneToStrategyBoard(scene: Scene, stepIndex: number): string {
+    const step = scene.steps[stepIndex];
+    if (!step) {
+        throw new Error(`Step ${stepIndex} does not exist`);
+    }
+
+    const objects: SBObject[] = [];
+
+    for (const sceneObj of step.objects) {
+        const sbObj = encodeObject(sceneObj);
+        if (sbObj) {
+            objects.push(sbObj);
+        }
+    }
+
+    const background = extractBackgroundId(scene);
+
+    const strategyBoard = {
+        boardName: '未命名战术板',
+        objects,
+        background,
+    };
+
+    const strategyBoardData = buildStrategyBoardData(strategyBoard);
+    const shareString = encodeShareString(strategyBoardData);
+
+    return shareString;
+}
+
+function encodeObject(sceneObj: SceneObject): SBObject | null {
+    switch (sceneObj.type) {
+        case ObjectType.AoeRect:
+            return (() => {
+                const obj = sceneObj as AoeRectObject;
+                // obj.baseColor to {red,green,blue}
+                const color = new Color(obj.baseColor ?? '#000000');
+
+                return {
+                    id: 11,
+                    string: '',
+                    flags: {
+                        visible: !obj.hide,
+                        flipHorizontal: false,
+                        flipVertical: false,
+                        locked: !!obj.pinned,
+                    },
+                    coordinates: {
+                        x: (obj.x + SCENE_WIDTH / 2) / POS_FACTOR,
+                        y: (SCENE_HEIGHT / 2 - obj.y) / POS_FACTOR,
+                    },
+                    angle: obj.rotation,
+                    scale: 100,
+                    color: {
+                        red: Math.round(color.r * 255),
+                        green: Math.round(color.g * 255),
+                        blue: Math.round(color.b * 255),
+                        opacity: obj.opacity,
+                    },
+                    param1: obj.width / SIZE_FACTOR / 2,
+                    param2: obj.height / SIZE_FACTOR / 2,
+                    param3: 0,
+                } as SBObject;
+            })();
+
+        default:
+            return null;
+    }
+}
+
+function extractBackgroundId(scene: Scene): number {
+    const textureUrl = scene.arena.texture?.url;
+    if (!textureUrl) {
+        return 1;
+    }
+
+    const match = textureUrl.match(new RegExp(BASE_URL + '/public/board/background/(\\d+)\\.webp$'));
+    if (match && match[1]) {
+        return parseInt(match[1], 10);
+    }
+
+    return 1;
 }

@@ -1,6 +1,6 @@
 import { StrategyBoard } from './common';
 
-export function encodeStrategyBoardData(board: StrategyBoard): Uint8Array {
+export function buildStrategyBoardData(board: StrategyBoard) {
     const objects = [...board.objects].reverse();
     const objCount = objects.length;
 
@@ -20,14 +20,19 @@ export function encodeStrategyBoardData(board: StrategyBoard): Uint8Array {
     pos += 2; // length2 占位
     pos += 4; // unk
 
-    // Section 1: 板名
+    // Section 1: 板名 (需要 4 字节对齐)
     view.setUint16(pos, 1, true);
     pos += 2;
-    const nameBytes = new TextEncoder().encode('未命名' + '\0');
-    view.setUint16(pos, nameBytes.length, true);
+    const cleanName = (board.boardName || '').replace(/\0+$/, '');
+    const nameBytes = new TextEncoder().encode(cleanName);
+    const namePaddedLen = Math.ceil((nameBytes.length + 1) / 4) * 4;
+    view.setUint16(pos, namePaddedLen, true);
     pos += 2;
     data.set(nameBytes, pos);
-    pos += nameBytes.length;
+    for (let i = nameBytes.length; i < namePaddedLen; i++) {
+        data[pos + i] = 0;
+    }
+    pos += namePaddedLen;
 
     // 对象列表
     for (const obj of objects) {
@@ -36,14 +41,22 @@ export function encodeStrategyBoardData(board: StrategyBoard): Uint8Array {
         view.setUint16(pos, obj.id, true);
         pos += 2;
 
-        if (obj.id === 100 && obj.string) {
-            view.setUint16(pos, 0, true);
-            pos += 2;
-            const strBytes = new TextEncoder().encode(obj.string + '\0');
-            view.setUint16(pos, strBytes.length, true);
+        if (obj.id === 100) {
+            view.setUint16(pos, 3, true);
+            pos += 2; // 必须是 3
+            // 去掉末尾的NULL，编码字符串（处理空字符串情况）
+            const cleanString = (obj.string || '').replace(/\0+$/, '');
+            const strBytes = new TextEncoder().encode(cleanString);
+            // 对齐到 4 字节边界（至少 1 个 NULL）
+            const paddedLen = Math.ceil((strBytes.length + 1) / 4) * 4;
+            view.setUint16(pos, paddedLen, true);
             pos += 2;
             data.set(strBytes, pos);
-            pos += strBytes.length;
+            // 剩余部分填充 NULL
+            for (let i = strBytes.length; i < paddedLen; i++) {
+                data[pos + i] = 0;
+            }
+            pos += paddedLen;
         }
     }
 
@@ -55,11 +68,11 @@ export function encodeStrategyBoardData(board: StrategyBoard): Uint8Array {
     view.setUint16(pos, objCount, true);
     pos += 2;
     for (const obj of objects) {
-        let flags = 0x0000;
-        if (obj.flags.visible) flags |= 0x0001;
-        if (obj.flags.flipHorizontal) flags |= 0x0002;
-        if (obj.flags.flipVertical) flags |= 0x0004;
-        if (obj.flags.locked) flags |= 0x0008;
+        let flags = 0x0001;
+        if (!obj.flags.visible) flags |= 0x0100;
+        if (obj.flags.flipHorizontal) flags |= 0x0200;
+        if (obj.flags.flipVertical) flags |= 0x0400;
+        if (obj.flags.locked) flags |= 0x0800;
         view.setUint16(pos, flags, true);
         pos += 2;
     }
@@ -72,8 +85,8 @@ export function encodeStrategyBoardData(board: StrategyBoard): Uint8Array {
     view.setUint16(pos, objCount, true);
     pos += 2;
     for (const obj of objects) {
-        const x = obj.coordinates.x;
-        const y = obj.coordinates.y;
+        const x = Math.round(obj.coordinates.x);
+        const y = Math.round(obj.coordinates.y);
         view.setUint16(pos, x, true);
         pos += 2;
         view.setUint16(pos, y, true);
@@ -88,7 +101,7 @@ export function encodeStrategyBoardData(board: StrategyBoard): Uint8Array {
     view.setUint16(pos, objCount, true);
     pos += 2;
     for (const obj of objects) {
-        const angle = obj.angle;
+        const angle = Math.round(obj.angle);
         view.setInt16(pos, angle, true);
         pos += 2;
     }
@@ -101,7 +114,7 @@ export function encodeStrategyBoardData(board: StrategyBoard): Uint8Array {
     view.setUint16(pos, objCount, true);
     pos += 2;
     for (const obj of objects) {
-        data[pos] = obj.scale;
+        data[pos] = Math.round(obj.scale);
         pos += 1;
     }
     if (objCount % 2 === 1) pos += 1;
@@ -114,13 +127,13 @@ export function encodeStrategyBoardData(board: StrategyBoard): Uint8Array {
     view.setUint16(pos, objCount, true);
     pos += 2;
     for (const obj of objects) {
-        data[pos] = obj.color.red;
+        data[pos] = Math.round(obj.color.red);
         pos += 1;
-        data[pos] = obj.color.green;
+        data[pos] = Math.round(obj.color.green);
         pos += 1;
-        data[pos] = obj.color.blue;
+        data[pos] = Math.round(obj.color.blue);
         pos += 1;
-        data[pos] = 100 - obj.color.opacity;
+        data[pos] = 100 - Math.round(obj.color.opacity);
         pos += 1;
     }
 
@@ -132,7 +145,7 @@ export function encodeStrategyBoardData(board: StrategyBoard): Uint8Array {
     view.setUint16(pos, objCount, true);
     pos += 2;
     for (const obj of objects) {
-        view.setUint16(pos, obj.param1 || 0, true);
+        view.setUint16(pos, Math.round(obj.param1 || 0), true);
         pos += 2;
     }
 
@@ -144,7 +157,7 @@ export function encodeStrategyBoardData(board: StrategyBoard): Uint8Array {
     view.setUint16(pos, objCount, true);
     pos += 2;
     for (const obj of objects) {
-        view.setUint16(pos, obj.param2 || 0, true);
+        view.setUint16(pos, Math.round(obj.param2 || 0), true);
         pos += 2;
     }
 
@@ -156,7 +169,7 @@ export function encodeStrategyBoardData(board: StrategyBoard): Uint8Array {
     view.setUint16(pos, objCount, true);
     pos += 2;
     for (const obj of objects) {
-        view.setUint16(pos, obj.param3 || 0, true);
+        view.setUint16(pos, Math.round(obj.param3 || 0), true);
         pos += 2;
     }
 

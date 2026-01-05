@@ -134,6 +134,7 @@ export interface SBObject {
 }
 
 export interface StrategyBoard {
+    boardName: string;
     objects: SBObject[];
     background: number;
 }

@@ -199,6 +199,7 @@ export function parseStrategyBoardData(strategyBoardData: Uint8Array): StrategyB
     }
 
     return {
+        boardName: strategyBoard.board_name,
         objects: strategyBoardObjects.reverse(),
         background: strategyBoard.background,
     };
@@ -229,6 +230,7 @@ interface RawColor {
 }
 
 interface RawStrategyBoard {
+    board_name: string;
     objects: RawSBObject[];
     object_flags: { values: RawSBObjectFlags[] };
     coordinates: { values: Coordinates[] };
