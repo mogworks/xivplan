@@ -2,6 +2,7 @@
 
 // @ts-expect-error binary-parser
 import { Parser } from 'binary-parser';
+import { Color, SBObject, SBObjectFlags, StrategyBoard } from './common';
 
 const DummyParser = new Parser();
 
@@ -237,37 +238,5 @@ interface RawStrategyBoard {
     params1: { values: number[] };
     params2: { values: number[] };
     params3: { values: number[] };
-    background: number;
-}
-
-export interface SBObjectFlags {
-    visible: boolean;
-    flipHorizontal: boolean;
-    flipVertical: boolean;
-    locked: boolean;
-}
-
-interface Color {
-    red: number;
-    green: number;
-    blue: number;
-    opacity: number;
-}
-
-export interface SBObject {
-    id: number;
-    string?: string;
-    flags: SBObjectFlags;
-    coordinates: Coordinates;
-    angle: number;
-    scale: number;
-    color: Color;
-    param1: number;
-    param2: number;
-    param3: number;
-}
-
-export interface StrategyBoard {
-    objects: SBObject[];
     background: number;
 }

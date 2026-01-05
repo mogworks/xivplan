@@ -100,3 +100,40 @@ export function mapOut(n: number): string {
 
 export const STRATEGY_BOARD_PREFIX = '[stgy:a';
 export const STRATEGY_BOARD_SUFFIX = ']';
+
+export interface Coordinates {
+    x: number;
+    y: number;
+}
+
+export interface SBObjectFlags {
+    visible: boolean;
+    flipHorizontal: boolean;
+    flipVertical: boolean;
+    locked: boolean;
+}
+
+export interface Color {
+    red: number;
+    green: number;
+    blue: number;
+    opacity: number;
+}
+
+export interface SBObject {
+    id: number;
+    string?: string;
+    flags: SBObjectFlags;
+    coordinates: Coordinates;
+    angle: number;
+    scale: number;
+    color: Color;
+    param1: number;
+    param2: number;
+    param3: number;
+}
+
+export interface StrategyBoard {
+    objects: SBObject[];
+    background: number;
+}

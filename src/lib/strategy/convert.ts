@@ -35,8 +35,9 @@ import {
     TextObject,
     WaymarkObject,
 } from '../../scene';
+import { SBObject } from './common';
 import { getObjectSize, knownObjects, objectScaleFactor } from './objects';
-import { parseStrategyBoardData, SBObject } from './parser';
+import { parseStrategyBoardData } from './parser';
 
 const BASE_URL = 'https://cos.xivstrat.cn';
 const CANVAS_DESIGN_WIDTH = 5120; // game strategy board canvas design width
