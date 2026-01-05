@@ -55,6 +55,7 @@ export enum ObjectType {
     Tower = 'tower',
     Triangle = 'triangle',
     BoardIcon = 'boardIcon',
+    Asset = 'asset',
     Waymark = 'waymark',
     AoeRect = 'aoeRect',
     AoeLine = 'aoeLine',
@@ -305,6 +306,11 @@ export interface BoardIconObject
     readonly iconId: number;
 }
 export const isBoardIcon = makeObjectTest<BoardIconObject>(ObjectType.BoardIcon);
+
+export interface Asset extends ImageObject, ResizableObject, ExtendableObject, FlipableObject, NamedObject, BaseObject {
+    readonly type: ObjectType.Asset;
+}
+export const isAsset = makeObjectTest<Asset>(ObjectType.Asset);
 
 export interface EnemyObject extends RegularResizableObject, BaseObject {
     readonly type: ObjectType.Enemy;
@@ -764,7 +770,8 @@ export type SceneObject =
     | Aoe
     | Mechanics
     | Indicators
-    | EnemyObject;
+    | EnemyObject
+    | Asset;
 
 export type SceneObjectWithoutId = Omit<SceneObject, 'id'> & { id?: number };
 

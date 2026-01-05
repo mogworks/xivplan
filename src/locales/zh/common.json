@@ -355,7 +355,8 @@
       "part3": "+ 点击以创建链式连线。"
     },
     "textLabel": "文本",
-    "targetRing": "目标环"
+    "targetRing": "目标环",
+    "asset": "自定义图片"
   },
   "icons": {
     "target": "目标标记"

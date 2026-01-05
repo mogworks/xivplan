@@ -22,6 +22,7 @@ import { CompactSwatchColorPicker } from '../CompactSwatchColorPicker';
 import { OpacitySlider } from '../OpacitySlider';
 import { EditMode } from '../editMode';
 import { MarkerArrow } from '../prefabs/Arrow';
+import { AssetPrefab } from '../prefabs/Asset';
 import {
     BoardIconArrowPrefab,
     BoardIconCirclePrefab,
@@ -96,6 +97,7 @@ export const DrawPanel: React.FC = () => {
                 <ObjectGroup>
                     <TextLabel />
                     <MarkerArrow />
+                    <AssetPrefab />
                 </ObjectGroup>
                 <ObjectGroup>
                     <BoardIconCirclePrefab />

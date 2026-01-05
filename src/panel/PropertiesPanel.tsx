@@ -6,6 +6,7 @@ import {
     SceneObject,
     UnknownObject,
     isArrow,
+    isAsset,
     isBoardIcon,
     isColored,
     isDrawObject,
@@ -200,7 +201,7 @@ const Controls: React.FC = () => {
             <div className={mergeClasses(classes.row)}>
                 <ControlCondition objects={objects} test={isWaymark} control={WaymarkRotationControl} />
             </div>
-            <ControlCondition objects={objects} test={isBoardIcon} control={FlipControl} />
+            <ControlCondition objects={objects} test={(x) => isBoardIcon(x) || isAsset(x)} control={FlipControl} />
         </>
     );
 };

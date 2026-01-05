@@ -355,7 +355,8 @@
       "part3": "+ click to create chains."
     },
     "textLabel": "Text",
-    "targetRing": "Target Ring"
+    "targetRing": "Target Ring",
+    "asset": "Custom Image"
   },
   "icons": {
     "target": "Target Marker"
