@@ -28,6 +28,10 @@ export function getLayerName(object: SceneObject): LayerName | undefined {
     return object.layer ?? layers[object.type];
 }
 
+export function getDefaultLayer(type: string): LayerName | undefined {
+    return layers[type];
+}
+
 export function getRenderer(object: SceneObject) {
     return registry.get(object.type);
 }

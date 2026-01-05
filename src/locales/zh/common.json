@@ -273,7 +273,8 @@
     "hNum": "横向数量",
     "vNum": "纵向数量",
     "flipHorizontal": "水平翻转",
-    "flipVertical": "垂直翻转"
+    "flipVertical": "垂直翻转",
+    "layer": "图层"
   },
   "colors": {
     "invalidColor": "无效的颜色",
@@ -688,5 +689,13 @@
 
     "113": "强化状态",
     "114": "弱化状态"
+  },
+  "layer": {
+    "prefix": "图层：",
+    "ground": "地面",
+    "default": "默认",
+    "fg": "前景",
+    "active": "激活",
+    "control": "控件"
   }
 }

@@ -273,7 +273,8 @@
     "hNum": "H. num",
     "vNum": "V. num",
     "flipHorizontal": "H. Flip",
-    "flipVertical": "V. Flip"
+    "flipVertical": "V. Flip",
+    "layer": "Layer"
   },
   "colors": {
     "invalidColor": "Invalid color",
@@ -688,5 +689,13 @@
 
     "113": "Buff",
     "114": "Debuff"
+  },
+  "layer": {
+    "prefix": "Layer: ",
+    "ground": "Ground",
+    "default": "Default",
+    "fg": "Foreground",
+    "active": "Active",
+    "control": "Control"
   }
 }

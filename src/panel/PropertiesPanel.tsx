@@ -53,6 +53,7 @@ import { HideControl } from './properties/HideControl';
 import { HollowControl } from './properties/HollowControl';
 import { IconStacksControl, IconTimeControl } from './properties/IconControls';
 import { ImageControl } from './properties/ImageControl';
+import { LayerControl } from './properties/LayerControls';
 import { LineSizeControl } from './properties/LineControls';
 import { NameControl } from './properties/NameControl';
 import { OpacityControl } from './properties/OpacityControl';
@@ -202,6 +203,7 @@ const Controls: React.FC = () => {
                 <ControlCondition objects={objects} test={isWaymark} control={WaymarkRotationControl} />
             </div>
             <ControlCondition objects={objects} test={(x) => isBoardIcon(x) || isAsset(x)} control={FlipControl} />
+            <LayerControl objects={objects} />
         </>
     );
 };
