@@ -1,7 +1,0 @@
-{
-  "extends": "./tsconfig.app.json",
-  "compilerOptions": {
-    "types": ["vitest/globals", "mocha"]
-  },
-  "include": ["src/**/*.test.ts"]
-}
