@@ -189,6 +189,7 @@ export interface Arena {
 }
 
 export interface ArenaPreset extends Arena {
+    key?: string;
     name: string;
     spoilerFreeName?: string;
     isSpoilerFree?: boolean;

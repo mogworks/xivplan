@@ -1,4 +1,4 @@
-import { ArenaPreset, FloorShape, GridType } from '../../scene';
+import { ArenaPreset, FloorShape, GridType } from '../../../scene';
 
 const PRESET_2: ArenaPreset = {
     name: 'AAC Light-heavyweight M2',

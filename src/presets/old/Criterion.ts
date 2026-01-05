@@ -1,4 +1,4 @@
-import { ArenaPreset, FloorShape, GridType } from '../scene';
+import { ArenaPreset, FloorShape, GridType } from '../../scene';
 
 const PRESET_ZELESS_GAH: ArenaPreset = {
     name: "Sil'dihn Subterrane: Shadowcaster Zeless Gah",

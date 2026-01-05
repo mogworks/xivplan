@@ -1,4 +1,4 @@
-import { ArenaPreset, FloorShape, GridType } from '../scene';
+import { ArenaPreset, FloorShape, GridType } from '../../scene';
 
 const PRESET_3_3: ArenaPreset = {
     name: 'Square 3x3',

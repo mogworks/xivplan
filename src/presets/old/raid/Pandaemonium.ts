@@ -1,4 +1,4 @@
-import { ArenaPreset, DEFAULT_ARENA_PADDING, FloorShape, GridType } from '../../scene';
+import { ArenaPreset, DEFAULT_ARENA_PADDING, FloorShape, GridType } from '../../../scene';
 import { SPOKES_45_DEGREES } from '../common';
 
 const PRESET_7: ArenaPreset = {

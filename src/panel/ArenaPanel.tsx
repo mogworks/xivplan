@@ -13,6 +13,7 @@ import {
     DialogSurface,
     DialogTitle,
     DialogTrigger,
+    Divider,
     makeStyles,
     mergeClasses,
     NavDrawer,
@@ -249,7 +250,14 @@ const PresetsDialogBody: React.FC<PresetsDialogBodyProps> = ({ setOpen }) => {
                         {PRESET_CATEGORIES.map((category) => (
                             <React.Fragment key={category.name}>
                                 {category.name && (
-                                    <NavSectionHeader className={classes.category}>{category.name}</NavSectionHeader>
+                                    <>
+                                        <NavSectionHeader className={classes.category}>
+                                            {category.name}
+                                        </NavSectionHeader>
+                                        <div>
+                                            <Divider />
+                                        </div>
+                                    </>
                                 )}
 
                                 {category.groups.map((group) => (
@@ -270,7 +278,7 @@ const PresetsDialogBody: React.FC<PresetsDialogBodyProps> = ({ setOpen }) => {
                     {...presetListArrowNav}
                 >
                     {presets?.map((preset) => {
-                        const key = getPresetKey(selectedGroup, preset.name);
+                        const key = getPresetKey(selectedGroup, preset.key || preset.name);
 
                         return (
                             <PresetItem
@@ -423,6 +431,8 @@ const useStyles = makeStyles({
     },
 
     category: {
+        fontSize: tokens.fontSizeBase400,
+        fontWeight: tokens.fontWeightBold,
         marginLeft: `calc(-1 * ${tokens.spacingHorizontalMNudge} + 4px)`,
     },
 
@@ -447,11 +457,12 @@ const useStyles = makeStyles({
     presetItem: {
         display: 'flex',
         flexFlow: 'column',
+        alignItems: 'center',
 
         margin: 0,
         padding: 0,
 
-        width: `${PREVIEW_SIZE + 2}px`,
+        width: 'calc(50% - 10px)',
         listStyle: 'none',
         boxSizing: 'border-box',
         border: `${tokens.strokeWidthThin} solid transparent`,

@@ -1,4 +1,4 @@
-import { ArenaPreset, FloorShape, GridType, Ticks, TickType } from '../../scene';
+import { ArenaPreset, FloorShape, GridType, Ticks, TickType } from '../../../scene';
 
 const RADIAL_TICKS: Ticks = {
     type: TickType.Radial,

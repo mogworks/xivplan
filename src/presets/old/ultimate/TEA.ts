@@ -1,4 +1,4 @@
-import { ArenaPreset, FloorShape, GridType } from '../../scene';
+import { ArenaPreset, FloorShape, GridType } from '../../../scene';
 
 const PRESET_1: ArenaPreset = {
     name: 'Phase 1',
