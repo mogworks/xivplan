@@ -19,6 +19,7 @@ import {
     IndicatorStackObject,
     IndicatorTankbusterObject,
     IndicatorTargetingObject,
+    isAoeObject,
     MechCircleExaflareObject,
     MechCounterTowerObject,
     MechGazeObject,
@@ -29,6 +30,7 @@ import {
     MechTowerObject,
     ObjectType,
     PartyObject,
+    RectangleZone,
     Scene,
     SceneObject,
     SceneObjectWithoutId,
@@ -703,10 +705,13 @@ export function sceneToStrategyBoard(scene: Scene, stepIndex: number): string {
 
 function encodeObject(sceneObj: SceneObject): SBObject | null {
     switch (sceneObj.type) {
+        case ObjectType.Rect:
         case ObjectType.AoeRect:
             return (() => {
-                const obj = sceneObj as AoeRectObject;
-                const color = new Color(new Color(obj.baseColor ?? DEFAULT_AOE_COLOR));
+                const obj = sceneObj as AoeRectObject | RectangleZone;
+                const color = isAoeObject(obj)
+                    ? new Color(obj.baseColor ?? DEFAULT_AOE_COLOR)
+                    : new Color(obj.color ?? DEFAULT_AOE_COLOR);
 
                 return {
                     id: 11,
