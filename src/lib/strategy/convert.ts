@@ -35,6 +35,7 @@ import {
     TextObject,
     WaymarkObject,
 } from '../../scene';
+import { DEFAULT_AOE_COLOR } from '../../theme';
 import { SBObject } from './common';
 import { encodeShareString } from './encoder';
 import { getObjectSize, knownObjects, objectScaleFactor } from './objects';
@@ -48,6 +49,73 @@ const SCENE_WIDTH = 640;
 const SCENE_HEIGHT = 480;
 const SIZE_FACTOR = SCENE_WIDTH / CANVAS_GAME_WIDTH;
 const POS_FACTOR = SCENE_WIDTH / CANVAS_DESIGN_WIDTH;
+
+// const BOARD_COLORS = [
+//     '#ffffff',
+//     '#ffbdbf',
+//     '#ffe0c8',
+//     '#fff8b0',
+//     '#e9ffe2',
+//     '#e8fffe',
+//     '#9cd0f4',
+//     '#ffdcff',
+//     '#f8f8f8',
+//     '#ff0000',
+//     '#ff8000',
+//     '#ffff00',
+//     '#00ff00',
+//     '#00ffff',
+//     '#0000ff',
+//     '#ff00ff',
+//     '#e0e0e0',
+//     '#ff4c4c',
+//     '#ffa666',
+//     '#ffffb2',
+//     '#80ff00',
+//     '#bcfff0',
+//     '#0080ff',
+//     '#e26090',
+//     '#d8d8d8',
+//     '#ff7f7f',
+//     '#ffceac',
+//     '#ffde73',
+//     '#80f860',
+//     '#66e6ff',
+//     '#94c0ff',
+//     '#ff8cc6',
+//     '#cccccc',
+//     '#ffc0c0',
+//     '#ff6800',
+//     '#f0c86c',
+//     '#d4ff7f',
+//     '#acdce6',
+//     '#8080ff',
+//     '#ffb8e0',
+//     '#bfbfbf',
+//     '#d8c0c0',
+//     '#d8686c',
+//     '#cccc66',
+//     '#acd848',
+//     '#b0e8e8',
+//     '#b38cff',
+//     '#e0a8bc',
+//     '#a6a6a6',
+//     '#c6a2a2',
+//     '#d8beac',
+//     '#c8c0a0',
+//     '#3ae8b4',
+//     '#3ce8e8',
+//     '#e0c0f8',
+//     '#e088f4',
+// ];
+
+// function findNearestColor(color: Color) {
+//     return BOARD_COLORS.reduce((prev, cur) => {
+//         const prevDist = color.distance(new Color(prev));
+//         const curDist = color.distance(new Color(cur));
+//         return curDist < prevDist ? cur : prev;
+//     });
+// }
 
 export function strategyBoardToScene(strategyBoardData: Uint8Array): Scene {
     const strategyBoard = parseStrategyBoardData(strategyBoardData);
@@ -638,12 +706,11 @@ function encodeObject(sceneObj: SceneObject): SBObject | null {
         case ObjectType.AoeRect:
             return (() => {
                 const obj = sceneObj as AoeRectObject;
-                // obj.baseColor to {red,green,blue}
-                const color = new Color(obj.baseColor ?? '#000000');
+                const color = new Color(new Color(obj.baseColor ?? DEFAULT_AOE_COLOR));
 
                 return {
                     id: 11,
-                    string: '',
+                    string: undefined,
                     flags: {
                         visible: !obj.hide,
                         flipHorizontal: false,

@@ -164,8 +164,16 @@
   },
   "share": {
     "title": "分享",
+    "tabs": {
+      "url": "本站链接",
+      "strategyBoard": "游戏内分享码"
+    },
     "linkLabel": "此战术板的链接",
     "fallbackText": "如果你的浏览器无法打开链接，请将文本粘贴到 <importLink>打开 > 导入战术板链接</importLink>，或者下载战术板并将文件拖拽到页面以重新打开。",
+    "stepLabel": "选择步骤",
+    "step": "步骤 {{index}}",
+    "strategyBoardLabel": "游戏内分享码",
+    "strategyBoardFallbackText": "复制此代码到游戏内的战术板导入功能。",
     "copyToClipboard": "复制到剪贴板",
     "linkCopied": "链接已复制",
     "enterLinkLabel": "输入战术板链接（支持本站战术板链接、游戏内置战术板链接）",

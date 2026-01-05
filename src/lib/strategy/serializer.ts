@@ -1,3 +1,5 @@
+// copy & modify from https://github.com/Cindy-Master/ff14-online-strategy-board/blob/main/worker.js
+
 import { StrategyBoard } from './common';
 
 export function buildStrategyBoardData(board: StrategyBoard) {

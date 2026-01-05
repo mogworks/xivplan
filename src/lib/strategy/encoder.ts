@@ -1,4 +1,4 @@
-// copy & modify from https://github.com/Ennea/ffxiv-strategy-board-viewer/blob/master/decoder.ts
+// copy & modify from https://github.com/Cindy-Master/ff14-online-strategy-board/blob/main/worker.js
 
 import pako from 'pako';
 import { FORWARD_TRANSLATION_TABLE, mapIn, mapOut, translateString } from './common';
