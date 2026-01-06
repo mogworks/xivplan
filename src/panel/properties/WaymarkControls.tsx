@@ -1,11 +1,15 @@
-import { Field } from '@fluentui/react-components';
+import { Field, mergeClasses } from '@fluentui/react-components';
+import { CircleRegular, SquareRegular } from '@fluentui/react-icons';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { OpacitySlider } from '../../OpacitySlider';
 import { useScene } from '../../SceneProvider';
+import { Segment, SegmentedGroup } from '../../Segmented';
 import { SpinButtonUnits } from '../../SpinButtonUnits';
 import { useSpinChanged } from '../../prefabs/useSpinChanged';
-import { WaymarkObject } from '../../scene';
+import { WaymarkOrderType, WaymarkPlacementType } from '../../prefabs/waymarkIcon';
+import { WaymarkGroupObject, WaymarkObject } from '../../scene';
+import { useControlStyles } from '../../useControlStyles';
 import { commonValue } from '../../util';
 import { PropertiesControlProps } from '../PropertiesControl';
 
@@ -77,5 +81,64 @@ export const WaymarkRotationControl: React.FC<PropertiesControlProps<WaymarkObje
                 suffix="°"
             />
         </Field>
+    );
+};
+
+export const WaymarkGroupControl: React.FC<PropertiesControlProps<WaymarkGroupObject>> = ({ objects }) => {
+    const classes = useControlStyles();
+    const { dispatch } = useScene();
+    const { t } = useTranslation();
+
+    const placementType = commonValue(objects, (obj) => obj.placementType);
+    const orderType = commonValue(objects, (obj) => obj.orderType);
+
+    const onPlacementTypeChanged = (placementType: WaymarkPlacementType) => {
+        dispatch({ type: 'update', value: objects.map((obj) => ({ ...obj, placementType })) });
+    };
+    const onOrderTypeChanged = (orderType: WaymarkOrderType) => {
+        dispatch({ type: 'update', value: objects.map((obj) => ({ ...obj, orderType })) });
+    };
+
+    return (
+        <div className={mergeClasses(classes.row)}>
+            <Field label={t('properties.waymarkGroup.placementType')}>
+                <SegmentedGroup
+                    name="waymark-placement-type"
+                    value={placementType}
+                    onChange={(ev, data) => onPlacementTypeChanged(data.value as WaymarkPlacementType)}
+                >
+                    <Segment
+                        value={WaymarkPlacementType.Circle}
+                        icon={<CircleRegular />}
+                        title={t('properties.waymarkGroup.circle')}
+                    />
+                    <Segment
+                        value={WaymarkPlacementType.Square}
+                        icon={<SquareRegular />}
+                        title={t('properties.waymarkGroup.square')}
+                    />
+                </SegmentedGroup>
+            </Field>
+            <Field label={t('properties.waymarkGroup.orderType')}>
+                <SegmentedGroup
+                    name="waymark-order-type"
+                    value={orderType}
+                    onChange={(ev, data) => onOrderTypeChanged(data.value as WaymarkOrderType)}
+                >
+                    <Segment
+                        value={WaymarkOrderType.A2B3}
+                        icon={'1'}
+                        size="mediumText"
+                        title={t('properties.waymarkGroup.a2b3')}
+                    />
+                    <Segment
+                        value={WaymarkOrderType.A1B2}
+                        icon={'2'}
+                        size="mediumText"
+                        title={t('properties.waymarkGroup.a1b2')}
+                    />
+                </SegmentedGroup>
+            </Field>
+        </div>
     );
 };

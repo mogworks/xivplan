@@ -1,5 +1,5 @@
 import { AoeProps } from './lib/aoe/aoeProps';
-import { WaymarkType } from './prefabs/waymarkIcon';
+import { WaymarkOrderType, WaymarkPlacementType, WaymarkType } from './prefabs/waymarkIcon';
 import { LayerName } from './render/layers';
 
 export enum FloorShape {
@@ -57,6 +57,7 @@ export enum ObjectType {
     BoardIcon = 'boardIcon',
     Asset = 'asset',
     Waymark = 'waymark',
+    WaymarkGroup = 'waymarkGroup',
     AoeRect = 'aoeRect',
     AoeLine = 'aoeLine',
     AoeCircle = 'aoeCircle',
@@ -266,6 +267,16 @@ export interface WaymarkObject extends RegularResizableObject, BaseObject {
     readonly bgOpacity?: number;
 }
 export const isWaymark = makeObjectTest<WaymarkObject>(ObjectType.Waymark);
+
+export interface WaymarkGroupObject extends RadiusObject, RegularResizableObject, BaseObject {
+    readonly type: ObjectType.WaymarkGroup;
+    readonly orderType: WaymarkOrderType;
+    readonly placementType: WaymarkPlacementType;
+    readonly fgOpacity?: number;
+    readonly fgRotation?: number;
+    readonly bgOpacity?: number;
+}
+export const isWaymarkGroup = makeObjectTest<WaymarkGroupObject>(ObjectType.WaymarkGroup);
 
 export interface ArrowObject extends ResizableObject, ColoredObject, BaseObject {
     readonly type: ObjectType.Arrow;
@@ -768,6 +779,7 @@ export type SceneObject =
     | Tether
     | BoardIconObject
     | WaymarkObject
+    | WaymarkGroupObject
     | Aoe
     | Mechanics
     | Indicators

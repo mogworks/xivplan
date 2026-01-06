@@ -25,6 +25,16 @@ export enum WaymarkShape {
     Circle = 'circle',
 }
 
+export enum WaymarkPlacementType {
+    Circle = 'circle',
+    Square = 'square',
+}
+
+export enum WaymarkOrderType {
+    A2B3 = 'A2B3',
+    A1B2 = 'A1B2',
+}
+
 export const getWaymarkTypeById = (id: WaymarkId): WaymarkType => {
     switch (id) {
         case WaymarkId.A:

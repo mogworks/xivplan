@@ -39,6 +39,7 @@ import {
     BoardIconSquareGridBottomPrefab,
 } from '../prefabs/BoardIcon';
 import { Waymark1, Waymark2, Waymark3, Waymark4, WaymarkA, WaymarkB, WaymarkC, WaymarkD } from '../prefabs/Waymark';
+import { WaymarkGroupPrefab } from '../prefabs/WaymarkGroup';
 import { ARENA_PRESETS } from '../presets/ArenaPresets';
 import { ScenePreview } from '../render/SceneRenderer';
 import { ArenaPreset, Scene } from '../scene';
@@ -120,6 +121,7 @@ export const ArenaPanel: React.FC = () => {
                     <AccordionPanel>
                         <>
                             <ObjectGroup>
+                                <WaymarkGroupPrefab />
                                 <WaymarkA />
                                 <WaymarkB />
                                 <WaymarkC />

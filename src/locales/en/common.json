@@ -274,7 +274,16 @@
     "vNum": "V. num",
     "flipHorizontal": "H. Flip",
     "flipVertical": "V. Flip",
-    "layer": "Layer"
+    "layer": "Layer",
+    "waymarkGroup": {
+      "name": "Waymark group",
+      "placementType": "Placement type",
+      "circle": "Circle",
+      "square": "Square",
+      "orderType": "Order type",
+      "a2b3": "A2B3",
+      "a1b2": "A1B2"
+    }
   },
   "colors": {
     "invalidColor": "Invalid color",

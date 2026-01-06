@@ -34,6 +34,7 @@ import {
     isTether,
     isText,
     isWaymark,
+    isWaymarkGroup,
     supportsHollow,
     supportsStackCount,
 } from '../scene';
@@ -69,7 +70,7 @@ import { StarburstSpokeCountControl, StarburstSpokeWidthControl } from './proper
 import { TargetRingControl } from './properties/TargetControls';
 import { TetherTypeControl, TetherWidthControl } from './properties/TetherControls';
 import { TextLayoutControl, TextOutlineControl, TextValueControl } from './properties/TextControls';
-import { WaymarkOpacityControl, WaymarkRotationControl } from './properties/WaymarkControls';
+import { WaymarkGroupControl, WaymarkOpacityControl, WaymarkRotationControl } from './properties/WaymarkControls';
 
 export interface PropertiesPanelProps {
     className?: string;
@@ -127,6 +128,8 @@ const Controls: React.FC = () => {
             <ControlCondition objects={objects} test={isNamed} control={NameControl} />
             <ControlCondition objects={objects} test={isImageObject} control={ImageControl} />
 
+            <ControlCondition objects={objects} test={isWaymarkGroup} control={WaymarkGroupControl} />
+
             {/* Style */}
             <ControlCondition objects={objects} test={isTether} control={TetherTypeControl} />
             <div className={mergeClasses(classes.row, classes.alignTop)}>
@@ -134,7 +137,11 @@ const Controls: React.FC = () => {
                 <ControlCondition objects={objects} test={isArrow} control={ArrowPointersControl} />
                 <ControlCondition objects={objects} test={supportsHollow} control={HollowControl} />
             </div>
-            <ControlCondition objects={objects} test={isWaymark} control={WaymarkOpacityControl} />
+            <ControlCondition
+                objects={objects}
+                test={(x) => isWaymark(x) || isWaymarkGroup(x)}
+                control={WaymarkOpacityControl}
+            />
             <ControlCondition objects={objects} test={isColored} control={ColorSwatchControl} />
             <ControlCondition objects={objects} test={isText} control={TextOutlineControl} />
 
@@ -200,7 +207,11 @@ const Controls: React.FC = () => {
                 <ControlCondition objects={objects} test={isIcon} control={IconTimeControl} />
             </div>
             <div className={mergeClasses(classes.row)}>
-                <ControlCondition objects={objects} test={isWaymark} control={WaymarkRotationControl} />
+                <ControlCondition
+                    objects={objects}
+                    test={(x) => isWaymark(x) || isWaymarkGroup(x)}
+                    control={WaymarkRotationControl}
+                />
             </div>
             <ControlCondition objects={objects} test={(x) => isBoardIcon(x) || isAsset(x)} control={FlipControl} />
             <LayerControl objects={objects} />

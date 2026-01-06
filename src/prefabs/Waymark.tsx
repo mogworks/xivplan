@@ -105,10 +105,51 @@ const RectangleOutline: React.FC<OutlineProps> = ({
     );
 };
 
+export const WaymarkComponent: React.FC<{
+    type: WaymarkType;
+    shape: WaymarkShape;
+    size: number;
+    bgOpacity?: number;
+    fgOpacity?: number;
+    fgRotation?: number;
+}> = ({ type, shape, size, bgOpacity, fgOpacity, fgRotation }) => {
+    const [fgImage] = useImageTracked(getWaymarkIconUrl(type, false));
+    const [bgImage] = useImageTracked(getWaymarkIconUrl(type, true));
+    return (
+        <>
+            <Image
+                image={bgImage}
+                x={size / 2}
+                y={size / 2}
+                width={size * 2}
+                height={size * 2}
+                opacity={(bgOpacity ?? 100) / 100}
+                offsetX={size}
+                offsetY={size}
+                listening={false}
+            />
+            <Image
+                image={fgImage}
+                x={size / 2}
+                y={size / 2}
+                width={size}
+                height={size}
+                opacity={(fgOpacity ?? 100) / 100}
+                offsetX={size / 2}
+                offsetY={size / 2}
+                rotation={fgRotation ?? 0}
+                listening={false}
+            />
+            {shape === WaymarkShape.Circle && <Circle x={size / 2} y={size / 2} radius={size * 0.5} opacity={0} />}
+            {shape === WaymarkShape.Square && (
+                <Rect x={size * 0.07} y={size * 0.07} width={size * 0.86} height={size * 0.86} opacity={0} />
+            )}
+        </>
+    );
+};
+
 export const WaymarkRenderer: React.FC<RendererProps<WaymarkObject>> = ({ object }) => {
     const highlightProps = useHighlightProps(object);
-    const [fgImage] = useImageTracked(getWaymarkIconUrl(object.waymarkType, false));
-    const [bgImage] = useImageTracked(getWaymarkIconUrl(object.waymarkType, true));
 
     const strokeWidth = 1;
 
@@ -149,41 +190,14 @@ export const WaymarkRenderer: React.FC<RendererProps<WaymarkObject>> = ({ object
                         />
                     )}
                     <HideGroup opacity={(object.opacity ?? 100) / 100}>
-                        <Image
-                            image={bgImage}
-                            x={object.size / 2}
-                            y={object.size / 2}
-                            width={object.size * 2}
-                            height={object.size * 2}
-                            opacity={(object.bgOpacity ?? 100) / 100}
-                            offsetX={object.size}
-                            offsetY={object.size}
-                            listening={false}
+                        <WaymarkComponent
+                            type={object.waymarkType}
+                            shape={shape}
+                            size={object.size}
+                            bgOpacity={object.bgOpacity}
+                            fgOpacity={object.fgOpacity}
+                            fgRotation={object.fgRotation}
                         />
-                        <Image
-                            image={fgImage}
-                            x={object.size / 2}
-                            y={object.size / 2}
-                            width={object.size}
-                            height={object.size}
-                            opacity={(object.fgOpacity ?? 100) / 100}
-                            offsetX={object.size / 2}
-                            offsetY={object.size / 2}
-                            rotation={object.fgRotation ?? 0}
-                            listening={false}
-                        />
-                        {shape === WaymarkShape.Circle && (
-                            <Circle x={object.size / 2} y={object.size / 2} radius={object.size * 0.5} opacity={0} />
-                        )}
-                        {shape === WaymarkShape.Square && (
-                            <Rect
-                                x={object.size * 0.07}
-                                y={object.size * 0.07}
-                                width={object.size * 0.86}
-                                height={object.size * 0.86}
-                                opacity={0}
-                            />
-                        )}
                     </HideGroup>
                 </Group>
             )}

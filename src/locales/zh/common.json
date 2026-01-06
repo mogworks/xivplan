@@ -274,7 +274,16 @@
     "vNum": "纵向数量",
     "flipHorizontal": "水平翻转",
     "flipVertical": "垂直翻转",
-    "layer": "图层"
+    "layer": "图层",
+    "waymarkGroup": {
+      "name": "标点组",
+      "placementType": "放置类型",
+      "circle": "圆形",
+      "square": "方形",
+      "orderType": "排序类型",
+      "a2b3": "A2B3",
+      "a1b2": "A1B2"
+    }
   },
   "colors": {
     "invalidColor": "无效的颜色",
