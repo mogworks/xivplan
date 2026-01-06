@@ -2,6 +2,7 @@ import { ImageAddRegular } from '@fluentui/react-icons';
 import { useTranslation } from 'react-i18next';
 import { Group, Image, Rect } from 'react-konva';
 import { getDragOffset, registerDropHandler } from '../DropHandler';
+import { getProxyImageUrl } from '../lib/image-proxy';
 import { DetailsItem } from '../panel/DetailsItem';
 import { ListComponentProps, registerListComponent } from '../panel/ListComponentRegistry';
 import { LayerName } from '../render/layers';
@@ -57,7 +58,7 @@ registerDropHandler<Asset>(ObjectType.Asset, (object, position) => {
 
 export const AssetRenderer: React.FC<RendererProps<Asset>> = ({ object }) => {
     const highlightProps = useHighlightProps(object);
-    const [image] = useImageTracked(object.image);
+    const [image] = useImageTracked(getProxyImageUrl(object.image));
 
     const hNum = object.hNum || 1;
     const vNum = object.vNum || 1;
@@ -107,7 +108,7 @@ registerRenderer<Asset>(ObjectType.Asset, LayerName.Default, AssetRenderer);
 
 export const AssetDetails: React.FC<ListComponentProps<Asset>> = ({ object, ...props }) => {
     const name = object.name ?? '';
-    return <DetailsItem icon={object.image} name={name} object={object} {...props} />;
+    return <DetailsItem icon={getProxyImageUrl(object.image)} name={name} object={object} {...props} />;
 };
 
 registerListComponent<Asset>(ObjectType.Asset, AssetDetails);
