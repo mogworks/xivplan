@@ -52,7 +52,7 @@
 		X-Content-Type-Options nosniff
 		X-Frame-Options DENY
 		Referrer-Policy strict-origin-when-cross-origin
-		Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src https: data: blob:; font-src 'self' data:; connect-src 'self' https://xivapi.com https://*.xivapi.com; worker-src 'self' blob:;"
+		Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src https: data: blob:; font-src 'self' data:; connect-src 'self' https://xivapi.com https://*.xivapi.com https://xivcdn.com https://*.xivcdn.com; worker-src 'self' blob:;"
 		# EdgeOne 头部
 		X-Real-IP {http.request.header.EO-Client-IP}
 		X-Client-IP {http.request.header.EO-Client-IP}
