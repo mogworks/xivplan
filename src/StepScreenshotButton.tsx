@@ -31,7 +31,7 @@ import { useScene } from './SceneProvider';
 import { ToastDismissButton } from './ToastDismissButton';
 import { useHotkeys } from './useHotkeys';
 
-const SCREENSHOT_TIMEOUT = 5000;
+const SCREENSHOT_TIMEOUT = 10000;
 
 export type StepScreenshotButtonProps = SplitButtonProps;
 
