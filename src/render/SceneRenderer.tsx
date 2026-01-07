@@ -117,7 +117,7 @@ export const SceneRenderer: React.FC = () => {
                                 >
                                     <StageContext value={stages.get(index) || null}>
                                         <DefaultCursorProvider>
-                                            <SceneContents step={step} />
+                                            <SceneContents step={step} isVisible={isVisible} />
                                         </DefaultCursorProvider>
                                     </StageContext>
                                 </Stage>
@@ -205,32 +205,34 @@ interface SceneContentsProps {
     step: SceneStep;
 }
 
-const SceneContents: React.FC<SceneContentsProps> = React.memo(({ listening, simple, step }) => {
-    listening = listening ?? true;
+const SceneContents: React.FC<SceneContentsProps & { isVisible?: boolean }> = React.memo(
+    ({ listening, simple, step, isVisible }) => {
+        listening = listening ?? true;
 
-    return (
-        <>
-            {listening && <SceneHotkeyHandler />}
+        return (
+            <>
+                {listening && isVisible && <SceneHotkeyHandler />}
 
-            <Layer name={LayerName.Ground} listening={listening}>
-                <ArenaRenderer simple={simple} />
-                <ObjectRenderer objects={step.objects} layer={LayerName.Ground} />
-            </Layer>
-            <Layer name={LayerName.Default} listening={listening}>
-                <ObjectRenderer objects={step.objects} layer={LayerName.Default} />
-            </Layer>
-            <Layer name={LayerName.Foreground} listening={listening}>
-                <ObjectRenderer objects={step.objects} layer={LayerName.Foreground} />
+                <Layer name={LayerName.Ground} listening={listening}>
+                    <ArenaRenderer simple={simple} />
+                    <ObjectRenderer objects={step.objects} layer={LayerName.Ground} />
+                </Layer>
+                <Layer name={LayerName.Default} listening={listening}>
+                    <ObjectRenderer objects={step.objects} layer={LayerName.Default} />
+                </Layer>
+                <Layer name={LayerName.Foreground} listening={listening}>
+                    <ObjectRenderer objects={step.objects} layer={LayerName.Foreground} />
 
-                <TetherEditRenderer />
-            </Layer>
-            <Layer name={LayerName.Active} listening={listening}>
-                <DrawTarget />
-            </Layer>
-            <Layer name={LayerName.Controls} listening={listening} />
-        </>
-    );
-});
+                    <TetherEditRenderer />
+                </Layer>
+                <Layer name={LayerName.Active} listening={listening}>
+                    <DrawTarget />
+                </Layer>
+                <Layer name={LayerName.Controls} listening={listening} />
+            </>
+        );
+    },
+);
 SceneContents.displayName = 'SceneContents';
 
 interface DropTargetProps extends PropsWithChildren {
