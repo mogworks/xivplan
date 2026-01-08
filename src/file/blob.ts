@@ -45,8 +45,9 @@ export function downloadSceneAsPSD(scene: Readonly<Scene>, name: string | undefi
         name = name.slice(0, -10);
         name = name + '.psd';
     }
-
-    downloadBlob(saveSceneAsPSD(scene), name);
+    saveSceneAsPSD(scene).then((blob) => {
+        downloadBlob(blob, name!);
+    });
 }
 
 export function downloadBlob(blob: Blob | MediaSource, name: string) {
