@@ -89,8 +89,9 @@
     "screenshot": "Screenshot",
     "save": "Save",
     "saveAs": "Save as",
-    "download": "Download",
-    "saveAsEllipsis": "Save as..."
+    "saveAsEllipsis": "Save as...",
+    "downloadAsXivplanCn": "Download as .xivplancn file",
+    "downloadAsPSD": "Download as .psd file"
   },
   "actions": {
     "apply": "Apply",

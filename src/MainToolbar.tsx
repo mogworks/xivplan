@@ -98,7 +98,7 @@ export const MainToolbar: React.FC = () => {
 };
 
 interface SaveButtonState {
-    type: 'save' | 'saveas' | 'download';
+    type: 'save' | 'saveas' | 'downloadAsXivplanCn' | 'downloadAsPSD';
     text: string;
     icon: ReactElement;
     disabled?: boolean;
@@ -114,7 +114,7 @@ function getSaveButtonState(
     }
 
     if (source.type === 'blob') {
-        return { type: 'download', text: t('toolbar.download'), icon: <ArrowDownloadRegular /> };
+        return { type: 'downloadAsXivplanCn', text: t('toolbar.downloadAsXivplanCn'), icon: <ArrowDownloadRegular /> };
     }
 
     return { type: 'save', text: t('toolbar.save'), icon: <SaveRegular />, disabled: !isDirty };
@@ -139,11 +139,15 @@ const SaveButton: React.FC = () => {
         }
     };
 
-    const download = () => {
+    const downloadAsXivplanCn = () => {
         downloadScene(canonicalScene, source?.name);
         if (!source) {
             setSource(getBlobSource());
         }
+    };
+
+    const downloadAsPSD = () => {
+        //TODO: implement PSD export
     };
 
     const handleClick = () => {
@@ -156,8 +160,12 @@ const SaveButton: React.FC = () => {
                 setSaveAsOpen(true);
                 break;
 
-            case 'download':
-                download();
+            case 'downloadAsXivplanCn':
+                downloadAsXivplanCn();
+                break;
+
+            case 'downloadAsPSD':
+                downloadAsPSD();
                 break;
         }
     };
@@ -203,9 +211,14 @@ const SaveButton: React.FC = () => {
                                 {t('toolbar.saveAsEllipsis')}
                             </MenuItem>
                         )}
-                        {type !== 'download' && (
-                            <MenuItem icon={<ArrowDownloadRegular />} onClick={download}>
-                                {t('toolbar.download')}
+                        {type !== 'downloadAsXivplanCn' && (
+                            <MenuItem icon={<ArrowDownloadRegular />} onClick={downloadAsXivplanCn}>
+                                {t('toolbar.downloadAsXivplanCn')}
+                            </MenuItem>
+                        )}
+                        {type !== 'downloadAsPSD' && (
+                            <MenuItem icon={<ArrowDownloadRegular />} onClick={downloadAsPSD}>
+                                {t('toolbar.downloadAsPSD')}
                             </MenuItem>
                         )}
                     </MenuList>
