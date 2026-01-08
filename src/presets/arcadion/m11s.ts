@@ -40,7 +40,7 @@ const M11S_1L: ArenaPreset = {
 
 const M11S_2: ArenaPreset = {
     key: 'M11S_2',
-    name: '1n=10px',
+    name: '1m=10px',
     floor: {
         shape: FloorShape.None,
         width: 400,
@@ -58,7 +58,7 @@ const M11S_2: ArenaPreset = {
 };
 const M11S_2L: ArenaPreset = {
     key: 'M11S_2L',
-    name: '1n=15px',
+    name: '1m=15px',
     floor: {
         shape: FloorShape.None,
         width: 600,
@@ -77,7 +77,7 @@ const M11S_2L: ArenaPreset = {
 
 const M11S_3: ArenaPreset = {
     key: 'M11S_3',
-    name: '1n=10px',
+    name: '1m=10px',
     floor: {
         shape: FloorShape.None,
         width: 400,
@@ -96,7 +96,7 @@ const M11S_3: ArenaPreset = {
 
 const M11S_3L: ArenaPreset = {
     key: 'M11S_3L',
-    name: '1n=15px',
+    name: '1m=15px',
     floor: {
         shape: FloorShape.None,
         width: 600,
