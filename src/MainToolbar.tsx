@@ -27,7 +27,7 @@ import { ToolbarContext } from './ToolbarContext';
 import { saveFile } from './file';
 import { OpenDialog, SaveAsDialog } from './file/FileDialog';
 import { ShareDialogButton } from './file/ShareDialogButton';
-import { downloadScene, getBlobSource } from './file/blob';
+import { downloadScene, downloadSceneAsPSD, getBlobSource } from './file/blob';
 import { DialogOpenContext } from './useCloseDialog';
 import { useHotkeys } from './useHotkeys';
 import { useIsDirty, useSetSavedState } from './useIsDirty';
@@ -147,7 +147,7 @@ const SaveButton: React.FC = () => {
     };
 
     const downloadAsPSD = () => {
-        //TODO: implement PSD export
+        downloadSceneAsPSD(canonicalScene, source?.name);
     };
 
     const handleClick = () => {
