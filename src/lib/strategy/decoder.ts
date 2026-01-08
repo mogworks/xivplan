@@ -38,7 +38,7 @@ export function isValidGameStrategyBoardString(shareString: string) {
 
 export function decodeGameStrategyBoardString(shareString: string, suppressErrors: boolean = false) {
     if (!isValidGameStrategyBoardString(shareString)) {
-        error('Invalid strategy board.', suppressErrors);
+        error('无效的战术板', suppressErrors);
         return null;
     }
 
@@ -68,7 +68,7 @@ export function decodeGameStrategyBoardString(shareString: string, suppressError
 
         return decompressed;
     } catch {
-        error('Invalid strategy board.', suppressErrors);
+        error('无效的战术板', suppressErrors);
         return null;
     }
 }
