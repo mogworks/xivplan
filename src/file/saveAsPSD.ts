@@ -1,9 +1,14 @@
-import { Layer, Psd, writePsd } from 'ag-psd';
+import { Layer as PSDLayer, Psd, writePsd } from 'ag-psd';
+import React from 'react';
+import { createRoot } from 'react-dom/client';
+import { Layer, Stage } from 'react-konva';
 import { getCanvasSize } from '../coord';
+import { ObjectLoadingProvider } from '../ObjectLoadingProvider';
+import { ObjectContext } from '../prefabs/ObjectContext';
 import { LayerName } from '../render/layers';
-import { getLayerName } from '../render/ObjectRegistry';
+import { getLayerName, getRenderer } from '../render/ObjectRegistry';
 import { Scene, SceneObject, SceneStep } from '../scene';
-import { EditorState } from '../SceneProvider';
+import { EditorState, SceneContext } from '../SceneProvider';
 import { UndoContext } from '../undo/undoContext';
 
 export async function saveSceneAsPSD(scene: Readonly<Scene>): Promise<Blob> {
@@ -13,7 +18,7 @@ export async function saveSceneAsPSD(scene: Readonly<Scene>): Promise<Blob> {
     console.log('scene', scene);
 
     // 创建图层数组，每个元素一个图层
-    const children: Layer[] = [];
+    const children: PSDLayer[] = [];
 
     // 为每个 step 的每个对象创建图层
     for (let stepIndex = 0; stepIndex < scene.steps.length; stepIndex++) {
@@ -21,7 +26,7 @@ export async function saveSceneAsPSD(scene: Readonly<Scene>): Promise<Blob> {
         if (!step) continue;
 
         const groupName = `Step ${stepIndex + 1}`;
-        const groupLayer: Layer[] = [];
+        const groupLayer: PSDLayer[] = [];
 
         // TODO: 渲染场地背景
 
@@ -29,7 +34,7 @@ export async function saveSceneAsPSD(scene: Readonly<Scene>): Promise<Blob> {
             const object = step.objects[objectIndex];
             if (!object) continue;
 
-            const objectCanvas = await renderObjectToCanvas(size, scene, object);
+            const objectCanvas = await new ObjectToCanvasRender(size, scene).render(object);
 
             const layerSuffix = getLayerName(object) ? ` [${getLayerName(object)}]` : '';
             const layerName = `Step ${stepIndex + 1} - Object ${objectIndex + 1}${layerSuffix}`;
@@ -71,31 +76,24 @@ export async function saveSceneAsPSD(scene: Readonly<Scene>): Promise<Blob> {
     return new Blob([buffer], { type: 'image/vnd.adobe.photoshop' });
 }
 
-// async function renderStep(step: SceneStep, size: { width: number; height: number }): Promise<Layer[]> {}
+// async function renderStep(step: SceneStep, size: { width: number; height: number }): Promise<PSDLayer[]> {}
 
-// async function renderSceneLayer(scene: Readonly<Scene>[], size: { width: number; height: number }): Promise<Layer[]> {
+// async function renderSceneLayer(scene: Readonly<Scene>[], size: { width: number; height: number }): Promise<PSDLayer[]> {
 //     for (let i = 0; i < scene.length; i++) {
 //         const object = scene[i];
 //         const objectCanvas = await renderObjectToCanvas(size, scene, object);
 //     }
 // }
 
-async function renderObjectToCanvas(
-    size: { width: number; height: number },
-    scene: Readonly<Scene>,
-    object: SceneObject,
-): Promise<HTMLCanvasElement> {
-    // 动态导入 React 和相关组件
-    const React = await import('react');
-    const { createRoot } = await import('react-dom/client');
-    const { Stage } = await import('react-konva');
-    const { Layer } = await import('react-konva');
-    const { ObjectLoadingProvider } = await import('../ObjectLoadingProvider');
-    const { SceneContext } = await import('../SceneProvider');
-    const { ObjectContext } = await import('../prefabs/ObjectContext');
-    const { getRenderer } = await import('../render/ObjectRegistry');
+class ObjectToCanvasRender {
+    constructor(
+        public size: { width: number; height: number },
+        public scene: Readonly<Scene>,
+    ) {}
 
-    return new Promise((resolve, reject) => {
+    async render(object: SceneObject): Promise<HTMLCanvasElement> {
+        const { size, scene } = this;
+
         // 创建临时容器
         const container = document.createElement('div');
         container.style.position = 'absolute';
@@ -165,31 +163,33 @@ async function renderObjectToCanvas(
             ),
         );
 
-        root.render(element);
+        return new Promise((resolve, reject) => {
+            root.render(element);
 
-        // 延迟获取 canvas，确保渲染完成
-        const timer = setTimeout(async () => {
-            try {
-                if (!stageRef) {
-                    throw new Error('Failed to get stage reference');
-                }
+            // 延迟获取 canvas，确保渲染完成
+            const timer = setTimeout(async () => {
+                try {
+                    if (!stageRef) {
+                        throw new Error('Failed to get stage reference');
+                    }
 
-                // 使用 stage 的 toCanvas 方法，不使用裁剪
-                const canvas = stageRef.toCanvas({ pixelRatio: 1 });
+                    // 使用 stage 的 toCanvas 方法，不使用裁剪
+                    const canvas = stageRef.toCanvas({ pixelRatio: 1 });
 
-                // 清理
-                root.unmount();
-                document.body.removeChild(container);
-
-                resolve(canvas);
-            } catch (ex) {
-                clearTimeout(timer);
-                root.unmount();
-                if (container.parentNode) {
+                    // 清理
+                    root.unmount();
                     document.body.removeChild(container);
+
+                    resolve(canvas);
+                } catch (ex) {
+                    clearTimeout(timer);
+                    root.unmount();
+                    if (container.parentNode) {
+                        document.body.removeChild(container);
+                    }
+                    reject(ex);
                 }
-                reject(ex);
-            }
-        }, 1000);
-    });
+            }, 100);
+        });
+    }
 }
