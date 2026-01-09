@@ -167,7 +167,6 @@ class ObjectToCanvasRender {
             stageRef = React.useRef(null);
 
             useEffect(() => {
-                let disposed = false;
                 const timer = setInterval(() => {
                     const stage = stageRef?.current;
                     if (!stage) return;
@@ -177,14 +176,12 @@ class ObjectToCanvasRender {
                         drawSuccess(canvas);
 
                         clearInterval(timer);
-                        disposed = true;
                     } catch (error) {
                         // ignore and retry until a valid stage is ready
                     }
                 }, 100);
 
                 return () => {
-                    disposed = true;
                     clearInterval(timer);
                 };
             }, []);
