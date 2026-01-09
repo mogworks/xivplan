@@ -4,7 +4,6 @@ import { LayerName } from '../render/layers';
 import { getLayerName } from '../render/ObjectRegistry';
 import { Scene, SceneObject, SceneStep } from '../scene';
 import { EditorState } from '../SceneProvider';
-import { SelectionState } from '../SelectionContext';
 import { UndoContext } from '../undo/undoContext';
 
 export async function saveSceneAsPSD(scene: Readonly<Scene>): Promise<Blob> {
@@ -30,7 +29,7 @@ export async function saveSceneAsPSD(scene: Readonly<Scene>): Promise<Blob> {
             const object = step.objects[objectIndex];
             if (!object) continue;
 
-            const objectCanvas = await renderObjectToCanvas(size, scene, stepIndex, object);
+            const objectCanvas = await renderObjectToCanvas(size, scene, object);
 
             const layerSuffix = getLayerName(object) ? ` [${getLayerName(object)}]` : '';
             const layerName = `Step ${stepIndex + 1} - Object ${objectIndex + 1}${layerSuffix}`;
@@ -72,19 +71,18 @@ export async function saveSceneAsPSD(scene: Readonly<Scene>): Promise<Blob> {
     return new Blob([buffer], { type: 'image/vnd.adobe.photoshop' });
 }
 
-// async function renderStep(step: SceneStep): Promise<Layer[]> {}
+// async function renderStep(step: SceneStep, size: { width: number; height: number }): Promise<Layer[]> {}
 
-// async function renderSceneLayer(scene: Scene[]): Promise<Layer[]> {
+// async function renderSceneLayer(scene: Readonly<Scene>[], size: { width: number; height: number }): Promise<Layer[]> {
 //     for (let i = 0; i < scene.length; i++) {
 //         const object = scene[i];
-//         const objectCanvas = await renderObjectToCanvas(size, scene, stepIndex, object);
+//         const objectCanvas = await renderObjectToCanvas(size, scene, object);
 //     }
 // }
 
 async function renderObjectToCanvas(
     size: { width: number; height: number },
     scene: Readonly<Scene>,
-    stepIndex: number,
     object: SceneObject,
 ): Promise<HTMLCanvasElement> {
     // 动态导入 React 和相关组件
@@ -93,9 +91,7 @@ async function renderObjectToCanvas(
     const { Stage } = await import('react-konva');
     const { Layer } = await import('react-konva');
     const { ObjectLoadingProvider } = await import('../ObjectLoadingProvider');
-    const { DefaultCursorProvider } = await import('../DefaultCursorProvider');
     const { SceneContext } = await import('../SceneProvider');
-    const { SelectionContext, SpotlightContext } = await import('../SelectionContext');
     const { ObjectContext } = await import('../prefabs/ObjectContext');
     const { getRenderer } = await import('../render/ObjectRegistry');
 
@@ -121,9 +117,9 @@ async function renderObjectToCanvas(
         const present: EditorState = {
             scene: {
                 ...scene,
-                steps: scene.steps.map((step, idx) => (idx === stepIndex ? singleObjectStep : { objects: [] })),
+                steps: [singleObjectStep],
             },
-            currentStep: stepIndex,
+            currentStep: 0,
         };
 
         const sceneContext: UndoContext<EditorState, any> = [
@@ -135,9 +131,6 @@ async function renderObjectToCanvas(
             },
             () => undefined,
         ];
-
-        const selectionContext: SelectionState = [new Set<number>(), () => {}];
-        const spotlightContext: SelectionState = [new Set<number>(), () => {}];
 
         // 获取对象的渲染组件
         const RendererComponent = getRenderer(object);
@@ -157,27 +150,15 @@ async function renderObjectToCanvas(
                     height: size.height,
                 },
                 React.createElement(
-                    DefaultCursorProvider,
-                    null,
+                    SceneContext.Provider,
+                    { value: sceneContext },
                     React.createElement(
-                        SceneContext.Provider,
-                        { value: sceneContext },
+                        Layer,
+                        { name: objectLayer, listening: false },
                         React.createElement(
-                            SelectionContext.Provider,
-                            { value: selectionContext },
-                            React.createElement(
-                                SpotlightContext.Provider,
-                                { value: spotlightContext },
-                                React.createElement(
-                                    Layer,
-                                    { name: objectLayer, listening: false },
-                                    React.createElement(
-                                        ObjectContext.Provider,
-                                        { value: object },
-                                        React.createElement(RendererComponent, { object }),
-                                    ),
-                                ),
-                            ),
+                            ObjectContext.Provider,
+                            { value: object },
+                            React.createElement(RendererComponent, { object }),
                         ),
                     ),
                 ),
