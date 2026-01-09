@@ -19,44 +19,18 @@ export async function saveSceneAsPSD(scene: Readonly<Scene>): Promise<Blob> {
 
     // 创建图层数组，每个元素一个图层
     const children: PSDLayer[] = [];
-
+    const render = new ObjectToCanvasRender(size, scene);
     // 为每个 step 的每个对象创建图层
     for (let stepIndex = 0; stepIndex < scene.steps.length; stepIndex++) {
         const step = scene.steps[stepIndex];
         if (!step) continue;
 
         const groupName = `Step ${stepIndex + 1}`;
-        const groupLayer: PSDLayer[] = [];
 
-        // TODO: 渲染场地背景
-
-        for (let objectIndex = 0; objectIndex < step.objects.length; objectIndex++) {
-            const object = step.objects[objectIndex];
-            if (!object) continue;
-
-            const objectCanvas = await new ObjectToCanvasRender(size, scene).render(object);
-
-            const layerSuffix = getLayerName(object) ? ` [${getLayerName(object)}]` : '';
-            const layerName = `Step ${stepIndex + 1} - Object ${objectIndex + 1}${layerSuffix}`;
-
-            groupLayer.push({
-                top: 0,
-                left: 0,
-                bottom: size.height,
-                right: size.width,
-                blendMode: 'normal',
-                opacity: 255,
-                transparencyProtected: false,
-                hidden: false,
-                clipping: false,
-                name: layerName,
-                canvas: objectCanvas,
-            });
-        }
-        // 将组图层添加为一个组
+        const stepLayers = await renderStep(step, render);
         children.push({
             name: groupName,
-            children: groupLayer.reverse(),
+            children: stepLayers,
         });
     }
 
@@ -76,14 +50,55 @@ export async function saveSceneAsPSD(scene: Readonly<Scene>): Promise<Blob> {
     return new Blob([buffer], { type: 'image/vnd.adobe.photoshop' });
 }
 
-// async function renderStep(step: SceneStep, size: { width: number; height: number }): Promise<PSDLayer[]> {}
+async function renderStep(step: SceneStep, render: ObjectToCanvasRender): Promise<PSDLayer[]> {
+    // TODO: 渲染场地背景
+    const layerNameToLayers: { [layerName: string]: SceneObject[] } = {};
+    for (let i = 0; i < step.objects.length; i++) {
+        const object = step.objects[i];
+        if (!object) continue;
+        const layerName = getLayerName(object) ?? LayerName.Default;
+        if (!layerNameToLayers[layerName]) {
+            layerNameToLayers[layerName] = [object];
+        } else {
+            layerNameToLayers[layerName].push(object);
+        }
+    }
+    console.log('layerNameToLayers', layerNameToLayers);
+    const layers: PSDLayer[] = [];
+    for (const layerName in layerNameToLayers) {
+        const objects = layerNameToLayers[layerName];
+        if (!objects) continue;
+        layers.push({
+            name: layerName,
+            children: (await renderSceneLayer(objects, render)).reverse(),
+        });
+    }
+    return layers;
+}
 
-// async function renderSceneLayer(scene: Readonly<Scene>[], size: { width: number; height: number }): Promise<PSDLayer[]> {
-//     for (let i = 0; i < scene.length; i++) {
-//         const object = scene[i];
-//         const objectCanvas = await renderObjectToCanvas(size, scene, object);
-//     }
-// }
+async function renderSceneLayer(scene: SceneObject[], render: ObjectToCanvasRender): Promise<PSDLayer[]> {
+    const layers: PSDLayer[] = [];
+    for (let i = 0; i < scene.length; i++) {
+        const object = scene[i];
+        if (!object) continue;
+        console.log('Rendering object for PSD:', object);
+        const objectCanvas = await render.render(object);
+        layers.push({
+            top: 0,
+            left: 0,
+            bottom: render.size.height,
+            right: render.size.width,
+            blendMode: 'normal',
+            opacity: 255,
+            transparencyProtected: false,
+            hidden: false,
+            clipping: false,
+            name: `Object ${i + 1}`,
+            canvas: objectCanvas,
+        });
+    }
+    return layers;
+}
 
 class ObjectToCanvasRender {
     constructor(
@@ -189,7 +204,7 @@ class ObjectToCanvasRender {
                     }
                     reject(ex);
                 }
-            }, 100);
+            }, 500);
         });
     }
 }
