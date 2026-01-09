@@ -5,6 +5,7 @@ import { FileSource } from './SceneProvider';
 import { downloadSceneAsPSD, downloadSceneAsXivplanCn, openFileBlob } from './file/blob';
 import { openFileFs, saveFileFs } from './file/filesystem';
 import { openFileLocalStorage, saveFileLocalStorage } from './file/localStorage';
+import { saveSceneAsPSD } from './file/saveAsPSD';
 import { upgradeScene } from './file/upgrade';
 import { Scene } from './scene';
 
@@ -19,14 +20,24 @@ export async function saveFile(
             break;
 
         case 'fs':
-            await saveFileFs(scene, source.handle);
+            switch (type) {
+                case 'XivplanCn':
+                    await saveFileFs(JSON.stringify(scene, undefined, 2), source.handle);
+                    break;
+                case 'PSD':
+                    await saveFileFs(await saveSceneAsPSD(scene), source.handle);
+                    break;
+            }
             break;
 
         case 'blob':
-            if (type === 'XivplanCn') {
-                downloadSceneAsXivplanCn(scene, source.name);
-            } else if (type === 'PSD') {
-                downloadSceneAsPSD(scene, source.name);
+            switch (type) {
+                case 'XivplanCn':
+                    downloadSceneAsXivplanCn(scene, source.name);
+                    break;
+                case 'PSD':
+                    downloadSceneAsPSD(scene, source.name);
+                    break;
             }
             break;
     }

@@ -1,5 +1,6 @@
 import { Button, DialogActions, DialogTrigger } from '@fluentui/react-components';
 import React, { useState } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 import { HtmlPortalNode, InPortal } from 'react-reverse-portal';
 import { ExternalLink } from '../ExternalLink';
 import { useLoadScene, useScene, useSetSource } from '../SceneProvider';
@@ -10,7 +11,6 @@ import { DownloadButton } from './DownloadButton';
 import { FileBrowser } from './FileBrowser';
 import { useConfirmUnsavedChanges } from './confirm';
 import { addRecentFile, getFileSource, showSavePlanPicker } from './filesystem';
-import { Trans, useTranslation } from 'react-i18next';
 
 export interface OpenFileSystemProps {
     actions: HtmlPortalNode;
@@ -78,7 +78,12 @@ export const SaveFileSystem: React.FC<SaveFileSystemProps> = ({ actions }) => {
         }
 
         const source = getFileSource(handle);
-        await saveFile(canonicalScene, source);
+        console.log('Saving to', handle.name, source);
+        if (handle.name.endsWith('.xivplancn')) {
+            await saveFile(canonicalScene, source, 'XivplanCn');
+        } else if (handle.name.endsWith('.psd')) {
+            await saveFile(canonicalScene, source, 'PSD');
+        }
         await addRecentFile(handle);
 
         setSource(source);

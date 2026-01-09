@@ -18,11 +18,10 @@ export function getFileSource(handle: FileSystemFileHandle): FileSystemFileSourc
     };
 }
 
-export async function saveFileFs(scene: Readonly<Scene>, handle: FileSystemFileHandle): Promise<void> {
+export async function saveFileFs(blob: FileSystemWriteChunkType, handle: FileSystemFileHandle): Promise<void> {
     const file = await handle.createWritable();
-    const json = JSON.stringify(scene, undefined, 2);
 
-    await file.write(json);
+    await file.write(blob);
     await file.close();
 }
 
