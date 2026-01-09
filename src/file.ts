@@ -2,13 +2,17 @@ import { Base64 } from 'js-base64';
 import { deflate, inflate } from 'pako';
 
 import { FileSource } from './SceneProvider';
-import { downloadScene, openFileBlob } from './file/blob';
+import { downloadSceneAsPSD, downloadSceneAsXivplanCn, openFileBlob } from './file/blob';
 import { openFileFs, saveFileFs } from './file/filesystem';
 import { openFileLocalStorage, saveFileLocalStorage } from './file/localStorage';
 import { upgradeScene } from './file/upgrade';
 import { Scene } from './scene';
 
-export async function saveFile(scene: Readonly<Scene>, source: FileSource): Promise<void> {
+export async function saveFile(
+    scene: Readonly<Scene>,
+    source: FileSource,
+    type: 'XivplanCn' | 'PSD' = 'XivplanCn',
+): Promise<void> {
     switch (source.type) {
         case 'local':
             await saveFileLocalStorage(scene, source.name);
@@ -19,7 +23,11 @@ export async function saveFile(scene: Readonly<Scene>, source: FileSource): Prom
             break;
 
         case 'blob':
-            downloadScene(scene, source.name);
+            if (type === 'XivplanCn') {
+                downloadSceneAsXivplanCn(scene, source.name);
+            } else if (type === 'PSD') {
+                downloadSceneAsPSD(scene, source.name);
+            }
             break;
     }
 }

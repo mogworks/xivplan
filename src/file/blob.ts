@@ -22,7 +22,7 @@ export function getBlobSource(file: File | string | undefined): BlobFileSource {
     };
 }
 
-export function downloadScene(scene: Readonly<Scene>, name: string | undefined) {
+export function downloadSceneAsXivplanCn(scene: Readonly<Scene>, name: string | undefined) {
     name = name ?? DEFAULT_FILENAME;
 
     if (!name.endsWith('.xivplancn')) {
@@ -46,7 +46,7 @@ export function downloadSceneAsPSD(scene: Readonly<Scene>, name: string | undefi
         name = name + '.psd';
     }
     saveSceneAsPSD(scene).then((blob) => {
-        downloadBlob(blob, name!);
+        downloadBlob(blob, name);
     });
 }
 

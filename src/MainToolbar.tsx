@@ -27,7 +27,7 @@ import { ToolbarContext } from './ToolbarContext';
 import { saveFile } from './file';
 import { OpenDialog, SaveAsDialog } from './file/FileDialog';
 import { ShareDialogButton } from './file/ShareDialogButton';
-import { downloadScene, downloadSceneAsPSD, getBlobSource } from './file/blob';
+import { downloadSceneAsPSD, downloadSceneAsXivplanCn, getBlobSource } from './file/blob';
 import { DialogOpenContext } from './useCloseDialog';
 import { useHotkeys } from './useHotkeys';
 import { useIsDirty, useSetSavedState } from './useIsDirty';
@@ -140,7 +140,7 @@ const SaveButton: React.FC = () => {
     };
 
     const downloadAsXivplanCn = () => {
-        downloadScene(canonicalScene, source?.name);
+        downloadSceneAsXivplanCn(canonicalScene, source?.name);
         if (!source) {
             setSource(getBlobSource());
         }

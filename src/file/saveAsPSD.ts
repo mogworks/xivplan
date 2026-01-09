@@ -87,6 +87,7 @@ async function renderSceneLayer(
         if (!object) continue;
         console.log('Rendering object for PSD:', object);
         const objectCanvas = await render.render(object);
+        console.log('Object type:', object.type);
         layers.push({
             top: 0,
             left: 0,
@@ -97,7 +98,7 @@ async function renderSceneLayer(
             transparencyProtected: false,
             hidden: false,
             clipping: false,
-            name: `${namePrefix} Object ${i + 1}`,
+            name: `${namePrefix} ${object.type} ${i + 1}`,
             canvas: objectCanvas,
         });
     }
@@ -200,7 +201,6 @@ class ObjectToCanvasRender {
                         throw new Error('Failed to get stage reference');
                     }
 
-                    // 使用 stage 的 toCanvas 方法，不使用裁剪
                     const canvas = stageRef.toCanvas({ pixelRatio: 1 });
 
                     resolve(canvas);
