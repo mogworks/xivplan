@@ -34,6 +34,8 @@ export async function saveSceneAsPSD(scene: Readonly<Scene>): Promise<Blob> {
         });
     }
 
+    render.dispose();
+
     // 创建 PSD 文档
     const psd: Psd = {
         width: size.width,
