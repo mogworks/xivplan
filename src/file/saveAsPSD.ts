@@ -70,7 +70,7 @@ async function renderStep(step: SceneStep, render: ObjectToCanvasRender, namePre
         if (!objects) continue;
         layers.push({
             name: `${namePrefix}${layerName}`,
-            children: (await renderSceneLayer(objects, render, `${namePrefix}${layerName} - `)).reverse(),
+            children: await renderSceneLayer(objects, render, `${namePrefix}${layerName} - `),
         });
     }
     return layers;
@@ -97,7 +97,7 @@ async function renderSceneLayer(
             transparencyProtected: false,
             hidden: false,
             clipping: false,
-            name: `${namePrefix} ${object.type} ${i + 1}`,
+            name: `${namePrefix} ${object.type} ${scene.length - i}`,
             canvas: objectCanvas,
         });
     }
