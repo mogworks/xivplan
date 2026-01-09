@@ -101,24 +101,38 @@ async function renderSceneLayer(scene: SceneObject[], render: ObjectToCanvasRend
 }
 
 class ObjectToCanvasRender {
+    private container: HTMLDivElement;
+    private root: ReturnType<typeof createRoot>;
+
     constructor(
         public size: { width: number; height: number },
         public scene: Readonly<Scene>,
-    ) {}
+    ) {
+        this.container = document.createElement('div');
+        this.container.style.position = 'absolute';
+        this.container.style.visibility = 'hidden';
+        this.container.style.width = `${size.width}px`;
+        this.container.style.height = `${size.height}px`;
+        document.body.appendChild(this.container);
+        this.root = createRoot(this.container);
+    }
+
+    private async waitForRenderFrames(times = 2) {
+        for (let i = 0; i < times; i++) {
+            await new Promise(requestAnimationFrame);
+        }
+    }
+
+    dispose() {
+        this.root.unmount();
+        if (this.container.parentNode) {
+            this.container.parentNode.removeChild(this.container);
+        }
+    }
 
     async render(object: SceneObject): Promise<HTMLCanvasElement> {
-        const { size, scene } = this;
+        const { size, scene, container, root } = this;
 
-        // 创建临时容器
-        const container = document.createElement('div');
-        container.style.position = 'absolute';
-        container.style.visibility = 'hidden';
-        container.style.width = `${size.width}px`;
-        container.style.height = `${size.height}px`;
-        document.body.appendChild(container);
-
-        // 创建 root
-        const root = createRoot(container);
         let stageRef: any = null;
 
         // 创建只包含当前对象的临时 step
@@ -126,7 +140,7 @@ class ObjectToCanvasRender {
             objects: [object],
         };
 
-        // // 创建临时的 scene context
+        // 创建临时的 scene context
         const present: EditorState = {
             scene: {
                 ...scene,
@@ -191,17 +205,9 @@ class ObjectToCanvasRender {
                     // 使用 stage 的 toCanvas 方法，不使用裁剪
                     const canvas = stageRef.toCanvas({ pixelRatio: 1 });
 
-                    // 清理
-                    root.unmount();
-                    document.body.removeChild(container);
-
                     resolve(canvas);
                 } catch (ex) {
                     clearTimeout(timer);
-                    root.unmount();
-                    if (container.parentNode) {
-                        document.body.removeChild(container);
-                    }
                     reject(ex);
                 }
             }, 500);
