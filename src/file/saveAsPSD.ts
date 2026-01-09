@@ -27,7 +27,7 @@ export async function saveSceneAsPSD(scene: Readonly<Scene>): Promise<Blob> {
 
         const groupName = `Step ${stepIndex + 1}`;
 
-        const stepLayers = await renderStep(step, render);
+        const stepLayers = await renderStep(step, render, `${groupName} - `);
         children.push({
             name: groupName,
             children: stepLayers,
@@ -50,7 +50,7 @@ export async function saveSceneAsPSD(scene: Readonly<Scene>): Promise<Blob> {
     return new Blob([buffer], { type: 'image/vnd.adobe.photoshop' });
 }
 
-async function renderStep(step: SceneStep, render: ObjectToCanvasRender): Promise<PSDLayer[]> {
+async function renderStep(step: SceneStep, render: ObjectToCanvasRender, namePrefix: string): Promise<PSDLayer[]> {
     // TODO: 渲染场地背景
     const layerNameToLayers: { [layerName: string]: SceneObject[] } = {};
     for (let i = 0; i < step.objects.length; i++) {
@@ -69,14 +69,18 @@ async function renderStep(step: SceneStep, render: ObjectToCanvasRender): Promis
         const objects = layerNameToLayers[layerName];
         if (!objects) continue;
         layers.push({
-            name: layerName,
-            children: (await renderSceneLayer(objects, render)).reverse(),
+            name: `${namePrefix}${layerName}`,
+            children: (await renderSceneLayer(objects, render, `${namePrefix}${layerName} - `)).reverse(),
         });
     }
     return layers;
 }
 
-async function renderSceneLayer(scene: SceneObject[], render: ObjectToCanvasRender): Promise<PSDLayer[]> {
+async function renderSceneLayer(
+    scene: SceneObject[],
+    render: ObjectToCanvasRender,
+    namePrefix: string,
+): Promise<PSDLayer[]> {
     const layers: PSDLayer[] = [];
     for (let i = 0; i < scene.length; i++) {
         const object = scene[i];
@@ -93,7 +97,7 @@ async function renderSceneLayer(scene: SceneObject[], render: ObjectToCanvasRend
             transparencyProtected: false,
             hidden: false,
             clipping: false,
-            name: `Object ${i + 1}`,
+            name: `${namePrefix} Object ${i + 1}`,
             canvas: objectCanvas,
         });
     }
@@ -117,12 +121,6 @@ class ObjectToCanvasRender {
         this.root = createRoot(this.container);
     }
 
-    private async waitForRenderFrames(times = 2) {
-        for (let i = 0; i < times; i++) {
-            await new Promise(requestAnimationFrame);
-        }
-    }
-
     dispose() {
         this.root.unmount();
         if (this.container.parentNode) {
@@ -131,7 +129,7 @@ class ObjectToCanvasRender {
     }
 
     async render(object: SceneObject): Promise<HTMLCanvasElement> {
-        const { size, scene, container, root } = this;
+        const { size, scene, root } = this;
 
         let stageRef: any = null;
 
