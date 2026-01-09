@@ -87,7 +87,6 @@ async function renderSceneLayer(
         if (!object) continue;
         console.log('Rendering object for PSD:', object);
         const objectCanvas = await render.render(object);
-        console.log('Object type:', object.type);
         layers.push({
             top: 0,
             left: 0,

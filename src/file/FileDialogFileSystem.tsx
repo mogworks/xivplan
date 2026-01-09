@@ -78,7 +78,6 @@ export const SaveFileSystem: React.FC<SaveFileSystemProps> = ({ actions }) => {
         }
 
         const source = getFileSource(handle);
-        console.log('Saving to', handle.name, source);
         if (handle.name.endsWith('.xivplancn')) {
             await saveFile(canonicalScene, source, 'XivplanCn');
         } else if (handle.name.endsWith('.psd')) {
