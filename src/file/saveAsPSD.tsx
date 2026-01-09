@@ -1,5 +1,5 @@
 import { Layer as PSDLayer, Psd, writePsd } from 'ag-psd';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
 import { Layer, Stage } from 'react-konva';
 import { getCanvasSize } from '../coord';
@@ -161,53 +161,53 @@ class ObjectToCanvasRender {
         const RendererComponent = getRenderer(object);
         const objectLayer = getLayerName(object) ?? LayerName.Default;
 
-        // 渲染单个对象
-        const element = React.createElement(
-            ObjectLoadingProvider,
-            null,
-            React.createElement(
-                Stage,
-                {
-                    ref: (ref: any) => {
-                        stageRef = ref;
-                    },
-                    width: size.width,
-                    height: size.height,
-                },
-                React.createElement(
-                    SceneContext.Provider,
-                    { value: sceneContext },
-                    React.createElement(
-                        Layer,
-                        { name: objectLayer, listening: false },
-                        React.createElement(
-                            ObjectContext.Provider,
-                            { value: object },
-                            React.createElement(RendererComponent, { object }),
-                        ),
-                    ),
-                ),
-            ),
-        );
+        const Element = ({ drawSuccess }: { drawSuccess: (canvas: HTMLCanvasElement) => void }) => {
+            stageRef = React.useRef(null);
 
-        return new Promise((resolve, reject) => {
-            root.render(element);
+            useEffect(() => {
+                let disposed = false;
+                const timer = setInterval(() => {
+                    const stage = stageRef?.current;
+                    if (!stage) return;
 
-            // 延迟获取 canvas，确保渲染完成
-            const timer = setTimeout(async () => {
-                try {
-                    if (!stageRef) {
-                        throw new Error('Failed to get stage reference');
+                    try {
+                        const canvas = stage.toCanvas({ pixelRatio: 1 });
+                        drawSuccess(canvas);
+
+                        clearInterval(timer);
+                        disposed = true;
+                    } catch (error) {
+                        // ignore and retry until a valid stage is ready
                     }
+                }, 100);
 
-                    const canvas = stageRef.toCanvas({ pixelRatio: 1 });
+                return () => {
+                    disposed = true;
+                    clearInterval(timer);
+                };
+            }, []);
 
-                    resolve(canvas);
-                } catch (ex) {
-                    clearTimeout(timer);
-                    reject(ex);
-                }
-            }, 500);
+            return (
+                <ObjectLoadingProvider>
+                    <Stage ref={stageRef} width={size.width} height={size.height}>
+                        <SceneContext.Provider value={sceneContext}>
+                            <Layer name={objectLayer} listening={false}>
+                                <ObjectContext.Provider value={object}>
+                                    <RendererComponent object={object}></RendererComponent>
+                                </ObjectContext.Provider>
+                            </Layer>
+                        </SceneContext.Provider>
+                    </Stage>
+                </ObjectLoadingProvider>
+            );
+        };
+
+        return new Promise((resolve) => {
+            const drawSuccess = (canvas: HTMLCanvasElement | null) => {
+                if (!canvas) return;
+                resolve(canvas);
+            };
+            root.render(<Element drawSuccess={drawSuccess} />);
         });
     }
 }
