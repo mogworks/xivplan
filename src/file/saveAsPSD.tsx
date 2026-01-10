@@ -1,33 +1,33 @@
 import { Layer as PSDLayer, Psd, writePsd } from 'ag-psd';
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { createRoot } from 'react-dom/client';
 import { Layer, Stage } from 'react-konva';
 import { getCanvasSize } from '../coord';
-import { ObjectContext } from '../prefabs/ObjectContext';
 import { ArenaRenderer } from '../render/ArenaRenderer';
+import { DrawTarget } from '../render/DrawTarget';
 import { LayerName } from '../render/layers';
-import { getLayerName, getRenderer } from '../render/ObjectRegistry';
-import { Scene, SceneObject, SceneStep } from '../scene';
+import { getLayerName } from '../render/ObjectRegistry';
+import { ObjectRenderer } from '../render/ObjectRenderer';
+import { TetherEditRenderer } from '../render/TetherEditRenderer';
+import { Scene, SceneStep } from '../scene';
 import { EditorState, SceneContext } from '../SceneProvider';
 import { UndoContext } from '../undo/undoContext';
 
 export async function saveSceneAsPSD(scene: Readonly<Scene>): Promise<Blob> {
     const size = getCanvasSize(scene);
 
-    console.log('size', size);
-    console.log('scene', scene);
-
     // 创建图层数组，每个元素一个图层
     const children: PSDLayer[] = [];
-    const render = new ObjectToCanvasRender(size, scene);
-    // 为每个 step 的每个对象创建图层
+    const render = new SceneToCanvasRender(size, scene);
+
+    // 为每个 step 创建图层组
     for (let stepIndex = 0; stepIndex < scene.steps.length; stepIndex++) {
         const step = scene.steps[stepIndex];
         if (!step) continue;
 
         const groupName = `Step ${stepIndex + 1}`;
+        const stepLayers = await renderStep(step, stepIndex, render, `${groupName} - `);
 
-        const stepLayers = await renderStep(step, render, `${groupName} - `);
         children.push({
             name: groupName,
             children: stepLayers,
@@ -46,39 +46,67 @@ export async function saveSceneAsPSD(scene: Readonly<Scene>): Promise<Blob> {
         children: children.reverse(), // PSD 图层顺序是反的
     };
 
-    console.log('psd', psd);
-
     const buffer = writePsd(psd);
     return new Blob([buffer], { type: 'image/vnd.adobe.photoshop' });
 }
 
-async function renderStep(step: SceneStep, render: ObjectToCanvasRender, namePrefix: string): Promise<PSDLayer[]> {
-    const layerNameToLayers: { [layerName: string]: SceneObject[] } = {};
-    for (let i = 0; i < step.objects.length; i++) {
-        const object = step.objects[i];
+async function renderStep(
+    step: SceneStep,
+    stepIndex: number,
+    render: SceneToCanvasRender,
+    namePrefix: string,
+): Promise<PSDLayer[]> {
+    const layers: PSDLayer[] = [];
+
+    // 先渲染 Arena 背景（只渲染一次，包含 Arena 但不包含任何对象）
+    const arenaCanvas = await render.renderStepWithHide(step, stepIndex, null, true);
+    layers.push({
+        top: 0,
+        left: 0,
+        bottom: render.size.height,
+        right: render.size.width,
+        blendMode: 'normal',
+        opacity: 255,
+        transparencyProtected: false,
+        hidden: false,
+        clipping: false,
+        name: `${namePrefix}Arena`,
+        canvas: arenaCanvas,
+    });
+
+    // 按 LayerName 分组对象
+    const layerNameToObjects: { [layerName: string]: (typeof step.objects)[number][] } = {};
+    for (const object of step.objects) {
         if (!object) continue;
         const layerName = getLayerName(object) ?? LayerName.Default;
-        if (!layerNameToLayers[layerName]) {
-            layerNameToLayers[layerName] = [object];
-        } else {
-            layerNameToLayers[layerName].push(object);
+        if (!layerNameToObjects[layerName]) {
+            layerNameToObjects[layerName] = [];
         }
+        layerNameToObjects[layerName].push(object);
     }
-    console.log('layerNameToLayers', layerNameToLayers);
-    const layers: PSDLayer[] = [];
-    // 为每个图层渲染对象
-    for (const layerName of [
+
+    // 按图层顺序创建图层组
+    const layerOrder = [
         LayerName.Ground,
         LayerName.Default,
         LayerName.Foreground,
         LayerName.Active,
         LayerName.Controls,
-    ]) {
-        const children: PSDLayer[] = [];
-        if (layerName === LayerName.Ground) {
-            // 渲染场地背景
-            const arenaCanvas = await render.renderArena();
-            children.push({
+    ];
+
+    for (const layerName of layerOrder) {
+        const objects = layerNameToObjects[layerName];
+        if (!objects || objects.length === 0) continue;
+
+        // 为该图层创建图层组
+        const layerChildren: PSDLayer[] = [];
+
+        // 为每个对象创建图层，通过 hide 属性控制显示（不包含 Arena，Arena 已经单独渲染了）
+        for (const object of objects) {
+            if (!object) continue;
+            const objectCanvas = await render.renderStepWithHide(step, stepIndex, object.id, false);
+
+            layerChildren.push({
                 top: 0,
                 left: 0,
                 bottom: render.size.height,
@@ -88,50 +116,24 @@ async function renderStep(step: SceneStep, render: ObjectToCanvasRender, namePre
                 transparencyProtected: false,
                 hidden: false,
                 clipping: false,
-                name: `${namePrefix}${layerName} - Arena`,
-                canvas: arenaCanvas,
+                name: `${object.type} (${object.id})`,
+                canvas: objectCanvas,
             });
         }
-        const objects = layerNameToLayers[layerName];
-        if (!objects) continue;
-        children.push(...(await renderSceneLayer(objects, render, `${namePrefix}${layerName} - `)));
-        layers.push({
-            name: `${namePrefix}${layerName}`,
-            children,
-        });
+
+        // 如果该图层有对象，创建图层组
+        if (layerChildren.length > 0) {
+            layers.push({
+                name: `${namePrefix}${layerName}`,
+                children: layerChildren,
+            });
+        }
     }
+
     return layers;
 }
 
-async function renderSceneLayer(
-    scene: SceneObject[],
-    render: ObjectToCanvasRender,
-    namePrefix: string,
-): Promise<PSDLayer[]> {
-    const layers: PSDLayer[] = [];
-    for (let i = 0; i < scene.length; i++) {
-        const object = scene[i];
-        if (!object) continue;
-        console.log('Rendering object for PSD:', object);
-        const objectCanvas = await render.render(object);
-        layers.push({
-            top: 0,
-            left: 0,
-            bottom: render.size.height,
-            right: render.size.width,
-            blendMode: 'normal',
-            opacity: 255,
-            transparencyProtected: false,
-            hidden: false,
-            clipping: false,
-            name: `${namePrefix} ${object.type} ${scene.length - i}`,
-            canvas: objectCanvas,
-        });
-    }
-    return layers;
-}
-
-class ObjectToCanvasRender {
+class SceneToCanvasRender {
     private container: HTMLDivElement;
     private root: ReturnType<typeof createRoot>;
 
@@ -155,86 +157,45 @@ class ObjectToCanvasRender {
         }
     }
 
-    async renderArena(): Promise<HTMLCanvasElement> {
+    /**
+     * 渲染 step，通过 hide 属性控制对象的显示
+     * @param step 要渲染的 step
+     * @param stepIndex step 的索引
+     * @param visibleObjectId 要显示的对象 ID，如果为 null 则只显示 Arena，其他对象都隐藏
+     * @param includeArena 是否包含 Arena 渲染
+     */
+    async renderStepWithHide(
+        step: SceneStep,
+        stepIndex: number,
+        visibleObjectId: number | null,
+        includeArena: boolean = true,
+    ): Promise<HTMLCanvasElement> {
         const { size, scene, root } = this;
 
-        let stageRef: any = null;
-
-        const present: EditorState = {
-            scene,
-            currentStep: 0,
-        };
-
-        const sceneContext: UndoContext<EditorState, any> = [
-            {
-                present,
-                transientPresent: present,
-                past: [],
-                future: [],
-            },
-            () => undefined,
-        ];
-
-        const Element = ({ drawSuccess }: { drawSuccess: (canvas: HTMLCanvasElement) => void }) => {
-            stageRef = React.useRef(null);
-
-            useEffect(() => {
-                const timer = setInterval(() => {
-                    const stage = stageRef?.current;
-                    if (!stage) return;
-
-                    try {
-                        const canvas = stage.toCanvas({ pixelRatio: 1 });
-                        drawSuccess(canvas);
-
-                        clearInterval(timer);
-                    } catch (error) {
-                        // ignore and retry until a valid stage is ready
-                    }
-                }, 100);
-
-                return () => {
-                    clearInterval(timer);
-                };
-            }, []);
-
-            return (
-                <Stage ref={stageRef} width={size.width} height={size.height}>
-                    <SceneContext.Provider value={sceneContext}>
-                        <Layer name={LayerName.Default} listening={false}>
-                            <ArenaRenderer />
-                        </Layer>
-                    </SceneContext.Provider>
-                </Stage>
-            );
-        };
-
-        return new Promise((resolve) => {
-            const drawSuccess = (canvas: HTMLCanvasElement | null) => {
-                if (!canvas) return;
-                resolve(canvas);
-            };
-            root.render(<Element drawSuccess={drawSuccess} />);
+        // 创建修改后的 step，设置对象的 hide 属性
+        const modifiedObjects = step.objects.map((obj) => {
+            if (visibleObjectId === null) {
+                // 只显示 Arena，隐藏所有对象
+                return { ...obj, hide: true };
+            } else {
+                // 只显示指定的对象，隐藏其他对象
+                return { ...obj, hide: obj.id !== visibleObjectId };
+            }
         });
-    }
 
-    async render(object: SceneObject): Promise<HTMLCanvasElement> {
-        const { size, scene, root } = this;
-
-        let stageRef: any = null;
-
-        // 创建只包含当前对象的临时 step
-        const singleObjectStep: SceneStep = {
-            objects: [object],
+        const modifiedStep: SceneStep = {
+            objects: modifiedObjects,
         };
 
-        // 创建临时的 scene context
+        // 创建包含修改后的 step 的场景
+        const modifiedSteps = scene.steps.map((s, idx) => (idx === stepIndex ? modifiedStep : { objects: [] }));
+
         const present: EditorState = {
             scene: {
                 ...scene,
-                steps: [singleObjectStep],
+                steps: modifiedSteps,
             },
-            currentStep: 0,
+            currentStep: stepIndex,
         };
 
         const sceneContext: UndoContext<EditorState, any> = [
@@ -247,52 +208,80 @@ class ObjectToCanvasRender {
             () => undefined,
         ];
 
-        // 获取对象的渲染组件
-        const RendererComponent = getRenderer(object);
-        const objectLayer = getLayerName(object) ?? LayerName.Default;
+        return new Promise<HTMLCanvasElement>((resolve, reject) => {
+            const SceneElement = () => {
+                const stageRef = useRef<any>(null);
 
-        const Element = ({ drawSuccess }: { drawSuccess: (canvas: HTMLCanvasElement) => void }) => {
-            stageRef = React.useRef(null);
+                useEffect(() => {
+                    const waitForRender = async () => {
+                        // 等待 React 渲染完成
+                        await new Promise((r) => setTimeout(r, 50));
 
-            useEffect(() => {
-                const timer = setInterval(() => {
-                    const stage = stageRef?.current;
-                    if (!stage) return;
+                        // 使用 requestAnimationFrame 确保 DOM 更新完成
+                        requestAnimationFrame(() => {
+                            requestAnimationFrame(async () => {
+                                try {
+                                    const stage = stageRef.current;
+                                    if (!stage) {
+                                        reject(new Error('Failed to get stage reference'));
+                                        return;
+                                    }
 
-                    try {
-                        const canvas = stage.toCanvas({ pixelRatio: 1 });
-                        drawSuccess(canvas);
+                                    // 等待 Konva 渲染完成
+                                    await new Promise((r) => setTimeout(r, 100));
 
-                        clearInterval(timer);
-                    } catch (error) {
-                        // ignore and retry until a valid stage is ready
-                    }
-                }, 100);
+                                    const canvas = stage.toCanvas({ pixelRatio: 1 });
+                                    resolve(canvas);
+                                } catch (error) {
+                                    reject(error);
+                                }
+                            });
+                        });
+                    };
 
-                return () => {
-                    clearInterval(timer);
-                };
-            }, []);
+                    waitForRender();
+                }, []);
 
-            return (
-                <Stage ref={stageRef} width={size.width} height={size.height}>
-                    <SceneContext.Provider value={sceneContext}>
-                        <Layer name={objectLayer} listening={false}>
-                            <ObjectContext.Provider value={object}>
-                                <RendererComponent object={object}></RendererComponent>
-                            </ObjectContext.Provider>
-                        </Layer>
-                    </SceneContext.Provider>
-                </Stage>
-            );
-        };
-
-        return new Promise((resolve) => {
-            const drawSuccess = (canvas: HTMLCanvasElement | null) => {
-                if (!canvas) return;
-                resolve(canvas);
+                return (
+                    <Stage ref={stageRef} width={size.width} height={size.height}>
+                        <SceneContext.Provider value={sceneContext}>
+                            <SceneContents step={modifiedStep} listening={false} includeArena={includeArena} />
+                        </SceneContext.Provider>
+                    </Stage>
+                );
             };
-            root.render(<Element drawSuccess={drawSuccess} />);
+
+            root.render(<SceneElement />);
         });
     }
 }
+
+// 复制 SceneContents 组件，用于渲染完整场景
+const SceneContents: React.FC<{
+    listening?: boolean;
+    simple?: boolean;
+    step: SceneStep;
+    includeArena?: boolean;
+}> = ({ listening, simple, step, includeArena = true }) => {
+    listening = listening ?? true;
+
+    return (
+        <>
+            <Layer name={LayerName.Ground} listening={listening}>
+                {includeArena && <ArenaRenderer simple={simple} />}
+                <ObjectRenderer objects={step.objects} layer={LayerName.Ground} />
+            </Layer>
+            <Layer name={LayerName.Default} listening={listening}>
+                <ObjectRenderer objects={step.objects} layer={LayerName.Default} />
+            </Layer>
+            <Layer name={LayerName.Foreground} listening={listening}>
+                <ObjectRenderer objects={step.objects} layer={LayerName.Foreground} />
+                <TetherEditRenderer />
+            </Layer>
+            <Layer name={LayerName.Active} listening={listening}>
+                <DrawTarget />
+            </Layer>
+            <Layer name={LayerName.Controls} listening={listening} />
+        </>
+    );
+};
