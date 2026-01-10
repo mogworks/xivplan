@@ -188,7 +188,7 @@ class SceneToCanvasRender {
         };
 
         // 创建包含修改后的 step 的场景
-        const modifiedSteps = scene.steps.map((s, idx) => (idx === stepIndex ? modifiedStep : { objects: [] }));
+        const modifiedSteps = scene.steps.map((_, idx) => (idx === stepIndex ? modifiedStep : { objects: [] }));
 
         const present: EditorState = {
             scene: {
