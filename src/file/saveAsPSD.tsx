@@ -3,7 +3,6 @@ import React, { useEffect } from 'react';
 import { createRoot } from 'react-dom/client';
 import { Layer, Stage } from 'react-konva';
 import { getCanvasSize } from '../coord';
-import { ObjectLoadingProvider } from '../ObjectLoadingProvider';
 import { ObjectContext } from '../prefabs/ObjectContext';
 import { ArenaRenderer } from '../render/ArenaRenderer';
 import { LayerName } from '../render/layers';
@@ -200,15 +199,13 @@ class ObjectToCanvasRender {
             }, []);
 
             return (
-                <ObjectLoadingProvider>
-                    <Stage ref={stageRef} width={size.width} height={size.height}>
-                        <SceneContext.Provider value={sceneContext}>
-                            <Layer name={LayerName.Default} listening={false}>
-                                <ArenaRenderer />
-                            </Layer>
-                        </SceneContext.Provider>
-                    </Stage>
-                </ObjectLoadingProvider>
+                <Stage ref={stageRef} width={size.width} height={size.height}>
+                    <SceneContext.Provider value={sceneContext}>
+                        <Layer name={LayerName.Default} listening={false}>
+                            <ArenaRenderer />
+                        </Layer>
+                    </SceneContext.Provider>
+                </Stage>
             );
         };
 
@@ -278,17 +275,15 @@ class ObjectToCanvasRender {
             }, []);
 
             return (
-                <ObjectLoadingProvider>
-                    <Stage ref={stageRef} width={size.width} height={size.height}>
-                        <SceneContext.Provider value={sceneContext}>
-                            <Layer name={objectLayer} listening={false}>
-                                <ObjectContext.Provider value={object}>
-                                    <RendererComponent object={object}></RendererComponent>
-                                </ObjectContext.Provider>
-                            </Layer>
-                        </SceneContext.Provider>
-                    </Stage>
-                </ObjectLoadingProvider>
+                <Stage ref={stageRef} width={size.width} height={size.height}>
+                    <SceneContext.Provider value={sceneContext}>
+                        <Layer name={objectLayer} listening={false}>
+                            <ObjectContext.Provider value={object}>
+                                <RendererComponent object={object}></RendererComponent>
+                            </ObjectContext.Provider>
+                        </Layer>
+                    </SceneContext.Provider>
+                </Stage>
             );
         };
 
