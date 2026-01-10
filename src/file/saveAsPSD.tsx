@@ -68,7 +68,13 @@ async function renderStep(step: SceneStep, render: ObjectToCanvasRender, namePre
     console.log('layerNameToLayers', layerNameToLayers);
     const layers: PSDLayer[] = [];
     // 为每个图层渲染对象
-    for (const layerName in layerNameToLayers) {
+    for (const layerName of [
+        LayerName.Ground,
+        LayerName.Default,
+        LayerName.Foreground,
+        LayerName.Active,
+        LayerName.Controls,
+    ]) {
         const children: PSDLayer[] = [];
         if (layerName === LayerName.Ground) {
             // 渲染场地背景
