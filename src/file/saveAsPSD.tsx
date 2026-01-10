@@ -5,6 +5,7 @@ import { Layer, Stage } from 'react-konva';
 import { getCanvasSize } from '../coord';
 import { ObjectLoadingProvider } from '../ObjectLoadingProvider';
 import { ObjectContext } from '../prefabs/ObjectContext';
+import { ArenaRenderer } from '../render/ArenaRenderer';
 import { LayerName } from '../render/layers';
 import { getLayerName, getRenderer } from '../render/ObjectRegistry';
 import { Scene, SceneObject, SceneStep } from '../scene';
@@ -53,7 +54,6 @@ export async function saveSceneAsPSD(scene: Readonly<Scene>): Promise<Blob> {
 }
 
 async function renderStep(step: SceneStep, render: ObjectToCanvasRender, namePrefix: string): Promise<PSDLayer[]> {
-    // TODO: 渲染场地背景
     const layerNameToLayers: { [layerName: string]: SceneObject[] } = {};
     for (let i = 0; i < step.objects.length; i++) {
         const object = step.objects[i];
@@ -67,12 +67,32 @@ async function renderStep(step: SceneStep, render: ObjectToCanvasRender, namePre
     }
     console.log('layerNameToLayers', layerNameToLayers);
     const layers: PSDLayer[] = [];
+    // 为每个图层渲染对象
     for (const layerName in layerNameToLayers) {
+        const children: PSDLayer[] = [];
+        if (layerName === LayerName.Ground) {
+            // 渲染场地背景
+            const arenaCanvas = await render.renderArena();
+            children.push({
+                top: 0,
+                left: 0,
+                bottom: render.size.height,
+                right: render.size.width,
+                blendMode: 'normal',
+                opacity: 255,
+                transparencyProtected: false,
+                hidden: false,
+                clipping: false,
+                name: `${namePrefix}${layerName} - Arena`,
+                canvas: arenaCanvas,
+            });
+        }
         const objects = layerNameToLayers[layerName];
         if (!objects) continue;
+        children.push(...(await renderSceneLayer(objects, render, `${namePrefix}${layerName} - `)));
         layers.push({
             name: `${namePrefix}${layerName}`,
-            children: await renderSceneLayer(objects, render, `${namePrefix}${layerName} - `),
+            children,
         });
     }
     return layers;
@@ -128,6 +148,71 @@ class ObjectToCanvasRender {
         if (this.container.parentNode) {
             this.container.parentNode.removeChild(this.container);
         }
+    }
+
+    async renderArena(): Promise<HTMLCanvasElement> {
+        const { size, scene, root } = this;
+
+        let stageRef: any = null;
+
+        const present: EditorState = {
+            scene,
+            currentStep: 0,
+        };
+
+        const sceneContext: UndoContext<EditorState, any> = [
+            {
+                present,
+                transientPresent: present,
+                past: [],
+                future: [],
+            },
+            () => undefined,
+        ];
+
+        const Element = ({ drawSuccess }: { drawSuccess: (canvas: HTMLCanvasElement) => void }) => {
+            stageRef = React.useRef(null);
+
+            useEffect(() => {
+                const timer = setInterval(() => {
+                    const stage = stageRef?.current;
+                    if (!stage) return;
+
+                    try {
+                        const canvas = stage.toCanvas({ pixelRatio: 1 });
+                        drawSuccess(canvas);
+
+                        clearInterval(timer);
+                    } catch (error) {
+                        // ignore and retry until a valid stage is ready
+                    }
+                }, 100);
+
+                return () => {
+                    clearInterval(timer);
+                };
+            }, []);
+
+            return (
+                <ObjectLoadingProvider>
+                    <Stage ref={stageRef} width={size.width} height={size.height}>
+                        <SceneContext.Provider value={sceneContext}>
+                            <Layer name={LayerName.Default} listening={false}>
+                                <ArenaRenderer />
+                            </Layer>
+                        </SceneContext.Provider>
+                    </Stage>
+                </ObjectLoadingProvider>
+            );
+        };
+
+        return new Promise((resolve) => {
+            const drawSuccess = (canvas: HTMLCanvasElement | null) => {
+                if (!canvas) return;
+                resolve(canvas);
+            };
+            root.render(<Element drawSuccess={drawSuccess} />);
+        });
     }
 
     async render(object: SceneObject): Promise<HTMLCanvasElement> {
