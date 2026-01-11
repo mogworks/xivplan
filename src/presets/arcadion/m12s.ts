@@ -131,6 +131,7 @@ const M12S_4: ArenaPreset = {
         url: 'https://cos.xivstrat.cn/public/floor/07/m12s/4.webp',
         width: 480,
         height: 480,
+        offsetY: 3,
     },
     isSpoilerFree: true,
 };
@@ -152,6 +153,7 @@ const M12S_4L: ArenaPreset = {
         url: 'https://cos.xivstrat.cn/public/floor/07/m12s/4.webp',
         width: 720,
         height: 720,
+        offsetY: 4,
     },
     isSpoilerFree: true,
 };
@@ -173,6 +175,7 @@ const M12S_5: ArenaPreset = {
         url: 'https://cos.xivstrat.cn/public/floor/07/m12s/5.webp',
         width: 480,
         height: 480,
+        offsetY: 3,
     },
     isSpoilerFree: true,
 };
@@ -194,6 +197,7 @@ const M12S_5L: ArenaPreset = {
         url: 'https://cos.xivstrat.cn/public/floor/07/m12s/5.webp',
         width: 720,
         height: 720,
+        offsetY: 4,
     },
     isSpoilerFree: true,
 };
