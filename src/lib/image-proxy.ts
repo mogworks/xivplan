@@ -11,7 +11,7 @@ function isXivstratDomain(url: string): boolean {
 export function getProxyImageUrl(originalUrl: string): string {
     if (!originalUrl) return originalUrl;
 
-    if (originalUrl.startsWith('/') || isXivstratDomain(originalUrl)) {
+    if (originalUrl.startsWith('/') || isXivstratDomain(originalUrl) || originalUrl.startsWith('data:')) {
         return originalUrl;
     }
 

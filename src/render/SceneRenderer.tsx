@@ -137,9 +137,19 @@ export interface ScenePreviewProps extends RefAttributes<Konva.Stage> {
     height?: number;
     /** Do not draw complex objects that may slow down rendering. Useful for small previews. */
     simple?: boolean;
+    /** Show the arena background */
+    showArena?: boolean;
 }
 
-export const ScenePreview: React.FC<ScenePreviewProps> = ({ ref, scene, stepIndex, width, height, simple }) => {
+export const ScenePreview: React.FC<ScenePreviewProps> = ({
+    ref,
+    scene,
+    stepIndex,
+    width,
+    height,
+    simple,
+    showArena = true,
+}) => {
     const size = getCanvasSize(scene);
     let scale = 1;
     let x = 0;
@@ -190,6 +200,7 @@ export const ScenePreview: React.FC<ScenePreviewProps> = ({ ref, scene, stepInde
                                 listening={false}
                                 simple={simple}
                                 step={present.scene.steps[present.currentStep] || { objects: [] }}
+                                showArena={showArena}
                             />
                         </SpotlightContext>
                     </SelectionContext>
@@ -203,10 +214,11 @@ interface SceneContentsProps {
     listening?: boolean;
     simple?: boolean;
     step: SceneStep;
+    showArena?: boolean;
 }
 
 const SceneContents: React.FC<SceneContentsProps & { isVisible?: boolean }> = React.memo(
-    ({ listening, simple, step, isVisible }) => {
+    ({ listening, simple, step, isVisible, showArena = true }) => {
         listening = listening ?? true;
 
         return (
@@ -214,7 +226,7 @@ const SceneContents: React.FC<SceneContentsProps & { isVisible?: boolean }> = Re
                 {listening && isVisible && <SceneHotkeyHandler />}
 
                 <Layer name={LayerName.Ground} listening={listening}>
-                    <ArenaRenderer simple={simple} />
+                    {showArena && <ArenaRenderer simple={simple} />}
                     <ObjectRenderer objects={step.objects} layer={LayerName.Ground} />
                 </Layer>
                 <Layer name={LayerName.Default} listening={listening}>

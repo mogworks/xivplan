@@ -71,7 +71,8 @@
     "open": "Open",
     "save": "Save",
     "saveAs": "Save as",
-    "screenshotCurrentStep": "Screenshot current step"
+    "screenshotCurrentStep": "Screenshot current step",
+    "mergeObjects": "Merge selected objects"
   },
   "about": {
     "title": "About",
@@ -87,6 +88,7 @@
     "redo": "Redo",
     "share": "Share",
     "screenshot": "Screenshot",
+    "mergeObjects": "Merge Objects",
     "save": "Save",
     "saveAs": "Save as",
     "download": "Download",
@@ -199,13 +201,22 @@
     "cannotOpenFile": "Cannot open file \"{{name}}\"",
     "failedToLoadPlan": "Failed to load plan",
     "screenshotTimeout": "Screenshot timed out",
-    "screenshotCopied": "Screenshot copied to clipboard"
+    "screenshotCopied": "Screenshot copied to clipboard",
+    "mergeTimeout": "Merge timed out",
+    "noSelection": "No elements selected",
+    "objectsMerged": "Objects merged"
   },
   "screenshot": {
     "scaleHeader": "Screenshot scale",
     "scale1x": "1X",
     "scale2x": "2X",
     "scale4x": "4X"
+  },
+  "merge": {
+    "qualityHeader": "Merge Quality",
+    "quality1x": "1X",
+    "quality2x": "2X",
+    "quality4x": "4X"
   },
   "draw": {
     "tool": "Tool",
@@ -579,7 +590,8 @@
     "rotatingCounterClockwise": "Rotating counter-clockwise",
     "clockwise": "Clockwise",
     "counterClockwise": "Counter-clockwise",
-    "meteorTower": "Meteor/tower"
+    "meteorTower": "Meteor/tower",
+    "mergedAsset": "Merged Layer"
   },
   "aoe": {
     "baseColor": "Base color",

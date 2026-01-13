@@ -21,6 +21,7 @@ import React, { ReactElement, useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { InPortal } from 'react-reverse-portal';
 import { CollapsableSplitButton, CollapsableToolbarButton } from './CollapsableToolbarButton';
+import { MergeObjectsButton } from './MergeObjectsButton';
 import { FileSource, useScene, useSceneUndoRedoPossible, useSetSource } from './SceneProvider';
 import { StepScreenshotButton } from './StepScreenshotButton';
 import { ToolbarContext } from './ToolbarContext';
@@ -91,6 +92,7 @@ export const MainToolbar: React.FC = () => {
                     <ShareDialogButton>{t('toolbar.share')}</ShareDialogButton>
 
                     <StepScreenshotButton>{t('toolbar.screenshot')}</StepScreenshotButton>
+                    <MergeObjectsButton>{t('toolbar.mergeObjects')}</MergeObjectsButton>
                 </Toolbar>
             </InPortal>
         </>

@@ -71,7 +71,8 @@
     "open": "打开",
     "save": "保存",
     "saveAs": "另存为",
-    "screenshotCurrentStep": "截图当前步骤"
+    "screenshotCurrentStep": "截图当前步骤",
+    "mergeObjects": "合并选中元素"
   },
   "about": {
     "title": "关于",
@@ -87,6 +88,7 @@
     "redo": "重做",
     "share": "分享",
     "screenshot": "截图",
+    "mergeObjects": "合并图层",
     "save": "保存",
     "saveAs": "另存为",
     "download": "下载",
@@ -199,13 +201,22 @@
     "cannotOpenFile": "无法打开文件「{{name}}」",
     "failedToLoadPlan": "计划加载失败",
     "screenshotTimeout": "截图超时",
-    "screenshotCopied": "截图已复制到剪贴板"
+    "screenshotCopied": "截图已复制到剪贴板",
+    "mergeTimeout": "合并超时",
+    "noSelection": "没有选择元素",
+    "objectsMerged": "元素已合并"
   },
   "screenshot": {
     "scaleHeader": "截图缩放",
     "scale1x": "1×",
     "scale2x": "2×",
     "scale4x": "4×"
+  },
+  "merge": {
+    "qualityHeader": "合并质量",
+    "quality1x": "1×",
+    "quality2x": "2×",
+    "quality4x": "4×"
   },
   "draw": {
     "tool": "工具",
@@ -579,7 +590,8 @@
     "rotatingCounterClockwise": "逆时针旋转",
     "clockwise": "顺时针",
     "counterClockwise": "逆时针",
-    "meteorTower": "陨石/塔"
+    "meteorTower": "陨石/塔",
+    "mergedAsset": "合并图层"
   },
   "aoe": {
     "baseColor": "基底颜色",
