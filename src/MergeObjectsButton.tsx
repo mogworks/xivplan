@@ -245,9 +245,9 @@ const MergeComponent: React.FC<MergeComponentProps> = ({ onMergeDone, selection,
                 y: getSceneY(frozenScene, bbox.y) - (bbox.b - bbox.y) / 2,
             };
 
-            // Remove selected objects and add new asset
-            dispatch({ type: 'remove', ids: Array.from(frozenSelection) });
-            dispatch({ type: 'add', object: newAsset });
+            // Remove selected objects and add new asset as an atomic operation
+            dispatch({ type: 'remove', ids: Array.from(frozenSelection), transient: true });
+            dispatch({ type: 'add', object: newAsset, transient: true });
             dispatch({ type: 'commit' });
 
             onMergeDone();
