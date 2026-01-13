@@ -2,7 +2,7 @@ import { KonvaEventObject } from 'konva/lib/Node';
 import React, { PropsWithChildren } from 'react';
 import { Group } from 'react-konva';
 import { EditMode } from '../editMode';
-import { SceneObject } from '../scene';
+import { isMovable, SceneObject } from '../scene';
 import { addSelection, selectSingle, toggleSelection, useSelection } from '../selection';
 import { useEditMode } from '../useEditMode';
 
@@ -27,5 +27,9 @@ export const SelectableObject: React.FC<SelectableObjectProps> = ({ object, chil
         e.cancelBubble = true;
     };
 
-    return <Group onClick={isSelectable ? onClick : undefined}>{children}</Group>;
+    return (
+        <Group listening={!isMovable(object) || !object.pinned} onClick={isSelectable ? onClick : undefined}>
+            {children}
+        </Group>
+    );
 };

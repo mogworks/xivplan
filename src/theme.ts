@@ -50,7 +50,7 @@ export const DEFAULT_TARGET_COLOR = COLOR_RED;
 export const DEFAULT_TARGET_OPACITY = 65;
 
 export const HIGHLIGHT_COLOR = '#ffffff';
-export const SPOTLIGHT_COLOR = '#ffc800';
+export const SPOTLIGHT_COLOR = '#44D62C';
 export const HIGHLIGHT_WIDTH = 1.5;
 
 export const SELECTED_PROPS: ShapeConfig = {
@@ -68,7 +68,7 @@ export const SPOTLIGHT_PROPS: ShapeConfig = {
     listening: false,
     stroke: SPOTLIGHT_COLOR,
     strokeWidth: HIGHLIGHT_WIDTH,
-    shadowColor: '#ffff00',
+    shadowColor: '#44D62C',
     shadowBlur: 4,
     opacity: 0.75,
 };
