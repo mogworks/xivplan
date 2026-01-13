@@ -81,7 +81,7 @@ export const MergeObjectsButton: React.FC<MergeObjectsButtonProps> = (props) => 
     };
 
     useHotkeys(
-        'ctrl+shift+m',
+        'ctrl+m',
         { category: '7.Steps', help: t('hotkeys.mergeObjects') },
         (ev) => {
             startMerge();
