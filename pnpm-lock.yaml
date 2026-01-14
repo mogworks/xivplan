@@ -38,9 +38,6 @@ importers:
       '@uiw/react-color-saturation':
         specifier: 2.9.2
         version: 2.9.2(@babel/runtime@7.28.6)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
-      ag-psd:
-        specifier: 29.0.0
-        version: 29.0.0
       binary-parser:
         specifier: 2.3.0
         version: 2.3.0
@@ -1630,9 +1627,6 @@ packages:
     engines: {node: '>=0.4.0'}
     hasBin: true
 
-  ag-psd@29.0.0:
-    resolution: {integrity: sha512-XNNDUkWvHigwsLoJlBx2JdpnAPWujzgKVffVchZ3JScmqTNC+8ZQo5qmN/ahhZqHVEOHTP1nvcpR8f/EIRDhgQ==}
-
   agent-base@7.1.4:
     resolution: {integrity: sha512-MnA+YT8fwfJPgBx3m60MNqakm30XOkyIoH1y6huTQvC0PwZG7ki8NacLBcrPbNoo8vEZy7Jpuk7+jMO+CUovTQ==}
     engines: {node: '>= 14'}
@@ -1692,9 +1686,6 @@ packages:
 
   balanced-match@1.0.2:
     resolution: {integrity: sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==}
-
-  base64-js@1.5.1:
-    resolution: {integrity: sha512-AKpaYlHn8t4SVbOHCy+b5+KKgvR4vrsD8vbvrbiQJps7fKDTkjkDry6ji0rUJjC0kzbNePLwzxq8iypo41qeWA==}
 
   baseline-browser-mapping@2.9.14:
     resolution: {integrity: sha512-B0xUquLkiGLgHhpPBqvl7GWegWBUNuujQ6kXd/r1U38ElPT6Ok8KZ8e+FpUGEc2ZoRQUzq/aUnaKFc/svWUGSg==}
@@ -5317,11 +5308,6 @@ snapshots:
 
   acorn@8.15.0: {}
 
-  ag-psd@29.0.0:
-    dependencies:
-      base64-js: 1.5.1
-      pako: 2.1.0
-
   agent-base@7.1.4: {}
 
   ajv@6.12.6:
@@ -5407,8 +5393,6 @@ snapshots:
       '@babel/types': 7.28.6
 
   balanced-match@1.0.2: {}
-
-  base64-js@1.5.1: {}
 
   baseline-browser-mapping@2.9.14: {}
 

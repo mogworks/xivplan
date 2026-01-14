@@ -2,43 +2,24 @@ import { Base64 } from 'js-base64';
 import { deflate, inflate } from 'pako';
 
 import { FileSource } from './SceneProvider';
-import { downloadSceneAsPSD, downloadSceneAsXivplanCn, openFileBlob } from './file/blob';
+import { downloadScene, openFileBlob } from './file/blob';
 import { openFileFs, saveFileFs } from './file/filesystem';
 import { openFileLocalStorage, saveFileLocalStorage } from './file/localStorage';
-import { saveSceneAsPSD } from './file/saveAsPSD';
 import { upgradeScene } from './file/upgrade';
 import { Scene } from './scene';
 
-export async function saveFile(
-    scene: Readonly<Scene>,
-    source: FileSource,
-    type: 'XivplanCn' | 'PSD' = 'XivplanCn',
-): Promise<void> {
+export async function saveFile(scene: Readonly<Scene>, source: FileSource): Promise<void> {
     switch (source.type) {
         case 'local':
             await saveFileLocalStorage(scene, source.name);
             break;
 
         case 'fs':
-            switch (type) {
-                case 'XivplanCn':
-                    await saveFileFs(JSON.stringify(scene, undefined, 2), source.handle);
-                    break;
-                case 'PSD':
-                    await saveFileFs(await saveSceneAsPSD(scene), source.handle);
-                    break;
-            }
+            await saveFileFs(scene, source.handle);
             break;
 
         case 'blob':
-            switch (type) {
-                case 'XivplanCn':
-                    downloadSceneAsXivplanCn(scene, source.name);
-                    break;
-                case 'PSD':
-                    downloadSceneAsPSD(scene, source.name);
-                    break;
-            }
+            downloadScene(scene, source.name);
             break;
     }
 }

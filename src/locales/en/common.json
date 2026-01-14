@@ -91,9 +91,8 @@
     "mergeObjects": "Merge Objects",
     "save": "Save",
     "saveAs": "Save as",
-    "saveAsEllipsis": "Save as...",
-    "downloadAsXivplanCn": "Download as .xivplancn file",
-    "downloadAsPSD": "Download as .psd file"
+    "download": "Download",
+    "saveAsEllipsis": "Save as..."
   },
   "actions": {
     "apply": "Apply",

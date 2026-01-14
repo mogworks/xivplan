@@ -1,6 +1,5 @@
 import { BlobFileSource } from '../SceneProvider';
 import { Scene } from '../scene';
-import { saveSceneAsPSD } from './saveAsPSD';
 
 const DEFAULT_FILENAME = 'plan.xivplancn';
 
@@ -22,7 +21,7 @@ export function getBlobSource(file: File | string | undefined): BlobFileSource {
     };
 }
 
-export function downloadSceneAsXivplanCn(scene: Readonly<Scene>, name: string | undefined) {
+export function downloadScene(scene: Readonly<Scene>, name: string | undefined) {
     name = name ?? DEFAULT_FILENAME;
 
     if (!name.endsWith('.xivplancn')) {
@@ -36,18 +35,6 @@ export function downloadSceneAsXivplanCn(scene: Readonly<Scene>, name: string | 
     });
 
     downloadBlob(file, name);
-}
-
-export function downloadSceneAsPSD(scene: Readonly<Scene>, name: string | undefined) {
-    name = name ?? DEFAULT_FILENAME;
-
-    if (name.endsWith('.xivplancn')) {
-        name = name.slice(0, -10);
-        name = name + '.psd';
-    }
-    saveSceneAsPSD(scene).then((blob) => {
-        downloadBlob(blob, name);
-    });
 }
 
 export function downloadBlob(blob: Blob | MediaSource, name: string) {

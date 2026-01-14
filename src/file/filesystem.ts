@@ -18,10 +18,11 @@ export function getFileSource(handle: FileSystemFileHandle): FileSystemFileSourc
     };
 }
 
-export async function saveFileFs(blob: FileSystemWriteChunkType, handle: FileSystemFileHandle): Promise<void> {
+export async function saveFileFs(scene: Readonly<Scene>, handle: FileSystemFileHandle): Promise<void> {
     const file = await handle.createWritable();
+    const json = JSON.stringify(scene, undefined, 2);
 
-    await file.write(blob);
+    await file.write(json);
     await file.close();
 }
 
@@ -40,21 +41,10 @@ async function getFileStartIn() {
     return (await getPlanFolder()) ?? DEFAULT_FOLDER;
 }
 
-const OpenFilePickerTypes: FilePickerAcceptType[] = [
+const filePickerTypes: FilePickerAcceptType[] = [
     {
         accept: { 'application/vnd.xivplancn.plan+json': '.xivplancn' },
         description: 'XIVPlan Scene',
-    },
-];
-
-const SaveFilePickerTypes: FilePickerAcceptType[] = [
-    {
-        accept: { 'application/vnd.xivplancn.plan+json': '.xivplancn' },
-        description: 'XIVPlan Scene',
-    },
-    {
-        accept: { 'application/psd': '.psd' },
-        description: 'Photoshop Document',
     },
 ];
 
@@ -62,7 +52,7 @@ export async function showOpenPlanPicker(): Promise<FileSystemFileHandle | undef
     try {
         const result = await window.showOpenFilePicker({
             id: FILE_PICKER_ID,
-            types: OpenFilePickerTypes,
+            types: filePickerTypes,
             startIn: await getFileStartIn(),
         });
         return result[0];
@@ -84,7 +74,7 @@ export async function showSavePlanPicker(name?: string): Promise<FileSystemFileH
     try {
         return await window.showSaveFilePicker({
             id: FILE_PICKER_ID,
-            types: SaveFilePickerTypes,
+            types: filePickerTypes,
             startIn: await getFileStartIn(),
             suggestedName,
         });
