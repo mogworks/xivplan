@@ -28,7 +28,7 @@ import { ToolbarContext } from './ToolbarContext';
 import { saveFile } from './file';
 import { OpenDialog, SaveAsDialog } from './file/FileDialog';
 import { ShareDialogButton } from './file/ShareDialogButton';
-import { downloadScene, getBlobSource } from './file/blob';
+import { downloadSceneAsPSD, downloadSceneAsXivplanCn, getBlobSource } from './file/blob';
 import { DialogOpenContext } from './useCloseDialog';
 import { useHotkeys } from './useHotkeys';
 import { useIsDirty, useSetSavedState } from './useIsDirty';
@@ -100,7 +100,7 @@ export const MainToolbar: React.FC = () => {
 };
 
 interface SaveButtonState {
-    type: 'save' | 'saveas' | 'download';
+    type: 'save' | 'saveas' | 'downloadAsXivplanCn' | 'downloadAsPSD';
     text: string;
     icon: ReactElement;
     disabled?: boolean;
@@ -116,7 +116,7 @@ function getSaveButtonState(
     }
 
     if (source.type === 'blob') {
-        return { type: 'download', text: t('toolbar.download'), icon: <ArrowDownloadRegular /> };
+        return { type: 'downloadAsXivplanCn', text: t('toolbar.downloadAsXivplanCn'), icon: <ArrowDownloadRegular /> };
     }
 
     return { type: 'save', text: t('toolbar.save'), icon: <SaveRegular />, disabled: !isDirty };
@@ -141,11 +141,15 @@ const SaveButton: React.FC = () => {
         }
     };
 
-    const download = () => {
-        downloadScene(canonicalScene, source?.name);
+    const downloadAsXivplanCn = () => {
+        downloadSceneAsXivplanCn(canonicalScene, source?.name);
         if (!source) {
             setSource(getBlobSource());
         }
+    };
+
+    const downloadAsPSD = () => {
+        downloadSceneAsPSD(canonicalScene, source?.name);
     };
 
     const handleClick = () => {
@@ -158,8 +162,12 @@ const SaveButton: React.FC = () => {
                 setSaveAsOpen(true);
                 break;
 
-            case 'download':
-                download();
+            case 'downloadAsXivplanCn':
+                downloadAsXivplanCn();
+                break;
+
+            case 'downloadAsPSD':
+                downloadAsPSD();
                 break;
         }
     };
@@ -205,9 +213,14 @@ const SaveButton: React.FC = () => {
                                 {t('toolbar.saveAsEllipsis')}
                             </MenuItem>
                         )}
-                        {type !== 'download' && (
-                            <MenuItem icon={<ArrowDownloadRegular />} onClick={download}>
-                                {t('toolbar.download')}
+                        {type !== 'downloadAsXivplanCn' && (
+                            <MenuItem icon={<ArrowDownloadRegular />} onClick={downloadAsXivplanCn}>
+                                {t('toolbar.downloadAsXivplanCn')}
+                            </MenuItem>
+                        )}
+                        {type !== 'downloadAsPSD' && (
+                            <MenuItem icon={<ArrowDownloadRegular />} onClick={downloadAsPSD}>
+                                {t('toolbar.downloadAsPSD')}
                             </MenuItem>
                         )}
                     </MenuList>

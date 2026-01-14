@@ -91,8 +91,9 @@
     "mergeObjects": "合并图层",
     "save": "保存",
     "saveAs": "另存为",
-    "download": "下载",
-    "saveAsEllipsis": "另存为..."
+    "saveAsEllipsis": "另存为...",
+    "downloadAsXivplanCn": "下载为 .xivplancn 文件",
+    "downloadAsPSD": "下载为 .psd 文件"
   },
   "actions": {
     "apply": "应用",
