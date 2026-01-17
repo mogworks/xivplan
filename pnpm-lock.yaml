@@ -66,8 +66,8 @@ importers:
         specifier: 3.7.8
         version: 3.7.8
       konva:
-        specifier: 10.0.12
-        version: 10.0.12
+        specifier: 10.2.0
+        version: 10.2.0
       localforage:
         specifier: 1.10.0
         version: 1.10.0
@@ -81,17 +81,17 @@ importers:
         specifier: 19.2.3
         version: 19.2.3(react@19.2.3)
       react-hotkeys-hook:
-        specifier: 5.2.1
-        version: 5.2.1(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
+        specifier: 5.2.3
+        version: 5.2.3(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       react-i18next:
         specifier: 16.5.3
         version: 16.5.3(i18next@25.7.4(typescript@5.9.3))(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(typescript@5.9.3)
       react-konva:
         specifier: 19.2.1
-        version: 19.2.1(@types/react@19.2.8)(konva@10.0.12)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
+        version: 19.2.1(@types/react@19.2.8)(konva@10.2.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       react-konva-utils:
         specifier: 2.0.0
-        version: 2.0.0(konva@10.0.12)(react-dom@19.2.3(react@19.2.3))(react-konva@19.2.1(@types/react@19.2.8)(konva@10.0.12)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react@19.2.3)
+        version: 2.0.0(konva@10.2.0)(react-dom@19.2.3(react@19.2.3))(react-konva@19.2.1(@types/react@19.2.8)(konva@10.2.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react@19.2.3)
       react-reverse-portal:
         specifier: 2.3.0
         version: 2.3.0(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
@@ -121,8 +121,8 @@ importers:
         specifier: 10.0.10
         version: 10.0.10
       '@types/node':
-        specifier: 25.0.8
-        version: 25.0.8
+        specifier: 25.0.9
+        version: 25.0.9
       '@types/pako':
         specifier: 2.0.4
         version: 2.0.4
@@ -140,7 +140,7 @@ importers:
         version: 2023.1.4
       '@vitejs/plugin-react':
         specifier: 5.1.2
-        version: 5.1.2(vite@7.3.1(@types/node@25.0.8))
+        version: 5.1.2(vite@7.3.1(@types/node@25.0.9))
       '@vitest/ui':
         specifier: 4.0.17
         version: 4.0.17(vitest@4.0.17)
@@ -172,8 +172,8 @@ importers:
         specifier: 2.0.15
         version: 2.0.15
       prettier:
-        specifier: 3.7.4
-        version: 3.7.4
+        specifier: 3.8.0
+        version: 3.8.0
       typescript:
         specifier: 5.9.3
         version: 5.9.3
@@ -182,13 +182,13 @@ importers:
         version: 8.53.0(eslint@9.39.2)(typescript@5.9.3)
       vite:
         specifier: 7.3.1
-        version: 7.3.1(@types/node@25.0.8)
+        version: 7.3.1(@types/node@25.0.9)
       vite-plugin-svgr:
         specifier: 4.5.0
-        version: 4.5.0(rollup@4.55.1)(typescript@5.9.3)(vite@7.3.1(@types/node@25.0.8))
+        version: 4.5.0(rollup@4.55.1)(typescript@5.9.3)(vite@7.3.1(@types/node@25.0.9))
       vitest:
         specifier: 4.0.17
-        version: 4.0.17(@types/node@25.0.8)(@vitest/ui@4.0.17)(jsdom@27.4.0)
+        version: 4.0.17(@types/node@25.0.9)(@vitest/ui@4.0.17)(jsdom@27.4.0)
     optionalDependencies:
       '@rollup/rollup-linux-x64-gnu':
         specifier: 4.55.1
@@ -1452,8 +1452,8 @@ packages:
   '@types/mocha@10.0.10':
     resolution: {integrity: sha512-xPyYSz1cMPnJQhl0CLMH68j3gprKZaTjG3s5Vi+fDgx+uhG9NOXwbVt52eFS8ECyXhyKcjDLCBEqBExKuiZb7Q==}
 
-  '@types/node@25.0.8':
-    resolution: {integrity: sha512-powIePYMmC3ibL0UJ2i2s0WIbq6cg6UyVFQxSCpaPxxzAaziRfimGivjdF943sSGV6RADVbk0Nvlm5P/FB44Zg==}
+  '@types/node@25.0.9':
+    resolution: {integrity: sha512-/rpCXHlCWeqClNBwUhDcusJxXYDjZTyE8v5oTO7WbL8eij2nKhUeU89/6xgjU7N4/Vh3He0BtyhJdQbDyhiXAw==}
 
   '@types/pako@2.0.4':
     resolution: {integrity: sha512-VWDCbrLeVXJM9fihYodcLiIv0ku+AlOa/TQ1SvYOaBuyrSKgEcro95LJyIsJ4vSo6BXIxOKxiJAat04CmST9Fw==}
@@ -1687,8 +1687,8 @@ packages:
   balanced-match@1.0.2:
     resolution: {integrity: sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==}
 
-  baseline-browser-mapping@2.9.14:
-    resolution: {integrity: sha512-B0xUquLkiGLgHhpPBqvl7GWegWBUNuujQ6kXd/r1U38ElPT6Ok8KZ8e+FpUGEc2ZoRQUzq/aUnaKFc/svWUGSg==}
+  baseline-browser-mapping@2.9.15:
+    resolution: {integrity: sha512-kX8h7K2srmDyYnXRIppo4AH/wYgzWVCs+eKr3RusRSQ5PvRYoEFmR/I0PbdTjKFAoKqp5+kbxnNTFO9jOfSVJg==}
     hasBin: true
 
   bidi-js@1.0.3:
@@ -2413,8 +2413,8 @@ packages:
   keyv@4.5.4:
     resolution: {integrity: sha512-oxVHkHR/EJf2CNXnWxRLW6mg7JyCCUcG0DtEGmL2ctUo1PNTin1PUil+r/+4r5MpVgC/fn1kjsx7mjSujKqIpw==}
 
-  konva@10.0.12:
-    resolution: {integrity: sha512-DHmkeG5FbW6tLCkbMQTi1ihWycfzljrn0V7umUUuewxx7aoINcI71ksgBX9fTPNXhlsK4/JoMgKwI/iCde+BRw==}
+  konva@10.2.0:
+    resolution: {integrity: sha512-JBoz0Xjbf49UPxCZegZ4WseqOzJ+C4AUDOtJ9eBve5RS5Fcq/u8TdBD5fDl/uPFInpC3a9uycm0sRyZpF4hheg==}
 
   lefthook-darwin-arm64@2.0.15:
     resolution: {integrity: sha512-ygAqG/NzOgY9bEiqeQtiOmCRTtp9AmOd3eyrpEaSrRB9V9f3RHRgWDrWbde9BiHSsCzcbeY9/X2NuKZ69eUsNA==}
@@ -2661,8 +2661,8 @@ packages:
     resolution: {integrity: sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g==}
     engines: {node: '>= 0.8.0'}
 
-  prettier@3.7.4:
-    resolution: {integrity: sha512-v6UNi1+3hSlVvv8fSaoUbggEM5VErKmmpGA7Pl3HF8V6uKY7rvClBOJlH6yNwQtfTueNkGVpOv/mtWL9L4bgRA==}
+  prettier@3.8.0:
+    resolution: {integrity: sha512-yEPsovQfpxYfgWNhCfECjG5AQaO+K3dp6XERmOepyPDVqcJm+bjyCVO3pmU+nAPe0N5dDvekfGezt/EIiRe1TA==}
     engines: {node: '>=14'}
     hasBin: true
 
@@ -2678,8 +2678,8 @@ packages:
     peerDependencies:
       react: ^19.2.3
 
-  react-hotkeys-hook@5.2.1:
-    resolution: {integrity: sha512-xbKh6zJxd/vJHT4Bw4+0pBD662Fk20V+VFhLqciCg+manTVO4qlqRqiwFOYelfHN9dBvWj9vxaPkSS26ZSIJGg==}
+  react-hotkeys-hook@5.2.3:
+    resolution: {integrity: sha512-Q27F8EuImYJOVSXAjSQrQPj9cx4GSNY+WdSdk5tSNN085H8/a00W6LZp0PrytEDwF6iT0pGTJeVEDKPRpEK2Bg==}
     peerDependencies:
       react: '>=16.8.0'
       react-dom: '>=16.8.0'
@@ -3200,8 +3200,8 @@ packages:
     resolution: {integrity: sha512-K4jVyjnBdgvc86Y6BkaLZEN933SwYOuBFkdmBu9ZfkcAbdVbpITnDmjvZ/aQjRXQrv5EPkTnD1s39GiiqbngCw==}
     engines: {node: '>= 0.4'}
 
-  which-typed-array@1.1.19:
-    resolution: {integrity: sha512-rEvr90Bck4WZt9HHFC4DJMsjvu7x+r6bImz0/BrbWb7A2djJ8hnZMrWnHo9F8ssv0OMErasDhftrfROTyqSDrw==}
+  which-typed-array@1.1.20:
+    resolution: {integrity: sha512-LYfpUkmqwl0h9A2HL09Mms427Q1RZWuOHsukfVcKRq9q95iQxdw0ix1JQrqbcDR9PH1QDwf5Qo8OZb5lksZ8Xg==}
     engines: {node: '>= 0.4'}
 
   which@2.0.2:
@@ -5087,7 +5087,7 @@ snapshots:
 
   '@types/mocha@10.0.10': {}
 
-  '@types/node@25.0.8':
+  '@types/node@25.0.9':
     dependencies:
       undici-types: 7.16.0
 
@@ -5238,7 +5238,7 @@ snapshots:
       react: 19.2.3
       react-dom: 19.2.3(react@19.2.3)
 
-  '@vitejs/plugin-react@5.1.2(vite@7.3.1(@types/node@25.0.8))':
+  '@vitejs/plugin-react@5.1.2(vite@7.3.1(@types/node@25.0.9))':
     dependencies:
       '@babel/core': 7.28.6
       '@babel/plugin-transform-react-jsx-self': 7.27.1(@babel/core@7.28.6)
@@ -5246,7 +5246,7 @@ snapshots:
       '@rolldown/pluginutils': 1.0.0-beta.53
       '@types/babel__core': 7.20.5
       react-refresh: 0.18.0
-      vite: 7.3.1(@types/node@25.0.8)
+      vite: 7.3.1(@types/node@25.0.9)
     transitivePeerDependencies:
       - supports-color
 
@@ -5259,13 +5259,13 @@ snapshots:
       chai: 6.2.2
       tinyrainbow: 3.0.3
 
-  '@vitest/mocker@4.0.17(vite@7.3.1(@types/node@25.0.8))':
+  '@vitest/mocker@4.0.17(vite@7.3.1(@types/node@25.0.9))':
     dependencies:
       '@vitest/spy': 4.0.17
       estree-walker: 3.0.3
       magic-string: 0.30.21
     optionalDependencies:
-      vite: 7.3.1(@types/node@25.0.8)
+      vite: 7.3.1(@types/node@25.0.9)
 
   '@vitest/pretty-format@4.0.17':
     dependencies:
@@ -5293,7 +5293,7 @@ snapshots:
       sirv: 3.0.2
       tinyglobby: 0.2.15
       tinyrainbow: 3.0.3
-      vitest: 4.0.17(@types/node@25.0.8)(@vitest/ui@4.0.17)(jsdom@27.4.0)
+      vitest: 4.0.17(@types/node@25.0.9)(@vitest/ui@4.0.17)(jsdom@27.4.0)
 
   '@vitest/utils@4.0.17':
     dependencies:
@@ -5394,7 +5394,7 @@ snapshots:
 
   balanced-match@1.0.2: {}
 
-  baseline-browser-mapping@2.9.14: {}
+  baseline-browser-mapping@2.9.15: {}
 
   bidi-js@1.0.3:
     dependencies:
@@ -5415,7 +5415,7 @@ snapshots:
 
   browserslist@4.28.1:
     dependencies:
-      baseline-browser-mapping: 2.9.14
+      baseline-browser-mapping: 2.9.15
       caniuse-lite: 1.0.30001764
       electron-to-chromium: 1.5.267
       node-releases: 2.0.27
@@ -5692,7 +5692,7 @@ snapshots:
       typed-array-byte-offset: 1.0.4
       typed-array-length: 1.0.7
       unbox-primitive: 1.1.0
-      which-typed-array: 1.1.19
+      which-typed-array: 1.1.20
 
   es-define-property@1.0.1: {}
 
@@ -6175,7 +6175,7 @@ snapshots:
 
   is-typed-array@1.1.15:
     dependencies:
-      which-typed-array: 1.1.19
+      which-typed-array: 1.1.20
 
   is-weakmap@2.0.2: {}
 
@@ -6271,7 +6271,7 @@ snapshots:
     dependencies:
       json-buffer: 3.0.1
 
-  konva@10.0.12: {}
+  konva@10.2.0: {}
 
   lefthook-darwin-arm64@2.0.15:
     optional: true
@@ -6509,7 +6509,7 @@ snapshots:
 
   prelude-ls@1.2.1: {}
 
-  prettier@3.7.4: {}
+  prettier@3.8.0: {}
 
   prop-types@15.8.1:
     dependencies:
@@ -6524,7 +6524,7 @@ snapshots:
       react: 19.2.3
       scheduler: 0.27.0
 
-  react-hotkeys-hook@5.2.1(react-dom@19.2.3(react@19.2.3))(react@19.2.3):
+  react-hotkeys-hook@5.2.3(react-dom@19.2.3(react@19.2.3))(react@19.2.3):
     dependencies:
       react: 19.2.3
       react-dom: 19.2.3(react@19.2.3)
@@ -6544,19 +6544,19 @@ snapshots:
 
   react-is@17.0.2: {}
 
-  react-konva-utils@2.0.0(konva@10.0.12)(react-dom@19.2.3(react@19.2.3))(react-konva@19.2.1(@types/react@19.2.8)(konva@10.0.12)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react@19.2.3):
+  react-konva-utils@2.0.0(konva@10.2.0)(react-dom@19.2.3(react@19.2.3))(react-konva@19.2.1(@types/react@19.2.8)(konva@10.2.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react@19.2.3):
     dependencies:
-      konva: 10.0.12
+      konva: 10.2.0
       react: 19.2.3
       react-dom: 19.2.3(react@19.2.3)
-      react-konva: 19.2.1(@types/react@19.2.8)(konva@10.0.12)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
+      react-konva: 19.2.1(@types/react@19.2.8)(konva@10.2.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       use-image: 1.1.4(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
 
-  react-konva@19.2.1(@types/react@19.2.8)(konva@10.0.12)(react-dom@19.2.3(react@19.2.3))(react@19.2.3):
+  react-konva@19.2.1(@types/react@19.2.8)(konva@10.2.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3):
     dependencies:
       '@types/react-reconciler': 0.32.3(@types/react@19.2.8)
       its-fine: 2.0.0(@types/react@19.2.8)(react@19.2.3)
-      konva: 10.0.12
+      konva: 10.2.0
       react: 19.2.3
       react-dom: 19.2.3(react@19.2.3)
       react-reconciler: 0.33.0(react@19.2.3)
@@ -7018,18 +7018,18 @@ snapshots:
       lodash.debounce: 4.0.8
       react: 19.2.3
 
-  vite-plugin-svgr@4.5.0(rollup@4.55.1)(typescript@5.9.3)(vite@7.3.1(@types/node@25.0.8)):
+  vite-plugin-svgr@4.5.0(rollup@4.55.1)(typescript@5.9.3)(vite@7.3.1(@types/node@25.0.9)):
     dependencies:
       '@rollup/pluginutils': 5.3.0(rollup@4.55.1)
       '@svgr/core': 8.1.0(typescript@5.9.3)
       '@svgr/plugin-jsx': 8.1.0(@svgr/core@8.1.0(typescript@5.9.3))
-      vite: 7.3.1(@types/node@25.0.8)
+      vite: 7.3.1(@types/node@25.0.9)
     transitivePeerDependencies:
       - rollup
       - supports-color
       - typescript
 
-  vite@7.3.1(@types/node@25.0.8):
+  vite@7.3.1(@types/node@25.0.9):
     dependencies:
       esbuild: 0.27.2
       fdir: 6.5.0(picomatch@4.0.3)
@@ -7038,13 +7038,13 @@ snapshots:
       rollup: 4.55.1
       tinyglobby: 0.2.15
     optionalDependencies:
-      '@types/node': 25.0.8
+      '@types/node': 25.0.9
       fsevents: 2.3.3
 
-  vitest@4.0.17(@types/node@25.0.8)(@vitest/ui@4.0.17)(jsdom@27.4.0):
+  vitest@4.0.17(@types/node@25.0.9)(@vitest/ui@4.0.17)(jsdom@27.4.0):
     dependencies:
       '@vitest/expect': 4.0.17
-      '@vitest/mocker': 4.0.17(vite@7.3.1(@types/node@25.0.8))
+      '@vitest/mocker': 4.0.17(vite@7.3.1(@types/node@25.0.9))
       '@vitest/pretty-format': 4.0.17
       '@vitest/runner': 4.0.17
       '@vitest/snapshot': 4.0.17
@@ -7061,10 +7061,10 @@ snapshots:
       tinyexec: 1.0.2
       tinyglobby: 0.2.15
       tinyrainbow: 3.0.3
-      vite: 7.3.1(@types/node@25.0.8)
+      vite: 7.3.1(@types/node@25.0.9)
       why-is-node-running: 2.3.0
     optionalDependencies:
-      '@types/node': 25.0.8
+      '@types/node': 25.0.9
       '@vitest/ui': 4.0.17(vitest@4.0.17)
       jsdom: 27.4.0
     transitivePeerDependencies:
@@ -7117,7 +7117,7 @@ snapshots:
       isarray: 2.0.5
       which-boxed-primitive: 1.1.1
       which-collection: 1.0.2
-      which-typed-array: 1.1.19
+      which-typed-array: 1.1.20
 
   which-collection@1.0.2:
     dependencies:
@@ -7126,7 +7126,7 @@ snapshots:
       is-weakmap: 2.0.2
       is-weakset: 2.0.4
 
-  which-typed-array@1.1.19:
+  which-typed-array@1.1.20:
     dependencies:
       available-typed-arrays: 1.0.7
       call-bind: 1.0.8
