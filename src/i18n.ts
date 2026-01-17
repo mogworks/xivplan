@@ -13,6 +13,7 @@ void i18n
             en: { common: en },
             zh: { common: zh },
         },
+        lng: 'zh',
         fallbackLng: 'zh',
         supportedLngs: ['en', 'zh'],
         ns: ['common'],
