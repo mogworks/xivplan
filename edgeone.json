@@ -22,36 +22,96 @@
         {
           "key": "Content-Security-Policy",
           "value": "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src https: data: blob:; font-src 'self' data:; connect-src 'self' https://xivstrat.cn https://*.xivstrat.cn https://xivapi.com https://*.xivapi.com https://xivcdn.com https://*.xivcdn.com; worker-src 'self' blob:;"
-        },
-        {
-          "key": "X-Real-IP",
-          "value": "{http.request.header.EO-Client-IP}"
-        },
-        {
-          "key": "X-Client-IP",
-          "value": "{http.request.header.EO-Client-IP}"
-        },
-        {
-          "key": "X-Client-Country",
-          "value": "{http.request.header.EO-Client-IPCountry}"
         }
       ]
     },
     {
-      "source": "*.{png,jpg,jpeg,gif,svg,webp,avif,woff,woff2,ttf,eot,ico,mp4,webm,ogg,avi,mov}",
+      "source": "*.png",
       "headers": [
         {
           "key": "Cache-Control",
-          "value": "public, max-age=604800"
+          "value": "public, max-age=31536000, immutable"
         }
       ]
     },
     {
-      "source": "*.{js,mjs,css}",
+      "source": "*.jpg",
       "headers": [
         {
           "key": "Cache-Control",
-          "value": "public, max-age=604800, immutable"
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "*.jpeg",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "*.gif",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "*.svg",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "*.webp",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "*.avif",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "*.ico",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "*.js",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "*.css",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
         }
       ]
     },

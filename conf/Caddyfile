@@ -26,7 +26,7 @@
 		path *.png *.jpg *.jpeg *.gif *.svg *.webp *.avif *.woff *.woff2 *.ttf *.eot *.ico *.mp4 *.webm *.ogg *.avi *.mov
 	}
 	header @header_assets {
-		Cache-Control "public, max-age=604800"
+		Cache-Control "public, max-age=31536000, immutable"
 	}
 
 	# js css
@@ -34,7 +34,7 @@
 		path *.js *.mjs *.css
 	}
 	header @header_js_css {
-		Cache-Control "public, max-age=604800, immutable"
+		Cache-Control "public, max-age=31536000, immutable"
 	}
 
 	# xivplancn
