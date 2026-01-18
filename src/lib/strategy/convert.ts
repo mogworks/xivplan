@@ -792,9 +792,9 @@ function encodeObject(sceneObj: SceneObject): SBObject | SBObject[] | null {
                     angle: obj.rotation,
                     scale: obj.size / SIZE_FACTOR / getObjectSize(iconId) / (objectScaleFactor[iconId] ?? 1),
                     color: {
-                        red: 0,
-                        green: 0,
-                        blue: 0,
+                        red: 255,
+                        green: 255,
+                        blue: 255,
                         opacity: obj.opacity,
                     },
                     param1: 0,
@@ -819,9 +819,9 @@ function encodeObject(sceneObj: SceneObject): SBObject | SBObject[] | null {
                     angle: obj.rotation + (obj.fgRotation ?? 0),
                     scale: obj.size / SIZE_FACTOR / getObjectSize(iconId) / (objectScaleFactor[iconId] ?? 1),
                     color: {
-                        red: 0,
-                        green: 0,
-                        blue: 0,
+                        red: 255,
+                        green: 255,
+                        blue: 255,
                         opacity: (obj.opacity * (obj.fgOpacity ?? 100)) / 100,
                     },
                     param1: 0,
@@ -866,9 +866,9 @@ function encodeObject(sceneObj: SceneObject): SBObject | SBObject[] | null {
                         angle: obj.rotation + (obj.fgRotation ?? 0),
                         scale: obj.size / SIZE_FACTOR / getObjectSize(iconId) / (objectScaleFactor[iconId] ?? 1),
                         color: {
-                            red: 0,
-                            green: 0,
-                            blue: 0,
+                            red: 255,
+                            green: 255,
+                            blue: 255,
                             opacity: (obj.opacity * (obj.fgOpacity ?? 100)) / 100,
                         },
                         param1: 0,
@@ -896,9 +896,33 @@ function encodeObject(sceneObj: SceneObject): SBObject | SBObject[] | null {
                     angle: obj.rotation,
                     scale: obj.size / SIZE_FACTOR / getObjectSize(iconId) / (objectScaleFactor[iconId] ?? 1),
                     color: {
-                        red: 0,
-                        green: 0,
-                        blue: 0,
+                        red: 255,
+                        green: 255,
+                        blue: 255,
+                        opacity: obj.opacity,
+                    },
+                    param1: 0,
+                    param2: 0,
+                    param3: 0,
+                } as SBObject;
+            })();
+
+        case ObjectType.BoardIcon:
+            return (() => {
+                const obj = sceneObj as BoardIconObject;
+                const iconId = obj.iconId as keyof typeof objectScaleFactor;
+
+                return {
+                    id: iconId,
+                    string: undefined,
+                    flags,
+                    coordinates,
+                    angle: obj.rotation,
+                    scale: obj.size / SIZE_FACTOR / getObjectSize(iconId) / (objectScaleFactor[iconId] ?? 1),
+                    color: {
+                        red: 255,
+                        green: 255,
+                        blue: 255,
                         opacity: obj.opacity,
                     },
                     param1: 0,

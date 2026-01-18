@@ -70,11 +70,11 @@ export function buildStrategyBoardData(board: StrategyBoard) {
     view.setUint16(pos, objCount, true);
     pos += 2;
     for (const obj of objects) {
-        let flags = 0x0001;
-        if (!obj.flags.visible) flags |= 0x0100;
-        if (obj.flags.flipHorizontal) flags |= 0x0200;
-        if (obj.flags.flipVertical) flags |= 0x0400;
-        if (obj.flags.locked) flags |= 0x0800;
+        let flags = 1;
+        if (!obj.flags.visible) flags &= ~0x01;
+        if (obj.flags.flipHorizontal) flags |= 0x02;
+        if (obj.flags.flipVertical) flags |= 0x04;
+        if (obj.flags.locked) flags |= 0x08;
         view.setUint16(pos, flags, true);
         pos += 2;
     }
