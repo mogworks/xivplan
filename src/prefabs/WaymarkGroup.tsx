@@ -13,7 +13,7 @@ import { useHighlightProps } from './highlight';
 import { PrefabIcon } from './PrefabIcon';
 import { RadiusObjectContainer } from './RadiusObjectContainer';
 import { WaymarkComponent } from './Waymark';
-import { getWaymarkShape, WaymarkOrderType, WaymarkPlacementType, WaymarkType } from './waymarkIcon';
+import { getWaymarkOffsetsFromGroup, getWaymarkShape, WaymarkOrderType, WaymarkPlacementType } from './waymarkIcon';
 
 const icon = new URL(`public/prefabs/waymark/group.webp`, import.meta.env.VITE_COS_URL).href;
 
@@ -66,86 +66,14 @@ export const WaymarkGroupRenderer: React.FC<RendererProps<WaymarkGroupObject>> =
 
     const strokeWidth = Math.max(2, Math.min(4, object.radius / 100));
 
-    const r = object.radius;
-    const c = (Math.SQRT2 / 2) * object.radius;
-
-    const waymarks = [
-        {
-            type: WaymarkType.A,
-            x: 0,
-            y: -r,
-        },
-        {
-            type: WaymarkType.B,
-            x: r,
-            y: 0,
-        },
-        {
-            type: WaymarkType.C,
-            x: 0,
-            y: r,
-        },
-        {
-            type: WaymarkType.D,
-            x: -r,
-            y: 0,
-        },
-        {
-            type: WaymarkType.One,
-            x:
-                object.placementType === WaymarkPlacementType.Circle
-                    ? object.orderType === WaymarkOrderType.A2B3
-                        ? -c
-                        : c
-                    : object.orderType === WaymarkOrderType.A2B3
-                      ? -r
-                      : r,
-            y: object.placementType === WaymarkPlacementType.Circle ? -c : -r,
-        },
-        {
-            type: WaymarkType.Two,
-            x: object.placementType === WaymarkPlacementType.Circle ? c : r,
-            y:
-                object.placementType === WaymarkPlacementType.Circle
-                    ? object.orderType === WaymarkOrderType.A2B3
-                        ? -c
-                        : c
-                    : object.orderType === WaymarkOrderType.A2B3
-                      ? -r
-                      : r,
-        },
-        {
-            type: WaymarkType.Three,
-            x:
-                object.placementType === WaymarkPlacementType.Circle
-                    ? object.orderType === WaymarkOrderType.A2B3
-                        ? c
-                        : -c
-                    : object.orderType === WaymarkOrderType.A2B3
-                      ? r
-                      : -r,
-            y: object.placementType === WaymarkPlacementType.Circle ? c : r,
-        },
-        {
-            type: WaymarkType.Four,
-            x: object.placementType === WaymarkPlacementType.Circle ? -c : -r,
-            y:
-                object.placementType === WaymarkPlacementType.Circle
-                    ? object.orderType === WaymarkOrderType.A2B3
-                        ? c
-                        : -c
-                    : object.orderType === WaymarkOrderType.A2B3
-                      ? r
-                      : -r,
-        },
-    ];
+    const waymarks = getWaymarkOffsetsFromGroup(object);
 
     return (
         <RadiusObjectContainer object={object} allowRotate>
             {(groupProps) => (
                 <Group {...groupProps}>
                     {highlightProps && <Circle radius={object.radius + strokeWidth / 2} {...highlightProps} />}
-                    <HideGroup>
+                    <HideGroup opacity={(object.opacity ?? 100) / 100}>
                         {waymarks.map((waymark) => (
                             <Group
                                 key={waymark.type}

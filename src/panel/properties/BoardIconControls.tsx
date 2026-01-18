@@ -1,12 +1,12 @@
 import { mergeClasses, Switch } from '@fluentui/react-components';
 import { useTranslation } from 'react-i18next';
-import { FlipableObject } from '../../scene';
+import { FlippableObject } from '../../scene';
 import { useScene } from '../../SceneProvider';
 import { useControlStyles } from '../../useControlStyles';
 import { commonValue } from '../../util';
 import { PropertiesControlProps } from '../PropertiesControl';
 
-export const FlipControl: React.FC<PropertiesControlProps<FlipableObject>> = ({ objects }) => {
+export const FlipControl: React.FC<PropertiesControlProps<FlippableObject>> = ({ objects }) => {
     const classes = useControlStyles();
     const { dispatch } = useScene();
     const { t } = useTranslation();

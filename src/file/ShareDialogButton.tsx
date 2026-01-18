@@ -28,6 +28,7 @@ import { TabActivity } from '../TabActivity';
 import { sceneToText } from '../file';
 import { sceneToStrategyBoard } from '../lib/strategy/convert';
 import { Scene } from '../scene';
+import { removeFileExtension } from '../util';
 import { DownloadButton } from './DownloadButton';
 
 export interface ShareDialogButtonProps {
@@ -52,12 +53,16 @@ type Tabs = 'url' | 'strategyBoard';
 
 const ShareDialogBody: React.FC = () => {
     const classes = useStyles();
-    const { canonicalScene, stepIndex } = useScene();
+    const { canonicalScene, stepIndex, source } = useScene();
     const { dispatchToast } = useToastController();
     const [tab, setTab] = useState<Tabs>('url');
     const [strategyBoardStep, setStrategyBoardStep] = useState<number>(stepIndex);
     const url = getSceneUrl(canonicalScene);
-    const strategyBoardCode = getStrategyBoardCode(canonicalScene, strategyBoardStep);
+    const strategyBoardCode = getStrategyBoardCode(
+        canonicalScene,
+        strategyBoardStep,
+        source ? removeFileExtension(source.name) : undefined,
+    );
     const { t } = useTranslation();
 
     const copyToClipboard = async (text: string) => {
@@ -150,9 +155,9 @@ function getSceneUrl(scene: Scene) {
     return `${location.protocol}//${location.host}${location.pathname}#/plan/${data}`;
 }
 
-function getStrategyBoardCode(scene: Scene, stepIndex: number): string {
+function getStrategyBoardCode(scene: Scene, stepIndex: number, boardName?: string): string {
     try {
-        return sceneToStrategyBoard(scene, stepIndex);
+        return sceneToStrategyBoard(scene, stepIndex, boardName);
     } catch (e) {
         console.error('Failed to convert scene to strategy board code:', e);
         return '';

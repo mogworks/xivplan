@@ -1,7 +1,12 @@
 // copy & modify from https://github.com/Ennea/ffxiv-strategy-board-viewer/blob/master/draw.ts
 
 import Color from 'colorjs.io';
-import { getWaymarkTypeById } from '../../prefabs/waymarkIcon';
+import {
+    getWaymarkIdByType,
+    getWaymarkOffsetsFromGroup,
+    getWaymarkTypeById,
+    WaymarkId,
+} from '../../prefabs/waymarkIcon';
 import { LayerName } from '../../render/layers';
 import {
     AoeArcObject,
@@ -11,6 +16,7 @@ import {
     AoeRectObject,
     ArrowObject,
     BoardIconObject,
+    CircleZone,
     EnemyObject,
     FloorShape,
     IndicatorLineStackObject,
@@ -20,6 +26,9 @@ import {
     IndicatorTankbusterObject,
     IndicatorTargetingObject,
     isAoeObject,
+    isHorizontalFlippable,
+    isMovable,
+    isVerticalFlippable,
     MechCircleExaflareObject,
     MechCounterTowerObject,
     MechGazeObject,
@@ -35,6 +44,7 @@ import {
     SceneObject,
     SceneObjectWithoutId,
     TextObject,
+    WaymarkGroupObject,
     WaymarkObject,
 } from '../../scene';
 import { DEFAULT_AOE_COLOR } from '../../theme';
@@ -163,6 +173,13 @@ export function strategyBoardToScene(strategyBoardData: Uint8Array): Scene {
     return scene;
 }
 
+const isJobIconId = (id: number) => (18 <= id && id <= 57) || (101 <= id && id <= 102) || (118 <= id && id <= 123);
+
+const isWaymarkIconId = (id: number) => 79 <= id && id <= 86;
+
+const isIndicatorIconId = (id: number) =>
+    (65 <= id && id <= 78) || (115 <= id && id <= 117) || (131 <= id && id <= 138);
+
 function parseObject(obj: SBObject): SceneObjectWithoutId | null {
     if (!knownObjects.includes(obj.id)) {
         console.error(`Parse game strategy board data error: Unknown object ID ${obj.id}.`);
@@ -180,7 +197,7 @@ function parseObject(obj: SBObject): SceneObjectWithoutId | null {
     // ---------- 特殊处理 ----------
 
     // 职业/职能图标
-    if ((18 <= obj.id && obj.id <= 57) || (101 <= obj.id && obj.id <= 102) || (118 <= obj.id && obj.id <= 123)) {
+    if (isJobIconId(iconId)) {
         return {
             type: ObjectType.Party,
             iconId: iconId,
@@ -194,10 +211,10 @@ function parseObject(obj: SBObject): SceneObjectWithoutId | null {
     }
 
     // 场景标记
-    if (79 <= obj.id && obj.id <= 86) {
+    if (isWaymarkIconId(iconId)) {
         return {
             type: ObjectType.Waymark,
-            waymarkType: getWaymarkTypeById(obj.id),
+            waymarkType: getWaymarkTypeById(iconId as WaymarkId),
             bgOpacity: 0,
             iconId: iconId,
             opacity: obj.color.opacity,
@@ -210,7 +227,7 @@ function parseObject(obj: SBObject): SceneObjectWithoutId | null {
     }
 
     // 点名标记、目标标记
-    if ((65 <= obj.id && obj.id <= 78) || (115 <= obj.id && obj.id <= 117) || (131 <= obj.id && obj.id <= 138)) {
+    if (isIndicatorIconId(iconId)) {
         return {
             type: ObjectType.IndicatorMarker,
             iconId: iconId,
@@ -671,7 +688,7 @@ function parseObject(obj: SBObject): SceneObjectWithoutId | null {
     } as Omit<BoardIconObject, 'id'>;
 }
 
-export function sceneToStrategyBoard(scene: Scene, stepIndex: number): string {
+export function sceneToStrategyBoard(scene: Scene, stepIndex: number, boardName?: string): string {
     const step = scene.steps[stepIndex];
     if (!step) {
         throw new Error(`Step ${stepIndex} does not exist`);
@@ -682,14 +699,18 @@ export function sceneToStrategyBoard(scene: Scene, stepIndex: number): string {
     for (const sceneObj of step.objects) {
         const sbObj = encodeObject(sceneObj);
         if (sbObj) {
-            objects.push(sbObj);
+            if (Array.isArray(sbObj)) {
+                objects.push(...sbObj);
+            } else {
+                objects.push(sbObj);
+            }
         }
     }
 
     const background = extractBackgroundId(scene);
 
     const strategyBoard = {
-        boardName: '未命名战术板',
+        boardName: boardName || '未命名战术板',
         objects,
         background,
     };
@@ -700,26 +721,146 @@ export function sceneToStrategyBoard(scene: Scene, stepIndex: number): string {
     return shareString;
 }
 
-function encodeObject(sceneObj: SceneObject): SBObject | null {
+function encodeObject(sceneObj: SceneObject): SBObject | SBObject[] | null {
+    const flags = {
+        visible: !sceneObj.hide,
+        flipHorizontal: isHorizontalFlippable(sceneObj) ? !!sceneObj.flipHorizontal : false,
+        flipVertical: isVerticalFlippable(sceneObj) ? !!sceneObj.flipVertical : false,
+        locked: isMovable(sceneObj) ? !!sceneObj.pinned : false,
+    };
+
+    const toStrategyBoardCoordinates = (coordinates: { x: number; y: number }) => ({
+        x: (coordinates.x + SCENE_WIDTH / 2) / POS_FACTOR,
+        y: (SCENE_HEIGHT / 2 - coordinates.y) / POS_FACTOR,
+    });
+
+    const coordinates = toStrategyBoardCoordinates(
+        isMovable(sceneObj)
+            ? {
+                  x: sceneObj.x,
+                  y: sceneObj.y,
+              }
+            : { x: 0, y: 0 },
+    );
+
     switch (sceneObj.type) {
+        case ObjectType.Party:
+            return (() => {
+                const obj = sceneObj as PartyObject;
+                const iconId = obj.iconId as keyof typeof objectScaleFactor;
+                if (!isJobIconId(iconId)) {
+                    return null;
+                }
+
+                return {
+                    id: iconId,
+                    string: undefined,
+                    flags,
+                    coordinates,
+                    angle: obj.rotation,
+                    scale: obj.size / SIZE_FACTOR / getObjectSize(iconId) / (objectScaleFactor[iconId] ?? 1),
+                    color: {
+                        red: 0,
+                        green: 0,
+                        blue: 0,
+                        opacity: obj.opacity,
+                    },
+                    param1: 0,
+                    param2: 0,
+                    param3: 0,
+                } as SBObject;
+            })();
+
+        case ObjectType.Waymark:
+            return (() => {
+                const obj = sceneObj as WaymarkObject;
+                const iconId = getWaymarkIdByType(obj.waymarkType);
+                if (!isWaymarkIconId(iconId)) {
+                    return null;
+                }
+
+                return {
+                    id: iconId,
+                    string: undefined,
+                    flags,
+                    coordinates,
+                    angle: obj.rotation + (obj.fgRotation ?? 0),
+                    scale: obj.size / SIZE_FACTOR / getObjectSize(iconId) / (objectScaleFactor[iconId] ?? 1),
+                    color: {
+                        red: 0,
+                        green: 0,
+                        blue: 0,
+                        opacity: (obj.opacity * (obj.fgOpacity ?? 100)) / 100,
+                    },
+                    param1: 0,
+                    param2: 0,
+                    param3: 0,
+                } as SBObject;
+            })();
+
+        case ObjectType.WaymarkGroup:
+            return (() => {
+                const obj = sceneObj as WaymarkGroupObject;
+                const offsets = getWaymarkOffsetsFromGroup(obj);
+
+                const convertCoordinate = (
+                    origin: { x: number; y: number },
+                    position: { x: number; y: number },
+                    rotation: number,
+                ): { x: number; y: number } => {
+                    const rad = (rotation * Math.PI) / 180;
+                    const cosA = Math.cos(rad);
+                    const sinA = Math.sin(rad);
+
+                    const x = origin.x + position.x * cosA + position.y * sinA;
+                    const y = origin.y - position.x * sinA + position.y * cosA;
+
+                    return { x, y };
+                };
+
+                const waymarks = offsets.map((offset) => {
+                    const iconId = getWaymarkIdByType(offset.type);
+                    const position = convertCoordinate(
+                        { x: obj.x, y: obj.y },
+                        { x: offset.x, y: -offset.y },
+                        obj.rotation,
+                    );
+
+                    return {
+                        id: iconId,
+                        string: undefined,
+                        flags,
+                        coordinates: toStrategyBoardCoordinates(position),
+                        angle: obj.rotation + (obj.fgRotation ?? 0),
+                        scale: obj.size / SIZE_FACTOR / getObjectSize(iconId) / (objectScaleFactor[iconId] ?? 1),
+                        color: {
+                            red: 0,
+                            green: 0,
+                            blue: 0,
+                            opacity: (obj.opacity * (obj.fgOpacity ?? 100)) / 100,
+                        },
+                        param1: 0,
+                        param2: 0,
+                        param3: 0,
+                    } as SBObject;
+                });
+
+                return waymarks;
+            })();
+
+        case ObjectType.Circle:
         case ObjectType.AoeCircle:
             return (() => {
-                const obj = sceneObj as AoeCircleObject;
-                const color = new Color(obj.baseColor ?? DEFAULT_AOE_COLOR);
+                const obj = sceneObj as AoeCircleObject | CircleZone;
+                const color = isAoeObject(obj)
+                    ? new Color(obj.baseColor ?? DEFAULT_AOE_COLOR)
+                    : new Color(obj.color ?? DEFAULT_AOE_COLOR);
 
                 return {
                     id: 9,
                     string: undefined,
-                    flags: {
-                        visible: !obj.hide,
-                        flipHorizontal: false,
-                        flipVertical: false,
-                        locked: !!obj.pinned,
-                    },
-                    coordinates: {
-                        x: (obj.x + SCENE_WIDTH / 2) / POS_FACTOR,
-                        y: (SCENE_HEIGHT / 2 - obj.y) / POS_FACTOR,
-                    },
+                    flags,
+                    coordinates,
                     angle: 0,
                     scale: (obj.radius * 2 * 30) / 29 / SIZE_FACTOR / getObjectSize(9) / objectScaleFactor[9],
                     color: {
@@ -745,16 +886,8 @@ function encodeObject(sceneObj: SceneObject): SBObject | null {
                 return {
                     id: 11,
                     string: undefined,
-                    flags: {
-                        visible: !obj.hide,
-                        flipHorizontal: false,
-                        flipVertical: false,
-                        locked: !!obj.pinned,
-                    },
-                    coordinates: {
-                        x: (obj.x + SCENE_WIDTH / 2) / POS_FACTOR,
-                        y: (SCENE_HEIGHT / 2 - obj.y) / POS_FACTOR,
-                    },
+                    flags,
+                    coordinates,
                     angle: obj.rotation,
                     scale: 100,
                     color: {

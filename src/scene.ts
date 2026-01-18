@@ -230,10 +230,15 @@ export interface RegularResizableObject extends MovableObject, RotatableObject {
     readonly size: number;
 }
 
-export interface FlipableObject {
+export interface HorizontalFlippable {
     readonly flipHorizontal?: boolean;
+}
+
+export interface VerticalFlippable {
     readonly flipVertical?: boolean;
 }
+
+export interface FlippableObject extends HorizontalFlippable, VerticalFlippable {}
 
 export interface RadiusObject extends MovableObject {
     readonly radius: number;
@@ -307,19 +312,25 @@ export interface IconObject extends ImageObject, NamedObject, BaseObject {
 }
 export const isIcon = makeObjectTest<IconObject>(ObjectType.Icon);
 
-export interface ExtendableObject {
+export interface HorizontalExtendable {
     readonly hNum?: number; // Horizontal number of icons
+}
+
+export interface VerticalExtendable {
     readonly vNum?: number; // Vertical number of icons
 }
 
+export interface ExtendableObject extends HorizontalExtendable, VerticalExtendable {}
+
 export interface BoardIconObject
-    extends RegularResizableObject, ExtendableObject, FlipableObject, NamedObject, BaseObject {
+    extends RegularResizableObject, ExtendableObject, FlippableObject, NamedObject, BaseObject {
     readonly type: ObjectType.BoardIcon;
     readonly iconId: number;
 }
 export const isBoardIcon = makeObjectTest<BoardIconObject>(ObjectType.BoardIcon);
 
-export interface Asset extends ImageObject, ResizableObject, ExtendableObject, FlipableObject, NamedObject, BaseObject {
+export interface Asset
+    extends ImageObject, ResizableObject, ExtendableObject, FlippableObject, NamedObject, BaseObject {
     readonly type: ObjectType.Asset;
 }
 export const isAsset = makeObjectTest<Asset>(ObjectType.Asset);
@@ -670,9 +681,32 @@ export function isNamed<T>(object: T): object is NamedObject & T {
     return !!obj && ('name' in obj || 'defaultNameKey' in obj);
 }
 
+export function isHorizontalFlippable<T>(object: T): object is HorizontalFlippable & T {
+    const obj = object as HorizontalFlippable & T;
+    return obj && typeof obj.flipHorizontal === 'boolean';
+}
+
+export function isVerticalFlippable<T>(object: T): object is VerticalFlippable & T {
+    const obj = object as VerticalFlippable & T;
+    return obj && typeof obj.flipVertical === 'boolean';
+}
+
+export function isFlippable<T>(object: T): object is FlippableObject & T {
+    return isHorizontalFlippable(object) || isVerticalFlippable(object);
+}
+
+export function isHorizontalExtendable<T>(object: T): object is HorizontalExtendable & T {
+    const obj = object as HorizontalExtendable & T;
+    return obj && typeof obj.hNum === 'number';
+}
+
+export function isVerticalExtendable<T>(object: T): object is VerticalExtendable & T {
+    const obj = object as VerticalExtendable & T;
+    return obj && typeof obj.vNum === 'number';
+}
+
 export function isExtendable<T>(object: T): object is ExtendableObject & T {
-    const obj = object as ExtendableObject & T;
-    return obj && (typeof obj.hNum === 'number' || typeof obj.vNum === 'number');
+    return isHorizontalExtendable(object) || isVerticalExtendable(object);
 }
 
 export function isLineLike<T>(object: T): object is LineProps & T {
