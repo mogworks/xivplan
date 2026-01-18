@@ -16,11 +16,14 @@ import {
     AoeFanObject,
     AoeLineObject,
     AoeRectObject,
+    ArcZone,
     ArrowObject,
     BaseObject,
     BoardIconObject,
     CircleZone,
+    DonutZone,
     EnemyObject,
+    FanZone,
     FloorShape,
     IndicatorLineStackObject,
     IndicatorMarkerObject,
@@ -29,8 +32,11 @@ import {
     IndicatorTankbusterObject,
     IndicatorTargetingObject,
     isAoeObject,
+    isFanLike,
     isHorizontalFlippable,
+    isInnerRadiusObject,
     isMovable,
+    isRotatable,
     isVerticalFlippable,
     LineZone,
     MechCircleExaflareObject,
@@ -1109,6 +1115,79 @@ function encodeObject(scene: Scene, sceneObj: SceneObject): SBObject | SBObject[
                 return buildSizeSBObject(obj, iconId);
             })();
 
+        case ObjectType.Fan:
+        case ObjectType.Arc:
+        case ObjectType.Donut:
+        case ObjectType.AoeFan:
+        case ObjectType.AoeArc:
+        case ObjectType.AoeDonut:
+            return (() => {
+                const obj = sceneObj as AoeFanObject | AoeArcObject | AoeDonutObject | FanZone | ArcZone | DonutZone;
+
+                // 扇形开合角度
+                const θ = isFanLike(obj) ? obj.fanAngle : 360;
+
+                const iconId = obj.type === ObjectType.AoeFan ? 10 : 17;
+
+                const rotation = isRotatable(obj) ? obj.rotation : 0;
+
+                const angle = rotation - θ / 2;
+                const β = 90 + angle;
+                const R = (obj.radius * 30) / 29;
+
+                // 计算包围扇形的矩形的中心在扇形坐标轴上的坐标
+                const { x2, y2 } = (() => {
+                    const rad = (θ * Math.PI) / 180;
+                    if (θ < 90) {
+                        return {
+                            x2: -R / 2,
+                            y2: (R / 2) * Math.sin(rad),
+                        };
+                    } else if (90 <= θ && θ < 180) {
+                        return {
+                            x2: (R / 2) * (Math.cos(Math.PI - rad) - 1),
+                            y2: R / 2,
+                        };
+                    } else if (180 <= θ && θ < 270) {
+                        return {
+                            x2: 0,
+                            y2: (R / 2) * (1 - Math.sin(rad - Math.PI)),
+                        };
+                    } else {
+                        return { x2: 0, y2: 0 };
+                    }
+                })();
+
+                // 坐标转换
+                const rad = (β * Math.PI) / 180;
+                const cosA = Math.cos(rad);
+                const sinA = Math.sin(rad);
+
+                const x1 = obj.x + x2 * cosA + y2 * sinA;
+                const y1 = obj.y - x2 * sinA + y2 * cosA;
+
+                const scale = R / SIZE_FACTOR / getObjectSize(iconId);
+                const innerRadius = isInnerRadiusObject(obj) ? obj.innerRadius : 0;
+
+                return {
+                    id: iconId,
+                    string: undefined,
+                    flags,
+                    coordinates: toStrategyBoardCoordinates({ x: x1, y: y1 }),
+                    angle,
+                    scale: scale / (objectScaleFactor[iconId] ?? 1),
+                    color: {
+                        red: 255,
+                        green: 255,
+                        blue: 255,
+                        opacity: obj.opacity,
+                    },
+                    param1: θ,
+                    param2: innerRadius / SIZE_FACTOR / scale,
+                    param3: 0,
+                } as SBObject;
+            })();
+
         case ObjectType.Circle:
         case ObjectType.AoeCircle:
             return (() => {
@@ -1280,8 +1359,6 @@ function encodeObject(scene: Scene, sceneObj: SceneObject): SBObject | SBObject[
                     param3: param3,
                 } as SBObject;
             })();
-
-        // 扇形、扇环、月环
 
         default:
             return null;
