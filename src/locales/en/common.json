@@ -176,6 +176,7 @@
     "step": "Step {{index}}",
     "strategyBoardLabel": "Game share code",
     "strategyBoardFallbackText": "Copy this code to the import function in the game's strategy board.",
+    "strategyBoardFallbackText1": "1. This feature is still under development. Incomplete support is expected at this stage.<br>2. Elements not supported by the game natively or cannot be converted cannot be imported.<br>3. Game-native elements have certain property value ranges. For example, the size range for \"Cross\" is 50~200. Elements with values outside this range may display differently than expected after import into the game.",
     "copyToClipboard": "Copy to clipboard",
     "linkCopied": "Link copied",
     "enterLinkLabel": "Enter plan link (supports this site's plan links and game built-in links)",

@@ -8,6 +8,7 @@ import {
     WaymarkId,
 } from '../../prefabs/waymarkIcon';
 import { LayerName } from '../../render/layers';
+import { getLayerName } from '../../render/ObjectRegistry';
 import {
     AoeArcObject,
     AoeCircleObject,
@@ -694,9 +695,40 @@ export function sceneToStrategyBoard(scene: Scene, stepIndex: number, boardName?
         throw new Error(`Step ${stepIndex} does not exist`);
     }
 
+    // 对step.objects排序
+    const mutableObjects = [...step.objects];
+    // 定义层级优先级：Controls > Active > Foreground > Default > Ground
+    const layerPriority: Record<LayerName, number> = {
+        [LayerName.Ground]: 1,
+        [LayerName.Default]: 2,
+        [LayerName.Foreground]: 3,
+        [LayerName.Active]: 4,
+        [LayerName.Controls]: 5,
+    };
+
+    // 实现稳定排序：层级相同时保持原始顺序
+    mutableObjects
+        .map((obj, index) => ({ obj, index })) // 添加原始索引
+        .sort(({ obj: a, index: indexA }, { obj: b, index: indexB }) => {
+            const layerA = getLayerName(a) ?? LayerName.Default;
+            const layerB = getLayerName(b) ?? LayerName.Default;
+
+            // 先按层级优先级排序
+            const priorityDiff = layerPriority[layerA] - layerPriority[layerB];
+            if (priorityDiff !== 0) {
+                return priorityDiff;
+            }
+
+            // 层级相同时，按原始索引排序以保持稳定
+            return indexA - indexB;
+        })
+        .forEach(({ obj }, index) => {
+            mutableObjects[index] = obj;
+        });
+
     const objects: SBObject[] = [];
 
-    for (const sceneObj of step.objects) {
+    for (const sceneObj of mutableObjects) {
         const sbObj = encodeObject(sceneObj);
         if (sbObj) {
             if (Array.isArray(sbObj)) {
@@ -846,6 +878,33 @@ function encodeObject(sceneObj: SceneObject): SBObject | SBObject[] | null {
                 });
 
                 return waymarks;
+            })();
+
+        case ObjectType.IndicatorMarker:
+            return (() => {
+                const obj = sceneObj as IndicatorMarkerObject;
+                const iconId = obj.iconId as keyof typeof objectScaleFactor;
+                if (!isIndicatorIconId(iconId)) {
+                    return null;
+                }
+
+                return {
+                    id: iconId,
+                    string: undefined,
+                    flags,
+                    coordinates,
+                    angle: obj.rotation,
+                    scale: obj.size / SIZE_FACTOR / getObjectSize(iconId) / (objectScaleFactor[iconId] ?? 1),
+                    color: {
+                        red: 0,
+                        green: 0,
+                        blue: 0,
+                        opacity: obj.opacity,
+                    },
+                    param1: 0,
+                    param2: 0,
+                    param3: 0,
+                } as SBObject;
             })();
 
         case ObjectType.Circle:

@@ -176,6 +176,7 @@
     "step": "步骤 {{index}}",
     "strategyBoardLabel": "游戏内分享码",
     "strategyBoardFallbackText": "复制此代码到游戏内的战术板导入功能。",
+    "strategyBoardFallbackText1": "1. 该功能尚在开发中，目前支持不完全属正常情况。<br>2. 游戏原生不支持或无法被转换的元素无法导入。<br>3. 游戏原生元素的属性取值有一定范围，如【十字】的【尺寸】可取范围为【50~200】，超出范围的元素导入游戏后显示结果可能与预期不同。",
     "copyToClipboard": "复制到剪贴板",
     "linkCopied": "链接已复制",
     "enterLinkLabel": "输入战术板链接（支持本站战术板链接、游戏内置战术板链接）",

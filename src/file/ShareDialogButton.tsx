@@ -120,6 +120,9 @@ const ShareDialogBody: React.FC = () => {
                     <p>
                         <Trans i18nKey="share.strategyBoardFallbackText" components={{ importLink: <strong /> }} />
                     </p>
+                    <p>
+                        <Trans i18nKey="share.strategyBoardFallbackText1" components={{ br: <br /> }} />
+                    </p>
                 </TabActivity>
             </DialogContent>
             <DialogActions fluid className={classes.actions}>
