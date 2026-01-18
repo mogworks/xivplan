@@ -16,6 +16,7 @@ import {
     AoeFanObject,
     AoeRectObject,
     ArrowObject,
+    BaseObject,
     BoardIconObject,
     CircleZone,
     EnemyObject,
@@ -40,7 +41,10 @@ import {
     MechTowerObject,
     ObjectType,
     PartyObject,
+    RadiusObject,
     RectangleZone,
+    RegularResizableObject,
+    RotatableObject,
     Scene,
     SceneObject,
     SceneObjectWithoutId,
@@ -180,6 +184,8 @@ const isWaymarkIconId = (id: number) => 79 <= id && id <= 86;
 
 const isIndicatorIconId = (id: number) =>
     (65 <= id && id <= 78) || (115 <= id && id <= 117) || (131 <= id && id <= 138);
+
+const isEnemyIconId = (id: number) => id === 60 || id === 62 || id === 64;
 
 function parseObject(obj: SBObject): SceneObjectWithoutId | null {
     if (!knownObjects.includes(obj.id)) {
@@ -522,7 +528,7 @@ function parseObject(obj: SBObject): SceneObjectWithoutId | null {
                 text: obj.string ?? '',
                 style: 'outline',
                 stroke: '#000000',
-                fontSize: 30 * SIZE_FACTOR,
+                fontSize: (30 * SIZE_FACTOR * scale) / 100,
                 align: 'center',
                 ...coordinates,
                 pinned: obj.flags.locked,
@@ -775,6 +781,50 @@ function encodeObject(sceneObj: SceneObject): SBObject | SBObject[] | null {
             : { x: 0, y: 0 },
     );
 
+    const buildRadiusSBObject = (
+        obj: BaseObject & RadiusObject & RotatableObject,
+        iconId: keyof typeof objectScaleFactor,
+    ) =>
+        ({
+            id: iconId,
+            string: undefined,
+            flags,
+            coordinates,
+            angle: obj.rotation,
+            scale: (obj.radius * 2) / SIZE_FACTOR / getObjectSize(iconId) / (objectScaleFactor[iconId] ?? 1),
+            color: {
+                red: 255,
+                green: 255,
+                blue: 255,
+                opacity: obj.opacity,
+            },
+            param1: 0,
+            param2: 0,
+            param3: 0,
+        }) as SBObject;
+
+    const buildSizeSBObject = (
+        obj: BaseObject & RegularResizableObject & RotatableObject,
+        iconId: keyof typeof objectScaleFactor,
+    ) =>
+        ({
+            id: iconId,
+            string: undefined,
+            flags,
+            coordinates,
+            angle: obj.rotation,
+            scale: obj.size / SIZE_FACTOR / getObjectSize(iconId) / (objectScaleFactor[iconId] ?? 1),
+            color: {
+                red: 255,
+                green: 255,
+                blue: 255,
+                opacity: obj.opacity,
+            },
+            param1: 0,
+            param2: 0,
+            param3: 0,
+        }) as SBObject;
+
     switch (sceneObj.type) {
         case ObjectType.Party:
             return (() => {
@@ -784,23 +834,7 @@ function encodeObject(sceneObj: SceneObject): SBObject | SBObject[] | null {
                     return null;
                 }
 
-                return {
-                    id: iconId,
-                    string: undefined,
-                    flags,
-                    coordinates,
-                    angle: obj.rotation,
-                    scale: obj.size / SIZE_FACTOR / getObjectSize(iconId) / (objectScaleFactor[iconId] ?? 1),
-                    color: {
-                        red: 255,
-                        green: 255,
-                        blue: 255,
-                        opacity: obj.opacity,
-                    },
-                    param1: 0,
-                    param2: 0,
-                    param3: 0,
-                } as SBObject;
+                return buildSizeSBObject(obj, iconId);
             })();
 
         case ObjectType.Waymark:
@@ -888,6 +922,30 @@ function encodeObject(sceneObj: SceneObject): SBObject | SBObject[] | null {
                     return null;
                 }
 
+                return buildSizeSBObject(obj, iconId);
+            })();
+
+        case ObjectType.MechGaze:
+            return (() => {
+                const obj = sceneObj as MechGazeObject;
+                const iconId = 13;
+
+                return buildRadiusSBObject(obj, iconId);
+            })();
+
+        case ObjectType.IndicatorStack:
+            return (() => {
+                const obj = sceneObj as IndicatorStackObject;
+                const iconId = obj.multiHit ? 106 : 14;
+
+                return buildRadiusSBObject(obj, iconId);
+            })();
+
+        case ObjectType.IndicatorLineStack:
+            return (() => {
+                const obj = sceneObj as IndicatorLineStackObject;
+                const iconId = 15;
+
                 return {
                     id: iconId,
                     string: undefined,
@@ -899,6 +957,50 @@ function encodeObject(sceneObj: SceneObject): SBObject | SBObject[] | null {
                         red: 255,
                         green: 255,
                         blue: 255,
+                        opacity: obj.opacity,
+                    },
+                    param1: 1,
+                    param2: obj.vNum ?? 1,
+                    param3: 0,
+                } as SBObject;
+            })();
+
+        case ObjectType.MechProximity:
+            return (() => {
+                const obj = sceneObj as MechProximityObject;
+                const iconId = 16;
+
+                return buildRadiusSBObject(obj, iconId);
+            })();
+
+        case ObjectType.Enemy:
+            return (() => {
+                const obj = sceneObj as EnemyObject;
+                const iconId = obj.iconId as keyof typeof objectScaleFactor;
+                if (!isEnemyIconId(iconId)) {
+                    return null;
+                }
+
+                return buildSizeSBObject(obj, iconId);
+            })();
+
+        case ObjectType.Text:
+            return (() => {
+                const obj = sceneObj as TextObject;
+                const iconId = 100;
+                const color = new Color(obj.color ?? '#ffffff');
+
+                return {
+                    id: iconId,
+                    string: obj.text,
+                    flags,
+                    coordinates,
+                    angle: obj.rotation,
+                    scale: (100 * obj.fontSize) / SIZE_FACTOR / 30,
+                    color: {
+                        red: Math.round(color.r * 255),
+                        green: Math.round(color.g * 255),
+                        blue: Math.round(color.b * 255),
                         opacity: obj.opacity,
                     },
                     param1: 0,
@@ -907,10 +1009,34 @@ function encodeObject(sceneObj: SceneObject): SBObject | SBObject[] | null {
                 } as SBObject;
             })();
 
-        case ObjectType.BoardIcon:
+        case ObjectType.IndicatorProximity:
             return (() => {
-                const obj = sceneObj as BoardIconObject;
-                const iconId = obj.iconId as keyof typeof objectScaleFactor;
+                const obj = sceneObj as IndicatorProximityObject;
+                const iconId = 107;
+
+                return buildRadiusSBObject(obj, iconId);
+            })();
+
+        case ObjectType.IndicatorTankbuster:
+            return (() => {
+                const obj = sceneObj as IndicatorTankbusterObject;
+                const iconId = 108;
+
+                return buildRadiusSBObject(obj, iconId);
+            })();
+
+        case ObjectType.MechRadialKnockback:
+            return (() => {
+                const obj = sceneObj as MechRadialKnockbackObject;
+                const iconId = 109;
+
+                return buildRadiusSBObject(obj, iconId);
+            })();
+
+        case ObjectType.MechLinearKnockback:
+            return (() => {
+                const obj = sceneObj as MechLinearKnockbackObject;
+                const iconId = 110;
 
                 return {
                     id: iconId,
@@ -925,10 +1051,58 @@ function encodeObject(sceneObj: SceneObject): SBObject | SBObject[] | null {
                         blue: 255,
                         opacity: obj.opacity,
                     },
-                    param1: 0,
-                    param2: 0,
+                    param1: obj.hNum ?? 1,
+                    param2: obj.vNum ?? 1,
                     param3: 0,
                 } as SBObject;
+            })();
+
+        case ObjectType.MechTower:
+            return (() => {
+                const obj = sceneObj as MechTowerObject;
+                const iconId = 111;
+
+                return buildRadiusSBObject(obj, iconId);
+            })();
+
+        case ObjectType.IndicatorTargeting:
+            return (() => {
+                const obj = sceneObj as IndicatorTargetingObject;
+                const iconId = 112;
+
+                return buildRadiusSBObject(obj, iconId);
+            })();
+
+        case ObjectType.MechCircleExaflare:
+            return (() => {
+                const obj = sceneObj as MechCircleExaflareObject;
+                const iconId = 126;
+
+                return buildRadiusSBObject(obj, iconId);
+            })();
+
+        case ObjectType.MechCounterTower:
+            return (() => {
+                const obj = sceneObj as MechCounterTowerObject;
+                const iconId = (126 + obj.count) as keyof typeof objectScaleFactor;
+
+                return buildRadiusSBObject(obj, iconId);
+            })();
+
+        case ObjectType.MechRotation:
+            return (() => {
+                const obj = sceneObj as MechRotationObject;
+                const iconId = obj.anticlockwise ? 140 : 139;
+
+                return buildRadiusSBObject(obj, iconId);
+            })();
+
+        case ObjectType.BoardIcon:
+            return (() => {
+                const obj = sceneObj as BoardIconObject;
+                const iconId = obj.iconId as keyof typeof objectScaleFactor;
+
+                return buildSizeSBObject(obj, iconId);
             })();
 
         case ObjectType.Circle:
@@ -985,6 +1159,10 @@ function encodeObject(sceneObj: SceneObject): SBObject | SBObject[] | null {
                 } as SBObject;
             })();
 
+        // 扇形、扇环、月环
+
+        // 箭头
+
         default:
             return null;
     }
@@ -998,7 +1176,10 @@ function extractBackgroundId(scene: Scene): number {
 
     const match = textureUrl.match(new RegExp(BASE_URL + '/public/board/background/(\\d+)\\.webp$'));
     if (match && match[1]) {
-        return parseInt(match[1], 10);
+        const backgroundId = parseInt(match[1], 10);
+        if (1 <= backgroundId && backgroundId <= 7) {
+            return backgroundId;
+        }
     }
 
     return 1;
