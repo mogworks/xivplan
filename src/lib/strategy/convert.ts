@@ -14,6 +14,7 @@ import {
     AoeCircleObject,
     AoeDonutObject,
     AoeFanObject,
+    AoeLineObject,
     AoeRectObject,
     ArrowObject,
     BaseObject,
@@ -31,6 +32,7 @@ import {
     isHorizontalFlippable,
     isMovable,
     isVerticalFlippable,
+    LineZone,
     MechCircleExaflareObject,
     MechCounterTowerObject,
     MechGazeObject,
@@ -48,10 +50,12 @@ import {
     Scene,
     SceneObject,
     SceneObjectWithoutId,
+    Tether,
     TextObject,
     WaymarkGroupObject,
     WaymarkObject,
 } from '../../scene';
+import { getObjectById } from '../../SceneProvider';
 import { DEFAULT_AOE_COLOR } from '../../theme';
 import { SBObject } from './common';
 import { encodeShareString } from './encoder';
@@ -735,7 +739,7 @@ export function sceneToStrategyBoard(scene: Scene, stepIndex: number, boardName?
     const objects: SBObject[] = [];
 
     for (const sceneObj of mutableObjects) {
-        const sbObj = encodeObject(sceneObj);
+        const sbObj = encodeObject(scene, sceneObj);
         if (sbObj) {
             if (Array.isArray(sbObj)) {
                 objects.push(...sbObj);
@@ -759,7 +763,7 @@ export function sceneToStrategyBoard(scene: Scene, stepIndex: number, boardName?
     return shareString;
 }
 
-function encodeObject(sceneObj: SceneObject): SBObject | SBObject[] | null {
+function encodeObject(scene: Scene, sceneObj: SceneObject): SBObject | SBObject[] | null {
     const flags = {
         visible: !sceneObj.hide,
         flipHorizontal: isHorizontalFlippable(sceneObj) ? !!sceneObj.flipHorizontal : false,
@@ -1137,8 +1141,8 @@ function encodeObject(sceneObj: SceneObject): SBObject | SBObject[] | null {
             return (() => {
                 const obj = sceneObj as AoeRectObject | RectangleZone;
                 const color = isAoeObject(obj)
-                    ? new Color(obj.baseColor ?? DEFAULT_AOE_COLOR)
-                    : new Color(obj.color ?? DEFAULT_AOE_COLOR);
+                    ? new Color(obj.baseColor ?? '#ff8000')
+                    : new Color(obj.color ?? '#ff8000');
 
                 return {
                     id: 11,
@@ -1159,9 +1163,125 @@ function encodeObject(sceneObj: SceneObject): SBObject | SBObject[] | null {
                 } as SBObject;
             })();
 
-        // 扇形、扇环、月环
+        case ObjectType.Line:
+        case ObjectType.AoeLine:
+            return (() => {
+                const obj = sceneObj as AoeLineObject | LineZone;
+                const color = isAoeObject(obj)
+                    ? new Color(obj.baseColor ?? '#ff8000')
+                    : new Color(obj.color ?? '#ff8000');
 
-        // 箭头
+                const convertCoordinate = (
+                    origin: { x: number; y: number },
+                    position: { x: number; y: number },
+                    rotation: number,
+                ): { x: number; y: number } => {
+                    const rad = (rotation * Math.PI) / 180;
+                    const cosA = Math.cos(rad);
+                    const sinA = Math.sin(rad);
+
+                    const x = origin.x + position.x * cosA + position.y * sinA;
+                    const y = origin.y - position.x * sinA + position.y * cosA;
+
+                    return { x, y };
+                };
+
+                const position = convertCoordinate({ x: obj.x, y: obj.y }, { x: 0, y: obj.length / 2 }, obj.rotation);
+
+                return {
+                    id: 11,
+                    string: undefined,
+                    flags,
+                    coordinates: toStrategyBoardCoordinates(position),
+                    angle: obj.rotation,
+                    scale: 100,
+                    color: {
+                        red: Math.round(color.r * 255),
+                        green: Math.round(color.g * 255),
+                        blue: Math.round(color.b * 255),
+                        opacity: obj.opacity,
+                    },
+                    param1: obj.width / SIZE_FACTOR / 2,
+                    param2: obj.length / SIZE_FACTOR / 2,
+                    param3: 0,
+                } as SBObject;
+            })();
+
+        case ObjectType.Arrow:
+            return (() => {
+                const obj = sceneObj as ArrowObject;
+                const color = new Color(obj.color ?? '#ff8000');
+                const param3 = obj.width / 2 / SIZE_FACTOR / 5;
+                const x = obj.x;
+                const y = obj.y;
+                const d = obj.height;
+                const rad = (obj.rotation * Math.PI) / 180;
+                const sin = Math.sin(rad);
+                const cos = Math.cos(rad);
+                const x1 = x - (d / 2) * sin;
+                const y1 = y - (d / 2) * cos;
+                const x2 = x + (d / 2) * sin;
+                const y2 = y + (d / 2) * cos;
+                const begin = toStrategyBoardCoordinates({ x: x1, y: y1 });
+                const end = toStrategyBoardCoordinates({ x: x2, y: y2 });
+
+                return {
+                    id: 12,
+                    string: undefined,
+                    flags,
+                    coordinates: begin,
+                    angle: obj.rotation - 90,
+                    scale: 100,
+                    color: {
+                        red: Math.round(color.r * 255),
+                        green: Math.round(color.g * 255),
+                        blue: Math.round(color.b * 255),
+                        opacity: obj.opacity,
+                    },
+                    param1: end.x,
+                    param2: end.y,
+                    param3: param3,
+                } as SBObject;
+            })();
+
+        case ObjectType.Tether:
+            return (() => {
+                const obj = sceneObj as Tether;
+                const startObj = getObjectById(scene, obj.startId);
+                const endObj = getObjectById(scene, obj.endId);
+                if (!isMovable(startObj) || !isMovable(endObj)) {
+                    return null;
+                }
+                const startPos = { x: startObj.x, y: startObj.y };
+                const endPos = { x: endObj.x, y: endObj.y };
+
+                const color = new Color(obj.color ?? '#ff8000');
+                const param3 = obj.width / SIZE_FACTOR / 2;
+                const rad = Math.atan2(endPos.y - startPos.y, endPos.x - startPos.x);
+
+                const begin = toStrategyBoardCoordinates(startPos);
+                const end = toStrategyBoardCoordinates(endPos);
+
+                return {
+                    id: 12,
+                    string: undefined,
+                    flags,
+                    coordinates: begin,
+                    angle: (rad * 180) / Math.PI - 90,
+                    scale: 100,
+                    color: {
+                        red: Math.round(color.r * 255),
+                        green: Math.round(color.g * 255),
+                        blue: Math.round(color.b * 255),
+                        opacity: obj.opacity,
+                    },
+                    param1: end.x,
+                    param2: end.y,
+                    param3: param3,
+                } as SBObject;
+            })();
+
+        // 扇形、扇环、月环
 
         default:
             return null;
