@@ -31,7 +31,7 @@
     "colorjs.io": "0.5.2",
     "history": "5.3.0",
     "i": "0.3.7",
-    "i18next": "25.7.4",
+    "i18next": "25.8.0",
     "i18next-browser-languagedetector": "8.2.0",
     "idb": "8.0.3",
     "js-base64": "3.7.8",
@@ -57,7 +57,7 @@
     "@types/mocha": "10.0.10",
     "@types/node": "25.0.9",
     "@types/pako": "2.0.4",
-    "@types/react": "19.2.8",
+    "@types/react": "19.2.9",
     "@types/react-dom": "19.2.3",
     "@types/wicg-file-system-access": "2023.10.7",
     "@types/wicg-web-app-launch": "2023.1.4",
@@ -74,13 +74,13 @@
     "lefthook": "2.0.15",
     "prettier": "3.8.0",
     "typescript": "5.9.3",
-    "typescript-eslint": "8.53.0",
+    "typescript-eslint": "8.53.1",
     "vite": "7.3.1",
     "vite-plugin-svgr": "4.5.0",
     "vitest": "4.0.17"
   },
   "optionalDependencies": {
-    "@rollup/rollup-linux-x64-gnu": "4.55.1"
+    "@rollup/rollup-linux-x64-gnu": "4.55.3"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
