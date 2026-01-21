@@ -625,7 +625,8 @@
   "waymark": {
     "fgOpacity": "前景不透明度",
     "bgOpacity": "背景不透明度",
-    "fgRotation": "前景（文字）旋转"
+    "fgRotation": "前景旋转",
+    "bgRotation": "背景旋转"
   },
   "boardIcon": {
     "18": "剑术师",

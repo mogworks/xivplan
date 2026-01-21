@@ -53,6 +53,7 @@ registerDropHandler<WaymarkGroupObject>(ObjectType.WaymarkGroup, (object, positi
             fgOpacity: 100,
             fgRotation: 0,
             bgOpacity: 100,
+            bgRotation: 0,
             opacity: 100,
             rotation: 0,
             ...object,
@@ -87,6 +88,7 @@ export const WaymarkGroupRenderer: React.FC<RendererProps<WaymarkGroupObject>> =
                                     shape={getWaymarkShape(waymark.type)}
                                     size={object.size}
                                     bgOpacity={object.bgOpacity}
+                                    bgRotation={object.bgRotation}
                                     fgOpacity={object.fgOpacity}
                                     fgRotation={object.fgRotation}
                                 />

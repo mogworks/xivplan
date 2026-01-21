@@ -27,7 +27,7 @@ export const RotationControl: React.FC<PropertiesControlProps<RotatableObject | 
                 disabled={noDirection}
                 value={rotation}
                 onChange={onRotationChanged}
-                step={5}
+                step={1}
                 fractionDigits={1}
                 suffix="°"
             />

@@ -625,7 +625,8 @@
   "waymark": {
     "fgOpacity": "Foreground opacity",
     "bgOpacity": "Background opacity",
-    "fgRotation": "Foreground (text) rotation"
+    "fgRotation": "Foreground rotation",
+    "bgRotation": "Background rotation"
   },
   "boardIcon": {
     "18": "Gladiator",

@@ -112,7 +112,8 @@ export const WaymarkComponent: React.FC<{
     bgOpacity?: number;
     fgOpacity?: number;
     fgRotation?: number;
-}> = ({ type, shape, size, bgOpacity, fgOpacity, fgRotation }) => {
+    bgRotation?: number;
+}> = ({ type, shape, size, bgOpacity, fgOpacity, fgRotation, bgRotation }) => {
     const [fgImage] = useImageTracked(getWaymarkIconUrl(type, false));
     const [bgImage] = useImageTracked(getWaymarkIconUrl(type, true));
     return (
@@ -126,6 +127,7 @@ export const WaymarkComponent: React.FC<{
                 opacity={(bgOpacity ?? 100) / 100}
                 offsetX={size}
                 offsetY={size}
+                rotation={bgRotation ?? 0}
                 listening={false}
             />
             <Image
@@ -195,6 +197,7 @@ export const WaymarkRenderer: React.FC<RendererProps<WaymarkObject>> = ({ object
                             shape={shape}
                             size={object.size}
                             bgOpacity={object.bgOpacity}
+                            bgRotation={object.bgRotation}
                             fgOpacity={object.fgOpacity}
                             fgRotation={object.fgRotation}
                         />

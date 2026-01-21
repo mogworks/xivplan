@@ -66,21 +66,36 @@ export const WaymarkRotationControl: React.FC<PropertiesControlProps<WaymarkObje
     const { t } = useTranslation();
 
     const fgRotation = commonValue(objects, (obj) => obj.fgRotation);
+    const bgRotation = commonValue(objects, (obj) => obj.bgRotation);
 
     const onFgRotationChanged = useSpinChanged((fgRotation: number) =>
         dispatch({ type: 'update', value: objects.map((obj) => ({ ...obj, fgRotation })) }),
     );
+    const onBgRotationChanged = useSpinChanged((bgRotation: number) =>
+        dispatch({ type: 'update', value: objects.map((obj) => ({ ...obj, bgRotation })) }),
+    );
 
     return (
-        <Field label={t('waymark.fgRotation')}>
-            <SpinButtonUnits
-                value={fgRotation ?? 0}
-                onChange={onFgRotationChanged}
-                step={5}
-                fractionDigits={1}
-                suffix="°"
-            />
-        </Field>
+        <>
+            <Field label={t('waymark.fgRotation')}>
+                <SpinButtonUnits
+                    value={fgRotation ?? 0}
+                    onChange={onFgRotationChanged}
+                    step={1}
+                    fractionDigits={1}
+                    suffix="°"
+                />
+            </Field>
+            <Field label={t('waymark.bgRotation')}>
+                <SpinButtonUnits
+                    value={bgRotation ?? 0}
+                    onChange={onBgRotationChanged}
+                    step={1}
+                    fractionDigits={1}
+                    suffix="°"
+                />
+            </Field>
+        </>
     );
 };
 

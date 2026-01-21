@@ -270,6 +270,7 @@ export interface WaymarkObject extends RegularResizableObject, BaseObject {
     readonly fgOpacity?: number;
     readonly fgRotation?: number;
     readonly bgOpacity?: number;
+    readonly bgRotation?: number;
 }
 export const isWaymark = makeObjectTest<WaymarkObject>(ObjectType.Waymark);
 
@@ -280,6 +281,7 @@ export interface WaymarkGroupObject extends RadiusObject, RegularResizableObject
     readonly fgOpacity?: number;
     readonly fgRotation?: number;
     readonly bgOpacity?: number;
+    readonly bgRotation?: number;
 }
 export const isWaymarkGroup = makeObjectTest<WaymarkGroupObject>(ObjectType.WaymarkGroup);
 
