@@ -21,7 +21,7 @@
     "@dnd-kit/sortable": "10.0.0",
     "@dnd-kit/utilities": "3.2.2",
     "@fluentui-contrib/react-virtualizer": "0.5.4",
-    "@fluentui/react-components": "9.72.9",
+    "@fluentui/react-components": "9.72.10",
     "@fluentui/react-icons": "2.0.317",
     "@fluentui/react-icons-mdl2": "1.4.3",
     "@uiw/react-color-hue": "2.9.2",
@@ -62,14 +62,14 @@
     "@types/wicg-file-system-access": "2023.10.7",
     "@types/wicg-web-app-launch": "2023.1.4",
     "@vitejs/plugin-react": "5.1.2",
-    "@vitest/ui": "4.0.17",
+    "@vitest/ui": "4.0.18",
     "babel-plugin-react-compiler": "1.0.0",
     "eslint": "9.39.2",
     "eslint-config-prettier": "10.1.8",
     "eslint-plugin-react": "7.37.5",
     "eslint-plugin-react-hooks": "7.0.1",
     "eslint-plugin-react-refresh": "0.4.26",
-    "globals": "17.0.0",
+    "globals": "17.1.0",
     "jsdom": "27.4.0",
     "lefthook": "2.0.15",
     "prettier": "3.8.1",
@@ -77,10 +77,10 @@
     "typescript-eslint": "8.53.1",
     "vite": "7.3.1",
     "vite-plugin-svgr": "4.5.0",
-    "vitest": "4.0.17"
+    "vitest": "4.0.18"
   },
   "optionalDependencies": {
-    "@rollup/rollup-linux-x64-gnu": "4.55.3"
+    "@rollup/rollup-linux-x64-gnu": "4.56.0"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
