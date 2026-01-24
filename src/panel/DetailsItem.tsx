@@ -7,6 +7,7 @@ import {
     EyeOffFilled,
     EyeOffRegular,
     EyeRegular,
+    GroupRegular,
     LockClosedRegular,
     LockOpenRegular,
 } from '@fluentui/react-icons';
@@ -15,6 +16,7 @@ import { useTranslation } from 'react-i18next';
 import { useScene } from '../SceneProvider';
 import { PrefabIcon } from '../prefabs/PrefabIcon';
 import { isMovable, MovableObject, SceneObject } from '../scene';
+import { selectGroupElements, useSelection } from '../selection';
 import { setOrOmit } from '../util';
 import { detailsItemClassNames } from './detailsItemStyles';
 
@@ -26,6 +28,16 @@ export interface DetailsItemProps {
     isNested?: boolean;
     isDragging?: boolean;
     isSelected?: boolean;
+}
+
+// Generate a consistent color from a group ID
+function getGroupColor(groupId: string): string {
+    let hash = 0;
+    for (let i = 0; i < groupId.length; i++) {
+        hash = groupId.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    const hue = Math.abs(hash) % 360;
+    return `hsl(${hue}, 70%, 50%)`;
 }
 
 // TODO: only show hide button if hidden or hovered/selected
@@ -49,6 +61,10 @@ export const DetailsItem: React.FC<DetailsItemProps> = ({
             {children ? children : <div className={classes.name}>{name}</div>}
             {!isNested && (
                 <div className={classes.buttons}>
+                    <DetailsItemGroupButton
+                        object={object}
+                        className={mergeClasses(isSelected && classes.selectedButton)}
+                    />
                     {isMovable(object) && (
                         <DetailsItemPinnedButton
                             object={object}
@@ -73,6 +89,36 @@ interface DetailsItemPinnedButtonProps {
     object: SceneObject & MovableObject;
     className?: string;
 }
+
+const DetailsItemGroupButton: React.FC<{ object: SceneObject; className?: string }> = ({ object, className }) => {
+    const classes = useStyles();
+    const { step } = useScene();
+    const [, setSelection] = useSelection();
+    const { t } = useTranslation();
+
+    if (!object.groupId) {
+        return null;
+    }
+
+    const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+        const newSelection = selectGroupElements(step, object);
+        setSelection(newSelection);
+        e.stopPropagation();
+    };
+
+    const color = getGroupColor(object.groupId);
+
+    return (
+        <Button
+            appearance="transparent"
+            className={mergeClasses(classes.button, className)}
+            icon={<GroupRegular />}
+            onClick={handleClick}
+            title={t('properties.selectGroup')}
+            style={{ color }}
+        />
+    );
+};
 
 const DetailsItemPinnedButton: React.FC<DetailsItemPinnedButtonProps> = ({ object, className }) => {
     const classes = useStyles();

@@ -113,3 +113,14 @@ export function toggleSelection(selection: SceneSelection, id: number): SceneSel
         return addSelection(selection, id);
     }
 }
+
+/**
+ * Gets a new selection containing all objects that belong to the same group as the given object.
+ */
+export function selectGroupElements(step: SceneStep, object: SceneObject): SceneSelection {
+    if (!object.groupId) {
+        return selectNone();
+    }
+
+    return new Set(step.objects.filter((obj) => obj.groupId === object.groupId).map((obj) => obj.id));
+}

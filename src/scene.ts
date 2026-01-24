@@ -88,6 +88,7 @@ export interface BaseObject {
     readonly opacity: number;
     readonly hide?: boolean;
     readonly layer?: LayerName;
+    readonly groupId?: string;
 }
 
 export interface UnknownObject extends BaseObject {

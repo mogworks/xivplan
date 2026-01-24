@@ -4,7 +4,7 @@ import { getCanvasCoord, getSceneCoord } from '../coord';
 import { CursorGroup } from '../CursorGroup';
 import { EditMode } from '../editMode';
 import { moveObjectsBy } from '../groupOperations';
-import { MovableObject, Scene, SceneStep, UnknownObject } from '../scene';
+import { isMovable, MovableObject, Scene, SceneObject, SceneStep, UnknownObject } from '../scene';
 import { SceneAction, useScene } from '../SceneProvider';
 import {
     getNewDragSelection,
@@ -102,8 +102,20 @@ function updatePosition(
         return;
     }
 
-    const draggedObjects = getSelectedObjects(step, dragSelection);
-    const value = moveObjectsBy(draggedObjects, offset);
+    let draggedObjects = getSelectedObjects(step, dragSelection);
+
+    if (targetObject.groupId) {
+        const groupObjects = step.objects.filter((obj) => isMovable(obj) && obj.groupId === targetObject.groupId);
+
+        const additionalObjects = groupObjects.filter((obj) => !dragSelection.has(obj.id));
+        draggedObjects = [...draggedObjects, ...additionalObjects];
+    }
+
+    const uniqueObjectsMap = new Map<number, SceneObject>();
+    draggedObjects.forEach((obj) => uniqueObjectsMap.set(obj.id, obj));
+    const uniqueObjects = Array.from(uniqueObjectsMap.values());
+
+    const value = moveObjectsBy(uniqueObjects, offset);
 
     dispatch({ type: 'update', value, transient: true });
 }
