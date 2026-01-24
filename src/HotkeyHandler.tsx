@@ -11,6 +11,7 @@ import { getSceneCoord, rotateCoord } from './coord';
 import { copyObjects, getGroupCenter } from './copy';
 import { EditMode } from './editMode';
 import { moveObjectsBy } from './groupOperations';
+import { groupSelectedObjects, ungroupSelectedObjects } from './lib/group';
 import { makeTethers } from './prefabs/TetherConfig';
 import { useStage } from './render/stage';
 import { MovableObject, Scene, SceneObject, TetherType, isMovable, isRotatable } from './scene';
@@ -231,6 +232,28 @@ const SelectionActionHandler: React.FC = () => {
         [step, dispatch, selection],
     );
 
+    // 编组
+    useHotkeys(
+        'ctrl+g',
+        { category: CATEGORY_SELECTION, help: t('hotkeys.groupSelected') },
+        (e: KeyboardEvent) => {
+            groupSelectedObjects(step, selection, dispatch);
+            e.preventDefault();
+        },
+        [step, selection, dispatch],
+    );
+
+    // 解除编组
+    useHotkeys(
+        'ctrl+shift+g',
+        { category: CATEGORY_SELECTION, help: t('hotkeys.ungroupSelected') },
+        (e: KeyboardEvent) => {
+            ungroupSelectedObjects(step, selection, dispatch);
+            e.preventDefault();
+        },
+        [step, selection, dispatch],
+    );
+
     const tetherCallback = (type: TetherType) => (e: KeyboardEvent) => {
         if (selection.size === 0) {
             // When nothing selected, tether hotkeys should toggle tether tool.
@@ -380,13 +403,13 @@ const EditActionHandler: React.FC = () => {
         e.preventDefault();
     };
 
-    useHotkeys('ctrl+g', { category: CATEGORY_EDIT, help: t('hotkeys.rotateCounterClockwise') }, rotateCallback(-90), [
+    useHotkeys('alt+g', { category: CATEGORY_EDIT, help: t('hotkeys.rotateCounterClockwise') }, rotateCallback(-90), [
         rotateCallback,
     ]);
-    useHotkeys('ctrl+h', { category: CATEGORY_EDIT, help: t('hotkeys.rotateClockwise') }, rotateCallback(90), [
+    useHotkeys('alt+h', { category: CATEGORY_EDIT, help: t('hotkeys.rotateClockwise') }, rotateCallback(90), [
         rotateCallback,
     ]);
-    useHotkeys('ctrl+j', { category: CATEGORY_EDIT, help: t('hotkeys.rotate180') }, rotateCallback(180), [
+    useHotkeys('alt+j', { category: CATEGORY_EDIT, help: t('hotkeys.rotate180') }, rotateCallback(180), [
         rotateCallback,
     ]);
 
