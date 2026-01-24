@@ -1,11 +1,8 @@
 import { Vector2d } from 'konva/lib/types';
 import {
     DrawObject,
-    EnemyObject,
-    EnemyRingStyle,
     ExaflareZone,
     ImageObject,
-    MarkerObject,
     PartyObject,
     PolygonOrientation,
     PolygonZone,
@@ -13,19 +10,20 @@ import {
     SceneObject,
     SceneStep,
     StackZone,
+    TargetObject,
+    TargetRingStyle,
     TextObject,
     TextStyle,
     isDrawObject,
-    isEnemy,
     isExaflareZone,
     isImageObject,
-    isMarker,
     isParty,
     isPolygonZone,
     isStackZone,
+    isTarget,
     isText,
 } from '../scene';
-import { DEFAULT_ENEMY_OPACITY, DEFAULT_IMAGE_OPACITY, DEFAULT_MARKER_OPACITY, DEFAULT_PARTY_OPACITY } from '../theme';
+import { DEFAULT_IMAGE_OPACITY, DEFAULT_PARTY_OPACITY, DEFAULT_TARGET_OPACITY } from '../theme';
 
 export function upgradeScene(scene: Scene): Scene {
     return {
@@ -42,8 +40,8 @@ function upgradeStep(step: SceneStep): SceneStep {
 }
 
 function upgradeObject(object: SceneObject): SceneObject {
-    if (isEnemy(object)) {
-        object = upgradeEnemy(object);
+    if (isTarget(object)) {
+        object = upgradeTarget(object);
     }
 
     if (isParty(object)) {
@@ -62,10 +60,6 @@ function upgradeObject(object: SceneObject): SceneObject {
         object = upgradeExaflareZone(object);
     }
 
-    if (isMarker(object)) {
-        object = upgradeMarker(object);
-    }
-
     if (isText(object)) {
         object = upgradeText(object);
     }
@@ -81,34 +75,34 @@ function upgradeObject(object: SceneObject): SceneObject {
     return object;
 }
 
-// EnemyObject was changed from { rotation?: number }
+// TargetObject was changed from { rotation?: number }
 // to { rotation: number, omniDirection: boolean, opacity: number }, then
-// to { rotation: number, ring: EnemyRingStyle, opacity: number }
-type LegacyEnemyObject = Omit<EnemyObject, 'opacity' | 'rotation' | 'ring'> & {
+// to { rotation: number, ring: TargetRingStyle, opacity: number }
+type LegacyTargetObject = Omit<TargetObject, 'opacity' | 'rotation' | 'ring'> & {
     opacity?: number;
     rotation?: number;
     omniDirection?: boolean;
-    ring?: EnemyRingStyle;
+    ring?: TargetRingStyle;
 };
 
-function getRingStyle<T extends LegacyEnemyObject>(object: T): EnemyRingStyle {
+function getRingStyle<T extends LegacyTargetObject>(object: T): TargetRingStyle {
     if (object.rotation === undefined) {
-        return EnemyRingStyle.NoDirection;
+        return TargetRingStyle.NoDirection;
     }
 
     if ('omniDirection' in object && typeof object.omniDirection === 'boolean') {
-        return object.omniDirection ? EnemyRingStyle.NoDirection : EnemyRingStyle.Directional;
+        return object.omniDirection ? TargetRingStyle.NoDirection : TargetRingStyle.Directional;
     }
 
-    return EnemyRingStyle.Directional;
+    return TargetRingStyle.Directional;
 }
 
-function upgradeEnemy(object: LegacyEnemyObject): EnemyObject {
+function upgradeTarget(object: LegacyTargetObject): TargetObject {
     return {
         ...object,
         rotation: object.rotation ?? 0,
         ring: object.ring ?? getRingStyle(object),
-        opacity: object.opacity ?? DEFAULT_ENEMY_OPACITY,
+        opacity: object.opacity ?? DEFAULT_TARGET_OPACITY,
     };
 }
 
@@ -168,18 +162,6 @@ type LegacyExaflareZone = Omit<ExaflareZone, 'spacing'> & {
 function upgradeExaflareZone(object: LegacyExaflareZone): ExaflareZone {
     return {
         spacing: 60,
-        ...object,
-    };
-}
-
-// opacity property was added to MarkerObject
-type LegacyMarkerObject = Omit<MarkerObject, 'opacity'> & {
-    opacity?: number;
-};
-
-function upgradeMarker(object: LegacyMarkerObject): MarkerObject {
-    return {
-        opacity: DEFAULT_MARKER_OPACITY,
         ...object,
     };
 }

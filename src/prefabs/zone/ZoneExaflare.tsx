@@ -9,7 +9,7 @@ import { ListComponentProps, registerListComponent } from '../../panel/ListCompo
 import { LayerName } from '../../render/layers';
 import { registerRenderer, RendererProps } from '../../render/ObjectRegistry';
 import { ExaflareZone, ObjectType } from '../../scene';
-import { CENTER_DOT_RADIUS, DEFAULT_AOE_COLOR, DEFAULT_AOE_OPACITY, panelVars } from '../../theme';
+import { CENTER_DOT_RADIUS, DEFAULT_AOE_COLOR, DEFAULT_SHAPE_OPACITY, panelVars } from '../../theme';
 import { usePanelDrag } from '../../usePanelDrag';
 import { HideGroup } from '../HideGroup';
 import { useHighlightProps } from '../highlight';
@@ -49,7 +49,7 @@ registerDropHandler<ExaflareZone>(ObjectType.Exaflare, (object, position) => {
         object: {
             type: ObjectType.Exaflare,
             color: DEFAULT_AOE_COLOR,
-            opacity: DEFAULT_AOE_OPACITY,
+            opacity: DEFAULT_SHAPE_OPACITY,
             radius: DEFAULT_RADIUS,
             length: DEFAULT_LENGTH,
             spacing: EXAFLARE_SPACING_DEFAULT,

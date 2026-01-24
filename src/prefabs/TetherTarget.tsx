@@ -4,14 +4,14 @@ import { CursorGroup } from '../CursorGroup';
 import { TetherConfig } from '../EditModeContext';
 import { useScene } from '../SceneProvider';
 import { EditMode } from '../editMode';
-import { MoveableObject, Tether, UnknownObject, isMoveable } from '../scene';
+import { MovableObject, Tether, UnknownObject, isMovable } from '../scene';
 import { getSelectedObjects, selectNone, selectSingle, useSelection } from '../selection';
 import { useEditMode } from '../useEditMode';
 import { useTetherConfig } from '../useTetherConfig';
 import { makeTether } from './TetherConfig';
 
 export interface TetherTargetProps extends PropsWithChildren {
-    object: MoveableObject & UnknownObject;
+    object: MovableObject & UnknownObject;
 }
 
 function getTether(ids: readonly number[], config: TetherConfig): Omit<Tether, 'id'> | undefined {
@@ -38,7 +38,7 @@ export const TetherTarget: React.FC<TetherTargetProps> = ({ object, children }) 
 
     const onClick = (e: KonvaEventObject<MouseEvent>) => {
         const targetIds = getSelectedObjects(step, selection)
-            .filter(isMoveable)
+            .filter(isMovable)
             .map((x) => x.id);
 
         const tether = getTether([...targetIds, object.id], tetherConfig);

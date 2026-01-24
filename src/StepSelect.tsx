@@ -33,7 +33,7 @@ import { AddFilled, ArrowSwapRegular, DeleteFilled, DeleteRegular, bundleIcon } 
 import React, { HTMLAttributes, RefAttributes, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { HotkeyBlockingDialogBody } from './HotkeyBlockingDialogBody';
-import { useScene } from './SceneProvider';
+import { useFloor, usePadding, useScene } from './SceneProvider';
 import { ScenePreview } from './render/SceneRenderer';
 import { Scene } from './scene';
 import { MIN_STAGE_WIDTH } from './theme';
@@ -48,7 +48,9 @@ export const StepSelect: React.FC = () => {
         dispatch({ type: 'setStep', index });
     };
 
-    const maxWidth = scene.arena.width + scene.arena.padding * 2;
+    const floor = useFloor();
+    const padding = usePadding();
+    const maxWidth = floor.width + padding.left + padding.right;
 
     return (
         <div className={classes.root} style={{ maxWidth }}>
@@ -278,14 +280,7 @@ const StepItem: React.FC<StepItemProps> = ({ ref, scene, step, className, ...pro
     return (
         <div ref={ref} className={mergeClasses(classes.stepItem, className)} {...props}>
             <div className={classes.stepHeader}>{stepText}</div>
-            <ScenePreview
-                scene={scene}
-                stepIndex={step.index}
-                width={PREVIEW_SIZE}
-                height={PREVIEW_SIZE}
-                backgroundColor="transparent"
-                simple
-            />
+            <ScenePreview scene={scene} stepIndex={step.index} width={PREVIEW_SIZE} height={PREVIEW_SIZE} simple />
         </div>
     );
 };

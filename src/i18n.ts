@@ -1,6 +1,6 @@
 import i18n from 'i18next';
-import { initReactI18next } from 'react-i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
+import { initReactI18next } from 'react-i18next';
 
 import en from './locales/en/common.json';
 import zh from './locales/zh/common.json';
@@ -13,7 +13,8 @@ void i18n
             en: { common: en },
             zh: { common: zh },
         },
-        fallbackLng: 'en',
+        lng: 'zh',
+        fallbackLng: 'zh',
         supportedLngs: ['en', 'zh'],
         ns: ['common'],
         defaultNS: 'common',

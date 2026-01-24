@@ -4,8 +4,16 @@ import { useTranslation } from 'react-i18next';
 import { CompactColorPicker } from '../../CompactColorPicker';
 import { useScene } from '../../SceneProvider';
 import { SpinButton } from '../../SpinButton';
-import { shouldUseNativeStyleControls } from '../../lib/aoe/nativeStyleSupport';
-import { ZoneStyleObject, supportsNativeStyle } from '../../scene';
+import { AoeProps } from '../../lib/aoe/aoeProps';
+import { isAoeObject } from '../../scene';
+import {
+    DEFAULT_AOE_COLOR,
+    DEFAULT_AOE_INNER_GLOW_COLOR,
+    DEFAULT_AOE_INNER_GLOW_OPACITY,
+    DEFAULT_AOE_OPACITY,
+    DEFAULT_AOE_OUTLINE_COLOR,
+    DEFAULT_AOE_OUTLINE_OPACITY,
+} from '../../theme';
 import { commonValue } from '../../util';
 import { PropertiesControlProps } from '../PropertiesControl';
 
@@ -27,49 +35,45 @@ const useStyles = makeStyles({
     },
 });
 
-export const AoeEffectControls: React.FC<PropertiesControlProps<ZoneStyleObject>> = ({ objects, className }) => {
+export const AoeEffectControls: React.FC<PropertiesControlProps<AoeProps>> = ({ objects, className }) => {
     const classes = useStyles();
     const { t } = useTranslation();
     const { dispatch } = useScene();
 
-    // 仅当所有选中对象都支持原生样式，且至少一个对象为 native 变体时显示
-    if (!shouldUseNativeStyleControls(objects)) {
+    if (!objects.every(isAoeObject)) {
         return null;
     }
 
-    const baseColor = commonValue(objects, (o) => o.baseColor) ?? '#fb923c';
-    const baseOpacity = commonValue(objects, (o) => o.baseOpacity) ?? 0.25;
-    const innerGlowColor = commonValue(objects, (o) => o.innerGlowColor) ?? '#ff751f';
-    const innerGlowOpacity = commonValue(objects, (o) => o.innerGlowOpacity) ?? 1;
-    const outlineColor = commonValue(objects, (o) => o.outlineColor) ?? '#fffc79';
-    const outlineOpacity = commonValue(objects, (o) => o.outlineOpacity) ?? 1;
+    const baseColor = commonValue(objects, (o) => o.baseColor) ?? DEFAULT_AOE_COLOR;
+    const baseOpacity = commonValue(objects, (o) => o.baseOpacity) ?? DEFAULT_AOE_OPACITY;
+    const innerGlowColor = commonValue(objects, (o) => o.innerGlowColor) ?? DEFAULT_AOE_INNER_GLOW_COLOR;
+    const innerGlowOpacity = commonValue(objects, (o) => o.innerGlowOpacity) ?? DEFAULT_AOE_INNER_GLOW_OPACITY;
+    const outlineColor = commonValue(objects, (o) => o.outlineColor) ?? DEFAULT_AOE_OUTLINE_COLOR;
+    const outlineOpacity = commonValue(objects, (o) => o.outlineOpacity) ?? DEFAULT_AOE_OUTLINE_OPACITY;
 
-    const updateStyle = (patch: Partial<ZoneStyleObject>, transient = false) =>
+    const updateAoeProps = (patch: Partial<AoeProps>, transient = false) =>
         dispatch({
             type: 'update',
-            value: objects.map((obj) => (supportsNativeStyle(obj) ? { ...obj, ...patch } : obj)),
+            value: objects.map((obj) => (isAoeObject(obj) ? { ...obj, ...patch } : obj)),
             transient,
         });
 
     return (
         <div className={mergeClasses(classes.grid, className)}>
-            {/* 注意：整体透明度由 PropertiesPanel 的 AoeGlobalOpacityControl 负责，这里不再重复显示 */}
-
             {/* 基底 */}
             <CompactColorPicker
                 label={t('aoe.baseColor')}
                 color={baseColor}
-                onChange={(data) => updateStyle({ baseColor: data.value }, data.transient)}
+                onChange={(data) => updateAoeProps({ baseColor: data.value }, data.transient)}
                 onCommit={() => dispatch({ type: 'commit' })}
             />
             <Field label={t('aoe.baseOpacity')}>
                 <SpinButton
                     value={baseOpacity}
                     min={0}
-                    max={1}
-                    step={0.01}
-                    fractionDigits={2}
-                    onChange={(ev, data) => updateStyle({ baseOpacity: data.value ?? undefined })}
+                    max={100}
+                    step={1}
+                    onChange={(ev, data) => updateAoeProps({ baseOpacity: data.value ?? undefined })}
                 />
             </Field>
 
@@ -77,17 +81,16 @@ export const AoeEffectControls: React.FC<PropertiesControlProps<ZoneStyleObject>
             <CompactColorPicker
                 label={t('aoe.innerGlowColor')}
                 color={innerGlowColor}
-                onChange={(data) => updateStyle({ innerGlowColor: data.value }, data.transient)}
+                onChange={(data) => updateAoeProps({ innerGlowColor: data.value }, data.transient)}
                 onCommit={() => dispatch({ type: 'commit' })}
             />
             <Field label={t('aoe.innerGlowOpacity')}>
                 <SpinButton
                     value={innerGlowOpacity}
                     min={0}
-                    max={1}
-                    step={0.01}
-                    fractionDigits={2}
-                    onChange={(ev, data) => updateStyle({ innerGlowOpacity: data.value ?? undefined })}
+                    max={100}
+                    step={1}
+                    onChange={(ev, data) => updateAoeProps({ innerGlowOpacity: data.value ?? undefined })}
                 />
             </Field>
 
@@ -95,17 +98,16 @@ export const AoeEffectControls: React.FC<PropertiesControlProps<ZoneStyleObject>
             <CompactColorPicker
                 label={t('aoe.outlineColor')}
                 color={outlineColor}
-                onChange={(data) => updateStyle({ outlineColor: data.value }, data.transient)}
+                onChange={(data) => updateAoeProps({ outlineColor: data.value }, data.transient)}
                 onCommit={() => dispatch({ type: 'commit' })}
             />
             <Field label={t('aoe.outlineOpacity')}>
                 <SpinButton
                     value={outlineOpacity}
                     min={0}
-                    max={1}
-                    step={0.01}
-                    fractionDigits={2}
-                    onChange={(ev, data) => updateStyle({ outlineOpacity: data.value ?? undefined })}
+                    max={100}
+                    step={1}
+                    onChange={(ev, data) => updateAoeProps({ outlineOpacity: data.value ?? undefined })}
                 />
             </Field>
         </div>

@@ -15,7 +15,7 @@ import { usePanelDrag } from '../usePanelDrag';
 import { CompositeReplaceGroup } from './CompositeReplaceGroup';
 import { HideCutoutGroup } from './HideGroup';
 import { PrefabIcon } from './PrefabIcon';
-import { ResizeableObjectContainer } from './ResizeableObjectContainer';
+import { ResizableObjectContainer } from './ResizableObjectContainer';
 import { useHighlightProps } from './highlight';
 
 // TODO: This would be a lot nicer if you could just click on start position
@@ -94,7 +94,7 @@ const ArrowRenderer: React.FC<RendererProps<ArrowObject>> = ({ object }) => {
     };
 
     return (
-        <ResizeableObjectContainer object={object} transformerProps={{ centeredScaling: true }}>
+        <ResizableObjectContainer object={object} transformerProps={{ centeredScaling: true }}>
             {(groupProps) => (
                 <Group {...groupProps} listening={!object.hide}>
                     {highlightProps && (
@@ -112,7 +112,7 @@ const ArrowRenderer: React.FC<RendererProps<ArrowObject>> = ({ object }) => {
                     </HideCutoutGroup>
                 </Group>
             )}
-        </ResizeableObjectContainer>
+        </ResizableObjectContainer>
     );
 };
 

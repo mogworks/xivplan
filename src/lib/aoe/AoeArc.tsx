@@ -1,8 +1,8 @@
 import { Arc } from 'react-konva';
 import { AoeEffect } from './AoeEffect';
-import type { NativeStyle } from './nativeStyle';
+import { AoeProps } from './aoeProps';
 
-export interface AoeArcProps extends NativeStyle {
+export interface AoeArcProps extends AoeProps {
     freeze?: boolean;
     innerRadius: number;
     outerRadius: number;

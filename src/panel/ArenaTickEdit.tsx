@@ -1,4 +1,4 @@
-import { Divider, Field } from '@fluentui/react-components';
+import { Field } from '@fluentui/react-components';
 import {
     bundleIcon,
     CircleFilled,
@@ -49,7 +49,7 @@ export const ArenaTickEdit: React.FC = () => {
 
     return (
         <div className={classes.column}>
-            <Field label={t('arena.borderTicks')}>
+            <Field label={t('arena.borderTickType')}>
                 <SegmentedGroup
                     name="arena-ticks"
                     value={ticks?.type ?? TickType.None}
@@ -156,7 +156,6 @@ export const ArenaTickEdit: React.FC = () => {
                     </div>
                 </>
             )}
-            {ticks && ticks.type !== TickType.None && <Divider />}
         </div>
     );
 };

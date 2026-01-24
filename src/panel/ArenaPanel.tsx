@@ -1,4 +1,9 @@
 import {
+    Accordion,
+    AccordionHeader,
+    AccordionItem,
+    AccordionPanel,
+    AccordionToggleEventHandler,
     Button,
     Checkbox,
     CheckboxProps,
@@ -27,15 +32,25 @@ import { useTranslation } from 'react-i18next';
 import { useAsync, useCounter, useLocalStorage, useSessionStorage } from 'react-use';
 import { HotkeyBlockingDialogBody } from '../HotkeyBlockingDialogBody';
 import { useScene } from '../SceneProvider';
+import {
+    BoardIconCircleGrayBottomPrefab,
+    BoardIconCircleGridBottomPrefab,
+    BoardIconSquareGrayBottomPrefab,
+    BoardIconSquareGridBottomPrefab,
+} from '../prefabs/BoardIcon';
+import { Waymark1, Waymark2, Waymark3, Waymark4, WaymarkA, WaymarkB, WaymarkC, WaymarkD } from '../prefabs/Waymark';
+import { WaymarkGroupPrefab } from '../prefabs/WaymarkGroup';
 import { ARENA_PRESETS } from '../presets/ArenaPresets';
 import { ScenePreview } from '../render/SceneRenderer';
 import { ArenaPreset, Scene } from '../scene';
 import { getRevealedArenaPresets, revealArenaPreset } from '../spoilers';
 import { useControlStyles } from '../useControlStyles';
 import { ArenaBackgroundEdit } from './ArenaBackgroundEdit';
+import { ArenaFloorEdit } from './ArenaFloorEdit';
 import { ArenaGridEdit } from './ArenaGridEdit';
-import { ArenaShapeEdit } from './ArenaShapeEdit';
+import { ArenaTextureEdit } from './ArenaTextureEdit';
 import { ArenaTickEdit } from './ArenaTickEdit';
+import { ObjectGroup } from './Section';
 
 const PREVIEW_SIZE = 240;
 
@@ -65,15 +80,86 @@ const PRESET_CATEGORIES: PresetCategory[] = Object.entries(ARENA_PRESETS).map(([
 
 export const ArenaPanel: React.FC = () => {
     const classes = useControlStyles();
+    const styles = useStyles();
+    const { t } = useTranslation();
+
+    const [openItems, setOpenItems] = React.useState(['floor', 'texture', 'waymark', 'scene']);
+    const handleToggle: AccordionToggleEventHandler<string> = (event, data) => {
+        setOpenItems(data.openItems);
+    };
 
     return (
         <div className={mergeClasses(classes.panel, classes.column)}>
-            <ArenaShapeEdit />
-            <ArenaGridEdit />
-            <ArenaTickEdit />
-            <ArenaBackgroundEdit />
-            <Divider />
             <SelectPresetButton />
+            <Accordion
+                style={{ marginLeft: '-12px', marginRight: '-12px' }}
+                openItems={openItems}
+                onToggle={handleToggle}
+                multiple
+                collapsible
+            >
+                <AccordionItem value="background" className={openItems.includes('background') ? styles.openItem : ''}>
+                    <AccordionHeader size="large">{t('arena.background.group')}</AccordionHeader>
+                    <AccordionPanel>
+                        <ArenaBackgroundEdit />
+                    </AccordionPanel>
+                </AccordionItem>
+                <AccordionItem value="floor" className={openItems.includes('floor') ? styles.openItem : ''}>
+                    <AccordionHeader size="large">{t('arena.floor.group')}</AccordionHeader>
+                    <AccordionPanel>
+                        <ArenaFloorEdit />
+                    </AccordionPanel>
+                </AccordionItem>
+                <AccordionItem value="texture" className={openItems.includes('texture') ? styles.openItem : ''}>
+                    <AccordionHeader size="large">{t('arena.texture.group')}</AccordionHeader>
+                    <AccordionPanel>
+                        <ArenaTextureEdit />
+                    </AccordionPanel>
+                </AccordionItem>
+                <AccordionItem value="waymark" className={openItems.includes('waymark') ? styles.openItem : ''}>
+                    <AccordionHeader size="large">{t('arena.waymark.group')}</AccordionHeader>
+                    <AccordionPanel>
+                        <>
+                            <ObjectGroup>
+                                <WaymarkGroupPrefab />
+                                <WaymarkA />
+                                <WaymarkB />
+                                <WaymarkC />
+                                <WaymarkD />
+                            </ObjectGroup>
+                            <ObjectGroup>
+                                <Waymark1 />
+                                <Waymark2 />
+                                <Waymark3 />
+                                <Waymark4 />
+                            </ObjectGroup>
+                        </>
+                    </AccordionPanel>
+                </AccordionItem>
+                <AccordionItem value="scene" className={openItems.includes('scene') ? styles.openItem : ''}>
+                    <AccordionHeader size="large">{t('arena.scene.group')}</AccordionHeader>
+                    <AccordionPanel>
+                        <ObjectGroup>
+                            <BoardIconCircleGridBottomPrefab />
+                            <BoardIconSquareGridBottomPrefab />
+                            <BoardIconCircleGrayBottomPrefab />
+                            <BoardIconSquareGrayBottomPrefab />
+                        </ObjectGroup>
+                    </AccordionPanel>
+                </AccordionItem>
+                <AccordionItem value="grid" className={openItems.includes('grid') ? styles.openItem : ''}>
+                    <AccordionHeader size="large">{t('arena.grid.group')}</AccordionHeader>
+                    <AccordionPanel>
+                        <ArenaGridEdit />
+                    </AccordionPanel>
+                </AccordionItem>
+                <AccordionItem value="tick">
+                    <AccordionHeader size="large">{t('arena.tick.group')}</AccordionHeader>
+                    <AccordionPanel>
+                        <ArenaTickEdit />
+                    </AccordionPanel>
+                </AccordionItem>
+            </Accordion>
         </div>
     );
 };
@@ -166,7 +252,14 @@ const PresetsDialogBody: React.FC<PresetsDialogBodyProps> = ({ setOpen }) => {
                         {PRESET_CATEGORIES.map((category) => (
                             <React.Fragment key={category.name}>
                                 {category.name && (
-                                    <NavSectionHeader className={classes.category}>{category.name}</NavSectionHeader>
+                                    <>
+                                        <NavSectionHeader className={classes.category}>
+                                            {category.name}
+                                        </NavSectionHeader>
+                                        <div>
+                                            <Divider />
+                                        </div>
+                                    </>
                                 )}
 
                                 {category.groups.map((group) => (
@@ -187,7 +280,7 @@ const PresetsDialogBody: React.FC<PresetsDialogBodyProps> = ({ setOpen }) => {
                     {...presetListArrowNav}
                 >
                     {presets?.map((preset) => {
-                        const key = getPresetKey(selectedGroup, preset.name);
+                        const key = getPresetKey(selectedGroup, preset.key || preset.name);
 
                         return (
                             <PresetItem
@@ -287,13 +380,7 @@ const PresetItem: React.FC<PresetItemProps> = ({
             <div className={classes.presetHeader}>{name}</div>
             <div className={classes.arenaPreviewWrap}>
                 <div className={mergeClasses(classes.arenaPreview, isSpoiler && classes.blur)}>
-                    <ScenePreview
-                        scene={scene}
-                        width={PREVIEW_SIZE}
-                        height={PREVIEW_SIZE}
-                        backgroundColor="transparent"
-                        simple
-                    />
+                    <ScenePreview scene={scene} width={PREVIEW_SIZE} height={PREVIEW_SIZE} simple />
                 </div>
                 {isSpoiler && (
                     <div className={classes.spoilerNotice}>
@@ -346,6 +433,8 @@ const useStyles = makeStyles({
     },
 
     category: {
+        fontSize: tokens.fontSizeBase400,
+        fontWeight: tokens.fontWeightBold,
         marginLeft: `calc(-1 * ${tokens.spacingHorizontalMNudge} + 4px)`,
     },
 
@@ -370,11 +459,12 @@ const useStyles = makeStyles({
     presetItem: {
         display: 'flex',
         flexFlow: 'column',
+        alignItems: 'center',
 
         margin: 0,
         padding: 0,
 
-        width: `${PREVIEW_SIZE + 2}px`,
+        width: 'calc(50% - 10px)',
         listStyle: 'none',
         boxSizing: 'border-box',
         border: `${tokens.strokeWidthThin} solid transparent`,
@@ -436,5 +526,9 @@ const useStyles = makeStyles({
         color: tokens.colorNeutralForegroundStaticInverted,
         textShadow: `0 1px 2px ${tokens.colorNeutralBackgroundStatic}`,
         ...typographyStyles.subtitle2,
+    },
+
+    openItem: {
+        marginBottom: '16px',
     },
 });

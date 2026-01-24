@@ -1,8 +1,8 @@
 import { Wedge } from 'react-konva';
 import { AoeEffect } from './AoeEffect';
-import type { NativeStyle } from './nativeStyle';
+import { AoeProps } from './aoeProps';
 
-export interface AoeWedgeProps extends NativeStyle {
+export interface AoeWedgeProps extends AoeProps {
     freeze?: boolean;
     radius: number;
     angle: number;

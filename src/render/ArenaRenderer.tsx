@@ -8,6 +8,7 @@ import {
     ALIGN_TO_PIXEL,
     getCanvasArenaEllipse,
     getCanvasArenaRect,
+    getCanvasArenaTextureRect,
     getCanvasCoord,
     getCanvasSize,
     getCanvasX,
@@ -15,37 +16,37 @@ import {
     useCanvasArenaEllipse,
     useCanvasArenaRect,
 } from '../coord';
+import { getProxyImageUrl } from '../lib/image-proxy';
 import {
-    ArenaShape,
+    BaseGridProps,
     CustomRadialGrid,
     CustomRectangularGrid,
+    DEFAULT_FLOOR,
+    FloorShape,
     GridType,
+    NO_GRID,
     RadialGrid,
     RectangularGrid,
     Scene,
 } from '../scene';
-import { getArenaShapeConfig, getGridShapeConfig, useSceneTheme, useSceneThemeHtmlStyle } from '../theme';
+import { getFloorShapeConfig, getGridShapeConfig, useSceneTheme, useSceneThemeHtmlStyle } from '../theme';
 import { useImageTracked } from '../useObjectLoading';
 import { useStyledSvg } from '../useStyledSvg';
-import { degtorad, getLinearGridDivs, getUrlFileExtension } from '../util';
+import { getLinearGridDivs, getUrlFileExtension } from '../util';
 import { ArenaTickRenderer } from './ArenaTickRenderer';
 
 export interface ArenaRendererProps {
-    backgroundColor?: string;
     /** Do not draw complex objects that may slow down rendering. Useful for small previews. */
     simple?: boolean;
 }
 
-export const ArenaRenderer: React.FC<ArenaRendererProps> = ({ backgroundColor, simple }) => {
-    const theme = useSceneTheme();
-    backgroundColor ??= theme.colorBackground;
-
+export const ArenaRenderer: React.FC<ArenaRendererProps> = ({ simple }) => {
     return (
         <>
-            <Backdrop color={backgroundColor} />
             <BackgroundRenderer />
+            <FloorRenderer />
             <ArenaClip>
-                <BackgroundImage />
+                <TextureRenderer />
                 <GridRenderer />
             </ArenaClip>
             {!simple && <ArenaTickRenderer />}
@@ -53,23 +54,23 @@ export const ArenaRenderer: React.FC<ArenaRendererProps> = ({ backgroundColor, s
     );
 };
 
-interface BackdropProps {
-    color: string;
-}
-
-const Backdrop: React.FC<BackdropProps> = ({ color }) => {
+const BackgroundRenderer: React.FC = () => {
     const { scene } = useScene();
+    const { background } = scene.arena;
     const size = getCanvasSize(scene);
 
-    return <Rect fill={color} x={0} y={0} {...size} />;
+    return (
+        <Rect fill={background?.color ?? '#000000'} opacity={(background?.opacity ?? 0) / 100} x={0} y={0} {...size} />
+    );
 };
 
 function getArenaClip(scene: Scene): ((context: KonvaContext) => void) | undefined {
     const rect = getCanvasArenaRect(scene);
     const center = getCanvasCoord(scene, { x: 0, y: 0 });
+    const floor = scene.arena.floor ?? DEFAULT_FLOOR;
 
-    switch (scene.arena.shape) {
-        case ArenaShape.Circle:
+    switch (floor.shape) {
+        case FloorShape.Circle:
             return (ctx) => {
                 ctx.beginPath();
                 ctx.ellipse(center.x, center.y, rect.width / 2, rect.height / 2, 0, 0, Math.PI * 2);
@@ -77,7 +78,7 @@ function getArenaClip(scene: Scene): ((context: KonvaContext) => void) | undefin
                 ctx.closePath();
             };
 
-        case ArenaShape.Rectangle:
+        case FloorShape.Rectangle:
             return (ctx) => {
                 ctx.beginPath();
                 ctx.rect(rect.x + 1, rect.y + 1, rect.width - 2, rect.height - 2);
@@ -85,7 +86,7 @@ function getArenaClip(scene: Scene): ((context: KonvaContext) => void) | undefin
                 ctx.closePath();
             };
 
-        case ArenaShape.None:
+        case FloorShape.None:
             return undefined;
     }
 }
@@ -98,26 +99,35 @@ const ArenaClip: React.FC<PropsWithChildren> = ({ children }) => {
     return <Group clipFunc={clip}>{children}</Group>;
 };
 
-const BackgroundImage: React.FC = () => {
+const TextureRenderer: React.FC = () => {
     const { scene } = useScene();
+    const floor = scene.arena.floor ?? DEFAULT_FLOOR;
 
-    const url = scene.arena.backgroundImage ?? '';
+    const texture = scene.arena.texture;
+
+    if (!texture) {
+        return null;
+    }
+
+    const url = texture.url ?? '';
     const ext = getUrlFileExtension(url);
 
     if (!url) {
         return null;
     }
 
-    const opacity = (scene.arena.backgroundOpacity ?? 100) / 100;
-    const position = getCanvasArenaRect(scene);
-    const shadow = scene.arena.shape === ArenaShape.None ? SHADOW : {};
+    const proxyUrl = getProxyImageUrl(url);
+
+    const opacity = (texture.opacity ?? 100) / 100;
+    const position = getCanvasArenaTextureRect(scene);
+    const shadow = floor.shape === FloorShape.None ? SHADOW : {};
 
     switch (ext) {
         case '.svg':
-            return <BackgroundImageSvg url={url} opacity={opacity} {...position} {...shadow} />;
+            return <BackgroundImageSvg url={proxyUrl} opacity={opacity} {...position} {...shadow} />;
 
         default:
-            return <BackgroundImageBitmap url={url} opacity={opacity} {...position} {...shadow} />;
+            return <BackgroundImageBitmap url={proxyUrl} opacity={opacity} {...position} {...shadow} />;
     }
 };
 
@@ -146,40 +156,51 @@ const BackgroundImageSvg: React.FC<BackgroundImageProps> = ({ url, ...props }) =
     return <Image image={image} {...props} />;
 };
 
-const BackgroundRenderer: React.FC = () => {
+const FloorRenderer: React.FC = () => {
     const { scene } = useScene();
+    const floor = scene.arena.floor ?? DEFAULT_FLOOR;
+    const color = floor.color;
+    const opacity = (floor.opacity ?? 100) / 100;
 
-    switch (scene.arena.shape) {
-        case ArenaShape.Circle:
-            return <CircularBackground />;
+    switch (floor.shape) {
+        case FloorShape.Circle:
+            return <CircularFloor color={color} opacity={opacity} />;
 
-        case ArenaShape.Rectangle:
-            return <RectangularBackground />;
+        case FloorShape.Rectangle:
+            return <RectangularFloor color={color} opacity={opacity} />;
 
-        case ArenaShape.None:
+        case FloorShape.None:
             return <></>;
     }
 };
 
 const SHADOW: ShapeConfig = {
     shadowColor: 'black',
-    shadowOpacity: 0.5,
-    shadowOffsetY: 4,
-    shadowBlur: 6,
+    // shadowOpacity: 0.5,
+    // shadowOffsetY: 4,
+    shadowBlur: 10,
 };
 
-const CircularBackground: React.FC = () => {
+const CircularFloor: React.FC<{ color?: string; opacity?: number }> = ({ color, opacity }) => {
     const position = useCanvasArenaEllipse();
     const theme = useSceneTheme();
-    const shapeConfig = getArenaShapeConfig(theme);
+    const shapeConfig = getFloorShapeConfig(theme);
 
-    return <Ellipse {...position} {...shapeConfig} {...SHADOW} />;
+    return (
+        <Ellipse
+            {...position}
+            {...shapeConfig}
+            fill={color ?? shapeConfig.fill ?? theme.colorArena}
+            opacity={opacity}
+            {...SHADOW}
+        />
+    );
 };
 
-const RectangularBackground: React.FC = () => {
+const RectangularFloor: React.FC<{ color?: string; opacity?: number }> = ({ color, opacity }) => {
     const position = useCanvasArenaRect();
     const theme = useSceneTheme();
-    const shapeConfig = getArenaShapeConfig(theme);
+    const shapeConfig = getFloorShapeConfig(theme);
 
     // Align to pixel makes the rectangle one pixel wider than intended.
     const alignedPosition = {
@@ -189,31 +210,41 @@ const RectangularBackground: React.FC = () => {
         height: position.height - 1,
     };
 
-    return <Rect {...alignedPosition} {...shapeConfig} {...SHADOW} {...ALIGN_TO_PIXEL} />;
+    return (
+        <Rect
+            {...alignedPosition}
+            {...shapeConfig}
+            fill={color ?? shapeConfig.fill ?? theme.colorArena}
+            opacity={opacity}
+            {...SHADOW}
+            {...ALIGN_TO_PIXEL}
+        />
+    );
 };
 
 const GridRenderer: React.FC = () => {
     const { scene } = useScene();
+    const grid = scene.arena.grid ?? NO_GRID;
 
-    switch (scene.arena.grid.type) {
+    switch (grid.type) {
         case GridType.None:
             return null;
 
         case GridType.Radial:
-            return <RadialGridRenderer grid={scene.arena.grid} />;
+            return <RadialGridRenderer grid={grid} />;
 
         case GridType.Rectangular:
-            return <RectangularGridRenderer grid={scene.arena.grid} />;
+            return <RectangularGridRenderer grid={grid} />;
 
         case GridType.CustomRectangular:
-            return <CustomRectangularGridRenderer grid={scene.arena.grid} />;
+            return <CustomRectangularGridRenderer grid={grid} />;
 
         case GridType.CustomRadial:
-            return <CustomRadialGridRenderer grid={scene.arena.grid} />;
+            return <CustomRadialGridRenderer grid={grid} />;
     }
 };
 
-interface GridProps<T> {
+interface GridProps<T extends BaseGridProps> {
     grid: T;
 }
 
@@ -288,6 +319,8 @@ const RadialGridRenderer: React.FC<GridProps<RadialGrid>> = ({ grid }) => {
                 }
             }}
             {...shapeConfig}
+            stroke={grid.stroke ?? shapeConfig.stroke ?? theme.colorGrid}
+            opacity={(grid.opacity ?? 100) / 100}
             {...ALIGN_TO_PIXEL}
         />
     );
@@ -322,6 +355,8 @@ const RectangularGridRenderer: React.FC<GridProps<RectangularGrid>> = ({ grid })
                 ctx.fillStrokeShape(shape);
             }}
             {...shapeConfig}
+            stroke={grid.stroke ?? shapeConfig.stroke ?? theme.colorGrid}
+            opacity={(grid.opacity ?? 100) / 100}
             {...ALIGN_TO_PIXEL}
         />
     );
@@ -358,6 +393,8 @@ const CustomRectangularGridRenderer: React.FC<GridProps<CustomRectangularGrid>> 
                 context.fillStrokeShape(shape);
             }}
             {...shapeConfig}
+            stroke={grid.stroke ?? shapeConfig.stroke ?? theme.colorGrid}
+            opacity={(grid.opacity ?? 100) / 100}
             {...ALIGN_TO_PIXEL}
         />
     );
@@ -371,7 +408,7 @@ const CustomRadialGridRenderer: React.FC<GridProps<CustomRadialGrid>> = ({ grid 
     const position = getCanvasArenaEllipse(scene);
     const shapeConfig = getGridShapeConfig(theme);
 
-    const spokes = grid.spokes.map((angle) => circlePointAtAngle(degtorad(angle), position.radiusX, position.radiusY));
+    const spokes = grid.spokes.map((angle) => circlePointAtAngle(degToRad(angle), position.radiusX, position.radiusY));
 
     return (
         <Shape
@@ -396,6 +433,8 @@ const CustomRadialGridRenderer: React.FC<GridProps<CustomRadialGrid>> = ({ grid 
                 }
             }}
             {...shapeConfig}
+            stroke={grid.stroke ?? shapeConfig.stroke ?? theme.colorGrid}
+            opacity={(grid.opacity ?? 100) / 100}
             {...ALIGN_TO_PIXEL}
         />
     );

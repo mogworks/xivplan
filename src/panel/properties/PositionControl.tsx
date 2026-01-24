@@ -5,12 +5,12 @@ import { useTranslation } from 'react-i18next';
 import { useScene } from '../../SceneProvider';
 import { SpinButton } from '../../SpinButton';
 import { useSpinChanged } from '../../prefabs/useSpinChanged';
-import { MoveableObject } from '../../scene';
+import { MovableObject } from '../../scene';
 import { useControlStyles } from '../../useControlStyles';
 import { commonValue, setOrOmit } from '../../util';
 import { PropertiesControlProps } from '../PropertiesControl';
 
-export const PositionControl: React.FC<PropertiesControlProps<MoveableObject>> = ({ objects }) => {
+export const PositionControl: React.FC<PropertiesControlProps<MovableObject>> = ({ objects }) => {
     const classes = useControlStyles();
     const { dispatch } = useScene();
     const { t } = useTranslation();

@@ -10,7 +10,7 @@ import { DrawObject, ObjectType } from '../scene';
 import { HIGHLIGHT_WIDTH } from '../theme';
 import { DRAW_LINE_PROPS } from './DrawObjectStyles';
 import { HideCutoutGroup } from './HideGroup';
-import { ResizeableObjectContainer } from './ResizeableObjectContainer';
+import { ResizableObjectContainer } from './ResizableObjectContainer';
 import { useHighlightProps } from './highlight';
 
 function getLinePoints(object: DrawObject) {
@@ -22,7 +22,7 @@ export const DrawObjectRenderer: React.FC<RendererProps<DrawObject>> = ({ object
     const points = getLinePoints(object);
 
     return (
-        <ResizeableObjectContainer
+        <ResizableObjectContainer
             object={object}
             cache
             cacheKey={highlightProps}
@@ -48,7 +48,7 @@ export const DrawObjectRenderer: React.FC<RendererProps<DrawObject>> = ({ object
                     </HideCutoutGroup>
                 </Group>
             )}
-        </ResizeableObjectContainer>
+        </ResizableObjectContainer>
     );
 };
 

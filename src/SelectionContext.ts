@@ -22,7 +22,7 @@ export const SpotlightContext = createContext<SelectionState>([new Set(), () => 
  * Set of objects that are currently being dragged.
  *
  * When not dragging, the set should be empty. When starting a drag, the drag
- * selection should be set to match the moveable objects in the regular selection
+ * selection should be set to match the movable objects in the regular selection
  * using getNewDragSelection(). This ensures that changing the selection in the
  * middle of a drag doesn't break anything.
  */
