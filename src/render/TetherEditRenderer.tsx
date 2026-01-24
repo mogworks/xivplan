@@ -6,7 +6,7 @@ import { getPointerPosition } from '../coord';
 import { useDefaultCursor } from '../cursor';
 import { EditMode } from '../editMode';
 import { TetherToCursor } from '../prefabs/Tethers';
-import { isMoveable } from '../scene';
+import { isMovable } from '../scene';
 import { getSelectedObjects, useSelection } from '../selection';
 import { useEditMode } from '../useEditMode';
 import { useTetherConfig } from '../useTetherConfig';
@@ -51,7 +51,7 @@ const TetherEditLayer: React.FC = () => {
     const objects = getSelectedObjects(step, selection);
     const [start] = objects;
 
-    if (!start || !isMoveable(start)) {
+    if (!start || !isMovable(start)) {
         return null;
     }
 

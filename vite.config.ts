@@ -34,6 +34,10 @@ function getEnvOptions(mode: string): UserConfig {
 export default defineConfig(({ mode }) => ({
     ...getModeOptions(mode),
     ...getEnvOptions(mode),
+    test: {
+        environment: 'jsdom',
+        globals: true,
+    },
     plugins: [
         react({
             babel: {

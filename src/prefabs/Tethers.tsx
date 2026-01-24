@@ -1,5 +1,4 @@
 import { makeStyles } from '@fluentui/react-components';
-import { useTranslation } from 'react-i18next';
 import Konva from 'konva';
 import { NodeConfig } from 'konva/lib/Node';
 import { ShapeConfig } from 'konva/lib/Shape';
@@ -7,6 +6,7 @@ import { ArrowConfig } from 'konva/lib/shapes/Arrow';
 import { LineConfig } from 'konva/lib/shapes/Line';
 import { Vector2d } from 'konva/lib/types';
 import * as React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Arrow, Circle, Group, Line } from 'react-konva';
 import { CursorGroup } from '../CursorGroup';
 import { getObjectById, useScene } from '../SceneProvider';
@@ -25,11 +25,12 @@ import {
     SceneObject,
     Tether,
     TetherType,
-    isEnemy,
-    isMarker,
-    isMoveable,
+    isAoeObject,
+    isMovable,
     isRadiusObject,
     isResizable,
+    isTarget,
+    isWaymark,
     isZone,
 } from '../scene';
 import { selectNone, useSelection } from '../selection';
@@ -89,14 +90,14 @@ function getTargetPoints(
     startObject: SceneObject | undefined,
     endObject: SceneObject | undefined,
 ): [Vector2d, Vector2d] {
-    const startPos = isMoveable(startObject) ? startObject : INVALID_START_POS;
-    const endPos = isMoveable(endObject) ? endObject : INVALID_END_POS;
+    const startPos = isMovable(startObject) ? startObject : INVALID_START_POS;
+    const endPos = isMovable(endObject) ? endObject : INVALID_END_POS;
 
     return [getCanvasCoord(scene, startPos), getCanvasCoord(scene, endPos)];
 }
 
 function isGroundObject(object: SceneObject) {
-    return isZone(object) || isEnemy(object) || isMarker(object);
+    return isZone(object) || isTarget(object) || isWaymark(object) || isAoeObject(object);
 }
 
 function getTargetOffset(object: SceneObject | undefined): number {

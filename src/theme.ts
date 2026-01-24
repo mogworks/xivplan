@@ -1,7 +1,7 @@
 import { ColorSwatchProps, Theme, webDarkTheme, webLightTheme } from '@fluentui/react-components';
-import { useTranslation } from 'react-i18next';
 import { ShapeConfig } from 'konva/lib/Shape';
 import { CSSProperties, useContext } from 'react';
+import { useTranslation } from 'react-i18next';
 import { DarkModeContext } from './ThemeContext';
 import { cssPropertiesToStyleString, themeToCssProperties, themeToCssVars, themeToTokensObject } from './themeUtil';
 
@@ -36,14 +36,21 @@ export const DEFAULT_PARTY_OPACITY = 100;
 
 export const DEFAULT_IMAGE_OPACITY = 100;
 
-export const DEFAULT_AOE_COLOR = COLOR_ORANGE;
-export const DEFAULT_AOE_OPACITY = 35;
+export const DEFAULT_AOE_COLOR = '#fb923c';
+export const DEFAULT_AOE_INNER_GLOW_COLOR = '#ff751f';
+export const DEFAULT_AOE_OUTLINE_COLOR = '#fffc79';
+export const DEFAULT_AOE_HIGHLIGHT_COLOR = COLOR_ORANGE;
+export const DEFAULT_AOE_OPACITY = 12;
+export const DEFAULT_AOE_INNER_GLOW_OPACITY = 100;
+export const DEFAULT_AOE_OUTLINE_OPACITY = 100;
 
-export const DEFAULT_ENEMY_COLOR = COLOR_RED;
-export const DEFAULT_ENEMY_OPACITY = 65;
+export const DEFAULT_SHAPE_OPACITY = 35;
+
+export const DEFAULT_TARGET_COLOR = COLOR_RED;
+export const DEFAULT_TARGET_OPACITY = 65;
 
 export const HIGHLIGHT_COLOR = '#ffffff';
-export const SPOTLIGHT_COLOR = '#ffc800';
+export const SPOTLIGHT_COLOR = '#44D62C';
 export const HIGHLIGHT_WIDTH = 1.5;
 
 export const SELECTED_PROPS: ShapeConfig = {
@@ -61,7 +68,7 @@ export const SPOTLIGHT_PROPS: ShapeConfig = {
     listening: false,
     stroke: SPOTLIGHT_COLOR,
     strokeWidth: HIGHLIGHT_WIDTH,
-    shadowColor: '#ffff00',
+    shadowColor: '#44D62C',
     shadowBlur: 4,
     opacity: 0.75,
 };
@@ -75,7 +82,7 @@ export interface SceneTheme {
     colorBorder: string;
     colorBorderTickMajor: string;
     colorBorderTickMinor: string;
-    colorEnemyText: string;
+    colorTargetText: string;
 }
 
 const sceneTheme: SceneTheme = {
@@ -87,7 +94,7 @@ const sceneTheme: SceneTheme = {
     colorBorder: '#6f5a48', // var(--xiv-colorBorder, #6f5a48)
     colorBorderTickMajor: 'rgb(186 227 255)',
     colorBorderTickMinor: 'rgb(186 227 255 / 67%)',
-    colorEnemyText: '#ffffff',
+    colorTargetText: '#ffffff',
 };
 
 export const sceneVars = themeToCssVars(sceneTheme);
@@ -113,7 +120,7 @@ export function useSceneThemeHtmlStyle(selector = ':root'): string {
     return cssPropertiesToStyleString(selector, styles);
 }
 
-export function getArenaShapeConfig(theme: SceneTheme): ShapeConfig {
+export function getFloorShapeConfig(theme: SceneTheme): ShapeConfig {
     return {
         fill: theme.colorArena,
         stroke: theme.colorBorder,
@@ -128,9 +135,9 @@ export function getGridShapeConfig(theme: SceneTheme): ShapeConfig {
     };
 }
 
-export function getEnemyTextConfig(theme: SceneTheme): ShapeConfig {
+export function getTargetTextConfig(theme: SceneTheme): ShapeConfig {
     return {
-        fill: theme.colorEnemyText,
+        fill: theme.colorTargetText,
         stroke: theme.colorArena,
     };
 }
@@ -138,7 +145,7 @@ export function getEnemyTextConfig(theme: SceneTheme): ShapeConfig {
 export interface PanelTheme {
     colorZoneOrange: string;
     colorZoneBlue: string;
-    colorZoneEye: string;
+    colorZoneGaze: string;
     colorMagnetPlus: string;
     colorMagnetPlusSymbol: string;
     colorMagnetMinus: string;
@@ -148,7 +155,7 @@ export interface PanelTheme {
 const darkPanelTheme: PanelTheme = {
     colorZoneOrange: '#ffa700',
     colorZoneBlue: '#0058ff',
-    colorZoneEye: '#ff1200',
+    colorZoneGaze: '#ff1200',
     colorMagnetPlus: '#c68200',
     colorMagnetPlusSymbol: '#000000',
     colorMagnetMinus: '#0057f8',
@@ -158,7 +165,7 @@ const darkPanelTheme: PanelTheme = {
 const lightPanelTheme: PanelTheme = {
     colorZoneOrange: '#f07900',
     colorZoneBlue: '#0046ff',
-    colorZoneEye: '#ff0000',
+    colorZoneGaze: '#ff0000',
     colorMagnetPlus: '#c06100',
     colorMagnetPlusSymbol: '#ffffff',
     colorMagnetMinus: '#0047ff',

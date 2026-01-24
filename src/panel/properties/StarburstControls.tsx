@@ -5,7 +5,7 @@ import { useScene } from '../../SceneProvider';
 import { SpinButton } from '../../SpinButton';
 import { MIN_STARBURST_SPOKE_WIDTH } from '../../prefabs/bounds';
 import { useSpinChanged } from '../../prefabs/useSpinChanged';
-import { StarburstZone } from '../../scene';
+import { StarburstProps } from '../../scene';
 import { useControlStyles } from '../../useControlStyles';
 import { commonValue } from '../../util';
 import { PropertiesControlProps } from '../PropertiesControl';
@@ -13,7 +13,7 @@ import { PropertiesControlProps } from '../PropertiesControl';
 const MIN_SPOKE_COUNT = 3;
 const MAX_SPOKE_COUNT = 16;
 
-export const StarburstSpokeWidthControl: React.FC<PropertiesControlProps<StarburstZone>> = ({ objects }) => {
+export const StarburstSpokeWidthControl: React.FC<PropertiesControlProps<StarburstProps>> = ({ objects }) => {
     const classes = useControlStyles();
     const { dispatch } = useScene();
     const { t } = useTranslation();
@@ -31,7 +31,7 @@ export const StarburstSpokeWidthControl: React.FC<PropertiesControlProps<Starbur
     );
 };
 
-export const StarburstSpokeCountControl: React.FC<PropertiesControlProps<StarburstZone>> = ({ objects }) => {
+export const StarburstSpokeCountControl: React.FC<PropertiesControlProps<StarburstProps>> = ({ objects }) => {
     const classes = useControlStyles();
     const { dispatch } = useScene();
     const { t } = useTranslation();

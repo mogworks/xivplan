@@ -6,7 +6,7 @@ import {
     SelectionState,
     SpotlightContext,
 } from './SelectionContext';
-import { isMoveable, Scene, SceneObject, SceneStep } from './scene';
+import { isMovable, Scene, SceneObject, SceneStep } from './scene';
 
 /**
  * State for selected objects.
@@ -50,7 +50,7 @@ export function getSelectedObjects(step: SceneStep, selection: SceneSelection): 
 export function getNewDragSelection(step: SceneStep, selection: SceneSelection): SceneSelection {
     return new Set(
         getSelectedObjects(step, selection)
-            .filter(isMoveable)
+            .filter(isMovable)
             .map((obj) => obj.id),
     );
 }

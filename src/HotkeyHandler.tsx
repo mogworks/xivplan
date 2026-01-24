@@ -13,7 +13,7 @@ import { EditMode } from './editMode';
 import { moveObjectsBy } from './groupOperations';
 import { makeTethers } from './prefabs/TetherConfig';
 import { useStage } from './render/stage';
-import { MoveableObject, Scene, SceneObject, TetherType, isMoveable, isRotateable } from './scene';
+import { MovableObject, Scene, SceneObject, TetherType, isMovable, isRotatable } from './scene';
 import { getSelectedObjects, selectAll, selectNewObjects, selectNone, useSelection } from './selection';
 import { useEditMode } from './useEditMode';
 import { useHotkeyHelp, useHotkeys } from './useHotkeys';
@@ -75,12 +75,12 @@ function toggleHide(objects: readonly SceneObject[], dispatch: Dispatch<SceneAct
 }
 
 function toggleLock(objects: readonly SceneObject[], dispatch: Dispatch<SceneAction>) {
-    const moveable = objects.filter(isMoveable);
-    const pinned = commonValue(moveable, (obj) => obj.pinned ?? false);
+    const movable = objects.filter(isMovable);
+    const pinned = commonValue(movable, (obj) => obj.pinned ?? false);
 
     const newValue = pinned === undefined ? false : !pinned;
 
-    dispatch({ type: 'update', value: moveable.map((obj) => setOrOmit(obj, 'pinned', newValue)) });
+    dispatch({ type: 'update', value: movable.map((obj) => setOrOmit(obj, 'pinned', newValue)) });
 }
 
 const SelectionActionHandler: React.FC = () => {
@@ -309,12 +309,12 @@ const SMALL_MOVE_OFFSET = 1;
 const DEFAULT_MOVE_OFFSET = 10;
 const LARGE_MOVE_OFFSET = 25;
 
-function rotateObject<T extends MoveableObject>(object: T, center: Vector2d, rotation: number): T {
+function rotateObject<T extends MovableObject>(object: T, center: Vector2d, rotation: number): T {
     const pos = rotateCoord(object, rotation, center);
 
     const update = { ...object, ...pos };
 
-    if (isRotateable(object)) {
+    if (isRotatable(object)) {
         return {
             ...update,
             rotation: (object.rotation + rotation) % 360,
@@ -367,11 +367,11 @@ const EditActionHandler: React.FC = () => {
         }
 
         const value: SceneObject[] = [];
-        const center = getGroupCenter(getSelectedObjects(step, selection).filter(isMoveable));
+        const center = getGroupCenter(getSelectedObjects(step, selection).filter(isMovable));
 
         selection.forEach((id) => {
             const object = getObjectById(scene, id);
-            if (object && isMoveable(object)) {
+            if (object && isMovable(object)) {
                 value.push(rotateObject(object, center, offset));
             }
         });

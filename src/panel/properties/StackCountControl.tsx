@@ -17,6 +17,14 @@ export const StackCountControl: React.FC<PropertiesControlProps<StackCountObject
 
     const count = commonValue(objects, (obj) => obj.count);
 
+    // objects 中所有 object 的 countValues（undefined 时取 STACK_VALUES）的交集
+    const countValues = objects.reduce((acc, obj) => {
+        if (obj.countValues ?? STACK_VALUES) {
+            return acc.filter((i) => (obj.countValues ?? STACK_VALUES).includes(i));
+        }
+        return acc;
+    }, STACK_VALUES);
+
     const handleChanged = (count: number) => {
         dispatch({ type: 'update', value: objects.map((obj) => ({ ...obj, count })) });
     };
@@ -28,7 +36,7 @@ export const StackCountControl: React.FC<PropertiesControlProps<StackCountObject
                 value={String(count)}
                 onChange={(ev, data) => handleChanged(parseInt(data.value))}
             >
-                {STACK_VALUES.map((i) => (
+                {countValues.map((i) => (
                     <Segment
                         key={i}
                         value={i.toString()}

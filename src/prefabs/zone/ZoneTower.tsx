@@ -1,5 +1,6 @@
 import { CircleConfig } from 'konva/lib/shapes/Circle';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Circle } from 'react-konva';
 import { getDragOffset, registerDropHandler } from '../../DropHandler';
 import Icon from '../../assets/zone/meteor_tower.svg?react';
@@ -8,7 +9,7 @@ import { ListComponentProps, registerListComponent } from '../../panel/ListCompo
 import { registerRenderer, RendererProps } from '../../render/ObjectRegistry';
 import { LayerName } from '../../render/layers';
 import { ObjectType, TowerZone } from '../../scene';
-import { CENTER_DOT_RADIUS, DEFAULT_AOE_OPACITY, panelVars } from '../../theme';
+import { CENTER_DOT_RADIUS, DEFAULT_SHAPE_OPACITY, panelVars } from '../../theme';
 import { usePanelDrag } from '../../usePanelDrag';
 import { HideGroup } from '../HideGroup';
 import { PrefabIcon } from '../PrefabIcon';
@@ -16,7 +17,6 @@ import { RadiusObjectContainer } from '../RadiusObjectContainer';
 import { useHighlightProps } from '../highlight';
 import { getStackCircleProps, STACK_CIRCLE_INSET } from './stackUtil';
 import { getZoneStyle } from './style';
-import { useTranslation } from 'react-i18next';
 
 const DEFAULT_COLOR = '#bae3ff';
 const DEFAULT_RADIUS = 40;
@@ -49,7 +49,7 @@ registerDropHandler<TowerZone>(ObjectType.Tower, (object, position) => {
         object: {
             type: ObjectType.Tower,
             color: DEFAULT_COLOR,
-            opacity: DEFAULT_AOE_OPACITY,
+            opacity: DEFAULT_SHAPE_OPACITY,
             radius: DEFAULT_RADIUS,
             count: DEFAULT_COUNT,
             ...object,

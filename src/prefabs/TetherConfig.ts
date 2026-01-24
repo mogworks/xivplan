@@ -1,5 +1,5 @@
-import { ObjectType, SceneObject, Tether, TetherType, isMoveable } from '../scene';
 import i18n from '../i18n';
+import { ObjectType, SceneObject, Tether, TetherType, isMovable } from '../scene';
 import { COLOR_FUSCHIA, COLOR_GREEN, COLOR_ORANGE } from '../theme';
 import { combinations } from '../util';
 
@@ -50,7 +50,7 @@ export function makeTethers(objects: readonly SceneObject[], tether = TetherType
     const result: Omit<Tether, 'id'>[] = [];
 
     for (const [start, end] of combinations(objects)) {
-        if (isMoveable(start) && isMoveable(end)) {
+        if (isMovable(start) && isMovable(end)) {
             result.push(makeTether(start.id, end.id, tether));
         }
     }

@@ -1,7 +1,7 @@
 import { Stage } from 'konva/lib/Stage';
 import { Vector2d } from 'konva/lib/types';
 import { useScene } from './SceneProvider';
-import { Scene } from './scene';
+import { DEFAULT_ARENA_PADDING, DEFAULT_FLOOR, Scene } from './scene';
 import { degtorad, round } from './util';
 import { vecAngle } from './vector';
 
@@ -11,12 +11,16 @@ export const ALIGN_TO_PIXEL = {
 };
 
 export function getCanvasX(scene: Scene, x: number): number {
-    const center = scene.arena.width / 2 + scene.arena.padding;
+    const padding = scene.arena.background?.padding ?? DEFAULT_ARENA_PADDING;
+    const floor = scene.arena.floor ?? DEFAULT_FLOOR;
+    const center = floor.width / 2 + (typeof padding === 'number' ? padding : padding.left);
     return center + x;
 }
 
 export function getCanvasY(scene: Scene, y: number): number {
-    const center = scene.arena.height / 2 + scene.arena.padding;
+    const padding = scene.arena.background?.padding ?? DEFAULT_ARENA_PADDING;
+    const floor = scene.arena.floor ?? DEFAULT_FLOOR;
+    const center = floor.height / 2 + (typeof padding === 'number' ? padding : padding.top);
     return center - y;
 }
 
@@ -25,24 +29,40 @@ export function getCanvasCoord(scene: Scene, p: Vector2d): Vector2d {
 }
 
 export function getCanvasSize(scene: Scene): { width: number; height: number } {
+    const padding = scene.arena.background?.padding ?? DEFAULT_ARENA_PADDING;
+    const floor = scene.arena.floor ?? DEFAULT_FLOOR;
     return {
-        width: scene.arena.width + scene.arena.padding * 2,
-        height: scene.arena.height + scene.arena.padding * 2,
+        width: floor.width + (typeof padding === 'number' ? padding * 2 : padding.left + padding.right),
+        height: floor.height + (typeof padding === 'number' ? padding * 2 : padding.top + padding.bottom),
     };
 }
 
 export function getCanvasArenaRect(scene: Scene): { x: number; y: number; width: number; height: number } {
-    const { x, y } = getCanvasCoord(scene, { x: -scene.arena.width / 2, y: scene.arena.height / 2 });
-    const width = scene.arena.width;
-    const height = scene.arena.height;
+    const floor = scene.arena.floor ?? DEFAULT_FLOOR;
+    const { x, y } = getCanvasCoord(scene, { x: -floor.width / 2, y: floor.height / 2 });
+    const width = floor.width;
+    const height = floor.height;
+
+    return { x, y, width, height };
+}
+
+export function getCanvasArenaTextureRect(scene: Scene): { x: number; y: number; width: number; height: number } {
+    const floor = scene.arena.floor ?? DEFAULT_FLOOR;
+    const { x, y } = getCanvasCoord(scene, {
+        x: -(scene.arena.texture?.width ?? floor.width) / 2 + (scene.arena.texture?.offsetX ?? 0),
+        y: (scene.arena.texture?.height ?? floor.height) / 2 + (scene.arena.texture?.offsetY ?? 0),
+    });
+    const width = scene.arena.texture?.width ?? floor.width;
+    const height = scene.arena.texture?.height ?? floor.height;
 
     return { x, y, width, height };
 }
 
 export function getCanvasArenaEllipse(scene: Scene): { x: number; y: number; radiusX: number; radiusY: number } {
+    const floor = scene.arena.floor ?? DEFAULT_FLOOR;
     const { x, y } = getCanvasCoord(scene, { x: 0, y: 0 });
-    const radiusX = scene.arena.width / 2;
-    const radiusY = scene.arena.height / 2;
+    const radiusX = floor.width / 2;
+    const radiusY = floor.height / 2;
 
     return { x, y, radiusX, radiusY };
 }
@@ -63,12 +83,16 @@ export function useCanvasArenaEllipse(): { x: number; y: number; radiusX: number
 }
 
 export function getSceneX(scene: Scene, x: number): number {
-    const center = scene.arena.width / 2 + scene.arena.padding;
+    const floor = scene.arena.floor ?? DEFAULT_FLOOR;
+    const padding = scene.arena.background?.padding ?? DEFAULT_ARENA_PADDING;
+    const center = floor.width / 2 + (typeof padding === 'number' ? padding : padding.left);
     return x - center;
 }
 
 export function getSceneY(scene: Scene, y: number): number {
-    const center = scene.arena.height / 2 + scene.arena.padding;
+    const floor = scene.arena.floor ?? DEFAULT_FLOOR;
+    const padding = scene.arena.background?.padding ?? DEFAULT_ARENA_PADDING;
+    const center = floor.height / 2 + (typeof padding === 'number' ? padding : padding.top);
     return center - y;
 }
 

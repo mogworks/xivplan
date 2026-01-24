@@ -4,7 +4,7 @@ import { getCanvasCoord, getSceneCoord } from '../coord';
 import { CursorGroup } from '../CursorGroup';
 import { EditMode } from '../editMode';
 import { moveObjectsBy } from '../groupOperations';
-import { MoveableObject, Scene, SceneStep, UnknownObject } from '../scene';
+import { MovableObject, Scene, SceneStep, UnknownObject } from '../scene';
 import { SceneAction, useScene } from '../SceneProvider';
 import {
     getNewDragSelection,
@@ -21,7 +21,7 @@ import { SelectableObject } from './SelectableObject';
 import { TetherTarget } from './TetherTarget';
 
 export interface DraggableObjectProps {
-    object: MoveableObject & UnknownObject;
+    object: MovableObject & UnknownObject;
     children?: ReactNode;
 }
 
@@ -87,7 +87,7 @@ export const DraggableObject: React.FC<DraggableObjectProps> = ({ object, childr
 function updatePosition(
     scene: Scene,
     step: SceneStep,
-    targetObject: MoveableObject & UnknownObject,
+    targetObject: MovableObject & UnknownObject,
     dragSelection: SceneSelection,
     e: KonvaEventObject<DragEvent>,
     dispatch: Dispatch<SceneAction>,

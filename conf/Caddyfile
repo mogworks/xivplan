@@ -26,7 +26,7 @@
 		path *.png *.jpg *.jpeg *.gif *.svg *.webp *.avif *.woff *.woff2 *.ttf *.eot *.ico *.mp4 *.webm *.ogg *.avi *.mov
 	}
 	header @header_assets {
-		Cache-Control "public, max-age=604800"
+		Cache-Control "public, max-age=31536000, immutable"
 	}
 
 	# js css
@@ -34,7 +34,7 @@
 		path *.js *.mjs *.css
 	}
 	header @header_js_css {
-		Cache-Control "public, max-age=604800, immutable"
+		Cache-Control "public, max-age=31536000, immutable"
 	}
 
 	# xivplancn
@@ -52,7 +52,7 @@
 		X-Content-Type-Options nosniff
 		X-Frame-Options DENY
 		Referrer-Policy strict-origin-when-cross-origin
-		Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src https: data: blob:; font-src 'self' data:; connect-src 'self' https://xivapi.com https://*.xivapi.com; worker-src 'self' blob:;"
+		Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src https: data: blob:; font-src 'self' data:; connect-src 'self' https://xivstrat.cn https://*.xivstrat.cn https://xivapi.com https://*.xivapi.com https://xivcdn.com https://*.xivcdn.com; worker-src 'self' blob:;"
 		# EdgeOne 头部
 		X-Real-IP {http.request.header.EO-Client-IP}
 		X-Client-IP {http.request.header.EO-Client-IP}

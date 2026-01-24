@@ -11,12 +11,14 @@ import {
     EXAFLARE_SPACING_MAX,
     EXAFLARE_SPACING_MIN,
 } from '../../prefabs/zone/constants';
-import { ExaflareZone } from '../../scene';
+import { ExaflareZone, MechCircleExaflareObject } from '../../scene';
 import { useControlStyles } from '../../useControlStyles';
 import { commonValue } from '../../util';
 import { PropertiesControlProps } from '../PropertiesControl';
 
-export const ExaflareLengthControl: React.FC<PropertiesControlProps<ExaflareZone>> = ({ objects }) => {
+export const ExaflareLengthControl: React.FC<PropertiesControlProps<ExaflareZone | MechCircleExaflareObject>> = ({
+    objects,
+}) => {
     const classes = useControlStyles();
     const { dispatch } = useScene();
     const { t } = useTranslation();
@@ -40,7 +42,9 @@ export const ExaflareLengthControl: React.FC<PropertiesControlProps<ExaflareZone
     );
 };
 
-export const ExaflareSpacingControl: React.FC<PropertiesControlProps<ExaflareZone>> = ({ objects }) => {
+export const ExaflareSpacingControl: React.FC<PropertiesControlProps<ExaflareZone | MechCircleExaflareObject>> = ({
+    objects,
+}) => {
     const classes = useControlStyles();
     const { dispatch } = useScene();
     const { t } = useTranslation();
