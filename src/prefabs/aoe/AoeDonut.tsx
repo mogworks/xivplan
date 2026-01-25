@@ -24,7 +24,7 @@ const DEFAULT_INNER_RADIUS = 50;
 export const AoeDonutPrefab: React.FC = () => {
     const [, setDragObject] = usePanelDrag();
     const { t } = useTranslation();
-    const icon = new URL('public/prefabs/aoe/donut.webp', import.meta.env.VITE_COS_URL).href;
+    const icon = new URL('prefabs/aoe/donut.webp', import.meta.env.VITE_COS_URL).href;
 
     return (
         <PrefabIcon

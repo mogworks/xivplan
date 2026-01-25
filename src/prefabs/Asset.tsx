@@ -41,7 +41,7 @@ registerDropHandler<Asset>(ObjectType.Asset, (object, position) => {
         object: {
             type: ObjectType.Asset,
             name: '',
-            image: 'https://cos.xivstrat.cn/imgs/tmp.jpg',
+            image: 'https://cos.xivstrat.cn/tmp.webp',
             opacity: 100,
             width: 200,
             height: 200,

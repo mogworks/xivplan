@@ -15,8 +15,7 @@ import { PrefabIcon } from './PrefabIcon';
 import { RegularResizableObjectContainer } from './ResizableObjectContainer';
 
 const DEFAULT_SIZE = 60;
-const getIconUrl = (iconId: number) =>
-    new URL(`public/board/objects/${iconId}.webp`, import.meta.env.VITE_COS_URL).href;
+const getIconUrl = (iconId: number) => new URL(`board/objects/${iconId}.webp`, import.meta.env.VITE_COS_URL).href;
 const getNameKey = (iconId: number) => `enemy.${iconId}`;
 
 function makeIcon(iconId: number) {

@@ -16,7 +16,7 @@ import { PrefabIcon } from '../PrefabIcon';
 import { RadiusObjectContainer } from '../RadiusObjectContainer';
 
 const getIconUrl = (anticlockwise?: boolean) =>
-    new URL(`public/board/objects/${anticlockwise ? 140 : 139}.webp`, import.meta.env.VITE_COS_URL).href;
+    new URL(`board/objects/${anticlockwise ? 140 : 139}.webp`, import.meta.env.VITE_COS_URL).href;
 
 const DEFAULT_SIZE = 40;
 

@@ -95,7 +95,7 @@ export const getWaymarkShape = (type: WaymarkType): WaymarkShape => {
 };
 
 export const getWaymarkIconUrl = (type: WaymarkType, bg?: boolean) =>
-    new URL(`public/board/extra/waymark/${bg ? 'bg' : 'fg'}/${type}.webp`, import.meta.env.VITE_COS_URL).href;
+    new URL(`board/extra/waymark/${bg ? 'bg' : 'fg'}/${type}.webp`, import.meta.env.VITE_COS_URL).href;
 
 export const getWaymarkOffsetsFromGroup = (object: WaymarkGroupObject) => {
     const r = object.radius;

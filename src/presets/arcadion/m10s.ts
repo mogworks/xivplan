@@ -12,7 +12,7 @@ const M10S_1A: ArenaPreset = {
         type: GridType.None,
     },
     texture: {
-        url: 'https://cos.xivstrat.cn/public/floor/07/m10s/1a.webp',
+        url: 'https://cos.xivstrat.cn/floor/07/m10s/1a.webp',
         width: 520,
         height: 520,
     },
@@ -31,7 +31,7 @@ const M10S_1AL: ArenaPreset = {
         type: GridType.None,
     },
     texture: {
-        url: 'https://cos.xivstrat.cn/public/floor/07/m10s/1a.webp',
+        url: 'https://cos.xivstrat.cn/floor/07/m10s/1a.webp',
         width: 520 * 1.5,
         height: 520 * 1.5,
     },
@@ -50,7 +50,7 @@ const M10S_1B: ArenaPreset = {
         type: GridType.None,
     },
     texture: {
-        url: 'https://cos.xivstrat.cn/public/floor/07/m10s/1b.webp',
+        url: 'https://cos.xivstrat.cn/floor/07/m10s/1b.webp',
         width: 520,
         height: 520,
     },
@@ -69,7 +69,7 @@ const M10S_1BL: ArenaPreset = {
         type: GridType.None,
     },
     texture: {
-        url: 'https://cos.xivstrat.cn/public/floor/07/m10s/1b.webp',
+        url: 'https://cos.xivstrat.cn/floor/07/m10s/1b.webp',
         width: 520 * 1.5,
         height: 520 * 1.5,
     },
@@ -88,7 +88,7 @@ const M10S_1C: ArenaPreset = {
         type: GridType.None,
     },
     texture: {
-        url: 'https://cos.xivstrat.cn/public/floor/07/m10s/1c.webp',
+        url: 'https://cos.xivstrat.cn/floor/07/m10s/1c.webp',
         width: 520,
         height: 520,
     },
@@ -107,7 +107,7 @@ const M10S_1CL: ArenaPreset = {
         type: GridType.None,
     },
     texture: {
-        url: 'https://cos.xivstrat.cn/public/floor/07/m10s/1c.webp',
+        url: 'https://cos.xivstrat.cn/floor/07/m10s/1c.webp',
         width: 520 * 1.5,
         height: 520 * 1.5,
     },
@@ -126,7 +126,7 @@ const M10S_1D: ArenaPreset = {
         type: GridType.None,
     },
     texture: {
-        url: 'https://cos.xivstrat.cn/public/floor/07/m10s/1d.webp',
+        url: 'https://cos.xivstrat.cn/floor/07/m10s/1d.webp',
         width: 520,
         height: 520,
     },
@@ -145,7 +145,7 @@ const M10S_1DL: ArenaPreset = {
         type: GridType.None,
     },
     texture: {
-        url: 'https://cos.xivstrat.cn/public/floor/07/m10s/1d.webp',
+        url: 'https://cos.xivstrat.cn/floor/07/m10s/1d.webp',
         width: 520 * 1.5,
         height: 520 * 1.5,
     },
@@ -164,7 +164,7 @@ const M10S_2A: ArenaPreset = {
         type: GridType.None,
     },
     texture: {
-        url: 'https://cos.xivstrat.cn/public/floor/07/m10s/2a.webp',
+        url: 'https://cos.xivstrat.cn/floor/07/m10s/2a.webp',
         width: 520,
         height: 520,
     },
@@ -183,7 +183,7 @@ const M10S_2AL: ArenaPreset = {
         type: GridType.None,
     },
     texture: {
-        url: 'https://cos.xivstrat.cn/public/floor/07/m10s/2a.webp',
+        url: 'https://cos.xivstrat.cn/floor/07/m10s/2a.webp',
         width: 520 * 1.5,
         height: 520 * 1.5,
     },

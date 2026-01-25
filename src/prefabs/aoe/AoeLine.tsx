@@ -35,7 +35,7 @@ const ICON_SIZE = 32;
 export const AoeLinePrefab: React.FC = () => {
     const [, setDragObject] = usePanelDrag();
     const { t } = useTranslation();
-    const icon = new URL('public/prefabs/aoe/line.webp', import.meta.env.VITE_COS_URL).href;
+    const icon = new URL('prefabs/aoe/line.webp', import.meta.env.VITE_COS_URL).href;
 
     return (
         <PrefabIcon
