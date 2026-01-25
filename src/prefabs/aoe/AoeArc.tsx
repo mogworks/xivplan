@@ -38,7 +38,7 @@ const ICON_SIZE = 32;
 export const AoeArcPrefab: React.FC = () => {
     const [, setDragObject] = usePanelDrag();
     const { t } = useTranslation();
-    const icon = new URL('public/prefabs/aoe/arc.webp', import.meta.env.VITE_COS_URL).href;
+    const icon = new URL('prefabs/aoe/arc.webp', import.meta.env.VITE_COS_URL).href;
 
     return (
         <PrefabIcon

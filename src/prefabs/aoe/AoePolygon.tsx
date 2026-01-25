@@ -51,7 +51,7 @@ function getIconAndName(
 export const AoePolygonPrefab: React.FC = () => {
     const [, setDragObject] = usePanelDrag();
     const { t } = useTranslation();
-    const icon = new URL('public/prefabs/aoe/polygon.webp', import.meta.env.VITE_COS_URL).href;
+    const icon = new URL('prefabs/aoe/polygon.webp', import.meta.env.VITE_COS_URL).href;
 
     return (
         <PrefabIcon

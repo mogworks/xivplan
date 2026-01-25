@@ -14,7 +14,7 @@ import { useHighlightProps } from '../highlight';
 import { PrefabIcon } from '../PrefabIcon';
 import { RadiusObjectContainer } from '../RadiusObjectContainer';
 
-const icon = new URL(`public/board/objects/13.webp`, import.meta.env.VITE_COS_URL).href;
+const icon = new URL(`board/objects/13.webp`, import.meta.env.VITE_COS_URL).href;
 const DEFAULT_SIZE = 60;
 
 const RESPONSIVE_SIZE_SCALE = 0.75;

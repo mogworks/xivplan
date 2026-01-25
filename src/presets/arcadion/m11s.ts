@@ -12,7 +12,7 @@ const M11S_1: ArenaPreset = {
         type: GridType.None,
     },
     texture: {
-        url: 'https://cos.xivstrat.cn/public/floor/07/m11s/1.webp',
+        url: 'https://cos.xivstrat.cn/floor/07/m11s/1.webp',
         width: 400,
         height: 400,
     },
@@ -31,7 +31,7 @@ const M11S_1L: ArenaPreset = {
         type: GridType.None,
     },
     texture: {
-        url: 'https://cos.xivstrat.cn/public/floor/07/m11s/1.webp',
+        url: 'https://cos.xivstrat.cn/floor/07/m11s/1.webp',
         width: 600,
         height: 600,
     },
@@ -50,7 +50,7 @@ const M11S_2: ArenaPreset = {
         type: GridType.None,
     },
     texture: {
-        url: 'https://cos.xivstrat.cn/public/floor/07/m11s/2.webp',
+        url: 'https://cos.xivstrat.cn/floor/07/m11s/2.webp',
         width: 400,
         height: 400,
     },
@@ -68,7 +68,7 @@ const M11S_2L: ArenaPreset = {
         type: GridType.None,
     },
     texture: {
-        url: 'https://cos.xivstrat.cn/public/floor/07/m11s/2.webp',
+        url: 'https://cos.xivstrat.cn/floor/07/m11s/2.webp',
         width: 600,
         height: 600,
     },
@@ -87,7 +87,7 @@ const M11S_3: ArenaPreset = {
         type: GridType.None,
     },
     texture: {
-        url: 'https://cos.xivstrat.cn/public/floor/07/m11s/3.webp',
+        url: 'https://cos.xivstrat.cn/floor/07/m11s/3.webp',
         width: 400,
         height: 400,
     },
@@ -106,7 +106,7 @@ const M11S_3L: ArenaPreset = {
         type: GridType.None,
     },
     texture: {
-        url: 'https://cos.xivstrat.cn/public/floor/07/m11s/3.webp',
+        url: 'https://cos.xivstrat.cn/floor/07/m11s/3.webp',
         width: 600,
         height: 600,
     },
@@ -125,7 +125,7 @@ const M11S_4: ArenaPreset = {
         type: GridType.None,
     },
     texture: {
-        url: 'https://cos.xivstrat.cn/public/floor/07/m11s/4.webp',
+        url: 'https://cos.xivstrat.cn/floor/07/m11s/4.webp',
         width: 520,
         height: 400,
     },
@@ -144,7 +144,7 @@ const M11S_4L: ArenaPreset = {
         type: GridType.None,
     },
     texture: {
-        url: 'https://cos.xivstrat.cn/public/floor/07/m11s/4.webp',
+        url: 'https://cos.xivstrat.cn/floor/07/m11s/4.webp',
         width: 780,
         height: 600,
     },
