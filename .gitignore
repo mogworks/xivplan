@@ -28,3 +28,6 @@ dist-ssr
 
 # AI
 .ai/
+opencode.json
+.opencode/
+.trae/
