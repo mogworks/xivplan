@@ -28,7 +28,7 @@ const DEFAULT_SPOKE_COUNT = 8;
 export const AoeStarburstPrefab: React.FC = () => {
     const [, setDragObject] = usePanelDrag();
     const { t } = useTranslation();
-    const icon = new URL('public/prefabs/aoe/starburst.webp', import.meta.env.VITE_COS_URL).href;
+    const icon = new URL('prefabs/aoe/starburst.webp', import.meta.env.VITE_COS_URL).href;
 
     return (
         <PrefabIcon

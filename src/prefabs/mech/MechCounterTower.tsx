@@ -14,9 +14,9 @@ import { useHighlightProps } from '../highlight';
 import { PrefabIcon } from '../PrefabIcon';
 import { RadiusObjectContainer } from '../RadiusObjectContainer';
 
-const prefabIcon = new URL(`public/board/objects/127.webp`, import.meta.env.VITE_COS_URL).href;
+const prefabIcon = new URL(`board/objects/127.webp`, import.meta.env.VITE_COS_URL).href;
 const getIconUrl = (count: 1 | 2 | 3 | 4) =>
-    new URL(`public/board/objects/${count + 126}.webp`, import.meta.env.VITE_COS_URL).href;
+    new URL(`board/objects/${count + 126}.webp`, import.meta.env.VITE_COS_URL).href;
 
 const DEFAULT_SIZE = 40;
 

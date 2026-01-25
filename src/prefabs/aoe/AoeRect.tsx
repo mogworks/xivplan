@@ -32,7 +32,7 @@ const ICON_SIZE = 32;
 export const AoeRectPrefab: React.FC = () => {
     const [, setDragObject] = usePanelDrag();
     const { t } = useTranslation();
-    const icon = new URL('public/prefabs/aoe/rect.webp', import.meta.env.VITE_COS_URL).href;
+    const icon = new URL('prefabs/aoe/rect.webp', import.meta.env.VITE_COS_URL).href;
 
     return (
         <PrefabIcon

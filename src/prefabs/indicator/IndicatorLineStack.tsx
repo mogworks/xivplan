@@ -14,7 +14,7 @@ import { PrefabIcon } from '../PrefabIcon';
 import { RegularResizableObjectContainer } from '../ResizableObjectContainer';
 
 const DEFAULT_SIZE = 80;
-const icon = new URL(`public/board/objects/15.webp`, import.meta.env.VITE_COS_URL).href;
+const icon = new URL(`board/objects/15.webp`, import.meta.env.VITE_COS_URL).href;
 
 export const IndicatorLineStackPrefab: React.FC = () => {
     const [, setDragObject] = usePanelDrag();

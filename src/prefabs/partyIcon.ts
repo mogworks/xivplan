@@ -1,4 +1,4 @@
-// game strategy board icons: `public/board/objects/${iconId}.webp`
+// game strategy board icons: `board/objects/${iconId}.webp`
 export enum PartyIcon {
     GLA = 18, // 剑术
     PGL, // 格斗
@@ -52,7 +52,7 @@ export enum PartyIcon {
 
 const EXTRA_ICON_ID_BASE = 1000000;
 
-// extra icons: `public/board/extra/party/${iconId - EXTRA_ICON_ID_BASE}.png`
+// extra icons: `board/extra/party/${iconId - EXTRA_ICON_ID_BASE}.png`
 export enum ExtraPartyIcon {
     Any = 1000001,
     AllRole,
@@ -69,5 +69,5 @@ export const PartyIcons = { ...PartyIcon, ...ExtraPartyIcon } as const;
 
 export const getPartyIconUrl = (iconId: number) =>
     iconId < EXTRA_ICON_ID_BASE
-        ? new URL(`public/board/objects/${iconId}.webp`, import.meta.env.VITE_COS_URL).href
-        : new URL(`public/board/extra/party/${iconId - EXTRA_ICON_ID_BASE}.webp`, import.meta.env.VITE_COS_URL).href;
+        ? new URL(`board/objects/${iconId}.webp`, import.meta.env.VITE_COS_URL).href
+        : new URL(`board/extra/party/${iconId - EXTRA_ICON_ID_BASE}.webp`, import.meta.env.VITE_COS_URL).href;

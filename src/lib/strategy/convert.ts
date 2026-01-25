@@ -160,7 +160,7 @@ export function strategyBoardToScene(strategyBoardData: Uint8Array): Scene {
                 height: SCENE_HEIGHT,
             },
             texture: {
-                url: new URL(`public/board/background/${strategyBoard.background}.webp`, BASE_URL).href,
+                url: new URL(`board/background/${strategyBoard.background}.webp`, BASE_URL).href,
                 width: SCENE_WIDTH,
                 height: SCENE_HEIGHT,
             },
@@ -1371,7 +1371,7 @@ function extractBackgroundId(scene: Scene): number {
         return 1;
     }
 
-    const match = textureUrl.match(new RegExp(BASE_URL + '/public/board/background/(\\d+)\\.webp$'));
+    const match = textureUrl.match(new RegExp(BASE_URL + '/board/background/(\\d+)\\.webp$'));
     if (match && match[1]) {
         const backgroundId = parseInt(match[1], 10);
         if (1 <= backgroundId && backgroundId <= 7) {

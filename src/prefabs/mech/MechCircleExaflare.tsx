@@ -16,7 +16,7 @@ import { PrefabIcon } from '../PrefabIcon';
 import { RadiusObjectContainer } from '../RadiusObjectContainer';
 import { EXAFLARE_SPACING_DEFAULT } from '../zone/constants';
 
-const icon = new URL(`public/board/objects/126.webp`, import.meta.env.VITE_COS_URL).href;
+const icon = new URL(`board/objects/126.webp`, import.meta.env.VITE_COS_URL).href;
 
 const DEFAULT_SIZE = 50;
 

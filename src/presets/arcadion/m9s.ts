@@ -12,7 +12,7 @@ const M9S_1: ArenaPreset = {
         type: GridType.None,
     },
     texture: {
-        url: 'https://cos.xivstrat.cn/public/floor/07/m9s/1.webp',
+        url: 'https://cos.xivstrat.cn/floor/07/m9s/1.webp',
         width: 400,
         height: 400,
     },
@@ -31,7 +31,7 @@ const M9S_1L: ArenaPreset = {
         type: GridType.None,
     },
     texture: {
-        url: 'https://cos.xivstrat.cn/public/floor/07/m9s/1.webp',
+        url: 'https://cos.xivstrat.cn/floor/07/m9s/1.webp',
         width: 400 * 1.5,
         height: 400 * 1.5,
     },
@@ -50,7 +50,7 @@ const M9S_2: ArenaPreset = {
         type: GridType.None,
     },
     texture: {
-        url: 'https://cos.xivstrat.cn/public/floor/07/m9s/2.webp',
+        url: 'https://cos.xivstrat.cn/floor/07/m9s/2.webp',
         width: 200,
         height: 400,
     },
@@ -77,7 +77,7 @@ const M9S_2L: ArenaPreset = {
         type: GridType.None,
     },
     texture: {
-        url: 'https://cos.xivstrat.cn/public/floor/07/m9s/2.webp',
+        url: 'https://cos.xivstrat.cn/floor/07/m9s/2.webp',
         width: 200 * 1.5,
         height: 400 * 1.5,
     },
@@ -104,7 +104,7 @@ const M9S_3: ArenaPreset = {
         type: GridType.None,
     },
     texture: {
-        url: 'https://cos.xivstrat.cn/public/floor/07/m9s/3.webp',
+        url: 'https://cos.xivstrat.cn/floor/07/m9s/3.webp',
         width: 400,
         height: 400,
     },
@@ -123,7 +123,7 @@ const M9S_3L: ArenaPreset = {
         type: GridType.None,
     },
     texture: {
-        url: 'https://cos.xivstrat.cn/public/floor/07/m9s/3.webp',
+        url: 'https://cos.xivstrat.cn/floor/07/m9s/3.webp',
         width: 400 * 1.5,
         height: 400 * 1.5,
     },

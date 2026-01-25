@@ -15,7 +15,7 @@ import { RadiusObjectContainer } from './RadiusObjectContainer';
 import { WaymarkComponent } from './Waymark';
 import { getWaymarkOffsetsFromGroup, getWaymarkShape, WaymarkOrderType, WaymarkPlacementType } from './waymarkIcon';
 
-const icon = new URL(`public/prefabs/waymark/group.webp`, import.meta.env.VITE_COS_URL).href;
+const icon = new URL(`prefabs/waymark/group.webp`, import.meta.env.VITE_COS_URL).href;
 
 const DEFAULT_SIZE = 31;
 
