@@ -26,6 +26,8 @@ import { MergeObjectsButton } from './MergeObjectsButton';
 import { FileSource, useScene, useSceneUndoRedoPossible, useSetSource } from './SceneProvider';
 import { StepScreenshotButton } from './StepScreenshotButton';
 import { ToolbarContext } from './ToolbarContext';
+import { useCollaboration } from './collab/CollaborationProvider';
+import { RealtimeShareDialogButton } from './collab/RealtimeShareDialogButton';
 import { saveFile } from './file';
 import { OpenDialog, SaveAsDialog } from './file/FileDialog';
 import { ShareDialogButton } from './file/ShareDialogButton';
@@ -47,6 +49,7 @@ export const MainToolbar: React.FC = () => {
     const toolbarNode = useContext(ToolbarContext);
     const { dispatch } = useScene();
     const [undoPossible, redoPossible] = useSceneUndoRedoPossible();
+    const collab = useCollaboration();
     const [openFileOpen, setOpenFileOpen] = useState(false);
 
     const undo = () => {
@@ -81,16 +84,25 @@ export const MainToolbar: React.FC = () => {
 
                     <SaveButton />
 
-                    <CollapsableToolbarButton icon={<ArrowUndoRegular />} onClick={undo} disabled={!undoPossible}>
+                    <CollapsableToolbarButton
+                        icon={<ArrowUndoRegular />}
+                        onClick={undo}
+                        disabled={collab.enabled || !undoPossible}
+                    >
                         {t('toolbar.undo')}
                     </CollapsableToolbarButton>
-                    <CollapsableToolbarButton icon={<ArrowRedoRegular />} onClick={redo} disabled={!redoPossible}>
+                    <CollapsableToolbarButton
+                        icon={<ArrowRedoRegular />}
+                        onClick={redo}
+                        disabled={collab.enabled || !redoPossible}
+                    >
                         {t('toolbar.redo')}
                     </CollapsableToolbarButton>
 
                     <ToolbarDivider />
 
                     <ShareDialogButton>{t('toolbar.share')}</ShareDialogButton>
+                    <RealtimeShareDialogButton>{t('toolbar.live')}</RealtimeShareDialogButton>
 
                     <StepScreenshotButton>{t('toolbar.screenshot')}</StepScreenshotButton>
                     <GroupButton>{t('toolbar.group')}</GroupButton>
