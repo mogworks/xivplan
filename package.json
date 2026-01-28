@@ -5,6 +5,7 @@
   "private": true,
   "scripts": {
     "dev": "vite",
+    "collab:server": "node server/yjs-server.mjs",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
     "lint": "eslint .",
@@ -51,7 +52,12 @@
     "react-use": "17.6.0",
     "simplify-js": "1.2.4",
     "use-image": "1.1.4",
-    "usehooks-ts": "3.1.1"
+    "usehooks-ts": "3.1.1",
+    "lib0": "^0.2.99",
+    "ws": "^8.19.0",
+    "y-protocols": "^1.0.7",
+    "y-websocket": "^3.0.0",
+    "yjs": "^13.6.29"
   },
   "devDependencies": {
     "@eslint/js": "9.39.2",

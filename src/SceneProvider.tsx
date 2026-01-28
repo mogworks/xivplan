@@ -1,6 +1,7 @@
 /* eslint-disable react-refresh/only-export-components */
 import * as React from 'react';
-import { createContext, Dispatch, PropsWithChildren, SetStateAction, useContext, useState } from 'react';
+import { createContext, Dispatch, PropsWithChildren, SetStateAction, useContext, useMemo, useState } from 'react';
+import { CollaborationProvider, useCollaboration } from './collab/CollaborationProvider';
 import { copyObjects } from './copy';
 import {
     Arena,
@@ -144,27 +145,42 @@ export type ArenaAction =
 export interface ObjectUpdateAction {
     type: 'update';
     value: SceneObject | readonly SceneObject[];
+    /** When set, the update applies to this step instead of the viewer's current step. */
+    stepIndex?: number;
 }
 
 export interface ObjectAddAction {
     type: 'add';
     object: SceneObjectWithoutId | readonly SceneObjectWithoutId[];
+    /** When set, the add applies to this step instead of the viewer's current step. */
+    stepIndex?: number;
+    /**
+     * When provided, overrides the scene's nextId after the add.
+     * Used for collaborative editing where IDs may be pre-assigned.
+     */
+    nextId?: number;
 }
 
 export interface ObjectRemoveAction {
     type: 'remove';
     ids: number | readonly number[];
+    /** When set, the remove applies to this step instead of the viewer's current step. */
+    stepIndex?: number;
 }
 
 export interface ObjectMoveAction {
     type: 'move';
     from: number;
     to: number;
+    /** When set, the move applies to this step instead of the viewer's current step. */
+    stepIndex?: number;
 }
 
 export interface GroupMoveAction {
     type: 'moveUp' | 'moveDown' | 'moveToTop' | 'moveToBottom';
     ids: number | readonly number[];
+    /** When set, the move applies to this step instead of the viewer's current step. */
+    stepIndex?: number;
 }
 
 export type ObjectAction =
@@ -186,6 +202,13 @@ export interface IncrementStepAction {
 export interface AddStepAction {
     type: 'addStep';
     after?: number;
+    /**
+     * Optional pre-built step contents. When omitted, the step is created by copying the current step.
+     * This is used for collaborative editing to ensure deterministic ID assignment.
+     */
+    step?: SceneStep;
+    /** When provided, overrides the scene's nextId after adding the step. */
+    nextId?: number;
 }
 
 export interface RemoveStepAction {
@@ -240,6 +263,14 @@ function getCurrentStep(state: EditorState): SceneStep {
     return step;
 }
 
+function getStepAt(scene: Readonly<Scene>, index: number): SceneStep {
+    const step = scene.steps[index];
+    if (!step) {
+        throw new Error(`Invalid step index ${index}`);
+    }
+    return step;
+}
+
 const HISTORY_SIZE = 1000;
 
 const SourceContext = createContext<[FileSource | undefined, Dispatch<SetStateAction<FileSource | undefined>>]>([
@@ -263,12 +294,37 @@ export const SceneProvider: React.FC<SceneProviderProps> = ({ initialScene, chil
 
     return (
         <SourceContext value={source}>
-            <UndoProvider initialState={initialState}>{children}</UndoProvider>
+            <UndoProvider initialState={initialState}>
+                <CollaborationBridge>{children}</CollaborationBridge>
+            </UndoProvider>
         </SourceContext>
     );
 };
 
+const CollaborationBridge: React.FC<PropsWithChildren> = ({ children }) => {
+    const [, present, rawDispatch] = usePresent();
+    return (
+        <CollaborationProvider present={present} rawDispatch={rawDispatch}>
+            {children}
+        </CollaborationProvider>
+    );
+};
+
 export const SceneContext = Context;
+
+/**
+ * Internal helper hooks for features that need raw undo-context access
+ * (e.g. collaborative editing).
+ */
+export function useRawScenePresent(): [transientPresent: EditorState, present: EditorState] {
+    const [transientPresent, present] = usePresent();
+    return [transientPresent, present];
+}
+
+export function useRawSceneDispatch(): React.Dispatch<SceneAction | UndoRedoAction<EditorState>> {
+    const [, , dispatch] = usePresent();
+    return dispatch;
+}
 
 export interface SceneContext {
     scene: Scene;
@@ -284,6 +340,74 @@ export interface SceneContext {
 export function useScene(): SceneContext {
     const [transientPresent, present, dispatch] = usePresent();
     const [source] = useContext(SourceContext);
+    const collab = useCollaboration();
+
+    const wrappedDispatch = useMemo(() => {
+        if (!collab.enabled) {
+            return dispatch;
+        }
+
+        return (action: SceneAction | UndoRedoAction<EditorState>) => {
+            // Never sync undo/redo stack operations.
+            if (!('type' in action)) {
+                dispatch(action);
+                return;
+            }
+            if (
+                action.type === 'undo' ||
+                action.type === 'redo' ||
+                action.type === 'reset' ||
+                action.type === 'commit' ||
+                action.type === 'rollback'
+            ) {
+                dispatch(action);
+                return;
+            }
+
+            // Don't sync local-only viewer state.
+            if (
+                action.type === 'setSource' ||
+                action.type === 'setStep' ||
+                action.type === 'nextStep' ||
+                action.type === 'previousStep'
+            ) {
+                dispatch(action);
+                return;
+            }
+
+            let toDispatch: SceneAction = action;
+
+            // Ensure object actions are deterministic across clients by including the step index.
+            if (
+                (toDispatch.type === 'add' ||
+                    toDispatch.type === 'remove' ||
+                    toDispatch.type === 'move' ||
+                    toDispatch.type === 'moveUp' ||
+                    toDispatch.type === 'moveDown' ||
+                    toDispatch.type === 'moveToTop' ||
+                    toDispatch.type === 'moveToBottom' ||
+                    toDispatch.type === 'update') &&
+                toDispatch.stepIndex === undefined
+            ) {
+                toDispatch = { ...toDispatch, stepIndex: transientPresent.currentStep } as SceneAction;
+            }
+
+            // In collaborative mode, assign IDs client-locally and carry nextId forward explicitly.
+            if (toDispatch.type === 'add') {
+                const prepared = collab.prepareAddAction(toDispatch, transientPresent.scene);
+                toDispatch = prepared;
+            }
+
+            // In collaborative mode, add-step must be deterministic (copy + ID assignment).
+            if (toDispatch.type === 'addStep' && !toDispatch.step) {
+                const prepared = collab.prepareAddStepAction(toDispatch, transientPresent);
+                toDispatch = prepared;
+            }
+
+            dispatch(toDispatch);
+            collab.pushSceneAction(toDispatch);
+        };
+    }, [collab, dispatch, transientPresent]);
 
     return {
         scene: transientPresent.scene,
@@ -291,7 +415,7 @@ export function useScene(): SceneContext {
         step: getCurrentStep(transientPresent),
         stepIndex: transientPresent.currentStep,
         source: source,
-        dispatch,
+        dispatch: wrappedDispatch,
     };
 }
 
@@ -371,20 +495,33 @@ function assignObjectIds(
 ): { objects: SceneObject[]; nextId: number } {
     let nextId = scene.nextId;
 
-    const newObjects = objects
-        .map((obj) => {
-            if (obj.id !== undefined) {
-                return obj as SceneObject;
+    // Track existing IDs across the entire scene, and IDs we assign in this batch.
+    const usedIds = new Set<number>();
+    for (const step of scene.steps) {
+        for (const obj of step.objects) {
+            usedIds.add(obj.id);
+        }
+    }
+
+    const newObjects: SceneObject[] = [];
+    for (const obj of objects) {
+        let id = obj.id;
+
+        if (id === undefined) {
+            // Find the next available sequential ID.
+            while (usedIds.has(nextId)) {
+                nextId++;
             }
-            return { ...obj, id: nextId++ };
-        })
-        .filter((obj) => {
-            if (objects.some((existing) => existing.id === obj.id)) {
-                console.error(`Cannot create new object with already-used ID ${obj.id}`);
-                return false;
-            }
-            return true;
-        });
+            id = nextId++;
+        } else if (usedIds.has(id)) {
+            // Provided ID collides with an existing object (or a duplicate within this batch).
+            console.error(`Cannot create new object with already-used ID ${id}`);
+            continue;
+        }
+
+        usedIds.add(id);
+        newObjects.push({ ...(obj as Omit<SceneObject, 'id'>), id } as SceneObject);
+    }
 
     return {
         objects: newObjects,
@@ -464,18 +601,26 @@ function updateStep(scene: Readonly<Scene>, index: number, step: SceneStep): Sce
     return result;
 }
 
-function updateCurrentStep(state: Readonly<EditorState>, step: SceneStep): EditorState {
+function resolveStepIndex(state: Readonly<EditorState>, stepIndex: number | undefined): number {
+    const idx = stepIndex ?? state.currentStep;
+    return clamp(idx, 0, state.scene.steps.length - 1);
+}
+
+function updateStepByIndex(state: Readonly<EditorState>, stepIndex: number, step: SceneStep): EditorState {
     return {
         ...state,
-        scene: updateStep(state.scene, state.currentStep, step),
+        scene: updateStep(state.scene, stepIndex, step),
     };
 }
 
 function addObjects(
     state: Readonly<EditorState>,
     objects: SceneObjectWithoutId | readonly SceneObjectWithoutId[],
+    stepIndex?: number,
+    overrideNextId?: number,
 ): EditorState {
-    const currentStep = getCurrentStep(state);
+    const idx = resolveStepIndex(state, stepIndex);
+    const currentStep = getStepAt(state.scene, idx);
 
     const { objects: addedObjects, nextId } = assignObjectIds(state.scene, asArray(objects));
 
@@ -489,17 +634,19 @@ function addObjects(
         }
     }
 
+    const effectiveNextId = overrideNextId ?? nextId;
     return {
         ...state,
         scene: {
-            ...updateStep(state.scene, state.currentStep, { objects: newObjects }),
-            nextId,
+            ...updateStep(state.scene, idx, { objects: newObjects }),
+            nextId: effectiveNextId,
         },
     };
 }
 
-function removeObjects(state: Readonly<EditorState>, ids: readonly number[]): EditorState {
-    const currentStep = getCurrentStep(state);
+function removeObjects(state: Readonly<EditorState>, ids: readonly number[], stepIndex?: number): EditorState {
+    const idx = resolveStepIndex(state, stepIndex);
+    const currentStep = getStepAt(state.scene, idx);
 
     const objects = currentStep.objects.filter((object) => {
         if (ids.includes(object.id)) {
@@ -514,21 +661,22 @@ function removeObjects(state: Readonly<EditorState>, ids: readonly number[]): Ed
         return true;
     });
 
-    return updateCurrentStep(state, { objects });
+    return updateStepByIndex(state, idx, { objects });
 }
 
-function moveObject(state: Readonly<EditorState>, from: number, to: number): EditorState {
+function moveObject(state: Readonly<EditorState>, from: number, to: number, stepIndex?: number): EditorState {
     if (from === to) {
         return state;
     }
 
-    const currentStep = getCurrentStep(state);
+    const idx = resolveStepIndex(state, stepIndex);
+    const currentStep = getStepAt(state.scene, idx);
 
     const objects = currentStep.objects.slice();
     const items = objects.splice(from, 1);
     objects.splice(to, 0, ...items);
 
-    return updateCurrentStep(state, { objects });
+    return updateStepByIndex(state, idx, { objects });
 }
 
 function mapSelected(step: Readonly<SceneStep>, ids: readonly number[]) {
@@ -541,8 +689,9 @@ function unmapSelected(objects: { object: SceneObject; selected: boolean }[]): S
     };
 }
 
-function moveGroupUp(state: Readonly<EditorState>, ids: readonly number[]): EditorState {
-    const currentStep = getCurrentStep(state);
+function moveGroupUp(state: Readonly<EditorState>, ids: readonly number[], stepIndex?: number): EditorState {
+    const idx = resolveStepIndex(state, stepIndex);
+    const currentStep = getStepAt(state.scene, idx);
     const objects = mapSelected(currentStep, ids);
 
     for (let i = objects.length - 1; i > 0; i--) {
@@ -555,11 +704,12 @@ function moveGroupUp(state: Readonly<EditorState>, ids: readonly number[]): Edit
         }
     }
 
-    return updateCurrentStep(state, unmapSelected(objects));
+    return updateStepByIndex(state, idx, unmapSelected(objects));
 }
 
-function moveGroupDown(state: Readonly<EditorState>, ids: readonly number[]): EditorState {
-    const currentStep = getCurrentStep(state);
+function moveGroupDown(state: Readonly<EditorState>, ids: readonly number[], stepIndex?: number): EditorState {
+    const idx = resolveStepIndex(state, stepIndex);
+    const currentStep = getStepAt(state.scene, idx);
     const objects = mapSelected(currentStep, ids);
 
     for (let i = 0; i < objects.length - 1; i++) {
@@ -572,33 +722,36 @@ function moveGroupDown(state: Readonly<EditorState>, ids: readonly number[]): Ed
         }
     }
 
-    return updateCurrentStep(state, unmapSelected(objects));
+    return updateStepByIndex(state, idx, unmapSelected(objects));
 }
 
-function moveGroupToTop(state: Readonly<EditorState>, ids: readonly number[]): EditorState {
-    const currentStep = getCurrentStep(state);
+function moveGroupToTop(state: Readonly<EditorState>, ids: readonly number[], stepIndex?: number): EditorState {
+    const idx = resolveStepIndex(state, stepIndex);
+    const currentStep = getStepAt(state.scene, idx);
     const objects = mapSelected(currentStep, ids);
 
     objects.sort((a, b) => {
         return (a.selected ? 1 : 0) - (b.selected ? 1 : 0);
     });
 
-    return updateCurrentStep(state, unmapSelected(objects));
+    return updateStepByIndex(state, idx, unmapSelected(objects));
 }
 
-function moveGroupToBottom(state: Readonly<EditorState>, ids: readonly number[]): EditorState {
-    const currentStep = getCurrentStep(state);
+function moveGroupToBottom(state: Readonly<EditorState>, ids: readonly number[], stepIndex?: number): EditorState {
+    const idx = resolveStepIndex(state, stepIndex);
+    const currentStep = getStepAt(state.scene, idx);
     const objects = mapSelected(currentStep, ids);
 
     objects.sort((a, b) => {
         return (b.selected ? 1 : 0) - (a.selected ? 1 : 0);
     });
 
-    return updateCurrentStep(state, unmapSelected(objects));
+    return updateStepByIndex(state, idx, unmapSelected(objects));
 }
 
-function updateObjects(state: Readonly<EditorState>, values: readonly SceneObject[]): EditorState {
-    const currentStep = getCurrentStep(state);
+function updateObjects(state: Readonly<EditorState>, values: readonly SceneObject[], stepIndex?: number): EditorState {
+    const idx = resolveStepIndex(state, stepIndex);
+    const currentStep = getStepAt(state.scene, idx);
     const objects = currentStep.objects.slice();
 
     for (const update of asArray(values)) {
@@ -608,7 +761,7 @@ function updateObjects(state: Readonly<EditorState>, values: readonly SceneObjec
         }
     }
 
-    return updateCurrentStep(state, { objects });
+    return updateStepByIndex(state, idx, { objects });
 }
 
 function updateArena(state: Readonly<EditorState>, arena: Arena): EditorState {
@@ -635,8 +788,19 @@ function sceneReducer(state: Readonly<EditorState>, action: SceneAction): Editor
             }
             return setStep(state, state.currentStep - 1);
 
-        case 'addStep':
-            return addStep(state, action.after ?? state.currentStep);
+        case 'addStep': {
+            const after = action.after ?? state.currentStep;
+            if (action.step) {
+                const steps = state.scene.steps.slice();
+                steps.splice(after + 1, 0, action.step);
+                return {
+                    ...state,
+                    scene: { ...state.scene, steps, nextId: action.nextId ?? state.scene.nextId },
+                    currentStep: after + 1,
+                };
+            }
+            return addStep(state, after);
+        }
 
         case 'removeStep':
             return removeStep(state, action.index);
@@ -750,28 +914,28 @@ function sceneReducer(state: Readonly<EditorState>, action: SceneAction): Editor
             return updateArena(state, { ...state.scene.arena, ticks: action.value });
 
         case 'add':
-            return addObjects(state, action.object);
+            return addObjects(state, action.object, action.stepIndex, action.nextId);
 
         case 'remove':
-            return removeObjects(state, asArray(action.ids));
+            return removeObjects(state, asArray(action.ids), action.stepIndex);
 
         case 'move':
-            return moveObject(state, action.from, action.to);
+            return moveObject(state, action.from, action.to, action.stepIndex);
 
         case 'moveUp':
-            return moveGroupUp(state, asArray(action.ids));
+            return moveGroupUp(state, asArray(action.ids), action.stepIndex);
 
         case 'moveDown':
-            return moveGroupDown(state, asArray(action.ids));
+            return moveGroupDown(state, asArray(action.ids), action.stepIndex);
 
         case 'moveToTop':
-            return moveGroupToTop(state, asArray(action.ids));
+            return moveGroupToTop(state, asArray(action.ids), action.stepIndex);
 
         case 'moveToBottom':
-            return moveGroupToBottom(state, asArray(action.ids));
+            return moveGroupToBottom(state, asArray(action.ids), action.stepIndex);
 
         case 'update':
-            return updateObjects(state, asArray(action.value));
+            return updateObjects(state, asArray(action.value), action.stepIndex);
     }
 
     return state;
