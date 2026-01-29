@@ -11,10 +11,12 @@ import {
     MenuPopover,
     MenuTrigger,
     makeStyles,
+    useToastController,
 } from '@fluentui/react-components';
 import { PersonRegular, SignOutRegular } from '@fluentui/react-icons';
 import { useState } from 'react';
 import { authClient } from './auth/client';
+import { MessageToast } from './MessageToast';
 
 const useStyles = makeStyles({
     iconButton: {
@@ -40,6 +42,7 @@ export const AccountMenu = () => {
     const { data: authData } = authClient.useSession();
     const { user, session } = authData || {};
     const [isLogoutDialogOpen, setIsLogoutDialogOpen] = useState(false);
+    const { dispatchToast } = useToastController();
 
     const openPopup = (tab: 'signin' | 'signup' = 'signin') => {
         const width = 900;
@@ -54,8 +57,20 @@ export const AccountMenu = () => {
         const popup = window.open(loginUrl, 'authPopup', `width=${width},height=${height},left=${left},top=${top}`);
         if (popup) {
             const handleMessage = (event: MessageEvent) => {
-                if (event.origin === import.meta.env.VITE_BASE_URL && event.data === 'auth-success') {
-                    window.location.reload();
+                if (event.origin === import.meta.env.VITE_BASE_URL) {
+                    if (event.data === 'sign-in-success') {
+                        dispatchToast(<MessageToast title="登录成功" message="您已成功登录账户" />, {
+                            intent: 'success',
+                        });
+                    } else if (event.data === 'sign-up-success') {
+                        dispatchToast(
+                            <MessageToast
+                                title="注册信息提交成功"
+                                message="注册信息提交成功，还需完成邮箱验证方可登录"
+                            />,
+                            { intent: 'success' },
+                        );
+                    }
                     window.removeEventListener('message', handleMessage);
                 }
             };
