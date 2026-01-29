@@ -39,7 +39,7 @@ const useStyles = makeStyles({
 
 export const AccountMenu = () => {
     const classes = useStyles();
-    const { data: authData } = authClient.useSession();
+    const { data: authData, refetch } = authClient.useSession();
     const { user, session } = authData || {};
     const [isLogoutDialogOpen, setIsLogoutDialogOpen] = useState(false);
     const { dispatchToast } = useToastController();
@@ -59,6 +59,7 @@ export const AccountMenu = () => {
             const handleMessage = (event: MessageEvent) => {
                 if (event.origin === import.meta.env.VITE_BASE_URL) {
                     if (event.data === 'sign-in-success') {
+                        refetch();
                         dispatchToast(<MessageToast title="登录成功" message="您已成功登录账户" />, {
                             intent: 'success',
                         });
@@ -97,8 +98,19 @@ export const AccountMenu = () => {
     };
 
     const confirmLogout = () => {
-        authClient.signOut();
-        setIsLogoutDialogOpen(false);
+        authClient
+            .signOut()
+            .then(() => {
+                dispatchToast(<MessageToast title="登出成功" message="您已成功登出账户" />, {
+                    intent: 'success',
+                });
+                setIsLogoutDialogOpen(false);
+            })
+            .catch((error) => {
+                dispatchToast(<MessageToast title="登出失败" message={error?.message || '登出失败，请重试'} />, {
+                    intent: 'error',
+                });
+            });
     };
 
     return (
