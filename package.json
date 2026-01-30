@@ -21,7 +21,7 @@
     "@dnd-kit/sortable": "10.0.0",
     "@dnd-kit/utilities": "3.2.2",
     "@fluentui-contrib/react-virtualizer": "0.5.4",
-    "@fluentui/react-components": "9.72.10",
+    "@fluentui/react-components": "9.72.11",
     "@fluentui/react-icons": "2.0.317",
     "@fluentui/react-icons-mdl2": "1.4.4",
     "@uiw/react-color-hue": "2.9.3",
@@ -83,7 +83,7 @@
     "vitest": "4.0.18"
   },
   "optionalDependencies": {
-    "@rollup/rollup-linux-x64-gnu": "4.57.0"
+    "@rollup/rollup-linux-x64-gnu": "4.57.1"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
