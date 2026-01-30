@@ -17,6 +17,7 @@ import React, { HTMLAttributes, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 import { OutPortal } from 'react-reverse-portal';
 import { AboutDialog } from './AboutDialog';
+import { AccountMenu } from './AccountMenu';
 import { ExternalLink } from './ExternalLink';
 import { HelpContext } from './HelpContext';
 import { PANEL_WIDTH } from './panel/PanelStyles';
@@ -143,6 +144,7 @@ export const SiteHeader: React.FC<HTMLAttributes<HTMLElement>> = ({ className, .
                     icon={darkMode ? <WeatherSunnyFilled /> : <WeatherMoonFilled />}
                     onClick={() => setDarkMode(!darkMode)}
                 />
+                <AccountMenu />
             </div>
         </header>
     );
