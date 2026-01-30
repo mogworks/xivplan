@@ -46,15 +46,15 @@ export const AccountMenu = () => {
 
     const openPopup = (tab: 'signin' | 'signup' = 'signin') => {
         const width = 900;
-        const height = tab === 'signup' ? 820 : 640;
+        const height = tab === 'signup' ? 720 : 620;
         const left = Math.round((window.innerWidth - width) / 2);
         const top = Math.round((window.innerHeight - height) / 2);
 
-        const loginUrl = new URL('/login', import.meta.env.VITE_BASE_URL);
-        loginUrl.searchParams.set('callbackURL', import.meta.env.VITE_SITE_URL);
-        loginUrl.searchParams.set('isPopup', 'true');
-        loginUrl.searchParams.set('tab', tab);
-        const popup = window.open(loginUrl, 'authPopup', `width=${width},height=${height},left=${left},top=${top}`);
+        const dashboardUrl = new URL('/dashboard', import.meta.env.VITE_BASE_URL);
+        dashboardUrl.searchParams.set('callbackURL', import.meta.env.VITE_SITE_URL);
+        dashboardUrl.searchParams.set('isPopup', 'true');
+        dashboardUrl.searchParams.set('tab', tab);
+        const popup = window.open(dashboardUrl, 'authPopup', `width=${width},height=${height},left=${left},top=${top}`);
         if (popup) {
             const handleMessage = (event: MessageEvent) => {
                 if (event.origin === import.meta.env.VITE_BASE_URL) {
@@ -89,7 +89,7 @@ export const AccountMenu = () => {
 
     const handleAccountClick = () => {
         if (user && session) {
-            window.open(`${import.meta.env.VITE_BASE_URL}/account`, '_blank');
+            window.open(`${import.meta.env.VITE_BASE_URL}/dashboard`, '_blank');
         }
     };
 
