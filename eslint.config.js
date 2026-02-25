@@ -32,4 +32,9 @@ export default defineConfig(
         },
     },
     reactRefresh.configs.vite,
+    {
+        rules: {
+            'react-refresh/only-export-components': 'off',
+        },
+    },
 );

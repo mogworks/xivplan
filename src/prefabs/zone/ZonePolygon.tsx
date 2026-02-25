@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Group, RegularPolygon } from 'react-konva';
 import { getDragOffset, registerDropHandler } from '../../DropHandler';
 import HexagonIcon from '../../assets/zone/hexagon.svg?react';
@@ -12,7 +13,7 @@ import { ListComponentProps, registerListComponent } from '../../panel/ListCompo
 import { registerRenderer, RendererProps } from '../../render/ObjectRegistry';
 import { LayerName } from '../../render/layers';
 import { ObjectType, PolygonZone } from '../../scene';
-import { DEFAULT_AOE_COLOR, DEFAULT_AOE_OPACITY, panelVars } from '../../theme';
+import { DEFAULT_AOE_COLOR, DEFAULT_SHAPE_OPACITY, panelVars } from '../../theme';
 import { usePanelDrag } from '../../usePanelDrag';
 import { HideGroup } from '../HideGroup';
 import { PrefabIcon } from '../PrefabIcon';
@@ -20,17 +21,16 @@ import { RadiusObjectContainer } from '../RadiusObjectContainer';
 import { useHighlightProps } from '../highlight';
 import { getZoneStyle } from './style';
 
-const NAME = 'Regular Polygon';
-
-const DEFAULT_RADIUS = 50;
+const DEFAULT_RADIUS = 80;
 const DEFAULT_SIDES = 6;
 
 export const ZonePolygon: React.FC = () => {
     const [, setDragObject] = usePanelDrag();
+    const { t } = useTranslation();
     return (
         <PrefabIcon
             draggable
-            name={NAME}
+            name={t('objects.regularPolygon', { defaultValue: 'Regular Polygon' })}
             icon={<HexagonIcon />}
             onDragStart={(e) => {
                 setDragObject({
@@ -50,10 +50,10 @@ registerDropHandler<PolygonZone>(ObjectType.Polygon, (object, position) => {
         object: {
             type: ObjectType.Polygon,
             color: DEFAULT_AOE_COLOR,
-            opacity: DEFAULT_AOE_OPACITY,
+            opacity: DEFAULT_SHAPE_OPACITY,
             radius: DEFAULT_RADIUS,
             sides: DEFAULT_SIDES,
-            orient: 'point',
+            orient: 'side',
             rotation: 0,
             ...object,
             ...position,
@@ -99,27 +99,31 @@ const PolygonContainer: React.FC<RendererProps<PolygonZone>> = ({ object }) => {
 
 registerRenderer<PolygonZone>(ObjectType.Polygon, LayerName.Ground, PolygonContainer);
 
-function getIconAndName(sides: number): [typeof TriangleIcon, string] {
+function getIconAndName(
+    t: (key: string, opts?: { defaultValue?: string }) => string,
+    sides: number,
+): [typeof TriangleIcon, string] {
     switch (sides) {
         case 3:
-            return [TriangleIcon, 'Triangle'];
+            return [TriangleIcon, t('objects.triangle', { defaultValue: 'Triangle' })];
         case 4:
-            return [SquareIcon, 'Square'];
+            return [SquareIcon, t('objects.square', { defaultValue: 'Square' })];
         case 5:
-            return [PentagonIcon, 'Pentagon'];
+            return [PentagonIcon, t('objects.pentagon', { defaultValue: 'Pentagon' })];
         case 6:
-            return [HexagonIcon, 'Hexagon'];
+            return [HexagonIcon, t('objects.hexagon', { defaultValue: 'Hexagon' })];
         case 7:
-            return [SeptagonIcon, 'Septagon'];
+            return [SeptagonIcon, t('objects.septagon', { defaultValue: 'Septagon' })];
         case 8:
-            return [OcatgonIcon, 'Octagon'];
+            return [OcatgonIcon, t('objects.octagon', { defaultValue: 'Octagon' })];
         default:
-            return [OcatgonIcon, 'Polygon'];
+            return [OcatgonIcon, t('objects.polygon', { defaultValue: 'Polygon' })];
     }
 }
 
 const PolygonDetails: React.FC<ListComponentProps<PolygonZone>> = ({ object, ...props }) => {
-    const [Icon, name] = getIconAndName(object.sides);
+    const { t } = useTranslation();
+    const [Icon, name] = getIconAndName(t, object.sides);
     return (
         <DetailsItem
             icon={<Icon width="100%" height="100%" style={{ [panelVars.colorZoneOrange]: object.color }} />}

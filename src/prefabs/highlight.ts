@@ -1,6 +1,6 @@
 import { ShapeConfig } from 'konva/lib/Shape';
 import { EditMode } from '../editMode';
-import { isMoveable, UnknownObject } from '../scene';
+import { isMovable, UnknownObject } from '../scene';
 import { useSelection, useSpotlight } from '../selection';
 import { SceneSelection } from '../SelectionContext';
 import { SELECTED_PROPS, SPOTLIGHT_PROPS } from '../theme';
@@ -11,7 +11,7 @@ function shouldShowResizer(object: UnknownObject, selection: SceneSelection, edi
         selection.size === 1 &&
         selection.has(object.id) &&
         editMode === EditMode.Normal &&
-        isMoveable(object) &&
+        isMovable(object) &&
         !object.pinned
     );
 }

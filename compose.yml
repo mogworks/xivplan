@@ -1,0 +1,9 @@
+services:
+  xivplan:
+    image: caddy:alpine
+    container_name: xivplan
+    restart: unless-stopped
+    network_mode: host
+    volumes:
+      - /root/xivplan/conf:/etc/caddy
+      - /root/xivplan/dist:/srv

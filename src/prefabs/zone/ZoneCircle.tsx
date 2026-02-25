@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Circle } from 'react-konva';
 import { getDragOffset, registerDropHandler } from '../../DropHandler';
 import Icon from '../../assets/zone/circle.svg?react';
@@ -7,7 +8,7 @@ import { ListComponentProps, registerListComponent } from '../../panel/ListCompo
 import { registerRenderer, RendererProps } from '../../render/ObjectRegistry';
 import { LayerName } from '../../render/layers';
 import { CircleZone, ObjectType } from '../../scene';
-import { CENTER_DOT_RADIUS, DEFAULT_AOE_COLOR, DEFAULT_AOE_OPACITY, panelVars } from '../../theme';
+import { CENTER_DOT_RADIUS, DEFAULT_AOE_COLOR, DEFAULT_SHAPE_OPACITY, panelVars } from '../../theme';
 import { usePanelDrag } from '../../usePanelDrag';
 import { HideGroup } from '../HideGroup';
 import { PrefabIcon } from '../PrefabIcon';
@@ -15,17 +16,16 @@ import { RadiusObjectContainer } from '../RadiusObjectContainer';
 import { useHighlightProps } from '../highlight';
 import { getZoneStyle } from './style';
 
-const NAME = 'Circle';
-
-const DEFAULT_RADIUS = 50;
+const DEFAULT_RADIUS = 80;
 
 export const ZoneCircle: React.FC = () => {
     const [, setDragObject] = usePanelDrag();
+    const { t } = useTranslation();
 
     return (
         <PrefabIcon
             draggable
-            name={NAME}
+            name={t('objects.circle', { defaultValue: 'Circle' })}
             icon={<Icon />}
             onDragStart={(e) => {
                 setDragObject({
@@ -45,7 +45,7 @@ registerDropHandler<CircleZone>(ObjectType.Circle, (object, position) => {
         object: {
             type: ObjectType.Circle,
             color: DEFAULT_AOE_COLOR,
-            opacity: DEFAULT_AOE_OPACITY,
+            opacity: DEFAULT_SHAPE_OPACITY,
             radius: DEFAULT_RADIUS,
             ...object,
             ...position,
@@ -54,20 +54,20 @@ registerDropHandler<CircleZone>(ObjectType.Circle, (object, position) => {
 });
 
 interface CircleRendererProps extends RendererProps<CircleZone> {
-    radius: number;
     isDragging?: boolean;
 }
 
-const CircleRenderer: React.FC<CircleRendererProps> = ({ object, radius, isDragging }) => {
+const CircleRenderer: React.FC<CircleRendererProps> = ({ object, isDragging }) => {
     const highlightProps = useHighlightProps(object);
-    const style = getZoneStyle(object.color, object.opacity, radius * 2, object.hollow);
+
+    const style = getZoneStyle(object.color, object.opacity, object.radius * 2, object.hollow);
 
     return (
         <>
-            {highlightProps && <Circle radius={radius + style.strokeWidth / 2} {...highlightProps} />}
+            {highlightProps && <Circle radius={object.radius + style.strokeWidth / 2} {...highlightProps} />}
 
             <HideGroup>
-                <Circle radius={radius} {...style} />
+                <Circle radius={object.radius} {...style} />
 
                 {isDragging && <Circle radius={CENTER_DOT_RADIUS} fill={style.stroke} />}
             </HideGroup>
@@ -86,10 +86,12 @@ const CircleContainer: React.FC<RendererProps<CircleZone>> = ({ object }) => {
 registerRenderer<CircleZone>(ObjectType.Circle, LayerName.Ground, CircleContainer);
 
 const CircleDetails: React.FC<ListComponentProps<CircleZone>> = ({ object, ...props }) => {
+    const { t } = useTranslation();
+
     return (
         <DetailsItem
-            icon={<Icon width="100%" height="100%" style={{ [panelVars.colorZoneOrange]: object.color }} />}
-            name={NAME}
+            icon={<Icon width="100%" height="100%" style={{ [panelVars.colorZoneOrange]: DEFAULT_AOE_COLOR }} />}
+            name={t('objects.circle', { defaultValue: 'Circle' })}
             object={object}
             {...props}
         />

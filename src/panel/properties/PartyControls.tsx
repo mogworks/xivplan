@@ -1,42 +1,53 @@
 import { Button, Image, Label, makeStyles, tokens } from '@fluentui/react-components';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { useScene } from '../../SceneProvider';
-import { Job, getJob, getJobIconUrl } from '../../jobs';
+import { getPartyIconUrl, PartyIcons } from '../../prefabs/partyIcon';
 import { PartyObject } from '../../scene';
 import { PropertiesControlProps } from '../PropertiesControl';
 
-const ICON_CHOICES = [
-    [Job.RoleSupport, Job.RoleTank, Job.RoleHealer, Job.RoleDps, Job.RoleAny],
-    [Job.RoleMelee, Job.RoleRanged, Job.RoleMagicRanged, Job.RolePhysicalRanged],
-    [Job.Paladin, Job.Warrior, Job.DarkKnight, Job.Gunbreaker],
-    [Job.WhiteMage, Job.Scholar, Job.Astrologian, Job.Sage],
-    [Job.Monk, Job.Dragoon, Job.Samurai, Job.Reaper, Job.Ninja, Job.Viper],
-    [Job.BlackMage, Job.Summoner, Job.RedMage, Job.Pictomancer, Job.BlueMage],
-    [Job.Bard, Job.Machinist, Job.Dancer],
-].map((row) => row.map((job) => getJob(job)));
+const icons = [
+    [PartyIcons.Any, PartyIcons.AllRole, PartyIcons.TH, PartyIcons.TD, PartyIcons.HD],
+    [PartyIcons.Tank1, PartyIcons.Tank2],
+    [PartyIcons.Tank],
+    [PartyIcons.PLD, PartyIcons.WAR, PartyIcons.DRK, PartyIcons.GNB],
+    [PartyIcons.GLA, PartyIcons.MRD],
+    [PartyIcons.Healer1, PartyIcons.Healer2],
+    [PartyIcons.Healer, PartyIcons.PureHealer, PartyIcons.BarrierHealer],
+    [PartyIcons.WHM, PartyIcons.SCH, PartyIcons.AST, PartyIcons.SGE],
+    [PartyIcons.CNJ],
+    [PartyIcons.DPS1, PartyIcons.DPS2, PartyIcons.DPS3, PartyIcons.DPS4],
+    [PartyIcons.Melee1, PartyIcons.Melee2, PartyIcons.Ranged1, PartyIcons.Ranged2],
+    [PartyIcons.DPS, PartyIcons.Melee, PartyIcons.Ranged, PartyIcons.PhysicalRanged, PartyIcons.MagicalRanged],
+    [PartyIcons.MNK, PartyIcons.DRG, PartyIcons.NIN, PartyIcons.SAM, PartyIcons.RPR, PartyIcons.VPR],
+    [PartyIcons.BRD, PartyIcons.MCH, PartyIcons.DNC],
+    [PartyIcons.BLM, PartyIcons.SMN, PartyIcons.RDM, PartyIcons.PCT, PartyIcons.BLU],
+    [PartyIcons.PGL, PartyIcons.LNC, PartyIcons.ARC, PartyIcons.THM, PartyIcons.ACN],
+];
 
 export const PartyIconControl: React.FC<PropertiesControlProps<PartyObject>> = ({ objects }) => {
     const classes = useStyles();
     const { dispatch } = useScene();
+    const { t } = useTranslation();
 
-    const onClick = (name: string, image: string) =>
-        dispatch({ type: 'update', value: objects.map((obj) => ({ ...obj, name, image })) });
+    const onClick = (iconId: number) => dispatch({ type: 'update', value: objects.map((obj) => ({ ...obj, iconId })) });
 
     return (
         <div>
-            <Label className={classes.label}>Variant</Label>
+            <Label className={classes.label}>{t('properties.variant')}</Label>
             <div className={classes.container}>
-                {ICON_CHOICES.map((row, i) => (
+                {icons.map((row, i) => (
                     <div key={i} className={classes.row}>
-                        {row.map((job, j) => {
-                            const icon = getJobIconUrl(job.icon);
+                        {row.map((iconId, j) => {
+                            const icon = getPartyIconUrl(iconId);
+                            const name = t(`boardIcon.${iconId}`, { defaultValue: import.meta.env.DEV ? iconId : '' });
                             return (
                                 <Button
                                     key={j}
                                     appearance="transparent"
-                                    title={job.name}
+                                    title={name}
                                     icon={<Image src={icon} width={32} height={32} />}
-                                    onClick={() => onClick(job.name, icon)}
+                                    onClick={() => onClick(iconId)}
                                 />
                             );
                         })}

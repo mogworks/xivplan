@@ -9,6 +9,7 @@ export interface PrefabIconProps extends Omit<ImageProps, 'width' | 'height'> {
     filter?: string;
     width?: number;
     height?: number;
+    scale?: number;
 }
 
 export const PrefabIcon: React.FC<PrefabIconProps> = ({
@@ -18,6 +19,7 @@ export const PrefabIcon: React.FC<PrefabIconProps> = ({
     filter,
     width,
     height,
+    scale,
     draggable,
     onDragStart,
     ...props
@@ -29,6 +31,7 @@ export const PrefabIcon: React.FC<PrefabIconProps> = ({
         height: height ?? PREFAB_ICON_SIZE,
         fontSize: height ?? PREFAB_ICON_SIZE,
         filter,
+        scale: scale ?? 1,
     };
 
     return (

@@ -1,0 +1,292 @@
+import { WedgeConfig } from 'konva/lib/shapes/Wedge';
+import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Group, Shape, Wedge } from 'react-konva';
+import { getDragOffset, registerDropHandler } from '../../DropHandler';
+import { useScene } from '../../SceneProvider';
+import Icon from '../../assets/zone/fan.svg?react';
+import { getPointerAngle, snapAngle } from '../../coord';
+import { getResizeCursor } from '../../cursor';
+import { DetailsItem } from '../../panel/DetailsItem';
+import { ListComponentProps, registerListComponent } from '../../panel/ListComponentRegistry';
+import { RendererProps, registerRenderer } from '../../render/ObjectRegistry';
+import { ActivePortal } from '../../render/Portals';
+import { LayerName } from '../../render/layers';
+import { FanZone, ObjectType } from '../../scene';
+import { useIsDragging } from '../../selection';
+import { DEFAULT_AOE_COLOR, DEFAULT_SHAPE_OPACITY, panelVars } from '../../theme';
+import { usePanelDrag } from '../../usePanelDrag';
+import { clamp, degtorad, mod360 } from '../../util';
+import { distance } from '../../vector';
+import { HandleFuncProps, HandleStyle, createControlPointManager } from '../ControlPoint';
+import { DraggableObject } from '../DraggableObject';
+import { HideGroup } from '../HideGroup';
+import { PrefabIcon } from '../PrefabIcon';
+import { MAX_FAN_ANGLE, MIN_FAN_ANGLE, MIN_RADIUS } from '../bounds';
+import { CONTROL_POINT_BORDER_COLOR } from '../control-point';
+import { useHighlightProps, useShowResizer } from '../highlight';
+import { getZoneStyle } from './style';
+
+const DEFAULT_RADIUS = 150;
+const DEFAULT_ANGLE = 90;
+
+const ICON_SIZE = 32;
+
+export const ZoneFan: React.FC = () => {
+    const [, setDragObject] = usePanelDrag();
+    const { t } = useTranslation();
+
+    return (
+        <PrefabIcon
+            draggable
+            name={t('objects.fan')}
+            icon={<Icon />}
+            onDragStart={(e) => {
+                const offset = getDragOffset(e);
+                setDragObject({
+                    object: {
+                        type: ObjectType.Fan,
+                    },
+                    offset: {
+                        x: offset.x,
+                        y: offset.y - ICON_SIZE / 2,
+                    },
+                });
+            }}
+        />
+    );
+};
+
+registerDropHandler<FanZone>(ObjectType.Fan, (object, position) => {
+    return {
+        type: 'add',
+        object: {
+            type: ObjectType.Fan,
+            color: DEFAULT_AOE_COLOR,
+            opacity: DEFAULT_SHAPE_OPACITY,
+            radius: DEFAULT_RADIUS,
+            fanAngle: DEFAULT_ANGLE,
+            rotation: 0,
+            ...object,
+            ...position,
+        },
+    };
+});
+
+interface OffsetWedgeProps extends WedgeConfig {
+    shapeOffset: number;
+}
+
+const OffsetWedge: React.FC<OffsetWedgeProps> = ({ radius, angle, shapeOffset, ...props }) => {
+    const angleRad = degtorad(angle);
+    const offsetRadius = radius + shapeOffset;
+
+    const arcX1 = offsetRadius;
+    const arcY1 = 0;
+    const arcX2 = offsetRadius * Math.cos(angleRad);
+    const arcY2 = offsetRadius * Math.sin(angleRad);
+
+    const cornerX1 = arcX1;
+    const cornerY1 = arcY1 - shapeOffset;
+    const cornerX2 = arcX2 + shapeOffset * Math.cos(angleRad + Math.PI / 2);
+    const cornerY2 = arcY2 + shapeOffset * Math.sin(angleRad + Math.PI / 2);
+
+    // At 360 degrees, divisor goes to 0. Put the point in the center.
+    // At <= 15 degrees, pointDist becomes large and shows a gap with the
+    // non-offset shape. Limit pointDist to prevent that.
+    const divisor = Math.sin(angleRad / 2);
+    const pointDist = Math.min(shapeOffset * 2, divisor <= 0.001 ? 0 : shapeOffset / divisor);
+
+    const pointX = -pointDist * Math.cos(angleRad / 2);
+    const pointY = -pointDist * Math.sin(angleRad / 2);
+
+    return (
+        <Shape
+            {...props}
+            sceneFunc={(ctx, shape) => {
+                ctx.beginPath();
+
+                ctx.arc(0, 0, offsetRadius, 0, angleRad, false);
+                ctx.lineTo(cornerX2, cornerY2);
+                ctx.lineTo(pointX, pointY);
+                ctx.lineTo(cornerX1, cornerY1);
+
+                ctx.closePath();
+                ctx.fillStrokeShape(shape);
+            }}
+        />
+    );
+};
+
+const FanRenderer: React.FC<RendererProps<FanZone>> = ({ object }) => {
+    const highlightProps = useHighlightProps(object);
+
+    const style = getZoneStyle(object.color, object.opacity, object.radius * 2, object.hollow);
+
+    return (
+        <Group rotation={object.rotation - 90 - object.fanAngle / 2}>
+            {highlightProps && (
+                <OffsetWedge
+                    radius={object.radius}
+                    angle={object.fanAngle}
+                    shapeOffset={style.strokeWidth / 2}
+                    {...highlightProps}
+                />
+            )}
+            <HideGroup>
+                <Wedge radius={object.radius} angle={object.fanAngle} {...style} />
+            </HideGroup>
+        </Group>
+    );
+};
+
+function stateChanged(object: FanZone, state: FanState) {
+    return state.radius !== object.radius || state.rotation !== object.rotation || state.fanAngle !== object.fanAngle;
+}
+
+const FanContainer: React.FC<RendererProps<FanZone>> = ({ object }) => {
+    const { dispatch } = useScene();
+    const showResizer = useShowResizer(object);
+    const [resizing, setResizing] = useState(false);
+    const dragging = useIsDragging(object);
+
+    const updateObject = (state: FanState) => {
+        state.rotation = Math.round(state.rotation);
+        state.fanAngle = Math.round(state.fanAngle);
+
+        if (!stateChanged(object, state)) {
+            return;
+        }
+
+        dispatch({ type: 'update', value: { ...object, ...state } });
+    };
+
+    return (
+        <ActivePortal isActive={dragging || resizing}>
+            <DraggableObject object={object}>
+                <FanControlPoints
+                    object={object}
+                    onActive={setResizing}
+                    visible={showResizer && !dragging}
+                    onTransformEnd={updateObject}
+                >
+                    {(props) => <FanRenderer object={object} {...props} />}
+                </FanControlPoints>
+            </DraggableObject>
+        </ActivePortal>
+    );
+};
+
+registerRenderer<FanZone>(ObjectType.Fan, LayerName.Ground, FanContainer);
+
+const FanDetails: React.FC<ListComponentProps<FanZone>> = ({ object, ...props }) => {
+    const { t } = useTranslation();
+
+    return (
+        <DetailsItem
+            icon={<Icon width="100%" height="100%" style={{ [panelVars.colorZoneOrange]: DEFAULT_AOE_COLOR }} />}
+            name={t('objects.fan')}
+            object={object}
+            {...props}
+        />
+    );
+};
+
+registerListComponent<FanZone>(ObjectType.Fan, FanDetails);
+
+enum HandleId {
+    Radius,
+    Angle1,
+    Angle2,
+}
+
+interface FanState {
+    radius: number;
+    rotation: number;
+    fanAngle: number;
+}
+
+const OUTSET = 2;
+
+const ROTATE_SNAP_DIVISION = 15;
+const ROTATE_SNAP_TOLERANCE = 2;
+
+function getRadius(object: FanZone, { pointerPos, activeHandleId }: HandleFuncProps) {
+    if (pointerPos && activeHandleId === HandleId.Radius) {
+        return Math.max(MIN_RADIUS, Math.round(distance(pointerPos) - OUTSET));
+    }
+
+    return object.radius;
+}
+
+function getRotation(object: FanZone, { pointerPos, activeHandleId }: HandleFuncProps) {
+    if (pointerPos && activeHandleId === HandleId.Radius) {
+        const angle = getPointerAngle(pointerPos);
+        return snapAngle(angle, ROTATE_SNAP_DIVISION, ROTATE_SNAP_TOLERANCE);
+    }
+
+    return object.rotation;
+}
+
+function getFanAngle(object: FanZone, { pointerPos, activeHandleId }: HandleFuncProps) {
+    if (pointerPos) {
+        const angle = getPointerAngle(pointerPos);
+
+        if (activeHandleId === HandleId.Angle1) {
+            const fanAngle = snapAngle(
+                mod360(angle - object.rotation + 90) - 90,
+                ROTATE_SNAP_DIVISION,
+                ROTATE_SNAP_TOLERANCE,
+            );
+            return clamp(fanAngle * 2, MIN_FAN_ANGLE, MAX_FAN_ANGLE);
+        }
+        if (activeHandleId === HandleId.Angle2) {
+            const fanAngle = snapAngle(
+                mod360(angle - object.rotation + 270) - 270,
+                ROTATE_SNAP_DIVISION,
+                ROTATE_SNAP_TOLERANCE,
+            );
+
+            return clamp(-fanAngle * 2, MIN_FAN_ANGLE, MAX_FAN_ANGLE);
+        }
+    }
+
+    return object.fanAngle;
+}
+
+const FanControlPoints = createControlPointManager<FanZone, FanState>({
+    handleFunc: (object, handle) => {
+        const radius = getRadius(object, handle) + OUTSET;
+        const rotation = getRotation(object, handle);
+        const fanAngle = getFanAngle(object, handle);
+
+        const x = radius * Math.sin(degtorad(fanAngle / 2));
+        const y = radius * Math.cos(degtorad(fanAngle / 2));
+
+        return [
+            { id: HandleId.Radius, style: HandleStyle.Square, cursor: getResizeCursor(rotation), x: 0, y: -radius },
+            { id: HandleId.Angle1, style: HandleStyle.Diamond, cursor: 'crosshair', x: x, y: -y },
+            { id: HandleId.Angle2, style: HandleStyle.Diamond, cursor: 'crosshair', x: -x, y: -y },
+        ];
+    },
+    getRotation: getRotation,
+    stateFunc: (object, handle) => {
+        const radius = getRadius(object, handle);
+        const rotation = getRotation(object, handle);
+        const fanAngle = getFanAngle(object, handle);
+
+        return { radius, rotation, fanAngle };
+    },
+    onRenderBorder: (object, state) => {
+        return (
+            <OffsetWedge
+                rotation={-90 - state.fanAngle / 2}
+                radius={state.radius}
+                angle={state.fanAngle}
+                shapeOffset={1}
+                stroke={CONTROL_POINT_BORDER_COLOR}
+                fillEnabled={false}
+            />
+        );
+    },
+});

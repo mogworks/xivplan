@@ -1,8 +1,23 @@
-import { Button, Link, Text, Tooltip, makeStyles, mergeClasses, tokens } from '@fluentui/react-components';
-import { WeatherMoonFilled, WeatherSunnyFilled } from '@fluentui/react-icons';
+import {
+    Button,
+    Link,
+    Menu,
+    MenuItem,
+    MenuList,
+    MenuPopover,
+    MenuTrigger,
+    Text,
+    Tooltip,
+    makeStyles,
+    mergeClasses,
+    tokens,
+} from '@fluentui/react-components';
+import { LocalLanguageFilled, WeatherMoonFilled, WeatherSunnyFilled } from '@fluentui/react-icons';
 import React, { HTMLAttributes, useContext } from 'react';
+import { useTranslation } from 'react-i18next';
 import { OutPortal } from 'react-reverse-portal';
 import { AboutDialog } from './AboutDialog';
+import { AccountMenu } from './AccountMenu';
 import { ExternalLink } from './ExternalLink';
 import { HelpContext } from './HelpContext';
 import { PANEL_WIDTH } from './panel/PanelStyles';
@@ -22,7 +37,7 @@ const useStyles = makeStyles({
         alignItems: 'center',
         columnGap: GAP,
         minHeight: HEADER_HEIGHT,
-        paddingInlineEnd: '30px',
+        paddingInlineEnd: tokens.spacingHorizontalS,
     },
     title: {
         display: 'flex',
@@ -57,8 +72,18 @@ const useStyles = makeStyles({
         color: tokens.colorNeutralForeground2,
         fontWeight: 500,
     },
-    themeButton: {
-        minWidth: '130px',
+    iconButton: {
+        minWidth: '40px',
+        width: '40px',
+    },
+    buttonGroup: {
+        display: 'flex',
+        alignItems: 'center',
+        gap: tokens.spacingHorizontalS,
+    },
+    activeLanguageItem: {
+        color: tokens.colorBrandForeground1,
+        fontWeight: 600,
     },
 });
 
@@ -68,6 +93,7 @@ export const SiteHeader: React.FC<HTMLAttributes<HTMLElement>> = ({ className, .
     const toolbarNode = useContext(ToolbarContext);
     const [, setHelpOpen] = useContext(HelpContext);
     const [darkMode, setDarkMode] = useContext(DarkModeContext);
+    const { t, i18n } = useTranslation();
 
     const titleSize = source ? 400 : 500;
 
@@ -84,21 +110,41 @@ export const SiteHeader: React.FC<HTMLAttributes<HTMLElement>> = ({ className, .
             </div>
 
             <Link onClick={() => setHelpOpen(true)} className={classes.link}>
-                Help
+                {t('header.help')}
             </Link>
             <AboutDialog className={classes.link} />
-            <ExternalLink className={classes.link} href="https://github.com/joelspadin/xivplan" noIcon>
-                GitHub
+            <ExternalLink className={classes.link} href="https://github.com/mogworks/xivplan" noIcon>
+                {t('header.github')}
             </ExternalLink>
-            <div>
+            <div className={classes.buttonGroup}>
+                <Menu>
+                    <MenuTrigger disableButtonEnhancement>
+                        <Button appearance="subtle" className={classes.iconButton} icon={<LocalLanguageFilled />} />
+                    </MenuTrigger>
+                    <MenuPopover>
+                        <MenuList>
+                            <MenuItem
+                                onClick={() => i18n.changeLanguage('zh')}
+                                className={i18n.language === 'zh' ? classes.activeLanguageItem : undefined}
+                            >
+                                {t('header.language_zh')}
+                            </MenuItem>
+                            <MenuItem
+                                onClick={() => i18n.changeLanguage('en')}
+                                className={i18n.language === 'en' ? classes.activeLanguageItem : undefined}
+                            >
+                                {t('header.language_en')}
+                            </MenuItem>
+                        </MenuList>
+                    </MenuPopover>
+                </Menu>
                 <Button
                     appearance="subtle"
-                    className={classes.themeButton}
-                    icon={darkMode ? <WeatherMoonFilled /> : <WeatherSunnyFilled />}
+                    className={classes.iconButton}
+                    icon={darkMode ? <WeatherSunnyFilled /> : <WeatherMoonFilled />}
                     onClick={() => setDarkMode(!darkMode)}
-                >
-                    {darkMode ? 'Dark theme' : 'Light theme'}
-                </Button>
+                />
+                <AccountMenu />
             </div>
         </header>
     );
@@ -111,8 +157,8 @@ interface SourceIndicatorProps {
 const SourceIndicator: React.FC<SourceIndicatorProps> = ({ source }) => {
     const classes = useStyles();
     const isDirty = useIsDirty();
-
-    const tooltip = isDirty ? `${source.name} (unsaved changes)` : source.name;
+    const { t } = useTranslation();
+    const tooltip = isDirty ? t('header.unsavedChangesTooltip', { name: source.name }) : source.name;
 
     return (
         <Tooltip content={tooltip} relationship="description">

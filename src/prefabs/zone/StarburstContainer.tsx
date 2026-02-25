@@ -4,12 +4,13 @@ import { useScene } from '../../SceneProvider';
 import { getPointerAngle, rotateCoord, snapAngle } from '../../coord';
 import { getResizeCursor } from '../../cursor';
 import { ActivePortal } from '../../render/Portals';
-import { StarburstZone, UnknownObject } from '../../scene';
+import { AoeStarburstObject, StarburstZone, UnknownObject } from '../../scene';
 import { useIsDragging } from '../../selection';
 import { distance } from '../../vector';
-import { CONTROL_POINT_BORDER_COLOR, HandleFuncProps, HandleStyle, createControlPointManager } from '../ControlPoint';
+import { HandleFuncProps, HandleStyle, createControlPointManager } from '../ControlPoint';
 import { DraggableObject } from '../DraggableObject';
 import { MIN_RADIUS } from '../bounds';
+import { CONTROL_POINT_BORDER_COLOR } from '../control-point';
 import { useShowResizer } from '../highlight';
 
 interface StarburstControlProps {
@@ -28,7 +29,7 @@ export interface ExtendedStarburstObjectState extends StarburstObjectState {
 }
 
 export interface StarburstContainerProps extends StarburstControlProps {
-    object: StarburstZone & UnknownObject;
+    object: (StarburstZone | AoeStarburstObject) & UnknownObject;
     children: (state: ExtendedStarburstObjectState) => React.ReactElement;
     onTransformEnd?(state: StarburstObjectState): void;
 }
@@ -73,7 +74,7 @@ export const StarburstControlContainer: React.FC<StarburstContainerProps> = ({
     );
 };
 
-function stateChanged(object: StarburstZone, state: StarburstObjectState) {
+function stateChanged(object: StarburstZone | AoeStarburstObject, state: StarburstObjectState) {
     if (state.radius !== object.radius) {
         return true;
     }
@@ -101,7 +102,7 @@ const ROTATE_HANDLE_OFFSET = 50;
 const ROTATE_SNAP_DIVISION = 15;
 const ROTATE_SNAP_TOLERANCE = 2;
 
-function getRadius(object: StarburstZone, { pointerPos, activeHandleId }: HandleFuncProps) {
+function getRadius(object: StarburstZone | AoeStarburstObject, { pointerPos, activeHandleId }: HandleFuncProps) {
     if (pointerPos && activeHandleId === HandleId.Radius) {
         return Math.max(MIN_RADIUS, Math.round(distance(pointerPos) - OUTSET));
     }
@@ -110,7 +111,7 @@ function getRadius(object: StarburstZone, { pointerPos, activeHandleId }: Handle
 }
 
 function getSpokeWidth(
-    object: StarburstZone,
+    object: StarburstZone | AoeStarburstObject,
     { pointerPos, activeHandleId }: HandleFuncProps,
     { minSpokeWidth }: StarburstControlProps,
 ) {
@@ -122,7 +123,7 @@ function getSpokeWidth(
     return object.spokeWidth;
 }
 
-function getRotation(object: StarburstZone, { pointerPos, activeHandleId }: HandleFuncProps) {
+function getRotation(object: StarburstZone | AoeStarburstObject, { pointerPos, activeHandleId }: HandleFuncProps) {
     if (pointerPos && activeHandleId === HandleId.Rotate) {
         const angle = getPointerAngle(pointerPos);
         return snapAngle(angle, ROTATE_SNAP_DIVISION, ROTATE_SNAP_TOLERANCE);
@@ -131,7 +132,11 @@ function getRotation(object: StarburstZone, { pointerPos, activeHandleId }: Hand
     return object.rotation;
 }
 
-const StarburstControlPoints = createControlPointManager<StarburstZone, StarburstObjectState, StarburstControlProps>({
+const StarburstControlPoints = createControlPointManager<
+    StarburstZone | AoeStarburstObject,
+    StarburstObjectState,
+    StarburstControlProps
+>({
     handleFunc: (object, handle, props) => {
         const r = getRadius(object, handle) + OUTSET;
         const spokeWidth = getSpokeWidth(object, handle, props);

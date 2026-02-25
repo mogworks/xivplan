@@ -13,6 +13,7 @@ import {
     tokens,
 } from '@fluentui/react-components';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { ColorPicker } from './ColorPicker';
 import { DeferredInput } from './DeferredInput';
 import { isValidColor } from './color';
@@ -43,6 +44,7 @@ export const CompactColorPicker: React.FC<CompactColorPickerProps> = ({
 }) => {
     const classes = useStyles();
     const resetStyles = useResetStyles();
+    const { t } = useTranslation();
 
     const [colorValid, setColorValid] = useState(true);
     const [prevText, setPrevText] = useState(color);
@@ -83,7 +85,7 @@ export const CompactColorPicker: React.FC<CompactColorPickerProps> = ({
             <Field
                 label={label}
                 className={mergeClasses(classes.field, className)}
-                validationMessage={colorValid ? undefined : 'Invalid color'}
+                validationMessage={colorValid ? undefined : t('colors.invalidColor')}
                 validationState={colorValid ? 'none' : 'error'}
             >
                 <DeferredInput
@@ -95,7 +97,7 @@ export const CompactColorPicker: React.FC<CompactColorPickerProps> = ({
                                         <button
                                             className={mergeClasses(resetStyles, classes.button)}
                                             style={{ [swatchCSSVars.color]: color || '#000' }}
-                                            aria-label="Open color picker"
+                                            aria-label={t('colors.openColorPicker')}
                                         />
                                     </PopoverTrigger>
                                     <PopoverSurface tabIndex={-1}>

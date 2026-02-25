@@ -1,6 +1,7 @@
 import { ArrowUpRegular } from '@fluentui/react-icons';
 import { ArrowConfig } from 'konva/lib/shapes/Arrow';
 import * as React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Arrow, Group, Rect } from 'react-konva';
 import { getDragOffset, registerDropHandler } from '../DropHandler';
 import { getArrowStrokeExtent } from '../arrowUtil';
@@ -14,13 +15,11 @@ import { usePanelDrag } from '../usePanelDrag';
 import { CompositeReplaceGroup } from './CompositeReplaceGroup';
 import { HideCutoutGroup } from './HideGroup';
 import { PrefabIcon } from './PrefabIcon';
-import { ResizeableObjectContainer } from './ResizeableObjectContainer';
+import { ResizableObjectContainer } from './ResizableObjectContainer';
 import { useHighlightProps } from './highlight';
 
 // TODO: This would be a lot nicer if you could just click on start position
 // and drag to end position instead of having a set initial size/rotation.
-
-const NAME = 'Arrow';
 
 const DEFAULT_ARROW_WIDTH = 30;
 const DEFAULT_ARROW_HEIGHT = 150;
@@ -31,11 +30,12 @@ const Icon = ArrowUpRegular;
 
 export const MarkerArrow: React.FC = () => {
     const [, setDragObject] = usePanelDrag();
+    const { t } = useTranslation();
 
     return (
         <PrefabIcon
             draggable
-            name={NAME}
+            name={t('objects.arrow', { defaultValue: 'Arrow' })}
             icon={<Icon />}
             onDragStart={(e) => {
                 setDragObject({
@@ -94,7 +94,7 @@ const ArrowRenderer: React.FC<RendererProps<ArrowObject>> = ({ object }) => {
     };
 
     return (
-        <ResizeableObjectContainer object={object} transformerProps={{ centeredScaling: true }}>
+        <ResizableObjectContainer object={object} transformerProps={{ centeredScaling: true }}>
             {(groupProps) => (
                 <Group {...groupProps} listening={!object.hide}>
                     {highlightProps && (
@@ -112,14 +112,21 @@ const ArrowRenderer: React.FC<RendererProps<ArrowObject>> = ({ object }) => {
                     </HideCutoutGroup>
                 </Group>
             )}
-        </ResizeableObjectContainer>
+        </ResizableObjectContainer>
     );
 };
 
 registerRenderer<ArrowObject>(ObjectType.Arrow, LayerName.Default, ArrowRenderer);
 
 const ArrowDetails: React.FC<ListComponentProps<ArrowObject>> = (props) => {
-    return <DetailsItem icon={<Icon color={props.object.color} />} name={NAME} {...props} />;
+    const { t } = useTranslation();
+    return (
+        <DetailsItem
+            icon={<Icon color={props.object.color} />}
+            name={t('objects.arrow', { defaultValue: 'Arrow' })}
+            {...props}
+        />
+    );
 };
 
 registerListComponent<ArrowObject>(ObjectType.Arrow, ArrowDetails);

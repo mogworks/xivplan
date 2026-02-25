@@ -1,5 +1,6 @@
 import { Vector2d } from 'konva/lib/types';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Circle, Group } from 'react-konva';
 import Icon from '../../assets/zone/exaflare.svg?react';
 import { getDragOffset, registerDropHandler } from '../../DropHandler';
@@ -8,7 +9,7 @@ import { ListComponentProps, registerListComponent } from '../../panel/ListCompo
 import { LayerName } from '../../render/layers';
 import { registerRenderer, RendererProps } from '../../render/ObjectRegistry';
 import { ExaflareZone, ObjectType } from '../../scene';
-import { CENTER_DOT_RADIUS, DEFAULT_AOE_COLOR, DEFAULT_AOE_OPACITY, panelVars } from '../../theme';
+import { CENTER_DOT_RADIUS, DEFAULT_AOE_COLOR, DEFAULT_SHAPE_OPACITY, panelVars } from '../../theme';
 import { usePanelDrag } from '../../usePanelDrag';
 import { HideGroup } from '../HideGroup';
 import { useHighlightProps } from '../highlight';
@@ -18,18 +19,17 @@ import { EXAFLARE_SPACING_DEFAULT } from './constants';
 import { ChevronTail } from './shapes';
 import { getArrowStyle, getZoneStyle } from './style';
 
-const NAME = 'Moving AOE';
-
 const DEFAULT_RADIUS = 50;
 const DEFAULT_LENGTH = 6;
 
 export const ZoneExaflare: React.FC = () => {
     const [, setDragObject] = usePanelDrag();
+    const { t } = useTranslation();
 
     return (
         <PrefabIcon
             draggable
-            name={NAME}
+            name={t('objects.movingAoe', { defaultValue: 'Moving AOE' })}
             icon={<Icon />}
             onDragStart={(e) => {
                 setDragObject({
@@ -49,7 +49,7 @@ registerDropHandler<ExaflareZone>(ObjectType.Exaflare, (object, position) => {
         object: {
             type: ObjectType.Exaflare,
             color: DEFAULT_AOE_COLOR,
-            opacity: DEFAULT_AOE_OPACITY,
+            opacity: DEFAULT_SHAPE_OPACITY,
             radius: DEFAULT_RADIUS,
             length: DEFAULT_LENGTH,
             spacing: EXAFLARE_SPACING_DEFAULT,
@@ -137,10 +137,11 @@ const ExaflareContainer: React.FC<RendererProps<ExaflareZone>> = ({ object }) =>
 registerRenderer<ExaflareZone>(ObjectType.Exaflare, LayerName.Ground, ExaflareContainer);
 
 const ExaflareDetails: React.FC<ListComponentProps<ExaflareZone>> = ({ object, ...props }) => {
+    const { t } = useTranslation();
     return (
         <DetailsItem
             icon={<Icon width="100%" height="100%" style={{ [panelVars.colorZoneOrange]: object.color }} />}
-            name={NAME}
+            name={t('objects.movingAoe', { defaultValue: 'Moving AOE' })}
             object={object}
             {...props}
         />

@@ -1,4 +1,4 @@
-import { Divider, Field } from '@fluentui/react-components';
+import { Field } from '@fluentui/react-components';
 import {
     bundleIcon,
     CircleFilled,
@@ -9,6 +9,7 @@ import {
     SquareRegular,
 } from '@fluentui/react-icons';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { DEFAULT_RADIAL_TICKS, DEFAULT_RECT_TICKS, NO_TICKS, Ticks, TickType } from '../scene';
 import { useScene } from '../SceneProvider';
 import { Segment, SegmentedGroup } from '../Segmented';
@@ -24,6 +25,7 @@ export const ArenaTickEdit: React.FC = () => {
     const classes = useControlStyles();
     const { scene, dispatch } = useScene();
     const ticks = scene.arena.ticks;
+    const { t } = useTranslation();
 
     const setTicks = (ticks: Ticks) => {
         dispatch({ type: 'arenaTicks', value: ticks });
@@ -47,21 +49,21 @@ export const ArenaTickEdit: React.FC = () => {
 
     return (
         <div className={classes.column}>
-            <Field label="Border ticks">
+            <Field label={t('arena.borderTickType')}>
                 <SegmentedGroup
                     name="arena-ticks"
                     value={ticks?.type ?? TickType.None}
                     onChange={(ev, data) => onTypeChange(data.value as TickType)}
                 >
-                    <Segment value={TickType.None} icon={<SquareHintIcon />} title="None" />
-                    <Segment value={TickType.Radial} icon={<CircleIcon />} title="Circle" />
-                    <Segment value={TickType.Rectangular} icon={<SquareIcon />} title="Rectangle" />
+                    <Segment value={TickType.None} icon={<SquareHintIcon />} title={t('arena.none')} />
+                    <Segment value={TickType.Radial} icon={<CircleIcon />} title={t('arena.circle')} />
+                    <Segment value={TickType.Rectangular} icon={<SquareIcon />} title={t('arena.rectangle')} />
                 </SegmentedGroup>
             </Field>
             {ticks?.type === TickType.Radial && (
                 <>
                     <div className={classes.row}>
-                        <Field label="Major ticks">
+                        <Field label={t('arena.majorTicks')}>
                             <SpinButton
                                 min={0}
                                 max={90}
@@ -74,7 +76,7 @@ export const ArenaTickEdit: React.FC = () => {
                                 }}
                             />
                         </Field>
-                        <Field label="Major rotation">
+                        <Field label={t('arena.majorRotation')}>
                             <SpinButtonUnits
                                 min={-180}
                                 max={180}
@@ -91,7 +93,7 @@ export const ArenaTickEdit: React.FC = () => {
                         </Field>
                     </div>
                     <div className={classes.row}>
-                        <Field label="Minor ticks">
+                        <Field label={t('arena.minorTicks')}>
                             <SpinButton
                                 min={0}
                                 max={180}
@@ -104,7 +106,7 @@ export const ArenaTickEdit: React.FC = () => {
                                 }}
                             />
                         </Field>
-                        <Field label="Minor rotation">
+                        <Field label={t('arena.minorRotation')}>
                             <SpinButtonUnits
                                 min={-180}
                                 max={180}
@@ -125,7 +127,7 @@ export const ArenaTickEdit: React.FC = () => {
             {ticks?.type === TickType.Rectangular && (
                 <>
                     <div className={classes.row}>
-                        <Field label="Columns">
+                        <Field label={t('arena.columns')}>
                             <SpinButton
                                 min={1}
                                 max={100}
@@ -138,7 +140,7 @@ export const ArenaTickEdit: React.FC = () => {
                                 }}
                             />
                         </Field>
-                        <Field label="Rows">
+                        <Field label={t('arena.rows')}>
                             <SpinButton
                                 min={1}
                                 max={100}
@@ -154,7 +156,6 @@ export const ArenaTickEdit: React.FC = () => {
                     </div>
                 </>
             )}
-            {ticks && ticks.type !== TickType.None && <Divider />}
         </div>
     );
 };

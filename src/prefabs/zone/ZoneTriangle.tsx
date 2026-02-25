@@ -1,5 +1,6 @@
 import { RectConfig } from 'konva/lib/shapes/Rect';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Group, Line } from 'react-konva';
 import { getDragOffset, registerDropHandler } from '../../DropHandler';
 import Icon from '../../assets/zone/triangle.svg?react';
@@ -8,25 +9,24 @@ import { ListComponentProps, registerListComponent } from '../../panel/ListCompo
 import { registerRenderer, RendererProps } from '../../render/ObjectRegistry';
 import { LayerName } from '../../render/layers';
 import { ObjectType, RectangleZone } from '../../scene';
-import { DEFAULT_AOE_COLOR, DEFAULT_AOE_OPACITY, panelVars } from '../../theme';
+import { DEFAULT_AOE_COLOR, DEFAULT_SHAPE_OPACITY, panelVars } from '../../theme';
 import { usePanelDrag } from '../../usePanelDrag';
 import { HideGroup } from '../HideGroup';
 import { PrefabIcon } from '../PrefabIcon';
-import { ResizeableObjectContainer } from '../ResizeableObjectContainer';
+import { ResizableObjectContainer } from '../ResizableObjectContainer';
 import { useHighlightProps } from '../highlight';
 import { getZoneStyle } from './style';
-
-const NAME = 'Triangle';
 
 const DEFAULT_TRIANGLE_WIDTH = 100;
 const DEFAULT_TRIANGLE_HEIGHT = Math.floor((DEFAULT_TRIANGLE_WIDTH * Math.sqrt(3)) / 2);
 
 export const ZoneTriangle: React.FC = () => {
     const [, setDragObject] = usePanelDrag();
+    const { t } = useTranslation();
     return (
         <PrefabIcon
             draggable
-            name={NAME}
+            name={t('objects.triangle', { defaultValue: 'Triangle' })}
             icon={<Icon />}
             onDragStart={(e) => {
                 setDragObject({
@@ -48,7 +48,7 @@ registerDropHandler<RectangleZone>(ObjectType.Triangle, (object, position) => {
         object: {
             type: ObjectType.Triangle,
             color: DEFAULT_AOE_COLOR,
-            opacity: DEFAULT_AOE_OPACITY,
+            opacity: DEFAULT_SHAPE_OPACITY,
             width: DEFAULT_TRIANGLE_WIDTH,
             height: DEFAULT_TRIANGLE_HEIGHT,
             rotation: 0,
@@ -82,7 +82,7 @@ const TriangleRenderer: React.FC<RendererProps<RectangleZone>> = ({ object }) =>
     const offsetY = (object.height * 2) / 3;
 
     return (
-        <ResizeableObjectContainer object={object} transformerProps={{ centeredScaling: true }}>
+        <ResizableObjectContainer object={object} transformerProps={{ centeredScaling: true }}>
             {(groupProps) => (
                 <Group {...groupProps} offsetY={offsetY}>
                     {highlightProps && (
@@ -99,17 +99,18 @@ const TriangleRenderer: React.FC<RendererProps<RectangleZone>> = ({ object }) =>
                     </HideGroup>
                 </Group>
             )}
-        </ResizeableObjectContainer>
+        </ResizableObjectContainer>
     );
 };
 
 registerRenderer<RectangleZone>(ObjectType.Triangle, LayerName.Ground, TriangleRenderer);
 
 const TriangleDetails: React.FC<ListComponentProps<RectangleZone>> = ({ object, ...props }) => {
+    const { t } = useTranslation();
     return (
         <DetailsItem
             icon={<Icon width="100%" height="100%" style={{ [panelVars.colorZoneOrange]: object.color }} />}
-            name={NAME}
+            name={t('objects.triangle', { defaultValue: 'Triangle' })}
             object={object}
             {...props}
         />

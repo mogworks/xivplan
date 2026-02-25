@@ -1,5 +1,6 @@
 import { CircleConfig } from 'konva/lib/shapes/Circle';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Circle } from 'react-konva';
 import { getDragOffset, registerDropHandler } from '../../DropHandler';
 import Icon from '../../assets/zone/meteor_tower.svg?react';
@@ -8,7 +9,7 @@ import { ListComponentProps, registerListComponent } from '../../panel/ListCompo
 import { registerRenderer, RendererProps } from '../../render/ObjectRegistry';
 import { LayerName } from '../../render/layers';
 import { ObjectType, TowerZone } from '../../scene';
-import { CENTER_DOT_RADIUS, DEFAULT_AOE_OPACITY, panelVars } from '../../theme';
+import { CENTER_DOT_RADIUS, DEFAULT_SHAPE_OPACITY, panelVars } from '../../theme';
 import { usePanelDrag } from '../../usePanelDrag';
 import { HideGroup } from '../HideGroup';
 import { PrefabIcon } from '../PrefabIcon';
@@ -23,11 +24,12 @@ const DEFAULT_COUNT = 1;
 
 export const ZoneTower: React.FC = () => {
     const [, setDragObject] = usePanelDrag();
+    const { t } = useTranslation();
 
     return (
         <PrefabIcon
             draggable
-            name="Meteor/tower"
+            name={t('objects.meteorTower', { defaultValue: 'Meteor/tower' })}
             icon={<Icon />}
             onDragStart={(e) => {
                 setDragObject({
@@ -47,7 +49,7 @@ registerDropHandler<TowerZone>(ObjectType.Tower, (object, position) => {
         object: {
             type: ObjectType.Tower,
             color: DEFAULT_COLOR,
-            opacity: DEFAULT_AOE_OPACITY,
+            opacity: DEFAULT_SHAPE_OPACITY,
             radius: DEFAULT_RADIUS,
             count: DEFAULT_COUNT,
             ...object,
@@ -107,10 +109,11 @@ const TowerContainer: React.FC<RendererProps<TowerZone>> = ({ object }) => {
 registerRenderer<TowerZone>(ObjectType.Tower, LayerName.Ground, TowerContainer);
 
 const TowerDetails: React.FC<ListComponentProps<TowerZone>> = ({ object, ...props }) => {
+    const { t } = useTranslation();
     return (
         <DetailsItem
             icon={<Icon width="100%" height="100%" style={{ [panelVars.colorZoneOrange]: object.color }} />}
-            name="Meteor/tower"
+            name={t('objects.meteorTower', { defaultValue: 'Meteor/tower' })}
             object={object}
             {...props}
         />

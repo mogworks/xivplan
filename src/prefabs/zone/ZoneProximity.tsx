@@ -1,6 +1,7 @@
 import Color from 'colorjs.io';
 import { ShapeConfig } from 'konva/lib/Shape';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Circle, Group, Line, Path, Wedge } from 'react-konva';
 import { getDragOffset, registerDropHandler } from '../../DropHandler';
 import Icon from '../../assets/zone/falloff.svg?react';
@@ -9,7 +10,7 @@ import { ListComponentProps, registerListComponent } from '../../panel/ListCompo
 import { registerRenderer, RendererProps } from '../../render/ObjectRegistry';
 import { LayerName } from '../../render/layers';
 import { CircleZone, ObjectType } from '../../scene';
-import { COLOR_BLUE_WHITE, DEFAULT_AOE_OPACITY, panelVars } from '../../theme';
+import { COLOR_BLUE_WHITE, DEFAULT_SHAPE_OPACITY, panelVars } from '../../theme';
 import { usePanelDrag } from '../../usePanelDrag';
 import { degtorad } from '../../util';
 import { HideGroup } from '../HideGroup';
@@ -22,10 +23,11 @@ const DEFAULT_RADIUS = 200;
 
 export const ZoneProximity: React.FC = () => {
     const [, setDragObject] = usePanelDrag();
+    const { t } = useTranslation();
     return (
         <PrefabIcon
             draggable
-            name="Proximity AOE"
+            name={t('objects.proximityAoe', { defaultValue: 'Proximity AOE' })}
             icon={<Icon />}
             onDragStart={(e) => {
                 setDragObject({
@@ -45,7 +47,7 @@ registerDropHandler<CircleZone>(ObjectType.Proximity, (object, position) => {
         object: {
             type: ObjectType.Proximity,
             color: COLOR_BLUE_WHITE,
-            opacity: DEFAULT_AOE_OPACITY,
+            opacity: DEFAULT_SHAPE_OPACITY,
             radius: DEFAULT_RADIUS,
             ...object,
             ...position,
@@ -190,10 +192,11 @@ const ProximityContainer: React.FC<RendererProps<CircleZone>> = ({ object }) => 
 registerRenderer<CircleZone>(ObjectType.Proximity, LayerName.Ground, ProximityContainer);
 
 const ProximityDetails: React.FC<ListComponentProps<CircleZone>> = ({ object, ...props }) => {
+    const { t } = useTranslation();
     return (
         <DetailsItem
             icon={<Icon width="100%" height="100%" style={{ [panelVars.colorZoneOrange]: object.color }} />}
-            name="Proximity AOE"
+            name={t('objects.proximityAoe', { defaultValue: 'Proximity AOE' })}
             object={object}
             {...props}
         />

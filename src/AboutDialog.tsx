@@ -11,6 +11,7 @@ import {
     typographyStyles,
 } from '@fluentui/react-components';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { ExternalLink } from './ExternalLink';
 import { HotkeyBlockingDialogBody } from './HotkeyBlockingDialogBody';
 
@@ -20,16 +21,20 @@ export interface AboutDialogProps {
 
 export const AboutDialog: React.FC<AboutDialogProps> = (props) => {
     const classes = useStyles();
+    const { t } = useTranslation();
 
     return (
         <Dialog>
             <DialogTrigger>
-                <Link {...props}>About</Link>
+                <Link {...props}>{t('about.title')}</Link>
             </DialogTrigger>
             <DialogSurface>
                 <HotkeyBlockingDialogBody>
-                    <DialogTitle>About</DialogTitle>
+                    <DialogTitle>{t('about.title')}</DialogTitle>
                     <DialogContent className={classes.content}>
+                        <p>{t('about.xivplanCnDescription.part1')}</p>
+                        <p>{t('about.xivplanCnDescription.part2')}</p>
+                        <hr className={classes.divider} />
                         <p>
                             XIVPlan is a tool for quickly diagramming raid strategies for Final Fantasy XIV, inspired by{' '}
                             <ExternalLink href="https://raidplan.io">RaidPlan.io</ExternalLink> and{' '}
@@ -66,7 +71,7 @@ export const AboutDialog: React.FC<AboutDialogProps> = (props) => {
                     </DialogContent>
                     <DialogActions>
                         <DialogTrigger disableButtonEnhancement>
-                            <Button appearance="secondary">Close</Button>
+                            <Button appearance="secondary">{t('about.close')}</Button>
                         </DialogTrigger>
                     </DialogActions>
                 </HotkeyBlockingDialogBody>
@@ -78,5 +83,11 @@ export const AboutDialog: React.FC<AboutDialogProps> = (props) => {
 const useStyles = makeStyles({
     content: {
         '& h2': typographyStyles.subtitle2,
+    },
+    divider: {
+        border: 'none',
+        borderTop: '1px dashed',
+        borderTopColor: 'var(--colorNeutralStroke1)',
+        margin: '16px 0',
     },
 });

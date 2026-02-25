@@ -39,29 +39,11 @@ import {
     bundleIcon,
 } from '@fluentui/react-icons';
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAsync } from 'react-use';
 import { getPlanFolder, showOpenPlanPicker, showPlanFolderPicker } from './filesystem';
 
 const MoreHorizontal = bundleIcon(MoreHorizontalFilled, MoreHorizontalRegular);
-
-const columns: TableColumnDefinition<Item>[] = [
-    createTableColumn<Item>({
-        columnId: 'file',
-        compare: compareItemNames,
-        renderHeaderCell: () => 'File',
-        renderCell: (item) => {
-            return <TableCellLayout media={getItemIcon(item)}>{item.handle.name}</TableCellLayout>;
-        },
-    }),
-    createTableColumn<Item>({
-        columnId: 'lastUpdated',
-        compare: compareItemDates,
-        renderHeaderCell: () => 'Last updated',
-        renderCell: (item) => {
-            return <TableCellLayout>{item.lastModified?.toLocaleString()}</TableCellLayout>;
-        },
-    }),
-];
 
 export interface FileBrowserProps {
     className?: string;
@@ -89,6 +71,7 @@ const FileBrowserInner: React.FC<FileBrowserInnerProps> = ({
     onFileSelected,
 }) => {
     const classes = useStyles();
+    const { t } = useTranslation();
     const [tree, setTree] = useState(new DirectoryTree());
     const [root, setRootInner] = useState(planFolder);
     const [folder, setFolderInner] = useState(planFolder);
@@ -163,13 +146,32 @@ const FileBrowserInner: React.FC<FileBrowserInnerProps> = ({
 
     // TODO: add keyboard navigation
 
+    const columns: TableColumnDefinition<Item>[] = [
+        createTableColumn<Item>({
+            columnId: 'file',
+            compare: compareItemNames,
+            renderHeaderCell: () => t('file.fileBrowser.columns.file'),
+            renderCell: (item) => {
+                return <TableCellLayout media={getItemIcon(item)}>{item.handle.name}</TableCellLayout>;
+            },
+        }),
+        createTableColumn<Item>({
+            columnId: 'lastUpdated',
+            compare: compareItemDates,
+            renderHeaderCell: () => t('file.fileBrowser.columns.lastUpdated'),
+            renderCell: (item) => {
+                return <TableCellLayout>{item.lastModified?.toLocaleString()}</TableCellLayout>;
+            },
+        }),
+    ];
+
     return (
         <div className={className}>
             <div className={classes.topBar}>
                 <Button appearance="primary" onClick={pickFile}>
-                    Open file
+                    {t('file.fileBrowser.openFile')}
                 </Button>
-                <Button onClick={pickFolder}>Browse folder</Button>
+                <Button onClick={pickFolder}>{t('file.fileBrowser.browseFolder')}</Button>
             </div>
             <ParentBreadcrumb parents={parents} navigateToParent={navigateToParent} />
 
@@ -196,7 +198,7 @@ const FileBrowserInner: React.FC<FileBrowserInnerProps> = ({
                         <DataGridRow<Item>
                             key={rowId}
                             className={classes.row}
-                            selectionCell={{ radioIndicator: { 'aria-label': 'Select row' } }}
+                            selectionCell={{ radioIndicator: { 'aria-label': t('file.fileBrowser.selectRowAria') } }}
                             onDoubleClick={() => handleDoubleClick(item)}
                         >
                             {({ renderCell }) => <DataGridCell>{renderCell(item)}</DataGridCell>}
@@ -280,6 +282,7 @@ const OverflowMenu: React.FC<OverflowMenuProps> = ({
     endDisplayedItems,
     navigateToParent,
 }) => {
+    const { t } = useTranslation();
     const { ref, isOverflowing, overflowCount } = useOverflowMenu<HTMLButtonElement>();
 
     if (!isOverflowing) {
@@ -297,7 +300,7 @@ const OverflowMenu: React.FC<OverflowMenuProps> = ({
                             ref={ref}
                             appearance="subtle"
                             icon={<MoreHorizontal />}
-                            aria-label={`${overflowItemsCount} more items`}
+                            aria-label={t('file.fileBrowser.moreItemsAria', { count: overflowItemsCount })}
                             role="button"
                         />
                     </MenuTrigger>
@@ -418,7 +421,7 @@ class DirectoryTree {
             }
 
             if (handle.kind === 'file') {
-                if (!handle.name.endsWith('.xivplan')) {
+                if (!handle.name.endsWith('.xivplancn')) {
                     continue;
                 }
 

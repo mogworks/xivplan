@@ -1,5 +1,6 @@
 import { Field } from '@fluentui/react-components';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { useScene } from '../../SceneProvider';
 import { Segment, SegmentedGroup } from '../../Segmented';
 import { SpinButton } from '../../SpinButton';
@@ -23,6 +24,7 @@ const TETHER_TYPES = [
 
 export const TetherTypeControl: React.FC<PropertiesControlProps<Tether>> = ({ objects }) => {
     const { dispatch } = useScene();
+    const { t } = useTranslation();
 
     const tether = commonValue(objects, (obj) => obj.tether);
 
@@ -30,7 +32,7 @@ export const TetherTypeControl: React.FC<PropertiesControlProps<Tether>> = ({ ob
         dispatch({ type: 'update', value: objects.map((obj) => ({ ...obj, tether })) });
 
     return (
-        <Field label="Tether type">
+        <Field label={t('tethers.type', { defaultValue: 'Tether type' })}>
             <SegmentedGroup
                 name="tether-type"
                 value={tether}
@@ -53,6 +55,7 @@ export const TetherTypeControl: React.FC<PropertiesControlProps<Tether>> = ({ ob
 export const TetherWidthControl: React.FC<PropertiesControlProps<Tether>> = ({ objects }) => {
     const classes = useControlStyles();
     const { dispatch } = useScene();
+    const { t } = useTranslation();
 
     const width = commonValue(objects, (obj) => obj.width);
 
@@ -61,8 +64,10 @@ export const TetherWidthControl: React.FC<PropertiesControlProps<Tether>> = ({ o
     );
 
     return (
-        <Field label="Width" className={classes.cell}>
-            <SpinButton value={width} onChange={onWidthChanged} min={MIN_TETHER_WIDTH} step={2} />
-        </Field>
+        <div className={classes.row}>
+            <Field label={t('properties.width')} className={classes.cell}>
+                <SpinButton value={width} onChange={onWidthChanged} min={MIN_TETHER_WIDTH} step={2} />
+            </Field>
+        </div>
     );
 };

@@ -25,7 +25,11 @@ export function registerRenderer<T extends SceneObject>(
 }
 
 export function getLayerName(object: SceneObject): LayerName | undefined {
-    return layers[object.type];
+    return object.layer ?? layers[object.type];
+}
+
+export function getDefaultLayer(type: string): LayerName | undefined {
+    return layers[type];
 }
 
 export function getRenderer(object: SceneObject) {

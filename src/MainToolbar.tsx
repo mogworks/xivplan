@@ -18,8 +18,11 @@ import {
     SaveRegular,
 } from '@fluentui/react-icons';
 import React, { ReactElement, useContext, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { InPortal } from 'react-reverse-portal';
 import { CollapsableSplitButton, CollapsableToolbarButton } from './CollapsableToolbarButton';
+import { GroupButton } from './GroupButton';
+import { MergeObjectsButton } from './MergeObjectsButton';
 import { FileSource, useScene, useSceneUndoRedoPossible, useSetSource } from './SceneProvider';
 import { StepScreenshotButton } from './StepScreenshotButton';
 import { ToolbarContext } from './ToolbarContext';
@@ -40,6 +43,7 @@ const useStyles = makeStyles({
 
 export const MainToolbar: React.FC = () => {
     const classes = useStyles();
+    const { t } = useTranslation();
     const toolbarNode = useContext(ToolbarContext);
     const { dispatch } = useScene();
     const [undoPossible, redoPossible] = useSceneUndoRedoPossible();
@@ -54,7 +58,7 @@ export const MainToolbar: React.FC = () => {
 
     useHotkeys(
         'ctrl+o',
-        { category: '2.File', help: 'Open' },
+        { category: '2.File', help: t('hotkeys.open') },
         (e) => {
             setOpenFileOpen(true);
             e.preventDefault();
@@ -70,25 +74,27 @@ export const MainToolbar: React.FC = () => {
 
             <InPortal node={toolbarNode}>
                 <Toolbar className={classes.toolbar}>
-                    {/* <CollapsableToolbarButton icon={<NewRegular />}>New</CollapsableToolbarButton> */}
+                    {/* <CollapsableToolbarButton icon={<NewRegular />}>{t('toolbar.new')}</CollapsableToolbarButton> */}
                     <CollapsableToolbarButton icon={<OpenRegular />} onClick={() => setOpenFileOpen(true)}>
-                        Open
+                        {t('toolbar.open')}
                     </CollapsableToolbarButton>
 
                     <SaveButton />
 
                     <CollapsableToolbarButton icon={<ArrowUndoRegular />} onClick={undo} disabled={!undoPossible}>
-                        Undo
+                        {t('toolbar.undo')}
                     </CollapsableToolbarButton>
                     <CollapsableToolbarButton icon={<ArrowRedoRegular />} onClick={redo} disabled={!redoPossible}>
-                        Redo
+                        {t('toolbar.redo')}
                     </CollapsableToolbarButton>
 
                     <ToolbarDivider />
 
-                    <ShareDialogButton>Share</ShareDialogButton>
+                    <ShareDialogButton>{t('toolbar.share')}</ShareDialogButton>
 
-                    <StepScreenshotButton>Screenshot</StepScreenshotButton>
+                    <StepScreenshotButton>{t('toolbar.screenshot')}</StepScreenshotButton>
+                    <GroupButton>{t('toolbar.group')}</GroupButton>
+                    <MergeObjectsButton>{t('toolbar.mergeObjects')}</MergeObjectsButton>
                 </Toolbar>
             </InPortal>
         </>
@@ -102,26 +108,31 @@ interface SaveButtonState {
     disabled?: boolean;
 }
 
-function getSaveButtonState(source: FileSource | undefined, isDirty: boolean): SaveButtonState {
+function getSaveButtonState(
+    source: FileSource | undefined,
+    isDirty: boolean,
+    t: (key: string) => string,
+): SaveButtonState {
     if (!source) {
-        return { type: 'saveas', text: 'Save as', icon: <SaveEditRegular /> };
+        return { type: 'saveas', text: t('toolbar.saveAs'), icon: <SaveEditRegular /> };
     }
 
     if (source.type === 'blob') {
-        return { type: 'download', text: 'Download', icon: <ArrowDownloadRegular /> };
+        return { type: 'download', text: t('toolbar.download'), icon: <ArrowDownloadRegular /> };
     }
 
-    return { type: 'save', text: 'Save', icon: <SaveRegular />, disabled: !isDirty };
+    return { type: 'save', text: t('toolbar.save'), icon: <SaveRegular />, disabled: !isDirty };
 }
 
 const SaveButton: React.FC = () => {
+    const { t } = useTranslation();
     const isDirty = useIsDirty();
     const setSavedState = useSetSavedState();
     const [saveAsOpen, setSaveAsOpen] = useState(false);
     const { canonicalScene, source } = useScene();
     const setSource = useSetSource();
 
-    const { type, text, icon, disabled } = getSaveButtonState(source, isDirty);
+    const { type, text, icon, disabled } = getSaveButtonState(source, isDirty, t);
 
     const save = async () => {
         if (!source) {
@@ -157,7 +168,7 @@ const SaveButton: React.FC = () => {
 
     useHotkeys(
         'ctrl+s',
-        { category: '2.File', help: 'Save' },
+        { category: '2.File', help: t('hotkeys.save') },
         (e) => {
             save();
             e.preventDefault();
@@ -166,7 +177,7 @@ const SaveButton: React.FC = () => {
     );
     useHotkeys(
         'ctrl+shift+s',
-        { category: '2.File', help: 'Save as' },
+        { category: '2.File', help: t('hotkeys.saveAs') },
         (e) => {
             setSaveAsOpen(true);
             e.preventDefault();
@@ -193,12 +204,12 @@ const SaveButton: React.FC = () => {
                     <MenuList>
                         {type !== 'saveas' && (
                             <MenuItem icon={<SaveEditRegular />} onClick={() => setSaveAsOpen(true)}>
-                                Save as...
+                                {t('toolbar.saveAsEllipsis')}
                             </MenuItem>
                         )}
                         {type !== 'download' && (
                             <MenuItem icon={<ArrowDownloadRegular />} onClick={download}>
-                                Download
+                                {t('toolbar.download')}
                             </MenuItem>
                         )}
                     </MenuList>

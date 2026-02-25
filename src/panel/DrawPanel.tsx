@@ -15,18 +15,41 @@ import {
     bundleIcon,
 } from '@fluentui/react-icons';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { BrushSizeControl } from '../BrushSizeControl';
 import { CompactColorPicker, CompactColorPickerProps } from '../CompactColorPicker';
 import { CompactSwatchColorPicker } from '../CompactSwatchColorPicker';
 import { OpacitySlider } from '../OpacitySlider';
 import { EditMode } from '../editMode';
+import { MarkerArrow } from '../prefabs/Arrow';
+import { AssetPrefab } from '../prefabs/Asset';
+import {
+    BoardIconArrowPrefab,
+    BoardIconCirclePrefab,
+    BoardIconCrossPrefab,
+    BoardIconRotationPrefab,
+    BoardIconSquarePrefab,
+    BoardIconTrianglePrefab,
+} from '../prefabs/BoardIcon';
 import '../prefabs/DrawObjectRenderer';
+import { TextLabel } from '../prefabs/TextLabel';
 import { useSpinChanged } from '../prefabs/useSpinChanged';
+import { ZoneArc } from '../prefabs/zone/ZoneArc';
+import { ZoneCircle } from '../prefabs/zone/ZoneCircle';
+import { ZoneDonut } from '../prefabs/zone/ZoneDonut';
+import { ZoneFan } from '../prefabs/zone/ZoneFan';
+import { ZoneLine } from '../prefabs/zone/ZoneLine';
+import { ZonePolygon } from '../prefabs/zone/ZonePolygon';
+import { ZoneRectangle } from '../prefabs/zone/ZoneRectangle';
+import { ZoneRightTriangle } from '../prefabs/zone/ZoneRightTriangle';
+import { ZoneStarburst } from '../prefabs/zone/ZoneStarburst';
+import { ZoneTriangle } from '../prefabs/zone/ZoneTriangle';
 import { useColorSwatches } from '../theme';
 import { useControlStyles } from '../useControlStyles';
 import { useDrawConfig } from '../useDrawConfig';
 import { useEditMode } from '../useEditMode';
 import { useHotkeys } from '../useHotkeys';
+import { ObjectGroup, Section } from './Section';
 
 const CursorClick = bundleIcon(CursorClickFilled, CursorClickRegular);
 const DrawImage = bundleIcon(DrawImageFilled, DrawImageRegular);
@@ -39,6 +62,7 @@ export const DrawPanel: React.FC = () => {
     const colorSwatches = useColorSwatches();
     const [editMode, setEditMode] = useEditMode();
     const [config, setConfig] = useDrawConfig();
+    const { t } = useTranslation();
 
     const setColor: CompactColorPickerProps['onChange'] = (data) => setConfig({ ...config, color: data.value });
 
@@ -69,29 +93,71 @@ export const DrawPanel: React.FC = () => {
 
     return (
         <div className={mergeClasses(controlClasses.panel, controlClasses.column)}>
-            <Field label="Tool">
-                <div className={classes.wrapper}>
-                    <ToggleButton size="large" icon={<CursorClick />} {...getToolButtonProps(EditMode.Normal)}>
-                        Edit
-                    </ToggleButton>
-                    <ToggleButton size="large" icon={<DrawImage />} {...getToolButtonProps(EditMode.Draw)}>
-                        Draw
-                    </ToggleButton>
-                </div>
-            </Field>
-            <CompactColorPicker label="Color" placeholder="Brush color" color={config.color} onChange={setColor} />
-            <CompactSwatchColorPicker
-                swatches={colorSwatches}
-                selectedValue={config.color}
-                onSelectionChange={(ev, data) => setColor({ value: data.selectedSwatch, transient: false })}
-            />
-            <OpacitySlider value={config.opacity} onChange={(ev, data) => setOpacity(data.value)} />
-            <BrushSizeControl
-                value={config.brushSize}
-                color={config.color}
-                opacity={config.opacity}
-                onChange={onSizeChanged}
-            />
+            <Section title={t('draw.tools')}>
+                <ObjectGroup>
+                    <TextLabel />
+                    <MarkerArrow />
+                    <AssetPrefab />
+                </ObjectGroup>
+                <ObjectGroup>
+                    <BoardIconCirclePrefab />
+                    <BoardIconCrossPrefab />
+                    <BoardIconTrianglePrefab />
+                    <BoardIconSquarePrefab />
+                    <BoardIconArrowPrefab />
+                    <BoardIconRotationPrefab />
+                </ObjectGroup>
+            </Section>
+            <Section title={t('draw.shape')}>
+                <ObjectGroup>
+                    <ZoneRectangle />
+                    <ZoneLine />
+                    <ZoneCircle />
+                    <ZoneDonut />
+                    <ZoneFan />
+                    <ZoneArc />
+                </ObjectGroup>
+                <ObjectGroup>
+                    <ZoneTriangle />
+                    <ZoneRightTriangle />
+                    <ZonePolygon />
+                    <ZoneStarburst />
+                </ObjectGroup>
+            </Section>
+            <Section title={t('draw.brush')}>
+                <Field label={t('draw.tool')}>
+                    <div className={classes.wrapper}>
+                        <ToggleButton size="large" icon={<CursorClick />} {...getToolButtonProps(EditMode.Normal)}>
+                            {t('draw.edit')}
+                        </ToggleButton>
+                        <ToggleButton size="large" icon={<DrawImage />} {...getToolButtonProps(EditMode.Draw)}>
+                            {t('draw.draw')}
+                        </ToggleButton>
+                    </div>
+                </Field>
+                <CompactColorPicker
+                    label={t('draw.color')}
+                    placeholder={t('draw.brushColor')}
+                    color={config.color}
+                    onChange={setColor}
+                />
+                <CompactSwatchColorPicker
+                    swatches={colorSwatches}
+                    selectedValue={config.color}
+                    onSelectionChange={(ev, data) => setColor({ value: data.selectedSwatch, transient: false })}
+                />
+                <OpacitySlider
+                    label={t('draw.opacity')}
+                    value={config.opacity}
+                    onChange={(ev, data) => setOpacity(data.value)}
+                />
+                <BrushSizeControl
+                    value={config.brushSize}
+                    color={config.color}
+                    opacity={config.opacity}
+                    onChange={onSizeChanged}
+                />
+            </Section>
         </div>
     );
 };

@@ -1,118 +1,58 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import {
-    StatusAttack1,
-    StatusAttack2,
-    StatusAttack3,
-    StatusAttack4,
-    StatusAttack5,
-    StatusAttack6,
-    StatusAttack7,
-    StatusAttack8,
-    StatusBind1,
-    StatusBind2,
-    StatusBind3,
-    StatusBlueCircleTarget,
-    StatusCircle,
-    StatusCounter1,
-    StatusCounter2,
-    StatusCounter3,
-    StatusCounter4,
-    StatusCounter5,
-    StatusCounter6,
-    StatusCounter7,
-    StatusCounter8,
-    StatusCross,
-    StatusCrosshairs,
-    StatusDice1,
-    StatusDice2,
-    StatusDice3,
-    StatusEdenBlue,
-    StatusEdenOrange,
-    StatusEdenYellow,
-    StatusGreenCircleTarget,
-    StatusGreenTarget,
-    StatusIgnore1,
-    StatusIgnore2,
-    StatusRedTarget,
-    StatusSquare,
-    StatusTriangle,
-    StatusUltimateCircle,
-    StatusUltimateCross,
-    StatusUltimateSquare,
-    StatusUltimateTriangle,
-} from '../prefabs/Status';
+    MarkerAttack1Prefab,
+    MarkerAttack2Prefab,
+    MarkerAttack3Prefab,
+    MarkerAttack4Prefab,
+    MarkerAttack5Prefab,
+    MarkerAttack6Prefab,
+    MarkerAttack7Prefab,
+    MarkerAttack8Prefab,
+    MarkerBind1Prefab,
+    MarkerBind2Prefab,
+    MarkerBind3Prefab,
+    MarkerCirclePrefab,
+    MarkerCrossPrefab,
+    MarkerIgnore1Prefab,
+    MarkerIgnore2Prefab,
+    MarkerSquarePrefab,
+    MarkerTrianglePrefab,
+} from '../prefabs/indicator/IndicatorMarker';
 import { useControlStyles } from '../useControlStyles';
 import { ObjectGroup, Section } from './Section';
 
 export const StatusMarkers: React.FC = () => {
     const classes = useControlStyles();
+    const { t } = useTranslation();
 
     return (
         <div className={classes.panel}>
-            <Section title="General">
+            <Section title={t('icons.target')}>
                 <ObjectGroup>
-                    <StatusAttack1 />
-                    <StatusAttack2 />
-                    <StatusAttack3 />
-                    <StatusAttack4 />
+                    <MarkerAttack1Prefab />
+                    <MarkerAttack2Prefab />
+                    <MarkerAttack3Prefab />
+                    <MarkerAttack4Prefab />
                 </ObjectGroup>
                 <ObjectGroup>
-                    <StatusAttack5 />
-                    <StatusAttack6 />
-                    <StatusAttack7 />
-                    <StatusAttack8 />
+                    <MarkerAttack5Prefab />
+                    <MarkerAttack6Prefab />
+                    <MarkerAttack7Prefab />
+                    <MarkerAttack8Prefab />
                 </ObjectGroup>
                 <ObjectGroup>
-                    <StatusIgnore1 />
-                    <StatusIgnore2 />
-                    <StatusBind1 />
-                    <StatusBind2 />
-                    <StatusBind3 />
+                    <MarkerIgnore1Prefab />
+                    <MarkerIgnore2Prefab />
+                    <MarkerBind1Prefab />
+                    <MarkerBind2Prefab />
+                    <MarkerBind3Prefab />
                 </ObjectGroup>
                 <ObjectGroup>
-                    <StatusTriangle />
-                    <StatusCircle />
-                    <StatusCross />
-                    <StatusSquare />
-                </ObjectGroup>
-            </Section>
-            <Section title="Counters">
-                <ObjectGroup>
-                    <StatusCounter1 />
-                    <StatusCounter2 />
-                    <StatusCounter3 />
-                    <StatusCounter4 />
-                    <StatusCounter5 />
-                    <StatusCounter6 />
-                    <StatusCounter7 />
-                    <StatusCounter8 />
-                </ObjectGroup>
-            </Section>
-            <Section title="Target indicators">
-                <ObjectGroup>
-                    <StatusBlueCircleTarget />
-                    <StatusGreenCircleTarget />
-                    <StatusCrosshairs />
-                    <StatusRedTarget />
-                    <StatusGreenTarget />
-                </ObjectGroup>
-                <ObjectGroup>
-                    <StatusUltimateTriangle />
-                    <StatusUltimateCircle />
-                    <StatusUltimateCross />
-                    <StatusUltimateSquare />
-                </ObjectGroup>
-                <ObjectGroup>
-                    <StatusEdenYellow />
-                    <StatusEdenOrange />
-                    <StatusEdenBlue />
-                </ObjectGroup>
-            </Section>
-            <Section title="Status effects">
-                <ObjectGroup>
-                    <StatusDice1 />
-                    <StatusDice2 />
-                    <StatusDice3 />
+                    <MarkerTrianglePrefab />
+                    <MarkerCirclePrefab />
+                    <MarkerCrossPrefab />
+                    <MarkerSquarePrefab />
                 </ObjectGroup>
             </Section>
         </div>

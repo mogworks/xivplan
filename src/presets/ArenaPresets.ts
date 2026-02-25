@@ -1,34 +1,32 @@
 import { ArenaPreset } from '../scene';
-import { ARENA_PRESETS_CRITERION } from './Criterion';
-import { ARENA_PRESETS_GENERAL } from './General';
-import { ARENA_PRESETS_TRIALS } from './Trials';
-import { ARENA_PRESETS_RAID_ARCADION } from './raid/Arcadion';
-import { ARENA_PRESETS_RAID_EDEN } from './raid/Eden';
-import { ARENA_PRESETS_RAID_PANDAEMONIUM } from './raid/Pandaemonium';
-import { ARENA_PRESETS_ULTIMATE_DSU } from './ultimate/DSU';
-import { ARENA_PRESETS_ULTIMATE_FRU } from './ultimate/FRU';
-import { ARENA_PRESETS_ULTIMATE_TEA } from './ultimate/TEA';
-import { ARENA_PRESETS_ULTIMATE_TOP } from './ultimate/TOP';
-import { ARENA_PRESETS_ULTIMATE_UCOB } from './ultimate/UCOB';
-import { ARENA_PRESETS_ULTIMATE_UWU } from './ultimate/UWU';
+import { ARENA_PRESETS_ARCADION_M10S } from './arcadion/m10s';
+import { ARENA_PRESETS_ARCADION_M11S } from './arcadion/m11s';
+import { ARENA_PRESETS_ARCADION_M12S } from './arcadion/m12s';
+import { ARENA_PRESETS_ARCADION_M9S } from './arcadion/m9s';
 
 export const ARENA_PRESETS: Record<string, Record<string, ArenaPreset[]>> = {
-    '': {
-        General: ARENA_PRESETS_GENERAL,
-        Criterion: ARENA_PRESETS_CRITERION,
-        Trials: ARENA_PRESETS_TRIALS,
+    '阿卡狄亚 · 重量级': {
+        M9S: ARENA_PRESETS_ARCADION_M9S,
+        M10S: ARENA_PRESETS_ARCADION_M10S,
+        M11S: ARENA_PRESETS_ARCADION_M11S,
+        M12S: ARENA_PRESETS_ARCADION_M12S,
     },
-    Raids: {
-        Eden: ARENA_PRESETS_RAID_EDEN,
-        Pandæmonium: ARENA_PRESETS_RAID_PANDAEMONIUM,
-        Arcadion: ARENA_PRESETS_RAID_ARCADION,
-    },
-    Ultimate: {
-        'Unending Coil': ARENA_PRESETS_ULTIMATE_UCOB,
-        "The Weapon's Refrain": ARENA_PRESETS_ULTIMATE_UWU,
-        'The Epic of Alexander': ARENA_PRESETS_ULTIMATE_TEA,
-        "Dragonsong's Reprise": ARENA_PRESETS_ULTIMATE_DSU,
-        'The Omega Protocol': ARENA_PRESETS_ULTIMATE_TOP,
-        'Futures Rewritten': ARENA_PRESETS_ULTIMATE_FRU,
-    },
+    // '': {
+    //     General: ARENA_PRESETS_GENERAL,
+    //     Criterion: ARENA_PRESETS_CRITERION,
+    //     Trials: ARENA_PRESETS_TRIALS,
+    // },
+    // Raids: {
+    //     Eden: ARENA_PRESETS_RAID_EDEN,
+    //     Pandæmonium: ARENA_PRESETS_RAID_PANDAEMONIUM,
+    //     Arcadion: ARENA_PRESETS_RAID_ARCADION,
+    // },
+    // Ultimate: {
+    //     'Unending Coil': ARENA_PRESETS_ULTIMATE_UCOB,
+    //     "The Weapon's Refrain": ARENA_PRESETS_ULTIMATE_UWU,
+    //     'The Epic of Alexander': ARENA_PRESETS_ULTIMATE_TEA,
+    //     "Dragonsong's Reprise": ARENA_PRESETS_ULTIMATE_DSU,
+    //     'The Omega Protocol': ARENA_PRESETS_ULTIMATE_TOP,
+    //     'Futures Rewritten': ARENA_PRESETS_ULTIMATE_FRU,
+    // },
 };

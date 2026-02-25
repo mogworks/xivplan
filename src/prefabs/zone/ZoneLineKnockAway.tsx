@@ -1,5 +1,6 @@
 import Konva from 'konva';
 import React, { useLayoutEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Group, Rect } from 'react-konva';
 import { getDragOffset, registerDropHandler } from '../../DropHandler';
 import Icon from '../../assets/zone/line_knock_away.svg?react';
@@ -8,11 +9,11 @@ import { ListComponentProps, registerListComponent } from '../../panel/ListCompo
 import { registerRenderer, RendererProps } from '../../render/ObjectRegistry';
 import { LayerName } from '../../render/layers';
 import { ObjectType, RectangleZone } from '../../scene';
-import { DEFAULT_AOE_COLOR, DEFAULT_AOE_OPACITY, panelVars } from '../../theme';
+import { DEFAULT_AOE_COLOR, DEFAULT_SHAPE_OPACITY, panelVars } from '../../theme';
 import { usePanelDrag } from '../../usePanelDrag';
 import { HideGroup } from '../HideGroup';
 import { PrefabIcon } from '../PrefabIcon';
-import { ResizeableObjectContainer } from '../ResizeableObjectContainer';
+import { ResizableObjectContainer } from '../ResizableObjectContainer';
 import { useHighlightProps } from '../highlight';
 import { ChevronConfig, ChevronTail } from './shapes';
 import { getArrowStyle, getZoneStyle } from './style';
@@ -22,11 +23,12 @@ const DEFAULT_HEIGHT = 250;
 
 export const ZoneLineKnockAway: React.FC = () => {
     const [, setDragObject] = usePanelDrag();
+    const { t } = useTranslation();
 
     return (
         <PrefabIcon
             draggable
-            name="Line knock away"
+            name={t('objects.lineKnockAway', { defaultValue: 'Line knock away' })}
             icon={<Icon />}
             onDragStart={(e) => {
                 setDragObject({
@@ -48,7 +50,7 @@ registerDropHandler<RectangleZone>(ObjectType.LineKnockAway, (object, position) 
         object: {
             type: ObjectType.Rect,
             color: DEFAULT_AOE_COLOR,
-            opacity: DEFAULT_AOE_OPACITY,
+            opacity: DEFAULT_SHAPE_OPACITY,
             width: DEFAULT_WIDTH,
             height: DEFAULT_HEIGHT,
             rotation: 0,
@@ -104,7 +106,7 @@ const LineKnockAwayRenderer: React.FC<RendererProps<RectangleZone>> = ({ object 
 
     return (
         <>
-            <ResizeableObjectContainer object={object} transformerProps={{ keepRatio: false }}>
+            <ResizableObjectContainer object={object} transformerProps={{ keepRatio: false }}>
                 {(groupProps) => (
                     <Group {...groupProps}>
                         {highlightProps && (
@@ -131,7 +133,7 @@ const LineKnockAwayRenderer: React.FC<RendererProps<RectangleZone>> = ({ object 
                         </HideGroup>
                     </Group>
                 )}
-            </ResizeableObjectContainer>
+            </ResizableObjectContainer>
             <Group ref={arrowRef} x={OFFSCREEN_X} y={OFFSCREEN_Y}>
                 <Rect width={patternWidth} height={patternHeight} fill={fill} />
                 <ChevronTail x={patternWidth * ARROW_PAD} rotation={-90} {...arrow} />
@@ -144,10 +146,11 @@ const LineKnockAwayRenderer: React.FC<RendererProps<RectangleZone>> = ({ object 
 registerRenderer<RectangleZone>(ObjectType.LineKnockAway, LayerName.Ground, LineKnockAwayRenderer);
 
 const LineKnockAwayDetails: React.FC<ListComponentProps<RectangleZone>> = ({ object, ...props }) => {
+    const { t } = useTranslation();
     return (
         <DetailsItem
             icon={<Icon width="100%" height="100%" style={{ [panelVars.colorZoneOrange]: object.color }} />}
-            name="Line knock away"
+            name={t('objects.lineKnockAway', { defaultValue: 'Line knock away' })}
             object={object}
             {...props}
         />

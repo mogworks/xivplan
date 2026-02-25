@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Circle, Ring } from 'react-konva';
 import Icon from '../../assets/zone/donut.svg?react';
 import { getDragOffset, registerDropHandler } from '../../DropHandler';
@@ -7,7 +8,7 @@ import { ListComponentProps, registerListComponent } from '../../panel/ListCompo
 import { LayerName } from '../../render/layers';
 import { registerRenderer, RendererProps } from '../../render/ObjectRegistry';
 import { DonutZone, ObjectType } from '../../scene';
-import { CENTER_DOT_RADIUS, DEFAULT_AOE_COLOR, DEFAULT_AOE_OPACITY, panelVars } from '../../theme';
+import { CENTER_DOT_RADIUS, DEFAULT_AOE_COLOR, DEFAULT_SHAPE_OPACITY, panelVars } from '../../theme';
 import { usePanelDrag } from '../../usePanelDrag';
 import { HideGroup } from '../HideGroup';
 import { useHighlightProps } from '../highlight';
@@ -15,18 +16,17 @@ import { PrefabIcon } from '../PrefabIcon';
 import { RadiusObjectContainer } from '../RadiusObjectContainer';
 import { getZoneStyle } from './style';
 
-const NAME = 'Donut';
-
-const DEFAULT_OUTER_RADIUS = 150;
+const DEFAULT_OUTER_RADIUS = 120;
 const DEFAULT_INNER_RADIUS = 50;
 
 export const ZoneDonut: React.FC = () => {
     const [, setDragObject] = usePanelDrag();
+    const { t } = useTranslation();
 
     return (
         <PrefabIcon
             draggable
-            name={NAME}
+            name={t('objects.donut', { defaultValue: 'Donut' })}
             icon={<Icon />}
             onDragStart={(e) => {
                 setDragObject({
@@ -46,7 +46,7 @@ registerDropHandler<DonutZone>(ObjectType.Donut, (object, position) => {
         object: {
             type: ObjectType.Donut,
             color: DEFAULT_AOE_COLOR,
-            opacity: DEFAULT_AOE_OPACITY,
+            opacity: DEFAULT_SHAPE_OPACITY,
             innerRadius: DEFAULT_INNER_RADIUS,
             radius: DEFAULT_OUTER_RADIUS,
             ...object,
@@ -56,17 +56,16 @@ registerDropHandler<DonutZone>(ObjectType.Donut, (object, position) => {
 });
 
 interface DonutRendererProps extends RendererProps<DonutZone> {
-    radius: number;
-    innerRadius: number;
     isDragging?: boolean;
 }
 
-const DonutRenderer: React.FC<DonutRendererProps> = ({ object, radius, innerRadius, isDragging }) => {
+const DonutRenderer: React.FC<DonutRendererProps> = ({ object, isDragging }) => {
     const highlightProps = useHighlightProps(object);
-    const style = getZoneStyle(object.color, object.opacity, radius * 2);
 
-    const highlightInnerRadius = Math.min(radius, innerRadius);
-    const highlightOuterRadius = Math.max(radius, innerRadius);
+    const style = getZoneStyle(object.color, object.opacity, object.radius * 2, object.hollow);
+
+    const highlightInnerRadius = Math.min(object.radius, object.innerRadius);
+    const highlightOuterRadius = Math.max(object.radius, object.innerRadius);
 
     return (
         <>
@@ -78,7 +77,7 @@ const DonutRenderer: React.FC<DonutRendererProps> = ({ object, radius, innerRadi
                 />
             )}
             <HideGroup>
-                <Ring innerRadius={innerRadius} outerRadius={radius} {...style} />
+                <Ring innerRadius={object.innerRadius} outerRadius={object.radius} {...style} />
 
                 {isDragging && <Circle radius={CENTER_DOT_RADIUS} fill={style.stroke} />}
             </HideGroup>
@@ -97,10 +96,12 @@ const DonutContainer: React.FC<RendererProps<DonutZone>> = ({ object }) => {
 registerRenderer<DonutZone>(ObjectType.Donut, LayerName.Ground, DonutContainer);
 
 const DonutDetails: React.FC<ListComponentProps<DonutZone>> = ({ object, ...props }) => {
+    const { t } = useTranslation();
+
     return (
         <DetailsItem
-            icon={<Icon width="100%" height="100%" style={{ [panelVars.colorZoneOrange]: object.color }} />}
-            name={NAME}
+            icon={<Icon width="100%" height="100%" style={{ [panelVars.colorZoneOrange]: DEFAULT_AOE_COLOR }} />}
+            name={t('objects.donut', { defaultValue: 'Donut' })}
             object={object}
             {...props}
         />

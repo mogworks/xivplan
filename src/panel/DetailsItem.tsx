@@ -7,11 +7,16 @@ import {
     EyeOffFilled,
     EyeOffRegular,
     EyeRegular,
+    GroupRegular,
+    LockClosedRegular,
+    LockOpenRegular,
 } from '@fluentui/react-icons';
 import React, { ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useScene } from '../SceneProvider';
 import { PrefabIcon } from '../prefabs/PrefabIcon';
-import { SceneObject } from '../scene';
+import { isMovable, MovableObject, SceneObject } from '../scene';
+import { selectGroupElements, useSelection } from '../selection';
 import { setOrOmit } from '../util';
 import { detailsItemClassNames } from './detailsItemStyles';
 
@@ -23,6 +28,16 @@ export interface DetailsItemProps {
     isNested?: boolean;
     isDragging?: boolean;
     isSelected?: boolean;
+}
+
+// Generate a consistent color from a group ID
+function getGroupColor(groupId: string): string {
+    let hash = 0;
+    for (let i = 0; i < groupId.length; i++) {
+        hash = groupId.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    const hue = Math.abs(hash) % 360;
+    return `hsl(${hue}, 70%, 50%)`;
 }
 
 // TODO: only show hide button if hidden or hovered/selected
@@ -46,6 +61,16 @@ export const DetailsItem: React.FC<DetailsItemProps> = ({
             {children ? children : <div className={classes.name}>{name}</div>}
             {!isNested && (
                 <div className={classes.buttons}>
+                    <DetailsItemGroupButton
+                        object={object}
+                        className={mergeClasses(isSelected && classes.selectedButton)}
+                    />
+                    {isMovable(object) && (
+                        <DetailsItemPinnedButton
+                            object={object}
+                            className={mergeClasses(isSelected && classes.selectedButton)}
+                        />
+                    )}
                     <DetailsItemHideButton
                         object={object}
                         className={mergeClasses(isSelected && classes.selectedButton, isDragging && classes.visible)}
@@ -60,24 +85,83 @@ export const DetailsItem: React.FC<DetailsItemProps> = ({
     );
 };
 
+interface DetailsItemPinnedButtonProps {
+    object: SceneObject & MovableObject;
+    className?: string;
+}
+
+const DetailsItemGroupButton: React.FC<{ object: SceneObject; className?: string }> = ({ object, className }) => {
+    const classes = useStyles();
+    const { step } = useScene();
+    const [, setSelection] = useSelection();
+    const { t } = useTranslation();
+
+    if (!object.groupId) {
+        return null;
+    }
+
+    const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+        const newSelection = selectGroupElements(step, object);
+        setSelection(newSelection);
+        e.stopPropagation();
+    };
+
+    const color = getGroupColor(object.groupId);
+
+    return (
+        <Button
+            appearance="transparent"
+            className={mergeClasses(classes.button, className)}
+            icon={<GroupRegular />}
+            onClick={handleClick}
+            title={t('properties.selectGroup')}
+            style={{ color }}
+        />
+    );
+};
+
+const DetailsItemPinnedButton: React.FC<DetailsItemPinnedButtonProps> = ({ object, className }) => {
+    const classes = useStyles();
+    const { dispatch } = useScene();
+    const { t } = useTranslation();
+    const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+        dispatch({ type: 'update', value: setOrOmit(object, 'pinned', !object.pinned) });
+        e.stopPropagation();
+    };
+
+    const Icon = object.pinned ? <LockClosedRegular /> : <LockOpenRegular />;
+    const tooltip = object.pinned ? t('properties.unlockPosition') : t('properties.lockPosition');
+
+    return (
+        <Button
+            appearance="transparent"
+            className={mergeClasses(classes.button, className)}
+            icon={Icon}
+            onClick={handleClick}
+            title={tooltip}
+        />
+    );
+};
+
 interface DetailsItemHideButtonProps {
     object: SceneObject;
     className?: string;
 }
 
-const EyeOffIcon = bundleIcon(EyeOffFilled, EyeOffRegular);
-const EyeIcon = bundleIcon(EyeFilled, EyeRegular);
+const GazeOffIcon = bundleIcon(EyeOffFilled, EyeOffRegular);
+const GazeIcon = bundleIcon(EyeFilled, EyeRegular);
 
 const DetailsItemHideButton: React.FC<DetailsItemHideButtonProps> = ({ object, className }) => {
     const classes = useStyles();
     const { dispatch } = useScene();
+    const { t } = useTranslation();
     const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
         dispatch({ type: 'update', value: setOrOmit(object, 'hide', !object.hide) });
         e.stopPropagation();
     };
 
-    const Icon = object.hide ? EyeOffIcon : EyeIcon;
-    const tooltip = object.hide ? 'Show' : 'Hide';
+    const Icon = object.hide ? GazeOffIcon : GazeIcon;
+    const tooltip = object.hide ? t('properties.show') : t('properties.hide');
 
     return (
         <Button
@@ -85,6 +169,7 @@ const DetailsItemHideButton: React.FC<DetailsItemHideButtonProps> = ({ object, c
             className={mergeClasses(
                 detailsItemClassNames.hideButton,
                 classes.hideButton,
+                classes.button,
                 object.hide && classes.visible,
                 className,
             )}
@@ -103,13 +188,14 @@ interface DetailsItemDeleteButtonProps {
 const DeleteIcon = bundleIcon(DismissFilled, DismissRegular);
 
 const DetailsItemDeleteButton: React.FC<DetailsItemDeleteButtonProps> = ({ object, className }) => {
+    const classes = useStyles();
     const { dispatch } = useScene();
     const deleteObject = () => dispatch({ type: 'remove', ids: object.id });
 
     return (
         <Button
             appearance="transparent"
-            className={className}
+            className={mergeClasses(classes.button, className)}
             icon={<DeleteIcon />}
             onClick={deleteObject}
             title="Delete object"
@@ -145,10 +231,16 @@ const useStyles = makeStyles({
     buttons: {
         display: 'flex',
         flexFlow: 'row',
+        gap: tokens.spacingHorizontalXXS,
+    },
+
+    button: {
+        padding: '0 0',
+        minWidth: 'unset',
     },
 
     hideButton: {
-        opacity: 0,
+        opacity: 1,
         transitionProperty: 'opacity',
         transitionDuration: tokens.durationFaster,
         transitionTimingFunction: tokens.curveEasyEase,

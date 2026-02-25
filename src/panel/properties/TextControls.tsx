@@ -15,6 +15,7 @@ import {
     bundleIcon,
 } from '@fluentui/react-icons';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { CompactColorPicker } from '../../CompactColorPicker';
 import { CompactSwatchColorPicker } from '../../CompactSwatchColorPicker';
 import { DeferredTextarea } from '../../DeferredTextarea';
@@ -47,6 +48,7 @@ const SquareShadow = bundleIcon(SquareShadowFilled, SquareShadowRegular);
 const SquareHint = bundleIcon(SquareHintFilled, SquareHintRegular);
 
 export const TextOutlineControl: React.FC<PropertiesControlProps<TextObject>> = ({ objects }) => {
+    const { t } = useTranslation();
     const theme = useSceneTheme();
     const classes = useControlStyles();
     const { dispatch } = useScene();
@@ -61,14 +63,14 @@ export const TextOutlineControl: React.FC<PropertiesControlProps<TextObject>> = 
         dispatch({ type: 'update', value: objects.map((obj) => ({ ...obj, style })) });
 
     const swatches = [
-        makeColorSwatch(COLOR_RED, 'red'),
-        makeColorSwatch(COLOR_YELLOW, 'yellow'),
-        makeColorSwatch(COLOR_GREEN, 'green'),
-        makeColorSwatch(COLOR_BLUE, 'blue'),
-        makeColorSwatch(COLOR_WHITE, 'white'),
-        makeColorSwatch(COLOR_BLACK, 'black'),
-        makeColorSwatch(theme.colorArena, 'arena'),
-        makeColorSwatch(theme.colorBackground, 'background'),
+        makeColorSwatch(COLOR_RED, t('colors.red')),
+        makeColorSwatch(COLOR_YELLOW, t('colors.yellow')),
+        makeColorSwatch(COLOR_GREEN, t('colors.green')),
+        makeColorSwatch(COLOR_BLUE, t('colors.blue')),
+        makeColorSwatch(COLOR_WHITE, t('colors.white')),
+        makeColorSwatch(COLOR_BLACK, t('colors.black')),
+        makeColorSwatch(theme.colorArena, t('colors.arena')),
+        makeColorSwatch(theme.colorBackground, t('colors.background')),
     ];
 
     const disabled = style === 'plain';
@@ -77,22 +79,22 @@ export const TextOutlineControl: React.FC<PropertiesControlProps<TextObject>> = 
         <>
             <div className={classes.row}>
                 <CompactColorPicker
-                    label="Outline"
+                    label={t('text.outline')}
                     color={stroke ?? ''}
                     className={classes.grow}
                     disabled={disabled}
                     onChange={(data) => handleStrokeChanged(data.value, data.transient)}
                     onCommit={() => dispatch({ type: 'commit' })}
                 />
-                <Field label="Style">
+                <Field label={t('text.style')}>
                     <SegmentedGroup
                         name="text-style"
                         value={style}
                         onChange={(ev, data) => handleStyleChanged(data.value as TextStyle)}
                     >
-                        <Segment value="outline" icon={<TextEffects />} title="Outline" />
-                        <Segment value="shadow" icon={<SquareShadow />} title="Shadow" />
-                        <Segment value="plain" icon={<SquareHint />} title="No outline" />
+                        <Segment value="outline" icon={<TextEffects />} title={t('text.outline')} />
+                        <Segment value="shadow" icon={<SquareShadow />} title={t('text.shadow')} />
+                        <Segment value="plain" icon={<SquareHint />} title={t('text.noOutline')} />
                     </SegmentedGroup>
                 </Field>
             </div>
@@ -110,6 +112,7 @@ export const TextOutlineControl: React.FC<PropertiesControlProps<TextObject>> = 
 };
 
 export const TextLayoutControl: React.FC<PropertiesControlProps<TextObject>> = ({ objects }) => {
+    const { t } = useTranslation();
     const classes = useControlStyles();
     const { dispatch } = useScene();
 
@@ -125,14 +128,14 @@ export const TextLayoutControl: React.FC<PropertiesControlProps<TextObject>> = (
 
     return (
         <div className={classes.row}>
-            <Field label="Font size">
+            <Field label={t('text.fontSize')}>
                 <SpinButton value={fontSize} onChange={onFontSizeChanged} min={MIN_FONT_SIZE} step={5} />
             </Field>
-            <Field label="Align">
+            <Field label={t('text.align')}>
                 <SegmentedGroup name="text-align" value={align} onChange={(ev, data) => onAlignChanged(data.value)}>
-                    <Segment value="left" icon={<AlignLeft />} title="Align left" />
-                    <Segment value="center" icon={<AlignCenter />} title="Align center" />
-                    <Segment value="right" icon={<AlignRight />} title="Align right" />
+                    <Segment value="left" icon={<AlignLeft />} title={t('text.alignLeft')} />
+                    <Segment value="center" icon={<AlignCenter />} title={t('text.alignCenter')} />
+                    <Segment value="right" icon={<AlignRight />} title={t('text.alignRight')} />
                 </SegmentedGroup>
             </Field>
         </div>
@@ -140,6 +143,7 @@ export const TextLayoutControl: React.FC<PropertiesControlProps<TextObject>> = (
 };
 
 export const TextValueControl: React.FC<PropertiesControlProps<TextObject>> = ({ objects }) => {
+    const { t } = useTranslation();
     const { dispatch } = useScene();
 
     const text = commonValue(objects, (obj) => obj.text);
@@ -149,7 +153,7 @@ export const TextValueControl: React.FC<PropertiesControlProps<TextObject>> = ({
 
     // TODO: add autoAdjustHeight once implemented
     return (
-        <Field label="Text">
+        <Field label={t('text.text')}>
             <DeferredTextarea
                 resize="vertical"
                 rows={3}

@@ -1,5 +1,6 @@
 import { DrawImageRegular } from '@fluentui/react-icons';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Group, Line } from 'react-konva';
 import { DetailsItem } from '../panel/DetailsItem';
 import { ListComponentProps, registerListComponent } from '../panel/ListComponentRegistry';
@@ -9,7 +10,7 @@ import { DrawObject, ObjectType } from '../scene';
 import { HIGHLIGHT_WIDTH } from '../theme';
 import { DRAW_LINE_PROPS } from './DrawObjectStyles';
 import { HideCutoutGroup } from './HideGroup';
-import { ResizeableObjectContainer } from './ResizeableObjectContainer';
+import { ResizableObjectContainer } from './ResizableObjectContainer';
 import { useHighlightProps } from './highlight';
 
 function getLinePoints(object: DrawObject) {
@@ -21,7 +22,7 @@ export const DrawObjectRenderer: React.FC<RendererProps<DrawObject>> = ({ object
     const points = getLinePoints(object);
 
     return (
-        <ResizeableObjectContainer
+        <ResizableObjectContainer
             object={object}
             cache
             cacheKey={highlightProps}
@@ -47,14 +48,21 @@ export const DrawObjectRenderer: React.FC<RendererProps<DrawObject>> = ({ object
                     </HideCutoutGroup>
                 </Group>
             )}
-        </ResizeableObjectContainer>
+        </ResizableObjectContainer>
     );
 };
 
 registerRenderer<DrawObject>(ObjectType.Draw, LayerName.Default, DrawObjectRenderer);
 
 export const DrawDetails: React.FC<ListComponentProps<DrawObject>> = (props) => {
-    return <DetailsItem icon={<DrawImageRegular color={props.object.color} />} name="Drawing" {...props} />;
+    const { t } = useTranslation();
+    return (
+        <DetailsItem
+            icon={<DrawImageRegular color={props.object.color} />}
+            name={t('objects.drawing', { defaultValue: 'Drawing' })}
+            {...props}
+        />
+    );
 };
 
 registerListComponent<DrawObject>(ObjectType.Draw, DrawDetails);

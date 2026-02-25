@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Circle, Group } from 'react-konva';
 import { getDragOffset, registerDropHandler } from '../../DropHandler';
 import Icon from '../../assets/zone/knockback.svg?react';
@@ -7,7 +8,7 @@ import { ListComponentProps, registerListComponent } from '../../panel/ListCompo
 import { registerRenderer, RendererProps } from '../../render/ObjectRegistry';
 import { LayerName } from '../../render/layers';
 import { CircleZone, ObjectType } from '../../scene';
-import { CENTER_DOT_RADIUS, DEFAULT_AOE_COLOR, DEFAULT_AOE_OPACITY, panelVars } from '../../theme';
+import { CENTER_DOT_RADIUS, DEFAULT_AOE_COLOR, DEFAULT_SHAPE_OPACITY, panelVars } from '../../theme';
 import { usePanelDrag } from '../../usePanelDrag';
 import { HideGroup } from '../HideGroup';
 import { PrefabIcon } from '../PrefabIcon';
@@ -20,10 +21,11 @@ const DEFAULT_RADIUS = 150;
 
 export const ZoneKnockback: React.FC = () => {
     const [, setDragObject] = usePanelDrag();
+    const { t } = useTranslation();
     return (
         <PrefabIcon
             draggable
-            name="Circular knockback"
+            name={t('objects.circularKnockback', { defaultValue: 'Circular knockback' })}
             icon={<Icon />}
             onDragStart={(e) => {
                 setDragObject({
@@ -43,7 +45,7 @@ registerDropHandler<CircleZone>(ObjectType.Knockback, (object, position) => {
         object: {
             type: ObjectType.Knockback,
             color: DEFAULT_AOE_COLOR,
-            opacity: DEFAULT_AOE_OPACITY,
+            opacity: DEFAULT_SHAPE_OPACITY,
             radius: DEFAULT_RADIUS,
             ...object,
             ...position,
@@ -108,10 +110,11 @@ const KnockbackContainer: React.FC<RendererProps<CircleZone>> = ({ object }) => 
 registerRenderer<CircleZone>(ObjectType.Knockback, LayerName.Ground, KnockbackContainer);
 
 const KnockbackDetails: React.FC<ListComponentProps<CircleZone>> = ({ object, ...props }) => {
+    const { t } = useTranslation();
     return (
         <DetailsItem
             icon={<Icon width="100%" height="100%" style={{ [panelVars.colorZoneOrange]: object.color }} />}
-            name="Knockback"
+            name={t('objects.circularKnockback', { defaultValue: 'Circular knockback' })}
             object={object}
             {...props}
         />

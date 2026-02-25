@@ -6,7 +6,7 @@ import {
     SelectionState,
     SpotlightContext,
 } from './SelectionContext';
-import { isMoveable, Scene, SceneObject, SceneStep } from './scene';
+import { isMovable, Scene, SceneObject, SceneStep } from './scene';
 
 /**
  * State for selected objects.
@@ -50,7 +50,7 @@ export function getSelectedObjects(step: SceneStep, selection: SceneSelection): 
 export function getNewDragSelection(step: SceneStep, selection: SceneSelection): SceneSelection {
     return new Set(
         getSelectedObjects(step, selection)
-            .filter(isMoveable)
+            .filter(isMovable)
             .map((obj) => obj.id),
     );
 }
@@ -112,4 +112,15 @@ export function toggleSelection(selection: SceneSelection, id: number): SceneSel
     } else {
         return addSelection(selection, id);
     }
+}
+
+/**
+ * Gets a new selection containing all objects that belong to the same group as the given object.
+ */
+export function selectGroupElements(step: SceneStep, object: SceneObject): SceneSelection {
+    if (!object.groupId) {
+        return selectNone();
+    }
+
+    return new Set(step.objects.filter((obj) => obj.groupId === object.groupId).map((obj) => obj.id));
 }

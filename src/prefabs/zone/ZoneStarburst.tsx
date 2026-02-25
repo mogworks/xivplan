@@ -1,6 +1,7 @@
 import { ShapeConfig } from 'konva/lib/Shape';
 import { CircleConfig } from 'konva/lib/shapes/Circle';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Circle, Group, Rect } from 'react-konva';
 import { getDragOffset, registerDropHandler } from '../../DropHandler';
 import Icon from '../../assets/zone/starburst.svg?react';
@@ -9,7 +10,7 @@ import { ListComponentProps, registerListComponent } from '../../panel/ListCompo
 import { registerRenderer, RendererProps } from '../../render/ObjectRegistry';
 import { LayerName } from '../../render/layers';
 import { ObjectType, StarburstZone } from '../../scene';
-import { CENTER_DOT_RADIUS, DEFAULT_AOE_COLOR, DEFAULT_AOE_OPACITY, panelVars } from '../../theme';
+import { CENTER_DOT_RADIUS, DEFAULT_AOE_COLOR, DEFAULT_SHAPE_OPACITY, panelVars } from '../../theme';
 import { usePanelDrag } from '../../usePanelDrag';
 import { HideGroup } from '../HideGroup';
 import { PrefabIcon } from '../PrefabIcon';
@@ -18,18 +19,17 @@ import { useHighlightProps } from '../highlight';
 import { StarburstControlContainer } from './StarburstContainer';
 import { getZoneStyle } from './style';
 
-const NAME = 'Starburst';
-
-const DEFAULT_RADIUS = 250;
-const DEFAULT_SPOKE_WIDTH = 40;
+const DEFAULT_RADIUS = 200;
+const DEFAULT_SPOKE_WIDTH = 50;
 const DEFAULT_SPOKE_COUNT = 8;
 
 export const ZoneStarburst: React.FC = () => {
     const [, setDragObject] = usePanelDrag();
+    const { t } = useTranslation();
     return (
         <PrefabIcon
             draggable
-            name={NAME}
+            name={t('objects.starburst', { defaultValue: 'Starburst' })}
             icon={<Icon />}
             onDragStart={(e) => {
                 setDragObject({
@@ -49,7 +49,7 @@ registerDropHandler<StarburstZone>(ObjectType.Starburst, (object, position) => {
         object: {
             type: ObjectType.Starburst,
             color: DEFAULT_AOE_COLOR,
-            opacity: DEFAULT_AOE_OPACITY,
+            opacity: DEFAULT_SHAPE_OPACITY,
             radius: DEFAULT_RADIUS,
             spokes: DEFAULT_SPOKE_COUNT,
             spokeWidth: DEFAULT_SPOKE_WIDTH,
@@ -206,10 +206,11 @@ const StarburstContainer: React.FC<RendererProps<StarburstZone>> = ({ object }) 
 registerRenderer<StarburstZone>(ObjectType.Starburst, LayerName.Ground, StarburstContainer);
 
 const StarburstDetails: React.FC<ListComponentProps<StarburstZone>> = ({ object, ...props }) => {
+    const { t } = useTranslation();
     return (
         <DetailsItem
             icon={<Icon width="100%" height="100%" style={{ [panelVars.colorZoneOrange]: object.color }} />}
-            name={NAME}
+            name={t('objects.starburst', { defaultValue: 'Starburst' })}
             object={object}
             {...props}
         />

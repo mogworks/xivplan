@@ -10,6 +10,7 @@ import {
     useToastController,
 } from '@fluentui/react-components';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAsync, useDebounce, useLocalStorage } from 'react-use';
 import { MessageToast } from '../MessageToast';
 import { PANEL_PADDING } from './PanelStyles';
@@ -35,27 +36,37 @@ interface Page {
     next?: string;
 }
 
-export type Language = 'en' | 'ja' | 'de' | 'fr';
+export type Language = 'en' | 'ja' | 'de' | 'fr' | 'chs' | 'ko' | 'tc';
 
-const API_ENDPOINT = 'https://v2.xivapi.com/api';
-const SEARCH_URL = `${API_ENDPOINT}/search`;
-const ASSET_URL = `${API_ENDPOINT}/asset`;
+const getApiEndpoint = (language: Language) => {
+    if (language === 'chs' || language === 'ko' || language === 'tc') {
+        return 'https://xivapi-v2.xivcdn.com/api';
+    }
+    return 'https://v2.xivapi.com/api';
+};
+const getSearchUrl = (language: Language) => `${getApiEndpoint(language)}/search`;
 
-const DEBOUNCE_TIME = 300;
+const ASSET_URL = `https://asset.xivstrat.cn`;
+
+const DEBOUNCE_TIME = 500;
 
 const LANGUAGE_OPTIONS: Record<Language, string> = {
+    chs: '中文',
+    tc: '繁體中文',
     ja: '日本語',
     en: 'English',
-    fr: 'Français',
     de: 'Deutch',
+    fr: 'Français',
+    ko: '한국어',
 };
 
 export const StatusSearch: React.FC = () => {
     const classes = useStyles();
     const [controller, setController] = useState<AbortController>();
     const [debouncedFilter, setDebouncedFilter] = useState('');
-    const [language, setLanguage] = useLocalStorage<Language>('language', 'en');
+    const [language, setLanguage] = useLocalStorage<Language>('xivapiLanguage', 'chs');
     const { dispatchToast } = useToastController();
+    const { t } = useTranslation();
 
     const [filter, setFilter] = useState('');
 
@@ -78,7 +89,7 @@ export const StatusSearch: React.FC = () => {
             return fetchStatuses(debouncedFilter, controller.signal, language);
         } catch (ex) {
             console.warn(ex);
-            dispatchToast(<MessageToast title="Error" message={ex} />, { intent: 'error' });
+            dispatchToast(<MessageToast title={t('statusSearch.error')} message={ex} />, { intent: 'error' });
             return [];
         }
     }, [debouncedFilter, language, dispatchToast]);
@@ -87,10 +98,10 @@ export const StatusSearch: React.FC = () => {
         // TODO: replace with tabster? https://tabster.io/docs/mover
         // <FocusZone direction={FocusZoneDirection.vertical}>
         <div className={classes.statusSearch}>
-            <Field label="Language">
+            <Field label={t('statusSearch.languageLabel')}>
                 <Dropdown
                     appearance="underline"
-                    value={LANGUAGE_OPTIONS[language ?? 'en']}
+                    value={LANGUAGE_OPTIONS[language ?? 'chs']}
                     selectedOptions={[language as string]}
                     onOptionSelect={(ev, data) => setLanguage(data.optionValue as Language)}
                 >
@@ -105,7 +116,7 @@ export const StatusSearch: React.FC = () => {
                 className={classes.search}
                 appearance="underline"
                 type="text"
-                placeholder="Status name"
+                placeholder={t('statusSearch.statusNamePlaceholder')}
                 value={filter}
                 onChange={(ev, data) => handleFilterChanged(data.value)}
             />
@@ -116,12 +127,12 @@ export const StatusSearch: React.FC = () => {
                 <StatusGrid items={items.value} columns={6} className={classes.list} />
             )}
 
-            {!items.loading && debouncedFilter && items.value?.length === 0 && <p>No results.</p>}
+            {!items.loading && debouncedFilter && items.value?.length === 0 && <p>{t('statusSearch.noResults')}</p>}
         </div>
     );
 };
 
-async function fetchStatuses(search: string, signal: AbortSignal, language: Language = 'en') {
+async function fetchStatuses(search: string, signal: AbortSignal, language: Language = 'chs') {
     const items: StatusItem[] = [];
     let cursor: string | undefined = undefined;
 
@@ -134,7 +145,7 @@ async function fetchStatuses(search: string, signal: AbortSignal, language: Lang
             ...(cursor && { cursor }),
         });
 
-        const response = await fetch(`${SEARCH_URL}?${params}`, { cache: 'force-cache', signal });
+        const response = await fetch(`${getSearchUrl(language)}?${params}`, { cache: 'force-cache', signal });
         const page = (await response.json()) as Page;
         cursor = page.next;
 

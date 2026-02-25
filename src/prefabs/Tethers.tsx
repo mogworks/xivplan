@@ -6,6 +6,7 @@ import { ArrowConfig } from 'konva/lib/shapes/Arrow';
 import { LineConfig } from 'konva/lib/shapes/Line';
 import { Vector2d } from 'konva/lib/types';
 import * as React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Arrow, Circle, Group, Line } from 'react-konva';
 import { CursorGroup } from '../CursorGroup';
 import { getObjectById, useScene } from '../SceneProvider';
@@ -24,11 +25,12 @@ import {
     SceneObject,
     Tether,
     TetherType,
-    isEnemy,
-    isMarker,
-    isMoveable,
+    isAoeObject,
+    isMovable,
     isRadiusObject,
     isResizable,
+    isTarget,
+    isWaymark,
     isZone,
 } from '../scene';
 import { selectNone, useSelection } from '../selection';
@@ -88,14 +90,14 @@ function getTargetPoints(
     startObject: SceneObject | undefined,
     endObject: SceneObject | undefined,
 ): [Vector2d, Vector2d] {
-    const startPos = isMoveable(startObject) ? startObject : INVALID_START_POS;
-    const endPos = isMoveable(endObject) ? endObject : INVALID_END_POS;
+    const startPos = isMovable(startObject) ? startObject : INVALID_START_POS;
+    const endPos = isMovable(endObject) ? endObject : INVALID_END_POS;
 
     return [getCanvasCoord(scene, startPos), getCanvasCoord(scene, endPos)];
 }
 
 function isGroundObject(object: SceneObject) {
-    return isZone(object) || isEnemy(object) || isMarker(object);
+    return isZone(object) || isTarget(object) || isWaymark(object) || isAoeObject(object);
 }
 
 function getTargetOffset(object: SceneObject | undefined): number {
@@ -463,7 +465,16 @@ function getTargetNode(object: SceneObject | undefined) {
 const TetherDetails: React.FC<ListComponentProps<Tether>> = ({ object, ...props }) => {
     const classes = useStyles();
     const { scene } = useScene();
-    const name = getTetherName(object.tether);
+    const { t } = useTranslation();
+    const tetherKeyMap: Record<TetherType, string> = {
+        [TetherType.Line]: 'tethers.line',
+        [TetherType.Close]: 'tethers.close',
+        [TetherType.Far]: 'tethers.far',
+        [TetherType.MinusMinus]: 'tethers.minusMinus',
+        [TetherType.PlusMinus]: 'tethers.plusMinus',
+        [TetherType.PlusPlus]: 'tethers.plusPlus',
+    };
+    const name = t(tetherKeyMap[object.tether], { defaultValue: getTetherName(object.tether) });
 
     const startObj = getObjectById(scene, object.startId);
     const endObj = getObjectById(scene, object.endId);

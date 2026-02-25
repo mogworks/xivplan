@@ -1,5 +1,6 @@
 import { Field } from '@fluentui/react-components';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { useScene } from '../../SceneProvider';
 import { Segment, SegmentedGroup } from '../../Segmented';
 import { StackCountObject } from '../../scene';
@@ -12,27 +13,36 @@ const STACK_VALUES = [1, 2, 3, 4];
 export const StackCountControl: React.FC<PropertiesControlProps<StackCountObject>> = ({ objects }) => {
     const classes = useControlStyles();
     const { dispatch } = useScene();
+    const { t } = useTranslation();
 
     const count = commonValue(objects, (obj) => obj.count);
+
+    // objects 中所有 object 的 countValues（undefined 时取 STACK_VALUES）的交集
+    const countValues = objects.reduce((acc, obj) => {
+        if (obj.countValues ?? STACK_VALUES) {
+            return acc.filter((i) => (obj.countValues ?? STACK_VALUES).includes(i));
+        }
+        return acc;
+    }, STACK_VALUES);
 
     const handleChanged = (count: number) => {
         dispatch({ type: 'update', value: objects.map((obj) => ({ ...obj, count })) });
     };
 
     return (
-        <Field label="Player count" className={classes.cell}>
+        <Field label={t('properties.playerCount')} className={classes.cell}>
             <SegmentedGroup
                 name="player-count"
                 value={String(count)}
                 onChange={(ev, data) => handleChanged(parseInt(data.value))}
             >
-                {STACK_VALUES.map((i) => (
+                {countValues.map((i) => (
                     <Segment
                         key={i}
                         value={i.toString()}
                         icon={i.toString()}
                         size="mediumText"
-                        title={getItemTitle(i)}
+                        title={getItemTitle(i, t)}
                     />
                 ))}
             </SegmentedGroup>
@@ -40,10 +50,17 @@ export const StackCountControl: React.FC<PropertiesControlProps<StackCountObject
     );
 };
 
-const NUMBERS = ['One', 'Two', 'Three', 'Four'];
-
-function getItemTitle(count: number) {
-    const number = NUMBERS[count - 1] ?? '';
-
-    return `${number} Player${count == 1 ? 's' : ''}`;
+function getItemTitle(count: number, t: (key: string) => string) {
+    switch (count) {
+        case 1:
+            return t('properties.onePlayer');
+        case 2:
+            return t('properties.twoPlayers');
+        case 3:
+            return t('properties.threePlayers');
+        case 4:
+            return t('properties.fourPlayers');
+        default:
+            return `${count}`;
+    }
 }

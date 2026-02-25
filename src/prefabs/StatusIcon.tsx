@@ -1,5 +1,6 @@
 import Konva from 'konva';
 import React, { useLayoutEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Group, Image as KonvaImage, Rect, Text } from 'react-konva';
 import useImage from 'use-image';
 import { getDragOffset, registerDropHandler } from '../DropHandler';
@@ -13,7 +14,7 @@ import { useImageTracked } from '../useObjectLoading';
 import { usePanelDrag } from '../usePanelDrag';
 import { HideGroup } from './HideGroup';
 import { PrefabIcon } from './PrefabIcon';
-import { ResizeableObjectContainer } from './ResizeableObjectContainer';
+import { ResizableObjectContainer } from './ResizableObjectContainer';
 import { useHighlightProps } from './highlight';
 
 const DEFAULT_SIZE = 32;
@@ -38,6 +39,7 @@ interface IconTimerProps {
     time: number;
     width: number;
     height: number;
+    opacity: number;
 }
 
 function getIconTimerText(seconds: number) {
@@ -51,7 +53,7 @@ function getIconTimerText(seconds: number) {
     return `${Math.floor(seconds / 3600)}h`;
 }
 
-const IconTimer: React.FC<IconTimerProps> = ({ time, width, height }) => {
+const IconTimer: React.FC<IconTimerProps> = ({ time, width, height, opacity }) => {
     const text = getIconTimerText(time);
 
     const fontSize = Math.max(14, height / 3);
@@ -83,6 +85,7 @@ const IconTimer: React.FC<IconTimerProps> = ({ time, width, height }) => {
             fontSize={fontSize}
             strokeWidth={strokeWidth}
             fillAfterStrokeEnabled
+            opacity={opacity}
         />
     );
 };
@@ -92,7 +95,7 @@ const IconRenderer: React.FC<RendererProps<IconObject>> = ({ object }) => {
     const [image] = useImageTracked(object.image);
 
     return (
-        <ResizeableObjectContainer object={object} transformerProps={{ centeredScaling: true }}>
+        <ResizableObjectContainer object={object} transformerProps={{ centeredScaling: true }}>
             {(groupProps) => (
                 <Group {...groupProps}>
                     {highlightProps && (
@@ -104,32 +107,45 @@ const IconRenderer: React.FC<RendererProps<IconObject>> = ({ object }) => {
                         />
                     )}
                     <HideGroup>
-                        <KonvaImage image={image} width={object.width} height={object.height} />
-                        <IconTimer time={object.time ?? 0} width={object.width} height={object.height} />
+                        <KonvaImage
+                            image={image}
+                            width={object.width}
+                            height={object.height}
+                            opacity={object.opacity / 100}
+                        />
+                        <IconTimer
+                            time={object.time ?? 0}
+                            width={object.width}
+                            height={object.height}
+                            opacity={object.opacity / 100}
+                        />
                     </HideGroup>
                 </Group>
             )}
-        </ResizeableObjectContainer>
+        </ResizableObjectContainer>
     );
 };
 
 registerRenderer<IconObject>(ObjectType.Icon, LayerName.Default, IconRenderer);
 
 const IconDetails: React.FC<ListComponentProps<IconObject>> = ({ object, ...props }) => {
-    return <DetailsItem icon={object.image} name={object.name} object={object} {...props} />;
+    const { t } = useTranslation();
+    const name = object.name ?? (object.defaultNameKey ? t(object.defaultNameKey) : '');
+    return <DetailsItem icon={object.image} name={name} object={object} {...props} />;
 };
 
 registerListComponent<IconObject>(ObjectType.Icon, IconDetails);
 
 export interface StatusIconProps {
     name: string;
+    defaultNameKey?: string;
     icon: string;
     iconId?: number;
     maxStacks?: number;
     scale?: number;
 }
 
-export const StatusIcon: React.FC<StatusIconProps> = ({ name, icon, iconId, maxStacks, scale }) => {
+export const StatusIcon: React.FC<StatusIconProps> = ({ name, defaultNameKey, icon, iconId, maxStacks, scale }) => {
     const [, setDragObject] = usePanelDrag();
     const [image] = useImage(icon);
 
@@ -156,11 +172,12 @@ export const StatusIcon: React.FC<StatusIconProps> = ({ name, icon, iconId, maxS
                     object: {
                         type: ObjectType.Icon,
                         image: icon,
-                        name,
+                        defaultNameKey,
                         width,
                         height,
                         iconId,
                         maxStacks,
+                        name,
                     },
                     offset: getDragOffset(e),
                 });

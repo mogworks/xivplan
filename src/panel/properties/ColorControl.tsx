@@ -1,21 +1,16 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { CompactColorPicker } from '../../CompactColorPicker';
 import { CompactSwatchColorPicker } from '../../CompactSwatchColorPicker';
-import { ColoredObject, isMarker } from '../../scene';
+import { ColoredObject } from '../../scene';
 import { useScene } from '../../SceneProvider';
-import {
-    COLOR_MARKER_BLUE,
-    COLOR_MARKER_PURPLE,
-    COLOR_MARKER_RED,
-    COLOR_MARKER_YELLOW,
-    makeColorSwatch,
-    useColorSwatches,
-} from '../../theme';
+import { useColorSwatches } from '../../theme';
 import { commonValue } from '../../util';
 import { PropertiesControlProps } from '../PropertiesControl';
 
 export const ColorControl: React.FC<PropertiesControlProps<ColoredObject>> = ({ objects }) => {
     const { dispatch } = useScene();
+    const { t } = useTranslation();
 
     const color = commonValue(objects, (obj) => obj.color);
 
@@ -24,7 +19,7 @@ export const ColorControl: React.FC<PropertiesControlProps<ColoredObject>> = ({ 
 
     return (
         <CompactColorPicker
-            label="Color"
+            label={t('properties.color')}
             color={color ?? ''}
             onChange={(data) => onColorChanged(data.value, data.transient)}
             onCommit={() => dispatch({ type: 'commit' })}
@@ -32,19 +27,11 @@ export const ColorControl: React.FC<PropertiesControlProps<ColoredObject>> = ({ 
     );
 };
 
-const MARKER_SWATCHES = [
-    makeColorSwatch(COLOR_MARKER_RED, 'red'),
-    makeColorSwatch(COLOR_MARKER_YELLOW, 'yellow'),
-    makeColorSwatch(COLOR_MARKER_BLUE, 'blue'),
-    makeColorSwatch(COLOR_MARKER_PURPLE, 'purple'),
-];
-
 export const ColorSwatchControl: React.FC<PropertiesControlProps<ColoredObject>> = ({ objects }) => {
     const { dispatch } = useScene();
-    const colorSwatches = useColorSwatches();
+    const swatches = useColorSwatches();
 
     const color = commonValue(objects, (obj) => obj.color);
-    const swatches = objects.every(isMarker) ? MARKER_SWATCHES : colorSwatches;
 
     const setColor = (color: string) => dispatch({ type: 'update', value: objects.map((obj) => ({ ...obj, color })) });
 

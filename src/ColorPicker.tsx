@@ -3,6 +3,7 @@ import Hue from '@uiw/react-color-hue';
 import Saturation from '@uiw/react-color-saturation';
 import Color from 'colorjs.io';
 import React, { HTMLAttributes, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { SpinButton } from './SpinButton';
 import { HsvaColor, RgbColor, colorToHsva, hsvToHex, hsvToRgb, rgbToHsva } from './color';
 
@@ -16,6 +17,7 @@ const BLACK: HsvaColor = { h: 0, s: 0, v: 0, a: 1 };
 
 export const ColorPicker: React.FC<ColorPickerProps> = ({ className, value, onChange }) => {
     const classes = useStyles();
+    const { t } = useTranslation();
     const [color, setColor] = useState<HsvaColor>(parseColorHsva(value) ?? BLACK);
     const rgb = hsvToRgb(color);
 
@@ -56,7 +58,7 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({ className, value, onCh
                 />
             </div>
             <div className={classes.components}>
-                <Field label="Red" className={classes.input}>
+                <Field label={t('colors.red')} className={classes.input}>
                     <SpinButton
                         value={rgb.r}
                         min={0}
@@ -64,7 +66,7 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({ className, value, onCh
                         onChange={(ev, data) => onRgbChange({ r: data.value ?? undefined })}
                     />
                 </Field>
-                <Field label="Green" className={classes.input}>
+                <Field label={t('colors.green')} className={classes.input}>
                     <SpinButton
                         value={rgb.g}
                         min={0}
@@ -72,7 +74,7 @@ export const ColorPicker: React.FC<ColorPickerProps> = ({ className, value, onCh
                         onChange={(ev, data) => onRgbChange({ g: data.value ?? undefined })}
                     />
                 </Field>
-                <Field label="Blue" className={classes.input}>
+                <Field label={t('colors.blue')} className={classes.input}>
                     <SpinButton
                         value={rgb.b}
                         min={0}

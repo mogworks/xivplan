@@ -1,5 +1,6 @@
 import Konva from 'konva';
 import React, { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Group, Rect } from 'react-konva';
 import { getDragOffset, registerDropHandler } from '../../DropHandler';
 import Icon from '../../assets/zone/line_stack.svg?react';
@@ -8,27 +9,26 @@ import { ListComponentProps, registerListComponent } from '../../panel/ListCompo
 import { registerRenderer, RendererProps } from '../../render/ObjectRegistry';
 import { LayerName } from '../../render/layers';
 import { ObjectType, RectangleZone } from '../../scene';
-import { DEFAULT_AOE_COLOR, DEFAULT_AOE_OPACITY, panelVars } from '../../theme';
+import { DEFAULT_AOE_COLOR, DEFAULT_SHAPE_OPACITY, panelVars } from '../../theme';
 import { usePanelDrag } from '../../usePanelDrag';
 import { HideGroup } from '../HideGroup';
 import { PrefabIcon } from '../PrefabIcon';
-import { ResizeableObjectContainer } from '../ResizeableObjectContainer';
+import { ResizableObjectContainer } from '../ResizableObjectContainer';
 import { useHighlightProps } from '../highlight';
 import { ChevronConfig, ChevronTail } from './shapes';
 import { getArrowStyle } from './style';
-
-const NAME = 'Line stack';
 
 const DEFAULT_WIDTH = 100;
 const DEFAULT_HEIGHT = 150;
 
 export const ZoneLineStack: React.FC = () => {
     const [, setDragObject] = usePanelDrag();
+    const { t } = useTranslation();
 
     return (
         <PrefabIcon
             draggable
-            name={NAME}
+            name={t('objects.lineStack', { defaultValue: 'Line stack' })}
             icon={<Icon />}
             onDragStart={(e) => {
                 setDragObject({
@@ -50,7 +50,7 @@ registerDropHandler<RectangleZone>(ObjectType.LineStack, (object, position) => {
         object: {
             type: ObjectType.Rect,
             color: DEFAULT_AOE_COLOR,
-            opacity: DEFAULT_AOE_OPACITY,
+            opacity: DEFAULT_SHAPE_OPACITY,
             width: DEFAULT_WIDTH,
             height: DEFAULT_HEIGHT,
             rotation: 0,
@@ -101,7 +101,7 @@ const LineStackRenderer: React.FC<RendererProps<RectangleZone>> = ({ object }) =
 
     return (
         <>
-            <ResizeableObjectContainer object={object} transformerProps={{ centeredScaling: true, keepRatio: false }}>
+            <ResizableObjectContainer object={object} transformerProps={{ centeredScaling: true, keepRatio: false }}>
                 {(groupProps) => (
                     <Group {...groupProps}>
                         {highlightProps && <Rect width={object.width} height={object.height} {...highlightProps} />}
@@ -128,7 +128,7 @@ const LineStackRenderer: React.FC<RendererProps<RectangleZone>> = ({ object }) =
                         </HideGroup>
                     </Group>
                 )}
-            </ResizeableObjectContainer>
+            </ResizableObjectContainer>
 
             <Group ref={arrowRef} x={OFFSCREEN_X} y={OFFSCREEN_Y}>
                 <ChevronTail x={patternWidth * ARROW_PAD} rotation={90} {...arrow} />
@@ -141,10 +141,11 @@ const LineStackRenderer: React.FC<RendererProps<RectangleZone>> = ({ object }) =
 registerRenderer<RectangleZone>(ObjectType.LineStack, LayerName.Ground, LineStackRenderer);
 
 const LineStackDetails: React.FC<ListComponentProps<RectangleZone>> = ({ object, ...props }) => {
+    const { t } = useTranslation();
     return (
         <DetailsItem
             icon={<Icon width="100%" height="100%" style={{ [panelVars.colorZoneOrange]: object.color }} />}
-            name={NAME}
+            name={t('objects.lineStack', { defaultValue: 'Line stack' })}
             object={object}
             {...props}
         />

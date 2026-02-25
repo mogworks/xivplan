@@ -12,6 +12,7 @@ import {
 } from '@fluentui/react-components';
 import { Dismiss24Regular } from '@fluentui/react-icons';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { HotkeyBlockingDialogBody } from './HotkeyBlockingDialogBody';
 import { HotkeyName } from './HotkeyName';
 import { useRegisteredHotkeys } from './useHotkeys';
@@ -20,6 +21,7 @@ export type HelpDialogProps = Omit<DialogProps, 'children'>;
 
 export const HelpDialog: React.FC<HelpDialogProps> = (props) => {
     const classes = useStyles();
+    const { t } = useTranslation();
 
     return (
         <Dialog {...props}>
@@ -28,63 +30,67 @@ export const HelpDialog: React.FC<HelpDialogProps> = (props) => {
                     <DialogTitle
                         action={
                             <DialogTrigger action="close">
-                                <Button appearance="subtle" aria-label="close" icon={<Dismiss24Regular />} />
+                                <Button
+                                    appearance="subtle"
+                                    aria-label={t('actions.close')}
+                                    icon={<Dismiss24Regular />}
+                                />
                             </DialogTrigger>
                         }
                     >
-                        Help
+                        {t('helpDialog.title')}
                     </DialogTitle>
                     <DialogContent className={classes.content}>
                         <section className={classes.section}>
-                            <h2>Left panel</h2>
-                            <h3>Arena</h3>
-                            <p>Edit the appearance of the arena here.</p>
+                            <h2>{t('helpDialog.leftPanel')}</h2>
+                            <h3>{t('helpDialog.arena')}</h3>
+                            <p>{t('helpDialog.arenaDescription')}</p>
 
-                            <h3>Objects</h3>
-                            <p>Drag objects onto the arena.</p>
+                            <h3>{t('helpDialog.objects')}</h3>
+                            <p>{t('helpDialog.objectsDescription')}</p>
 
-                            <h3>Icons</h3>
-                            <p>Drag markers and status effect icons onto the arena.</p>
+                            <h3>{t('helpDialog.icons')}</h3>
+                            <p>{t('helpDialog.iconsDescription')}</p>
 
-                            <h3>Draw</h3>
-                            <p>Draw freeform objects on the scene.</p>
+                            <h3>{t('helpDialog.draw')}</h3>
+                            <p>{t('helpDialog.drawDescription')}</p>
 
-                            <h2>Right panel</h2>
-                            <h3>Properties</h3>
-                            <p>Select an object, then edit its properties here.</p>
+                            <h2>{t('helpDialog.rightPanel')}</h2>
+                            <h3>{t('helpDialog.properties')}</h3>
+                            <p>{t('helpDialog.propertiesDescription')}</p>
 
-                            <h3>Scene</h3>
-                            <p>Displays a list of all objects in the scene. Drag and drop to adjust layering order.</p>
+                            <h3>{t('helpDialog.scene')}</h3>
+                            <p>{t('helpDialog.sceneDescription')}</p>
                         </section>
 
                         <section className={classes.section}>
-                            <h2>Keyboard shortcuts</h2>
+                            <h2>{t('helpDialog.keyboardShortcuts')}</h2>
                             <HotkeyList />
                         </section>
 
                         <section className={classes.section}>
-                            <h2>Mouse shortcuts</h2>
+                            <h2>{t('helpDialog.mouseShortcuts')}</h2>
                             <dl className={classes.hotkeys}>
-                                <dt>Left click</dt>
-                                <dd>Select object</dd>
+                                <dt>{t('helpDialog.leftClick')}</dt>
+                                <dd>{t('helpDialog.selectObject')}</dd>
 
                                 <dt>
-                                    <HotkeyName keys="ctrl" suffix="left click" />
+                                    <HotkeyName keys="ctrl" suffix={t('helpDialog.leftClick')} />
                                 </dt>
-                                <dd>Toggle selection</dd>
+                                <dd>{t('helpDialog.toggleSelection')}</dd>
 
                                 <dt>
-                                    <HotkeyName keys="shift" suffix="left click" />
+                                    <HotkeyName keys="shift" suffix={t('helpDialog.leftClick')} />
                                 </dt>
-                                <dd>Add to selection</dd>
+                                <dd>{t('helpDialog.addToSelection')}</dd>
 
-                                <dt>Left click + drag</dt>
-                                <dd>Move/transform object</dd>
+                                <dt>{t('helpDialog.leftClickDrag')}</dt>
+                                <dd>{t('helpDialog.moveTransformObject')}</dd>
 
                                 <dt>
-                                    <HotkeyName keys="shift" suffix="left click + drag" />
+                                    <HotkeyName keys="shift" suffix={t('helpDialog.leftClickDrag')} />
                                 </dt>
-                                <dd>Proportional resize</dd>
+                                <dd>{t('helpDialog.proportionalResize')}</dd>
                             </dl>
                         </section>
                     </DialogContent>

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Circle, Group, Rect } from 'react-konva';
 import Icon from '../../assets/zone/line.svg?react';
 import { getPointerAngle, snapAngle } from '../../coord';
@@ -12,18 +13,17 @@ import { ActivePortal } from '../../render/Portals';
 import { LineZone, ObjectType } from '../../scene';
 import { useScene } from '../../SceneProvider';
 import { useIsDragging } from '../../selection';
-import { CENTER_DOT_RADIUS, DEFAULT_AOE_COLOR, DEFAULT_AOE_OPACITY, panelVars } from '../../theme';
+import { CENTER_DOT_RADIUS, DEFAULT_AOE_COLOR, DEFAULT_SHAPE_OPACITY, panelVars } from '../../theme';
 import { usePanelDrag } from '../../usePanelDrag';
 import { distance, getDistanceFromLine, VEC_ZERO, vecAtAngle } from '../../vector';
 import { MIN_LINE_LENGTH, MIN_LINE_WIDTH } from '../bounds';
-import { CONTROL_POINT_BORDER_COLOR, createControlPointManager, HandleFuncProps, HandleStyle } from '../ControlPoint';
+import { CONTROL_POINT_BORDER_COLOR } from '../control-point';
+import { createControlPointManager, HandleFuncProps, HandleStyle } from '../ControlPoint';
 import { DraggableObject } from '../DraggableObject';
 import { HideGroup } from '../HideGroup';
 import { useHighlightProps, useShowResizer } from '../highlight';
 import { PrefabIcon } from '../PrefabIcon';
 import { getZoneStyle } from './style';
-
-const NAME = 'Line';
 
 const DEFAULT_WIDTH = 100;
 const DEFAULT_LENGTH = 250;
@@ -32,10 +32,11 @@ const ICON_SIZE = 32;
 
 export const ZoneLine: React.FC = () => {
     const [, setDragObject] = usePanelDrag();
+    const { t } = useTranslation();
     return (
         <PrefabIcon
             draggable
-            name={NAME}
+            name={t('objects.line', { defaultValue: 'Line' })}
             icon={<Icon />}
             onDragStart={(e) => {
                 const offset = getDragOffset(e);
@@ -57,9 +58,9 @@ registerDropHandler<LineZone>(ObjectType.Line, (object, position) => {
     return {
         type: 'add',
         object: {
-            type: ObjectType.Cone,
+            type: ObjectType.Fan,
             color: DEFAULT_AOE_COLOR,
-            opacity: DEFAULT_AOE_OPACITY,
+            opacity: DEFAULT_SHAPE_OPACITY,
             width: DEFAULT_WIDTH,
             length: DEFAULT_LENGTH,
             rotation: 0,
@@ -70,10 +71,12 @@ registerDropHandler<LineZone>(ObjectType.Line, (object, position) => {
 });
 
 const LineDetails: React.FC<ListComponentProps<LineZone>> = ({ object, ...props }) => {
+    const { t } = useTranslation();
+
     return (
         <DetailsItem
-            icon={<Icon width="100%" height="100%" style={{ [panelVars.colorZoneOrange]: object.color }} />}
-            name={NAME}
+            icon={<Icon width="100%" height="100%" style={{ [panelVars.colorZoneOrange]: DEFAULT_AOE_COLOR }} />}
+            name={t('objects.line', { defaultValue: 'Line' })}
             object={object}
             {...props}
         />
@@ -173,24 +176,21 @@ const LineControlPoints = createControlPointManager<LineZone, LineState>({
 });
 
 interface LineRendererProps extends RendererProps<LineZone> {
-    length: number;
-    width: number;
-    rotation: number;
     isDragging?: boolean;
 }
 
-const LineRenderer: React.FC<LineRendererProps> = ({ object, length, width, rotation, isDragging }) => {
+const LineRenderer: React.FC<LineRendererProps> = ({ object, isDragging }) => {
     const highlightProps = useHighlightProps(object);
-    const style = getZoneStyle(object.color, object.opacity, Math.min(length, width), object.hollow);
 
-    const x = -width / 2;
-    const y = -length;
+    const style = getZoneStyle(object.color, object.opacity, Math.min(object.length, object.width), object.hollow);
+    const x = -object.width / 2;
+    const y = -object.length;
     const highlightOffset = style.strokeWidth;
-    const highlightWidth = width + highlightOffset;
-    const highlightLength = length + highlightOffset;
+    const highlightWidth = object.width + highlightOffset;
+    const highlightLength = object.length + highlightOffset;
 
     return (
-        <Group rotation={rotation}>
+        <Group rotation={object.rotation}>
             {highlightProps && (
                 <Rect
                     x={x}
@@ -203,7 +203,7 @@ const LineRenderer: React.FC<LineRendererProps> = ({ object, length, width, rota
                 />
             )}
             <HideGroup>
-                <Rect x={x} y={y} width={width} height={length} {...style} />
+                <Rect offsetX={-x} offsetY={-y} width={object.width} height={object.length} {...style} />
 
                 {isDragging && <Circle radius={CENTER_DOT_RADIUS} fill={style.stroke} />}
             </HideGroup>

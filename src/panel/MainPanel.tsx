@@ -1,8 +1,7 @@
 import { makeStyles, Tab, TabList } from '@fluentui/react-components';
 import React, { useState } from 'react';
-import { EditMode } from '../editMode';
+import { useTranslation } from 'react-i18next';
 import { TabActivity } from '../TabActivity';
-import { useEditMode } from '../useEditMode';
 import { ArenaPanel } from './ArenaPanel';
 import { DrawPanel } from './DrawPanel';
 import { PANEL_WIDTH } from './PanelStyles';
@@ -14,24 +13,25 @@ type Tabs = 'arena' | 'objects' | 'status' | 'draw';
 export const MainPanel: React.FC = () => {
     const classes = useStyles();
     const [tab, setTab] = useState<Tabs>('objects');
-    const [, setEditMode] = useEditMode();
+    // const [, setEditMode] = useEditMode();
+    const { t } = useTranslation();
 
     const handleTabChanged = (tab: Tabs) => {
         setTab(tab);
 
-        // Cancel any special edit mode when changing tabs.
-        // Draw tab should always default to draw mode.
-        const newMode = tab === 'draw' ? EditMode.Draw : EditMode.Normal;
-        setEditMode(newMode);
+        // // Cancel any special edit mode when changing tabs.
+        // // Draw tab should always default to draw mode.
+        // const newMode = tab === 'draw' ? EditMode.Draw : EditMode.Normal;
+        // setEditMode(newMode);
     };
 
     return (
         <div className={classes.wrapper}>
             <TabList selectedValue={tab} onTabSelect={(ev, data) => handleTabChanged(data.value as Tabs)}>
-                <Tab value="arena">Arena</Tab>
-                <Tab value="objects">Objects</Tab>
-                <Tab value="status">Icons</Tab>
-                <Tab value="draw">Draw</Tab>
+                <Tab value="arena">{t('helpDialog.arena')}</Tab>
+                <Tab value="objects">{t('helpDialog.objects')}</Tab>
+                <Tab value="status">{t('helpDialog.icons')}</Tab>
+                <Tab value="draw">{t('helpDialog.draw')}</Tab>
             </TabList>
             <div className={classes.container}>
                 <TabActivity value="arena" activeTab={tab}>
