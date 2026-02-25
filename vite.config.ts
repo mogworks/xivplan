@@ -65,7 +65,7 @@ export default defineConfig(({ mode }) => ({
         }),
     ],
     build: {
-        chunkSizeWarningLimit: 1000,
+        chunkSizeWarningLimit: 1200,
         rollupOptions: {
             output: {
                 // Group large vendor libraries into separate chunks to improve caching and reduce the size of the initial application chunk.
@@ -79,6 +79,8 @@ export default defineConfig(({ mode }) => ({
                         '@fluentui-contrib/react-virtualizer',
                     ],
                     konva: ['konva', 'react-konva', 'react-konva-utils'],
+                    colorjs: ['colorjs.io'],
+                    auth: ['better-auth', 'better-auth-localization'],
                 },
             },
         },

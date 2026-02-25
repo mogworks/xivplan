@@ -1,4 +1,3 @@
-/* eslint-disable react-refresh/only-export-components */
 import * as React from 'react';
 import { createContext, Dispatch, PropsWithChildren, SetStateAction, useContext, useState } from 'react';
 import { copyObjects } from './copy';

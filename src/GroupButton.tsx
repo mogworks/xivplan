@@ -24,7 +24,7 @@ export const GroupButton: React.FC<GroupButtonProps> = (props) => {
 
     let actionType: 'group' | 'ungroup' | 'none' = 'none';
     let disabled = true;
-    let icon: React.ReactNode = <GroupRegular />;
+    let icon: React.ReactNode;
 
     const selectedObjects = getSelectedObjects(step, selection);
 

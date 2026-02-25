@@ -1,6 +1,7 @@
 // copy & modify from https://github.com/Ennea/ffxiv-strategy-board-viewer/blob/master/draw.ts
 
 import Color from 'colorjs.io';
+import { colorToRgb } from '../../color';
 import {
     getWaymarkIdByType,
     getWaymarkOffsetsFromGroup,
@@ -999,6 +1000,7 @@ function encodeObject(scene: Scene, sceneObj: SceneObject): SBObject | SBObject[
                 const obj = sceneObj as TextObject;
                 const iconId = 100;
                 const color = new Color(obj.color ?? '#ffffff');
+                const rgb = colorToRgb(color);
 
                 return {
                     id: iconId,
@@ -1008,9 +1010,9 @@ function encodeObject(scene: Scene, sceneObj: SceneObject): SBObject | SBObject[
                     angle: obj.rotation,
                     scale: (100 * obj.fontSize) / SIZE_FACTOR / 30,
                     color: {
-                        red: Math.round(color.r * 255),
-                        green: Math.round(color.g * 255),
-                        blue: Math.round(color.b * 255),
+                        red: rgb.r,
+                        green: rgb.g,
+                        blue: rgb.b,
                         opacity: obj.opacity,
                     },
                     param1: 0,
@@ -1195,6 +1197,7 @@ function encodeObject(scene: Scene, sceneObj: SceneObject): SBObject | SBObject[
                 const color = isAoeObject(obj)
                     ? new Color(obj.baseColor ?? DEFAULT_AOE_COLOR)
                     : new Color(obj.color ?? DEFAULT_AOE_COLOR);
+                const rgb = colorToRgb(color);
 
                 return {
                     id: 9,
@@ -1204,9 +1207,9 @@ function encodeObject(scene: Scene, sceneObj: SceneObject): SBObject | SBObject[
                     angle: 0,
                     scale: (obj.radius * 2 * 30) / 29 / SIZE_FACTOR / getObjectSize(9) / objectScaleFactor[9],
                     color: {
-                        red: Math.round(color.r * 255),
-                        green: Math.round(color.g * 255),
-                        blue: Math.round(color.b * 255),
+                        red: rgb.r,
+                        green: rgb.g,
+                        blue: rgb.b,
                         opacity: obj.opacity,
                     },
                     param1: 0,
@@ -1222,6 +1225,7 @@ function encodeObject(scene: Scene, sceneObj: SceneObject): SBObject | SBObject[
                 const color = isAoeObject(obj)
                     ? new Color(obj.baseColor ?? '#ff8000')
                     : new Color(obj.color ?? '#ff8000');
+                const rgb = colorToRgb(color);
 
                 return {
                     id: 11,
@@ -1231,9 +1235,9 @@ function encodeObject(scene: Scene, sceneObj: SceneObject): SBObject | SBObject[
                     angle: obj.rotation,
                     scale: 100,
                     color: {
-                        red: Math.round(color.r * 255),
-                        green: Math.round(color.g * 255),
-                        blue: Math.round(color.b * 255),
+                        red: rgb.r,
+                        green: rgb.g,
+                        blue: rgb.b,
                         opacity: obj.opacity,
                     },
                     param1: obj.width / SIZE_FACTOR / 2,
@@ -1249,6 +1253,7 @@ function encodeObject(scene: Scene, sceneObj: SceneObject): SBObject | SBObject[
                 const color = isAoeObject(obj)
                     ? new Color(obj.baseColor ?? '#ff8000')
                     : new Color(obj.color ?? '#ff8000');
+                const rgb = colorToRgb(color);
 
                 const convertCoordinate = (
                     origin: { x: number; y: number },
@@ -1275,9 +1280,9 @@ function encodeObject(scene: Scene, sceneObj: SceneObject): SBObject | SBObject[
                     angle: obj.rotation,
                     scale: 100,
                     color: {
-                        red: Math.round(color.r * 255),
-                        green: Math.round(color.g * 255),
-                        blue: Math.round(color.b * 255),
+                        red: rgb.r,
+                        green: rgb.g,
+                        blue: rgb.b,
                         opacity: obj.opacity,
                     },
                     param1: obj.width / SIZE_FACTOR / 2,
@@ -1290,6 +1295,7 @@ function encodeObject(scene: Scene, sceneObj: SceneObject): SBObject | SBObject[
             return (() => {
                 const obj = sceneObj as ArrowObject;
                 const color = new Color(obj.color ?? '#ff8000');
+                const rgb = colorToRgb(color);
                 const param3 = obj.width / 2 / SIZE_FACTOR / 5;
                 const x = obj.x;
                 const y = obj.y;
@@ -1312,9 +1318,9 @@ function encodeObject(scene: Scene, sceneObj: SceneObject): SBObject | SBObject[
                     angle: obj.rotation - 90,
                     scale: 100,
                     color: {
-                        red: Math.round(color.r * 255),
-                        green: Math.round(color.g * 255),
-                        blue: Math.round(color.b * 255),
+                        red: rgb.r,
+                        green: rgb.g,
+                        blue: rgb.b,
                         opacity: obj.opacity,
                     },
                     param1: end.x,
@@ -1335,6 +1341,7 @@ function encodeObject(scene: Scene, sceneObj: SceneObject): SBObject | SBObject[
                 const endPos = { x: endObj.x, y: endObj.y };
 
                 const color = new Color(obj.color ?? '#ff8000');
+                const rgb = colorToRgb(color);
                 const param3 = obj.width / SIZE_FACTOR / 2;
                 const rad = Math.atan2(endPos.y - startPos.y, endPos.x - startPos.x);
 
@@ -1349,9 +1356,9 @@ function encodeObject(scene: Scene, sceneObj: SceneObject): SBObject | SBObject[
                     angle: (rad * 180) / Math.PI - 90,
                     scale: 100,
                     color: {
-                        red: Math.round(color.r * 255),
-                        green: Math.round(color.g * 255),
-                        blue: Math.round(color.b * 255),
+                        red: rgb.r,
+                        green: rgb.g,
+                        blue: rgb.b,
                         opacity: obj.opacity,
                     },
                     param1: end.x,

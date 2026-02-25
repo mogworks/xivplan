@@ -161,7 +161,7 @@ function getCenterOffset(object: AoeRectObject, handle: HandleFuncProps) {
     const hh = height / 2;
 
     // compute in local axes
-    let local = { x: 0, y: 0 };
+    let local: { x: number; y: number };
     switch (activeHandleId) {
         case HandleId.LeftMid:
             local = { x: hw0 - hw, y: 0 };
