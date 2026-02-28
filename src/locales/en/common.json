@@ -89,6 +89,7 @@
     "undo": "Undo",
     "redo": "Redo",
     "share": "Share",
+    "live": "Live",
     "screenshot": "Screenshot",
     "group": "Group",
     "ungroup": "Ungroup",
@@ -97,6 +98,17 @@
     "saveAs": "Save as",
     "download": "Download",
     "saveAsEllipsis": "Save as..."
+  },
+  "collab": {
+    "title": "Realtime Sharing",
+    "enableSharing": "Enable realtime sharing",
+    "connected": "Connected ({{count}} users)",
+    "connecting": "Connecting... ({{count}} users)",
+    "yourName": "Your name",
+    "icon": "Icon (job)",
+    "shareLink": "Share link (others can join)",
+    "copyLink": "Copy link",
+    "linkCopied": "Link copied"
   },
   "actions": {
     "apply": "Apply",

@@ -13,14 +13,16 @@ import React, { PropsWithChildren, useId, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Location, useNavigate } from 'react-router-dom';
 import { useBeforeUnload } from 'react-use';
+import { useCollaboration } from './collab/CollaborationProvider';
 import { DirtyContext, SavedStateContext } from './DirtyContext';
-import { useScene } from './SceneProvider';
 import { Scene } from './scene';
+import { useScene } from './SceneProvider';
 
 export const DirtyProvider: React.FC<PropsWithChildren> = ({ children }) => {
     const { canonicalScene } = useScene();
+    const collab = useCollaboration();
     const [savedState, setSavedState] = useState<Scene>(canonicalScene);
-    const isDirty = canonicalScene !== savedState;
+    const isDirty = !collab.enabled && canonicalScene !== savedState;
 
     return (
         <SavedStateContext value={setSavedState}>
