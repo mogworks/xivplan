@@ -53,7 +53,8 @@ export function useHotkeyHelp(info: HotkeyInfo): void {
             return;
         }
 
-        map.set(info.keys, info);
+        const id = `${info.keys}-${info.category}-${info.help}`;
+        map.set(id, info);
 
         return () => {
             map.delete(info.keys);
