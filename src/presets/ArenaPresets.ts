@@ -3,6 +3,7 @@ import { ARENA_PRESETS_ARCADION_M10S } from './arcadion/m10s';
 import { ARENA_PRESETS_ARCADION_M11S } from './arcadion/m11s';
 import { ARENA_PRESETS_ARCADION_M12S } from './arcadion/m12s';
 import { ARENA_PRESETS_ARCADION_M9S } from './arcadion/m9s';
+import { ARENA_PRESETS_MERCHANTS } from './tale/merchants';
 
 export const ARENA_PRESETS: Record<string, Record<string, ArenaPreset[]>> = {
     '阿卡狄亚 · 重量级': {
@@ -10,6 +11,9 @@ export const ARENA_PRESETS: Record<string, Record<string, ArenaPreset[]>> = {
         M10S: ARENA_PRESETS_ARCADION_M10S,
         M11S: ARENA_PRESETS_ARCADION_M11S,
         M12S: ARENA_PRESETS_ARCADION_M12S,
+    },
+    多变迷宫: {
+        商客奇谭: ARENA_PRESETS_MERCHANTS,
     },
     // '': {
     //     General: ARENA_PRESETS_GENERAL,
