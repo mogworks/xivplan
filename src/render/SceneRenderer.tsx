@@ -1,13 +1,17 @@
 import { makeStyles, tokens } from '@fluentui/react-components';
 import Konva from 'konva';
 import { KonvaEventObject } from 'konva/lib/Node';
-import React, { PropsWithChildren, RefAttributes, useContext, useState } from 'react';
+import React, { PropsWithChildren, RefAttributes, useContext, useEffect, useRef, useState } from 'react';
 import { Layer, Stage } from 'react-konva';
 import { DefaultCursorProvider } from '../DefaultCursorProvider';
 import { getDropAction } from '../DropHandler';
 import { SceneHotkeyHandler } from '../HotkeyHandler';
 import { EditorState, SceneAction, SceneContext, useScene } from '../SceneProvider';
 import { SelectionContext, SelectionState, SpotlightContext } from '../SelectionContext';
+import { useCollaboration } from '../collab/CollaborationProvider';
+import { RemoteCursorsLayer } from '../collab/RemoteCursorsLayer';
+import { RemoteSelectionLayer } from '../collab/RemoteSelectionLayer';
+import { SelectionAwarenessSync } from '../collab/SelectionAwarenessSync';
 import { getCanvasSize, getSceneCoord } from '../coord';
 import { Scene, SceneStep } from '../scene';
 import { selectNewObjects, selectNone, useSelection } from '../selection';
@@ -37,9 +41,12 @@ export const SceneRenderer: React.FC = () => {
     const classes = useStyles();
     const { scene, stepIndex } = useScene();
     const [, setSelection] = useContext(SelectionContext);
+    const collab = useCollaboration();
     const size = React.useMemo(() => getCanvasSize(scene), [scene]);
     const [visibleSteps, setVisibleSteps] = useState<Set<number>>(new Set([0])); // Start with only step 0 visible
     const [stages, setStages] = useState<Map<number, Konva.Stage>>(new Map());
+    const rafRef = useRef<number | null>(null);
+    const pendingCursorRef = useRef<{ x: number; y: number } | null>(null);
 
     // Update visible steps when current step changes
     React.useEffect(() => {
@@ -64,6 +71,80 @@ export const SceneRenderer: React.FC = () => {
         },
         [stepIndex, setSelection],
     );
+
+    const onMouseMoveStage = React.useCallback(
+        (e: KonvaEventObject<MouseEvent>) => {
+            if (!collab.enabled) {
+                return;
+            }
+            const stageNode = e.target.getStage();
+            if (!stageNode) {
+                return;
+            }
+            const pointer = stageNode.getPointerPosition();
+            if (!pointer) {
+                return;
+            }
+            const coord = getSceneCoord(scene, pointer);
+            pendingCursorRef.current = coord;
+            if (rafRef.current !== null) {
+                return;
+            }
+            rafRef.current = requestAnimationFrame(() => {
+                rafRef.current = null;
+                const next = pendingCursorRef.current;
+                if (!next) {
+                    return;
+                }
+                collab.setLocalCursor(next);
+            });
+        },
+        [collab, scene],
+    );
+
+    const onMouseLeaveStage = React.useCallback(() => {
+        if (collab.enabled) {
+            collab.setLocalCursor(undefined);
+        }
+    }, [collab]);
+
+    // During Konva drag operations, mousemove events don't bubble to Stage.
+    // Use onDragMove to track cursor position while dragging objects.
+    const onDragMoveStage = React.useCallback(
+        (e: KonvaEventObject<DragEvent>) => {
+            if (!collab.enabled) {
+                return;
+            }
+            const stageNode = e.target.getStage();
+            if (!stageNode) {
+                return;
+            }
+            const pointer = stageNode.getPointerPosition();
+            if (!pointer) {
+                return;
+            }
+            const coord = getSceneCoord(scene, pointer);
+            pendingCursorRef.current = coord;
+            if (rafRef.current !== null) {
+                return;
+            }
+            rafRef.current = requestAnimationFrame(() => {
+                rafRef.current = null;
+                const next = pendingCursorRef.current;
+                if (!next) {
+                    return;
+                }
+                collab.setLocalCursor(next);
+            });
+        },
+        [collab, scene],
+    );
+
+    useEffect(() => {
+        if (!collab.enabled) {
+            collab.setLocalCursor(undefined);
+        }
+    }, [collab]);
 
     const handleStageRef = React.useCallback((stage: Konva.Stage | null, index: number) => {
         if (stage) {
@@ -114,6 +195,9 @@ export const SceneRenderer: React.FC = () => {
                                     {...size}
                                     ref={(stage) => handleStageRef(stage, index)}
                                     onClick={(e) => onClickStage(e, index)}
+                                    onMouseMove={onMouseMoveStage}
+                                    onMouseLeave={onMouseLeaveStage}
+                                    onDragMove={onDragMoveStage}
                                 >
                                     <StageContext value={stages.get(index) || null}>
                                         <DefaultCursorProvider>
@@ -224,6 +308,7 @@ const SceneContents: React.FC<SceneContentsProps & { isVisible?: boolean }> = Re
         return (
             <>
                 {listening && isVisible && <SceneHotkeyHandler />}
+                {listening && isVisible && <SelectionAwarenessSync />}
 
                 <Layer name={LayerName.Ground} listening={listening}>
                     {showArena && <ArenaRenderer simple={simple} />}
@@ -241,6 +326,9 @@ const SceneContents: React.FC<SceneContentsProps & { isVisible?: boolean }> = Re
                     <DrawTarget />
                 </Layer>
                 <Layer name={LayerName.Controls} listening={listening} />
+
+                {listening && isVisible && <RemoteCursorsLayer />}
+                {listening && isVisible && <RemoteSelectionLayer />}
             </>
         );
     },

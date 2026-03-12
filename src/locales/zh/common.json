@@ -89,6 +89,7 @@
     "undo": "撤销",
     "redo": "重做",
     "share": "分享",
+    "live": "实时",
     "screenshot": "截图",
     "group": "编组",
     "ungroup": "解除编组",
@@ -97,6 +98,17 @@
     "saveAs": "另存为",
     "download": "下载",
     "saveAsEllipsis": "另存为..."
+  },
+  "collab": {
+    "title": "实时协作",
+    "enableSharing": "启用实时协作",
+    "connected": "已连接（{{count}} 名用户）",
+    "connecting": "连接中...（{{count}} 名用户）",
+    "yourName": "你的名称",
+    "icon": "图标（职业）",
+    "shareLink": "分享链接（其他人可加入）",
+    "copyLink": "复制链接",
+    "linkCopied": "链接已复制"
   },
   "actions": {
     "apply": "应用",

@@ -62,6 +62,15 @@ function copyObject(object: Readonly<MovableObject & UnknownObject>, offset: Vec
     return { ...object, ...pos, id: undefined };
 }
 
+function copyObjectWithId(
+    object: Readonly<MovableObject & UnknownObject>,
+    offset: Vector2d,
+    id: number,
+): SceneObjectWithoutId {
+    const pos = vecAdd(object, offset);
+    return { ...object, ...pos, id };
+}
+
 function copyTether(
     scene: Readonly<Scene>,
     tether: Readonly<Tether>,
@@ -80,14 +89,64 @@ function copyTether(
     return { ...newTether, id: undefined };
 }
 
+function copyTetherWithId(
+    tether: Readonly<Tether>,
+    originalTargets: readonly UnknownObject[],
+    idMap: ReadonlyMap<number, number>,
+    id: number,
+): SceneObjectWithoutId | null {
+    if (!isTargetCopied(originalTargets, tether.startId) && !isTargetCopied(originalTargets, tether.endId)) {
+        return null;
+    }
+
+    const startId = idMap.get(tether.startId) ?? tether.startId;
+    const endId = idMap.get(tether.endId) ?? tether.endId;
+
+    return {
+        ...(tether as unknown as Omit<Tether, 'id'>),
+        startId,
+        endId,
+        id,
+    } as SceneObjectWithoutId;
+}
+
 export function copyObjects(
     scene: Readonly<Scene>,
     objects: readonly SceneObject[],
     newCenter?: Vector2d,
+    getNewId?: (() => number) | undefined,
 ): SceneObjectWithoutId[] {
     const copyable = objects.slice().filter((o) => isCopyable(o, objects));
 
     const offset = getOffset(copyable, newCenter);
+
+    if (getNewId) {
+        // Deterministic copy with caller-provided ID assignment.
+        const idMap = new Map<number, number>();
+        for (const obj of copyable) {
+            if (isMovable(obj) && !idMap.has(obj.id)) {
+                idMap.set(obj.id, getNewId());
+            }
+        }
+
+        return objects
+            .map((obj) => {
+                if (isMovable(obj)) {
+                    const id = idMap.get(obj.id);
+                    if (id === undefined) {
+                        return null;
+                    }
+                    return copyObjectWithId(obj, offset, id);
+                }
+
+                if (isTether(obj)) {
+                    return copyTetherWithId(obj, copyable, idMap, getNewId());
+                }
+
+                return null;
+            })
+            .filter(isNotNull);
+    }
 
     return objects
         .map((obj) => {

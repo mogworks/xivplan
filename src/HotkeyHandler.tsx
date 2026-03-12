@@ -7,6 +7,7 @@ import { HelpContext } from './HelpContext';
 import { HelpDialog } from './HelpDialog';
 import { GroupMoveAction, SceneAction, getObjectById, useScene } from './SceneProvider';
 import { SceneSelection } from './SelectionContext';
+import { useCollaboration } from './collab/CollaborationProvider';
 import { getSceneCoord, rotateCoord } from './coord';
 import { copyObjects, getGroupCenter } from './copy';
 import { EditMode } from './editMode';
@@ -31,13 +32,20 @@ const CATEGORY_STEPS = '7.Steps';
 
 const UndoRedoHandler: React.FC = () => {
     const { dispatch } = useScene();
+    const collab = useCollaboration();
     const { t } = useTranslation();
 
     const undoCallback: HotkeyCallback = (e) => {
+        if (collab.enabled) {
+            return;
+        }
         dispatch({ type: 'undo' });
         e.preventDefault();
     };
     const redoCallback: HotkeyCallback = (e) => {
+        if (collab.enabled) {
+            return;
+        }
         dispatch({ type: 'redo' });
         e.preventDefault();
     };
@@ -56,10 +64,11 @@ function pasteObjects(
     setSelection: Dispatch<SetStateAction<SceneSelection>>,
     objects: readonly SceneObject[],
     centerOnMouse = true,
+    getNewId?: (() => number) | undefined,
 ): void {
     const pointerPosition = stage.getRelativePointerPosition() ?? { x: 0, y: 0 };
     const newCenter = centerOnMouse ? getSceneCoord(scene, pointerPosition) : undefined;
-    const newObjects = copyObjects(scene, objects, newCenter);
+    const newObjects = copyObjects(scene, objects, newCenter, getNewId);
 
     if (newObjects.length) {
         dispatch({ type: 'add', object: newObjects });
@@ -90,8 +99,11 @@ const SelectionActionHandler: React.FC = () => {
     const [editMode, setEditMode] = useEditMode();
     const [tetherConfig, setTetherConfig] = useTetherConfig();
     const { scene, step, dispatch } = useScene();
+    const collab = useCollaboration();
     const stage = useStage();
     const { t } = useTranslation();
+
+    const getNewId = collab.enabled ? collab.allocateObjectId : undefined;
 
     useHotkeys(
         'ctrl+a',
@@ -170,10 +182,10 @@ const SelectionActionHandler: React.FC = () => {
             if (!clipboard.length || !stage || editMode !== EditMode.Normal) {
                 return;
             }
-            pasteObjects(stage, scene, dispatch, setSelection, clipboard);
+            pasteObjects(stage, scene, dispatch, setSelection, clipboard, true, getNewId);
             e.preventDefault();
         },
-        [stage, scene, dispatch, setSelection, clipboard, editMode],
+        [stage, scene, dispatch, setSelection, clipboard, editMode, getNewId],
     );
 
     useHotkeys(
@@ -183,10 +195,10 @@ const SelectionActionHandler: React.FC = () => {
             if (!clipboard.length || !stage || editMode !== EditMode.Normal) {
                 return;
             }
-            pasteObjects(stage, scene, dispatch, setSelection, clipboard, false);
+            pasteObjects(stage, scene, dispatch, setSelection, clipboard, false, getNewId);
             e.preventDefault();
         },
-        [stage, scene, dispatch, setSelection, clipboard, editMode],
+        [stage, scene, dispatch, setSelection, clipboard, editMode, getNewId],
     );
 
     useHotkeys(
@@ -196,10 +208,10 @@ const SelectionActionHandler: React.FC = () => {
             if (!selection.size || !stage || editMode !== EditMode.Normal) {
                 return;
             }
-            pasteObjects(stage, scene, dispatch, setSelection, getSelectedObjects(step, selection), false);
+            pasteObjects(stage, scene, dispatch, setSelection, getSelectedObjects(step, selection), false, getNewId);
             e.preventDefault();
         },
-        [stage, scene, step, dispatch, selection, setSelection, editMode],
+        [stage, scene, step, dispatch, selection, setSelection, editMode, getNewId],
     );
 
     useHotkeys(
